@@ -1990,6 +1990,8 @@ digits	Hindi	Hindi
 	Large Thumbnails	Hình thu nhỏ lớn
 	Largest:	Lớn nhất:
 	Lasso Tool	Công cụ Lasso
+	Enclosing Lasso Tool	Công cụ Lasso bao quanh
+	Enclosing Lasso	Lasso bao quanh
 	Last	Cuối cùng
 	Last commit	Commit cuối cùng
 	Last Effect: {name}	Hiệu ứng vừa dùng: {name}
@@ -2251,6 +2253,7 @@ digits	Hindi	Hindi
 	Modify	Sửa đổi
 	Mojikumi	Mojikumi
 	Insert Kashidas	Chèn kashida
+	Kashidas	Kashida
 	Long	Dài
 	Stylistic	Kiểu cách
 	Mojikumi Set	Bộ Mojikumi
