@@ -5875,8 +5875,6 @@ anchor	Points:	Punkter:
 	Arrow Scale:	Pilskala:
 	Arrow Style:	Pilstil:
 	Check for Updates…	Sök efter uppdateringar…
-	Checking for updates…	Söker efter uppdateringar…
-	Could not check for updates:\n{error}	Det gick inte att söka efter uppdateringar:\n{error}
 	Dimension Lines	Måttlinjer
 	Dimension Text	Måttal
 	Extension Lines	Måttgränslinjer
@@ -5898,7 +5896,6 @@ anchor	Points:	Punkter:
 	Tracing the colors…	Vektoriserar färgerna…
 	Units & Scale	Enheter & skala
 	VectorCraft Updates	Uppdateringar för VectorCraft
-	VectorCraft {version} is currently the newest version available.	VectorCraft {version} är för närvarande den senaste tillgängliga versionen.
 	Yonroku-ban	Yonroku-ban
 @msg	image '{key}' has no pixels and was left out	bilden '{key}' har inga pixlar och utelämnades
 @msg	not an RTF file: it doesn't start with {\\rtf	inte en RTF-fil: den börjar inte med {\\rtf

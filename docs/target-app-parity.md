@@ -178,7 +178,7 @@ review parallelize less and need humans.
 
 ### Full Illustrator: additive weighted sum over the dimensions
 
-The standard's method, the same in every app: a weighted **sum** over the dimensions, with written weights.
+The method: a weighted **sum** over the dimensions, with written weights.
 Values are from [By dimension](#by-dimension).
 
 | Dimension | Weight | Value | Contribution |
@@ -1638,7 +1638,7 @@ add-on.
 | 2026-10-11 | minor | Type advanced: Proportional Metrics in vertical type (`vpal`, #966) leaves the missing list; score and hours unchanged at this rounding (estimated) |
 | 2026-10-11 | minor | Shape Builder #893 fixed (planar-map faces share their corners exactly, so merges leave no seams); Path operations stays 80% and Shape Builder 70% while #937 is open (estimated) |
 | 2026-10-10 | minor | Merged main: initial live Revolve landed (#846). 3D 0% → ~8% (50–85 h), menu stubs 28 → 27; depth, readiness and totals unchanged within rounding |
-| 2026-10-10 | minor | Method aligned with the standard, no new evidence: the full ready-for-real-work number is the additive weighted sum over the dimensions (~62%). The multiplicative 55% from earlier today is withdrawn, and the 50% before it was an unbroken-down judgement. Added hours to ~95% for each audience (full 340–560 h, mainstream 230–380 h, essentials 60–105 h). Beta distance is now ~13 points |
+| 2026-10-10 | minor | Method changed, no new evidence: the full ready-for-real-work number is the additive weighted sum over the dimensions (~62%). The multiplicative 55% from earlier today is withdrawn, and the 50% before it was an unbroken-down judgement. Added hours to ~95% for each audience (full 340–560 h, mainstream 230–380 h, essentials 60–105 h). Beta distance is now ~13 points |
 | 2026-10-10 | minor | Added the essentials-user readiness score (~75%): 16 core features weighted, depth ~91%, discounted for launch, discoverability and files people send |
 | 2026-10-10 | minor | Second look at ready for real work at the owner's request: 50% → 55% full Illustrator, and a new mainstream-illustrator figure of 65%. Why: the old 25-point discount was a judgement with no breakdown. Now each discount is written down and checked against the tracker: 86% of 79 core-drawing issues closed, 20 of 28 `.ai`/EPS issues fixed and the open ones about structure, praise from 15 people, no reports of switching; dimensions a typical illustrator rarely hits are taken out of readiness. Feature breadth, depth and hours unchanged |
 | 2026-10-10 | minor | Stage checked against the core-workflow gate: passes, stays alpha |
