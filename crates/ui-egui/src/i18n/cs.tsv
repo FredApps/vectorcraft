@@ -4989,6 +4989,9 @@ imageTrace	Outline	Obrys
 @msg	the PCX file is cut short	soubor PCX je useknutý
 @msg	the PCX file's header is damaged	hlavička souboru PCX je poškozená
 @msg	PCX files with {bits}-bit pixels in {planes} planes can't be read	soubory PCX s {bits}bitovými obrazovými body v {planes} rovinách nelze přečíst
+@msg	the Pixar file is cut short	soubor Pixar je useknutý
+@msg	the Pixar file's header is damaged	hlavička souboru Pixar je poškozená
+@msg	the Pixar file's image data is damaged	obrazová data souboru Pixar jsou poškozená
 @msg	the JPEG 2000 file can't be read	soubor JPEG 2000 nelze přečíst
 @msg	the JPEG 2000 file has an unsupported color space or JPX content	soubor JPEG 2000 obsahuje nepodporovaný barevný prostor nebo obsah JPX
 @msg	the PSD image is too large to read ({_1} × {_2} pixels)	obraz PSD je příliš velký na přečtení ({_1} × {_2} obrazových bodů)
@@ -5636,7 +5639,9 @@ mark-style	Japanese	Japonské
 	Effect Gallery	Galerie efektů
 	Filters	Filtry
 	Select artwork to apply effects	Vyberte grafiku, na kterou chcete použít efekty
-@msg	the file's variables and data sets weren't read (variables: {variables}, data sets: {data_sets}): the Variables panel doesn't list them	proměnné a sady dat souboru nebyly načteny (proměnné: {variables}, sady dat: {data_sets}): panel Proměnné je nezobrazuje
+@msg	the file's variable library was partly read (entries skipped: {_1}): the Variables panel lists the rest	knihovna proměnných souboru byla načtena jen částečně (vynechané položky: {_1}): panel Proměnné zobrazuje zbytek
+@msg	the file's variable library couldn't be read: the Variables panel doesn't list it	knihovnu proměnných souboru nebylo možné načíst: panel Proměnné ji nezobrazuje
+@msg	a variable of unknown kind can't be bound to objects	proměnnou neznámého druhu nelze svázat s objekty
 # Select by Color (select.color)
 	Select by Color	Vybrat podle barvy
 	Move Anchor Point	Přesunout kotevní bod
