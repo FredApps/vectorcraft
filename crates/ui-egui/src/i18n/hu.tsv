@@ -2156,6 +2156,8 @@ file-filter	Templates	Sablonok
 	Largest:	Legnagyobb:
 	Lasso	Lasszó
 	Lasso Tool	Lasszó
+	Enclosing Lasso Tool	Körülzáró lasszó
+	Enclosing Lasso	Körülzáró lasszó
 	Last	Utolsó
 	Last commit	Utolsó commit
 	Last Effect: {name}	Legutóbbi effektus: {name}
@@ -2438,6 +2440,7 @@ file-filter	Templates	Sablonok
 	Modify	Módosítás
 	Mojikumi	Mojikumi
 	Insert Kashidas	Kasidák beszúrása
+	Kashidas	Kasidák
 	Long	Hosszú
 	Stylistic	Stilisztikai
 	Mojikumi Set	Mojikumi-készlet

@@ -1193,6 +1193,8 @@ lighting	Light	Licht
 	Hand	Hand
 	Join Tool	Samenvoegen-gereedschap
 	Lasso Tool	Lasso-gereedschap
+	Enclosing Lasso Tool	Omsluitend lassogereedschap
+	Enclosing Lasso	Omsluitende lasso
 	Lasso	Lasso
 	Line Cut Tool	Lijnknip-gereedschap
 	Line Graph Tool	Lijndiagram-gereedschap
@@ -1674,6 +1676,7 @@ digits	Malayalam	Malayalam
 	Left-to-Right Paragraph Direction	Alinearichting van links naar rechts
 	Line-end Punctuation Half Width	Leestekens op regeleinde op halve breedte
 	Insert Kashidas	Kashida's invoegen
+	Kashidas	Kashida's
 	Long	Lang
 	Stylistic	Stilistisch
 	Mojikumi Set	Mojikumi-set
