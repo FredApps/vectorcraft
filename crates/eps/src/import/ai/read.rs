@@ -73,6 +73,7 @@ mod document;
 mod ops;
 mod types;
 
+pub(crate) use art::join_and;
 use art::preview_png;
 pub use document::{PaletteSwatches, VariableLibrary, artboards, palette, variables};
 pub(crate) use document::{slot_frame, slot_of};
@@ -101,6 +102,10 @@ pub struct Structure {
     pub template: Option<[f64; 4]>,
     /// What layers that don't show have that isn't read (operators, objects): left out of them.
     pub hidden_unread: BTreeSet<String>,
+    /// Top-level object ids and the unread kinds within them.
+    pub unread: Vec<(NodeId, Vec<String>)>,
+    /// Other bounds for previewless placed files whose page art uses the file box's corner.
+    pub unread_elsewhere: Vec<(NodeId, Rect)>,
     /// The names of text objects, by their slot's id.
     pub slot_names: HashMap<NodeId, String>,
     /// Where the drawn looks lay that objects read with their art style took the place of (the
@@ -162,6 +167,12 @@ struct Reader<'a> {
     unknown: BTreeSet<String>,
     /// What layers that don't show have that this reader doesn't read.
     hidden_unread: BTreeSet<String>,
+    unread: Vec<(NodeId, Vec<String>)>,
+    symbol_bounds: HashMap<String, Rect>,
+    /// Depth shared by pattern and symbol readers.
+    subreader_depth: usize,
+    pending_unread_fill: bool,
+    pending_unread_stroke: bool,
     /// The header's bounding boxes and template box.
     bbox: Option<[f64; 4]>,
     hires: Option<[f64; 4]>,
@@ -183,8 +194,14 @@ struct Reader<'a> {
     blend_budget: usize,
     /// A group just ended, its state (`Xy`, `Xd`, `XW`) not yet read.
     group_ended: bool,
+    /// A gradient mesh just ended (`/End X!`), its own state (`Xy`) not yet read: also after its
+    /// dictionary (its name, its opacity mask and the mask's art).
+    mesh_ended: bool,
     /// A layer's own state (`Xy` after its art, before `LB`), until something says the art moves on.
     layer_state: Option<(f32, BlendMode, bool, Knockout)>,
+    /// The state a mesh or blend had before an `Xy` right after its end, which is the layer's
+    /// instead when the layer's `LB` follows rather than their own `6 () XW`.
+    mesh_undo: Option<(f32, BlendMode, bool, Knockout)>,
     /// Painted copies of clipping paths that have a fill (drawn under what they clip).
     clip_fills: HashSet<NodeId>,
     /// Groups closed as an object's drawn look (`9 () XW`).
@@ -203,6 +220,7 @@ struct Reader<'a> {
     restyled: Vec<Rect>,
     /// See [`Structure::placed_elsewhere`].
     placed_elsewhere: Vec<(NodeId, Affine)>,
+    unread_elsewhere: Vec<(NodeId, Rect)>,
     /// CMYK samples converted, by value.
     cmyk_cache: HashMap<[u8; 4], [u8; 3]>,
     /// A `/ForeignObject`'s `/Data`: its PDF as ASCII85 in comment lines, until the object closes.
@@ -271,6 +289,11 @@ impl<'a> Reader<'a> {
             unsupported: BTreeSet::new(),
             unknown: BTreeSet::new(),
             hidden_unread: BTreeSet::new(),
+            unread: Vec::new(),
+            symbol_bounds: HashMap::new(),
+            subreader_depth: 0,
+            pending_unread_fill: false,
+            pending_unread_stroke: false,
             bbox: None,
             hires: None,
             template: None,
@@ -288,11 +311,14 @@ impl<'a> Reader<'a> {
             compound_groups: HashSet::new(),
             text_looks: HashSet::new(),
             group_ended: false,
+            mesh_ended: false,
             layer_state: None,
+            mesh_undo: None,
             styles: HashMap::new(),
             palette: super::palette::Palette::default(),
             restyled: vec![],
             placed_elsewhere: vec![],
+            unread_elsewhere: vec![],
             mesh: None,
             cmyk_cache: HashMap::new(),
             done: false,
@@ -324,7 +350,7 @@ impl<'a> Reader<'a> {
                     let w = std::str::from_utf8(w).unwrap_or("?");
                     self.op(w, hidden)?;
                 }
-                Tok::Comment(c) => self.comment(c)?,
+                Tok::Comment(c) => self.comment(c, hidden)?,
                 Tok::Data(d) => self.image(d)?,
                 Tok::Preview(d) => {
                     if let Some(p) = self.place.as_mut() {
