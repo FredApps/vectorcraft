@@ -91,7 +91,7 @@ from G14 and the budget run of G15: **~170–270 h** one agent, ~50–80 h wall 
   Rectangular Grid click-dialog implementation now accepts width, height and saved horizontal/vertical divider
   counts; successful OK creates and selects one grid in one undo step and saves only the counts. Dimensions
   reopen at 100 pt. Cancel and errors preserve art, selection, undo and tool settings; perspective uses the
-  existing engine path. Validation is pending; Arc, Spiral and Polar Grid
+  existing engine path. Validated on Linux: all 16 dedicated regressions, native UI flows and all seven CI gates passed; Arc, Spiral and Polar Grid
   click dialogs are outside this fix.
 - **Missing:** Shape Builder misses planar regions and targets whole shapes (#937); Transform effect dialog's invisible checkboxes and missing options (#885);
   PDF text boxes moving on open (#722); SVG units reverting to points (#864); bezier drag preview freezing (#834).
