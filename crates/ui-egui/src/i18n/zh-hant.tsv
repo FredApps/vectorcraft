@@ -2121,8 +2121,8 @@
 	Rectangle…	矩形…
 	Rectangular Grid	矩形格線
 # Rectangular Grid click dialog.
-	Horizontal dividers:	水平分隔線：
-	Vertical dividers:	垂直分隔線：
+	Horizontal Dividers:	水平分隔線：
+	Vertical Dividers:	垂直分隔線：
 	Rectangular Grid Tool	矩形格線工具
 	Red	紅色
 	Redefine Character Style	重新定義字元樣式
@@ -3525,5 +3525,3 @@ lighting	Light	光源
 	Vertical Guide	垂直參考線
 	Horizontal Guide	水平參考線
 	Move Guide to Layer	將參考線移至圖層
-	Linux Display Server	Linux 顯示伺服器
-	X11 (XWayland)	X11 (XWayland)

@@ -2068,8 +2068,8 @@
 	Rectangle…	矩形…
 	Rectangular Grid	矩形网格
 # Rectangular Grid click dialog.
-	Horizontal dividers:	水平分隔线：
-	Vertical dividers:	垂直分隔线：
+	Horizontal Dividers:	水平分隔线：
+	Vertical Dividers:	垂直分隔线：
 	Rectangular Grid Tool	矩形网格工具
 	Red	红
 	Redefine Character Style	重新定义字符样式
@@ -3744,5 +3744,3 @@ lighting	Light	光源
 	Vertical Guide	垂直参考线
 	Horizontal Guide	水平参考线
 	Move Guide to Layer	将参考线移至图层
-	Linux Display Server	Linux 显示服务器
-	X11 (XWayland)	X11 (XWayland)

@@ -40,7 +40,7 @@ fn kinds_map_to_their_dialogs() {
         ("newDocument", DialogKind::NewDocument),
         ("roundedRectangle", DialogKind::Shape),
         ("lineSegment", DialogKind::Shape),
-        ("rectangularGrid", DialogKind::RectangularGrid),
+        ("rectangularGrid", DialogKind::Shape),
         ("shear", DialogKind::Transform),
         ("splitIntoGrid", DialogKind::PathOp),
         ("artboardOptions", DialogKind::ArtboardOptions),

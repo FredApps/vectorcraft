@@ -1,6 +1,6 @@
 # UI and interaction parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (a marquee needs to touch a path, not just lie inside its fill, #1103; earlier: Live Corners round corners between curved sides, #1144) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (several artboards selected at once, #1139; earlier: the Edit Toolbar drawer, #1018) · **Target:** Adobe Illustrator 2026 (30.x)
 
 How VectorCraft's tools, handles, snapping and panels behave next to Illustrator's. A vector illustrator's
 trust is in the details: where a handle lands, what Shift and Alt do mid-drag, what a smart guide snaps to,
@@ -13,8 +13,6 @@ how far an arrow key nudges. This checklist is the work list for the **interacti
 forbids launching or measuring Illustrator, so there has been **no side-by-side session**. Every "done" below is
 "behaves as the documentation describes", which is weaker than "a power user can't tell". Status:
 **done** (documented behaviour implemented and tested), **partial**, **missing**.
-
-**Grid validation (2026-10-11):** Rectangular Grid click dialog implemented; validated on Linux: 16 dedicated regressions, native UI flows and all seven CI gates passed. Scores and hours unchanged.
 
 ## Summary
 
@@ -64,7 +62,6 @@ tools, never checked side by side) isn't captured row by row.
 | Behaviour | Status | Notes |
 |---|---|---|
 | Click/Shift-click anchors; marquee toggles with Shift | done | #483 |
-| A marquee selects the objects whose paths it touches (anchors or segments): drawn inside a filled shape, over a background, it leaves that shape (Preview and Outline) | done | #1103 |
 | Drag a curved segment to bend it, a straight one to move its anchors | done | |
 | Drag by an anchor of a path selected whole moves the whole path; Alt-drag by an anchor or a segment copies it, Alt toggles the copy during the drag, and the copy snaps by the anchor pressed, onto the original too | done | #1104 |
 | Handles shown are the handles that drag; tolerance from Selection & Anchor Display | done | #494 |
@@ -73,7 +70,7 @@ tools, never checked side by side) isn't captured row by row.
 | Convert selected anchors to corner/smooth from the Control bar and Properties | done | |
 | Cut path at selected anchors, Remove Anchor Points, Delete removes segments | done | |
 | Live Corners widgets (radius readout, Alt-click cycles kind, double-click the Corners dialog) | done | clicking a widget without pre-selecting the anchor (#908) missing |
-| Corners between curved sides (#1144), Relative rounding | partial | Relative rounding missing |
+| Corners between curved sides, Relative rounding | missing | |
 | Isolation mode by double-click, breadcrumbs, Esc to exit | done | |
 | "Magnetic" moves of selected anchors with a modifier (#955 request) | missing | not an Illustrator feature as documented; under discussion |
 
@@ -121,7 +118,6 @@ tools, never checked side by side) isn't captured row by row.
 | Field precision: 3 decimals for steps; values kept as f64 | done | |
 | Scrubby labels (beyond Illustrator) | done | #400 |
 | Dialogs open with the first field focused and selected; Enter confirms | done | |
-| Rectangular Grid click opens size and divider fields; OK creates a selected grid | done | Width/height accept units and reopen at 100 pt; horizontal/vertical counts are interior dividers (0–999), not cells. Successful OK creates one selected grid in one undo step, uses the existing perspective path and remembers only counts; cancellation and errors preserve document, selection, history and settings. Sources: `dialogs/rectangular_grid.rs`, `dialogs/tests_rectangular_grid.rs`. Arc, Spiral and Polar Grid click dialogs remain outside this fix. |
 
 ## Modifier keys and temporary tools
 
@@ -173,10 +169,7 @@ re-measure of the panels added since.
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-11 | minor | A marquee inside a filled shape no longer selects it: only touching its path does (#1103); score unchanged (estimated) |
-| 2026-10-11 | minor | Live Corners: corners between curved sides round too, the curve trimmed to what the cut leaves (#1144); score unchanged (estimated) |
 | 2026-10-11 | minor | Artboards: Shift-click selects several, which move, copy and delete together (#1139); score unchanged (estimated) |
 | 2026-10-11 | minor | Edit Toolbar opens the All Tools drawer beside the toolbar instead of a centred dialog, dims the tools the toolbar holds, and edits the toolbar by drag and drop while it is open (#1018); score unchanged (estimated) |
 | 2026-10-11 | minor | Direct Selection: dragging a path selected whole by an anchor moves it whole; Alt-drag copies by an anchor too, toggles during the drag and snaps onto the original (#1104); score unchanged (estimated) |
-| 2026-10-11 | minor | Rectangular Grid click dialog: width/height and saved divider counts, validation, one-step creation and count persistence; validated on Linux: 16 targeted tests, native UI and all seven CI gates passed. Scores and hours unchanged. |
 | 2026-10-10 | major | First checklist, built from the tool sources and tests against Illustrator 2026's public documentation |
