@@ -66,6 +66,7 @@ mod psd_options;
 pub mod raster_effects;
 pub mod rearrange_artboards;
 pub mod recolor;
+mod rectangular_grid;
 mod recovery;
 mod revolve;
 pub(crate) mod revolve_gizmo;
@@ -207,6 +208,7 @@ macro_rules! registry {
 registry! {
     NewDocument: [new_document::KIND] => new_document::SPEC,
     Shape: ["rectangle", "roundedRectangle", "ellipse", "polygon", "star", "lineSegment"] => shapes::SPEC,
+    RectangularGrid: [rectangular_grid::KIND] => rectangular_grid::SPEC,
     Transform: ["move", "rotate", "scale", "reflect", "shear"] => transform::SPEC,
     PathOp: ["average", "offsetPath", "simplify", "splitIntoGrid"] => path_ops::SPEC,
     DocumentSetup: ["documentSetup"] => document_setup::SPEC,
@@ -515,3 +517,6 @@ mod tests_perspective;
 
 #[cfg(test)]
 mod tests_modal;
+
+#[cfg(test)]
+mod tests_rectangular_grid;

@@ -4118,3 +4118,9 @@ lighting	Light	Світло
 @msg	invalid native panel set	Неприпустимий власний набір панелей
 @msg	missing panel layout	Відсутнє розташування панелей
 @msg	unsupported native docking operation	Непідтримувана власна операція прикріплення
+# Rectangular Grid click dialog.
+	Horizontal dividers:	Горизонтальні розділювачі:
+	Vertical dividers:	Вертикальні розділювачі:
+@msg	Grid position must be finite.	Координати сітки мають бути скінченними числами.
+@msg	Grid width and height must be positive, finite lengths.	Ширина й висота сітки мають бути додатними скінченними значеннями довжини.
+@msg	Grid divider counts must be whole numbers from 0 to 999.	Кількість розділювачів сітки в кожному напрямку має бути цілим числом від 0 до 999.

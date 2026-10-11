@@ -3519,3 +3519,6 @@ lighting	Light	光源
 	Vertical Guide	垂直參考線
 	Horizontal Guide	水平參考線
 	Move Guide to Layer	將參考線移至圖層
+# Rectangular Grid click dialog.
+	Horizontal dividers:	水平分隔線：
+	Vertical dividers:	垂直分隔線：

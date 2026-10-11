@@ -40,6 +40,7 @@ fn kinds_map_to_their_dialogs() {
         ("newDocument", DialogKind::NewDocument),
         ("roundedRectangle", DialogKind::Shape),
         ("lineSegment", DialogKind::Shape),
+        ("rectangularGrid", DialogKind::RectangularGrid),
         ("shear", DialogKind::Transform),
         ("splitIntoGrid", DialogKind::PathOp),
         ("artboardOptions", DialogKind::ArtboardOptions),
@@ -80,7 +81,7 @@ fn every_dialog_draws() {
         let _ = app.session.cancel_interaction();
     }
     for kind in
-        ["rectangle", "roundedRectangle", "ellipse", "polygon", "star", "lineSegment", "rotate", "reflect", "scale", "shear", "artboardOptions"]
+        ["rectangle", "roundedRectangle", "ellipse", "polygon", "star", "lineSegment", "rectangularGrid", "rotate", "reflect", "scale", "shear", "artboardOptions"]
     {
         open_tool_dialog(&mut app, kind, json!({"x": 5, "y": 5, "index": 0}));
         assert!(app.ui.dialog.as_ref().is_some_and(|d| d.kind == kind), "{kind}");
