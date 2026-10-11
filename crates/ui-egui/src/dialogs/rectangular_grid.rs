@@ -50,9 +50,14 @@ fn length_field(ui: &mut egui::Ui, d: &mut Dialog, key: &str, label: &str, unit:
     if let Some(shown) = &shown {
         d.fields.insert(key.into(), shown.clone());
     }
-    form::field(ui, d, key, label);
+    let t = crate::theme::Tokens::get(ui.ctx());
+    ui.label(egui::RichText::new(label).color(t.text_dim));
+    let changed = form::text_edit(ui, d, key, 120.0).changed();
+    ui.end_row();
+    // Replacing a selection with the same rounded display is still an edit: use that entered
+    // length, rather than restoring the original, unrounded point value.
     if shown.is_some()
-        && d.fields.get(key) == shown.as_ref()
+        && !changed
         && let Some(original) = original
     {
         d.fields.insert(key.into(), original);
