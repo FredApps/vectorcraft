@@ -1,6 +1,6 @@
 # UI and interaction parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (several artboards selected at once, #1139; earlier: the Edit Toolbar drawer, #1018) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (Rectangular Grid click dialog implemented; validated on Linux: 16 targeted tests, native UI and all seven CI gates passed; several artboards selected at once, #1139; earlier: the Edit Toolbar drawer, #1018) · **Target:** Adobe Illustrator 2026 (30.x)
 
 How VectorCraft's tools, handles, snapping and panels behave next to Illustrator's. A vector illustrator's
 trust is in the details: where a handle lands, what Shift and Alt do mid-drag, what a smart guide snaps to,
@@ -118,6 +118,7 @@ tools, never checked side by side) isn't captured row by row.
 | Field precision: 3 decimals for steps; values kept as f64 | done | |
 | Scrubby labels (beyond Illustrator) | done | #400 |
 | Dialogs open with the first field focused and selected; Enter confirms | done | |
+| Rectangular Grid click opens size and divider fields; OK creates a selected grid | done | Width/height accept units and reopen at 100 pt; horizontal/vertical counts are interior dividers (0–999), not cells. Successful OK creates one selected grid in one undo step, uses the existing perspective path and remembers only counts; cancellation and errors preserve document, selection, history and settings. Sources: `dialogs/rectangular_grid.rs`, `dialogs/tests_rectangular_grid.rs`. Arc, Spiral and Polar Grid click dialogs remain outside this fix. |
 
 ## Modifier keys and temporary tools
 
@@ -169,6 +170,7 @@ re-measure of the panels added since.
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-11 | minor | Rectangular Grid click dialog: width/height and saved divider counts, validation, one-step creation and count persistence; validated on Linux: 16 targeted tests, native UI and all seven CI gates passed. Scores and hours unchanged. |
 | 2026-10-11 | minor | Artboards: Shift-click selects several, which move, copy and delete together (#1139); score unchanged (estimated) |
 | 2026-10-11 | minor | Edit Toolbar opens the All Tools drawer beside the toolbar instead of a centred dialog, dims the tools the toolbar holds, and edits the toolbar by drag and drop while it is open (#1018); score unchanged (estimated) |
 | 2026-10-11 | minor | Direct Selection: dragging a path selected whole by an anchor moves it whole; Alt-drag copies by an anchor too, toggles during the drag and snaps onto the original (#1104); score unchanged (estimated) |

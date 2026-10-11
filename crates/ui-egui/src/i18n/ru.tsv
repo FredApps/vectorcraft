@@ -4138,3 +4138,9 @@ lighting	Light	Свет
 @msg	invalid native panel set	Недопустимый собственный набор панелей
 @msg	missing panel layout	Отсутствует расположение панелей
 @msg	unsupported native docking operation	Неподдерживаемая собственная операция прикрепления
+# Rectangular Grid click dialog.
+	Horizontal dividers:	Горизонтальные разделители:
+	Vertical dividers:	Вертикальные разделители:
+@msg	Grid position must be finite.	Координаты сетки должны быть конечными числами.
+@msg	Grid width and height must be positive, finite lengths.	Ширина и высота сетки должны быть положительными конечными значениями длины.
+@msg	Grid divider counts must be whole numbers from 0 to 999.	Количество разделителей сетки в каждом направлении должно быть целым числом от 0 до 999.

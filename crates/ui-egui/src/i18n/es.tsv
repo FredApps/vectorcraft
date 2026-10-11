@@ -4140,3 +4140,9 @@ lighting	Light	Luz
 @msg	invalid native panel set	Conjunto nativo de paneles no válido
 @msg	missing panel layout	Falta la distribución de paneles
 @msg	unsupported native docking operation	Operación nativa de anclaje no admitida
+# Rectangular Grid click dialog.
+	Horizontal dividers:	Líneas divisorias horizontales:
+	Vertical dividers:	Líneas divisorias verticales:
+@msg	Grid position must be finite.	Las coordenadas de la cuadrícula deben ser finitas.
+@msg	Grid width and height must be positive, finite lengths.	La anchura y la altura de la cuadrícula deben ser longitudes positivas y finitas.
+@msg	Grid divider counts must be whole numbers from 0 to 999.	La cantidad de líneas divisorias de la cuadrícula debe ser un número entero de 0 a 999 en cada dirección.
