@@ -267,6 +267,83 @@ fn rectangular_grid_displays_document_units_without_rounding_untouched_point_val
 }
 
 #[test]
+fn rectangular_grid_painting_and_confirmation_preserve_full_precision_point_values() {
+    let mut app = app();
+    app.run("document.setUnits", json!({"units": "mm"})).unwrap();
+    click(&mut app, Point::new(-17.125, 23.0625));
+    let (width, height) = (100.123_456_789_012_35, 37.987_654_321_098_76);
+    values(&mut app, json!(width), json!(height), json!(2), json!(7));
+    let before = Snapshot::take(&app);
+    let painted = crate::tests_labels::painted_text(&mut app, |app, ui| super::show(app, ui.ctx()));
+    assert!(painted.contains(&Unit::Millimeters.format(width)), "{painted}");
+    assert!(painted.contains(&Unit::Millimeters.format(height)), "{painted}");
+    assert_eq!((field(&app, "width"), field(&app, "height")), (json!(width), json!(height)));
+    before.assert_unchanged(&app);
+    let id = confirm(&mut app);
+    let params = &creation_step(&app)["params"];
+    assert_eq!((params["width"].as_f64(), params["height"].as_f64()), (Some(width), Some(height)));
+    assert_grid(&app, id, Rect::new(-17.125, 23.0625, -17.125 + width, 23.0625 + height), 2, 7);
+}
+
+#[test]
+fn rectangular_grid_retyping_the_same_rounded_unit_display_applies_the_text_the_user_entered() {
+    for unit in [Unit::Millimeters, Unit::Inches] {
+        let mut app = app();
+        app.run("document.setUnits", json!({"units": unit.key()})).unwrap();
+        click(&mut app, Point::new(53.0, 71.0));
+        let before = Snapshot::take(&app);
+        let ctx = egui::Context::default();
+        theme::install_fonts(&ctx);
+        theme::apply(&ctx, Default::default());
+        let frame = |app: &mut VectorcraftApp, events: Vec<egui::Event>| {
+            let mut out = ctx.run_ui(egui::RawInput { events, ..Default::default() }, |ui| super::show(app, ui.ctx()));
+            out.textures_delta.clear();
+        };
+        frame(&mut app, vec![]);
+        assert_eq!(field(&app, "width"), json!(100), "an untouched rendered field retains exact points");
+        let shown = unit.format(100.0);
+        let expected = unit.parse(&shown).unwrap();
+        assert_ne!(expected, 100.0, "this case exercises the rounded unit display");
+        // Opening selects all of the first field. Replacing it with the identical display
+        // string must retain the edit, including on a subsequent idle frame.
+        frame(&mut app, vec![egui::Event::Text(shown.clone())]);
+        assert_eq!(field(&app, "width"), json!(shown));
+        frame(&mut app, vec![]);
+        assert_eq!(field(&app, "width"), json!(shown));
+        assert_eq!(field(&app, "height"), json!(100));
+        before.assert_unchanged(&app);
+        let id = confirm(&mut app);
+        assert_eq!(creation_step(&app)["params"]["width"].as_f64(), Some(expected));
+        assert_grid(&app, id, Rect::new(53.0, 71.0, 53.0 + expected, 171.0), 5, 5);
+    }
+}
+
+#[test]
+fn rectangular_grid_retyping_a_rounded_zero_is_validated_instead_of_restoring_positive_points() {
+    let mut app = app();
+    app.run("document.setUnits", json!({"units": "mm"})).unwrap();
+    click(&mut app, Point::new(53.0, 71.0));
+    set(&mut app, "width", json!(0.0001));
+    let before = Snapshot::take(&app);
+    let ctx = egui::Context::default();
+    theme::install_fonts(&ctx);
+    theme::apply(&ctx, Default::default());
+    let frame = |app: &mut VectorcraftApp, events: Vec<egui::Event>| {
+        let mut out = ctx.run_ui(egui::RawInput { events, ..Default::default() }, |ui| super::show(app, ui.ctx()));
+        out.textures_delta.clear();
+    };
+    frame(&mut app, vec![]);
+    assert_eq!(field(&app, "width"), json!(0.0001));
+    let shown = Unit::Millimeters.format(0.0001);
+    assert_eq!(Unit::Millimeters.parse(&shown), Some(0.0));
+    frame(&mut app, vec![egui::Event::Text(shown.clone())]);
+    assert_eq!(field(&app, "width"), json!(shown));
+    assert_eq!(field(&app, "height"), json!(100));
+    rejected(&mut app);
+    before.assert_unchanged(&app);
+}
+
+#[test]
 fn rectangular_grid_rejects_malformed_or_nonpositive_dimensions_without_mutation() {
     let bad = [
         json!(0),
