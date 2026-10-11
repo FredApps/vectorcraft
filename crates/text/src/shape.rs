@@ -59,6 +59,9 @@ pub(crate) struct SGlyph {
     pub level: Level,
     /// An inline graphic ([`vectorcraft_doc::TextRun::inline`]) standing in for a glyph.
     pub inline: Option<InlineBox>,
+    /// A word of a script written without spaces (Thai, Lao, Khmer, Myanmar) ends after the
+    /// glyph's cluster, so a line may break there ([`mark_word_ends`]).
+    pub word_end: bool,
 }
 
 /// How `vpal` moves an upright glyph in vertical type and changes its length down the column, in
@@ -102,7 +105,7 @@ impl SGlyph {
     }
     /// A line may break after this glyph.
     pub fn break_after(&self) -> bool {
-        self.is_space() || matches!(self.ch, '-' | '\u{2010}' | '\u{2013}' | '\u{2014}' | '/' | SOFT_HYPHEN) || is_cjk(self.ch)
+        self.is_space() || self.word_end || matches!(self.ch, '-' | '\u{2010}' | '\u{2013}' | '\u{2014}' | '/' | SOFT_HYPHEN) || is_cjk(self.ch)
     }
     /// A soft (discretionary) hyphen: invisible unless a line breaks after it.
     pub fn is_soft_hyphen(&self) -> bool {
@@ -232,6 +235,43 @@ pub(crate) fn punct(c: char) -> Option<Punct> {
     }
 }
 
+/// Is `c` of a script written without spaces between words, whose line breaks need a model of its
+/// words: Thai, Lao, Khmer or Myanmar (UAX #14's class SA)?
+pub(crate) fn is_unspaced_script(c: char) -> bool {
+    matches!(c.script(), Script::Thai | Script::Lao | Script::Khmer | Script::Myanmar)
+}
+
+/// The byte offsets of `text` where a word of Thai, Lao, Khmer or Myanmar starts or ends: where a
+/// line may break, and where the caret stops word by word, in text without spaces between words.
+/// They come from ICU4X's line segmenter (its dictionaries on the desktop, its far smaller LSTM
+/// models on the web); empty when `text` has none of those scripts. Offsets elsewhere (around
+/// other text) are UAX #14's breaks.
+pub(crate) fn unspaced_word_breaks(text: &str) -> Vec<usize> {
+    #[cfg(not(target_arch = "wasm32"))]
+    static SEGMENTER: std::sync::LazyLock<icu_segmenter::LineSegmenterBorrowed<'static>> =
+        std::sync::LazyLock::new(|| icu_segmenter::LineSegmenter::new_dictionary(Default::default()));
+    #[cfg(target_arch = "wasm32")]
+    static SEGMENTER: std::sync::LazyLock<icu_segmenter::LineSegmenterBorrowed<'static>> =
+        std::sync::LazyLock::new(|| icu_segmenter::LineSegmenter::new_auto(Default::default()));
+    if !text.chars().any(is_unspaced_script) {
+        return vec![];
+    }
+    SEGMENTER.segment_str(text).collect()
+}
+
+/// Mark the glyphs of `sg` (shaped from `text`, which starts at byte `start` of the text the
+/// glyphs index) after which a word of Thai, Lao, Khmer or Myanmar ends ([`unspaced_word_breaks`]);
+/// other text keeps its own breaks.
+pub(crate) fn mark_word_ends(text: &str, start: usize, sg: &mut [SGlyph]) {
+    let breaks: Vec<usize> = unspaced_word_breaks(text).into_iter().map(|b| b + start).collect();
+    if breaks.is_empty() {
+        return;
+    }
+    for g in sg.iter_mut().filter(|g| g.inline.is_none() && is_unspaced_script(g.ch)) {
+        g.word_end = breaks.binary_search(&(g.byte + g.len)).is_ok();
+    }
+}
+
 pub(crate) fn is_cjk(c: char) -> bool {
     matches!(c as u32, 0x2E80..=0x9FFF | 0xAC00..=0xD7AF | 0xF900..=0xFAFF | 0xFF00..=0xFFEF | 0x20000..=0x2FFFF)
 }
@@ -329,6 +369,8 @@ pub(crate) fn shape_range(
         let mut script = Script::Common;
         for (i, c) in text[a..b].char_indices() {
             let i = a + i;
+            // Digits are drawn in the style's numeral system: the font must cover that digit.
+            let c = st.digits.map(c);
             let level = level_at(i);
             let covered = c.is_whitespace() || c.is_control() || pmap.as_ref().is_none_or(|m| m.map(c).is_some());
             let face = if covered {
@@ -446,6 +488,7 @@ fn inline_glyph(face: &Arc<FontFace>, st: &CharStyle, art: &InlineArt, run: usiz
         // RTL text like any other glyph once the line is reordered.
         level,
         inline: Some(InlineBox { art: drawn, xf }),
+        word_end: false,
     }
 }
 
@@ -501,6 +544,7 @@ fn shape_segment(text: &str, context: &Range<usize>, seg: &Segment, feats: &OtFe
             let mut buf = UnicodeBuffer::new();
             for (i, c) in text_seg.char_indices() {
                 let cl = (range.start + i) as u32;
+                let c = st.digits.map(c);
                 if upper {
                     for u in c.to_uppercase() {
                         buf.add(u, cl);
@@ -564,6 +608,7 @@ fn shape_segment(text: &str, context: &Range<usize>, seg: &Segment, feats: &OtFe
             let gm = f.glyph_metrics(Size::unscaled(), face.location());
             for (i, c) in text_seg.char_indices() {
                 let cl = (range.start + i) as u32;
+                let c = st.digits.map(c);
                 let chars: Vec<char> = if upper { c.to_uppercase().collect() } else { vec![c] };
                 for u in chars {
                     let g = cmap.map(u).unwrap_or_default();
@@ -614,6 +659,7 @@ fn shape_segment(text: &str, context: &Range<usize>, seg: &Segment, feats: &OtFe
             vpal: vpal.get(gi).copied().flatten(),
             level: *level,
             inline: None,
+            word_end: false,
         });
     }
 }

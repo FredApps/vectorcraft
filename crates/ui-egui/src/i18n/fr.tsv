@@ -1340,6 +1340,7 @@
 	Last Effect…	Dernier effet…
 	Last Page	Dernière page
 	Latin	Latin
+	Thai	Thaï
 	Latin Extended	Latin étendu
 	Latin-1 Supplement	Supplément Latin-1
 	Layer	Calque
@@ -1562,6 +1563,7 @@
 	Move Rows	Déplacer les lignes
 	Move Slices	Déplacer les tranches
 	Move Spine Point	Déplacer le point de la dorsale
+	Reshape Spine Segment	Modeler le segment de la dorsale
 	Move Swatch	Déplacer la nuance
 	Move Up	Monter
 	Move…	Déplacer…
@@ -2049,6 +2051,10 @@
 	Proof Setup	Format d’épreuve
 	Properties	Propriétés
 	Proportional Metrics	Métrique proportionnelle
+	Digits	Chiffres
+	Arabic	Arabes
+	Hindi	Hindi
+	Farsi	Farsi
 	Proportional Oldstyle	Elzévirien proportionnel
 	Pucker & Bloat…	Contracter et dilater…
 	Pucker Tool	Outil Contraction
@@ -2151,6 +2157,9 @@
 	Redefine Symbol	Redéfinir le symbole
 	Redefine {kind} Style	Redéfinir le style de {kind}
 	Redo	Rétablir
+	List Folder	Lister le dossier
+	Begin Undo Group	Commencer un groupe d’annulation
+	End Undo Group	Terminer le groupe d’annulation
 	Redo {name}	Rétablir {name}
 	Redo {}	Rétablir {}
 	Reduce Colors	Réduire les couleurs
@@ -2634,6 +2643,7 @@
 	Size Tile to Art	Ajuster le carreau à l’illustration
 	Size/Leading	Taille/interlignage
 	Size:	Taille :
+	Ridges per segment:	Crêtes par segment :
 	Size: {size}  Tracking: {tracking}	Taille : {size}  Approche : {tracking}
 	Skew	Inclinaison
 	Skin Tone Ramps	Gammes de tons chair
@@ -3530,7 +3540,7 @@ axis	Both	Les deux
 @msg	freeform point {i} needs `at` [x, y] and a valid `color`	le point de forme libre {i} nécessite `at` [x, y] et une `color` valide
 @msg	freeform line {i} must be an array of point indices	la ligne de forme libre {i} doit être un tableau d’indices de points
 @msg	give both `start` and `end` [x, y] (or neither)	indiquez à la fois `start` et `end` [x, y] (ou aucun des deux)
-@msg	give corners of the path: anchors between two straight sides	indiquez des angles du tracé : des points d’ancrage entre deux côtés droits
+@msg	give corners of the path: anchors where its sides meet at an angle	indiquez des angles du tracé : des points d’ancrage où ses côtés se rejoignent en angle
 @msg	give horizontal or vertical	indiquez horizontal ou vertical
 @msg	give the path `id` and the width point `index`	indiquez l’`id` du tracé et l’`index` du point de largeur
 @msg	guides are locked	les repères sont verrouillés
@@ -4153,3 +4163,5 @@ lighting	Light	Lumière
 @msg	invalid native panel set	Ensemble natif de panneaux invalide
 @msg	missing panel layout	Disposition des panneaux manquante
 @msg	unsupported native docking operation	Opération native d’ancrage non prise en charge
+	Linux Display Server	Serveur d’affichage Linux
+	X11 (XWayland)	X11 (XWayland)

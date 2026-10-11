@@ -38,6 +38,10 @@
 	ICF Top/Right	平均字面の上 / 右
 	ICF Bottom/Left	平均字面の下 / 左
 	Proportional Metrics	プロポーショナルメトリクス
+	Digits	数字
+	Arabic	アラビア数字
+	Hindi	ヒンディー数字
+	Farsi	ペルシャ数字
 	Favorites	お気に入り
 	Flip	反転
 	Japanese	日本語
@@ -48,6 +52,7 @@
 	Hard	強い禁則
 	Soft	弱い禁則
 	Latin	欧文
+	Thai	タイ文字
 	Monospaced	等幅
 	Roman Baseline	欧文ベースライン
 	Rounded	丸ゴシック
@@ -101,6 +106,9 @@
 	Edit	編集
 	Undo	取り消し
 	Redo	やり直し
+	List Folder	フォルダーの内容を一覧表示
+	Begin Undo Group	取り消しグループを開始
+	End Undo Group	取り消しグループを終了
 	Cut	切り取り
 	Copy	コピー
 	Paste	貼り付け
@@ -1697,6 +1705,7 @@
 	Move Rows	行を移動
 	Move Slices	スライスを移動
 	Move Spine Point	スパインポイントを移動
+	Reshape Spine Segment	スパインセグメントをシェイプ変形
 	Move Swatch	スウォッチを移動
 	Move Up	上へ移動
 	Move in Perspective	遠近で移動
@@ -2459,6 +2468,7 @@
 	Size Tile to Art	タイルをアートワークのサイズに合わせる
 	Size/Leading	サイズ/行送り
 	Size:	サイズ:
+	Ridges per segment:	セグメントごとの山数:
 	Size: {size}  Tracking: {tracking}	サイズ：{size}  トラッキング：{tracking}
 	Skip Blank Artboards	空白のアートボードをスキップ
 	Slice Options	スライスオプション
@@ -3748,7 +3758,7 @@ theme	Appearance	外観
 @msg	no blend options	ブレンドオプションがありません
 @msg	bad color {v}	カラー {v} が正しくありません
 @msg	Corners edits the corners of a path	「コーナー」で編集できるのはパスの角だけです
-@msg	give corners of the path: anchors between two straight sides	パスの角 (2 本の直線の辺に挟まれたアンカーポイント) を指定してください
+@msg	give corners of the path: anchors where its sides meet at an angle	パスの角 (辺が角度をなして交わるアンカーポイント) を指定してください
 @msg	select one path, or give its `id`	パスを 1 つ選択するか、その `id` を指定してください
 @msg	the drawing is no longer loaded	図面はもう読み込まれていません
 @msg	No saved selections (Select → Save Selection…)	保存した選択範囲はありません (選択 → 選択範囲を保存…)
@@ -4139,3 +4149,5 @@ lighting	Light	ライト
 @msg	invalid native panel set	ネイティブパネルセットが無効です
 @msg	missing panel layout	パネル配置がありません
 @msg	unsupported native docking operation	ネイティブドッキング操作は未対応です
+	Linux Display Server	Linux ディスプレイサーバー
+	X11 (XWayland)	X11 (XWayland)

@@ -1339,6 +1339,7 @@
 	Last Effect…	Последний эффект…
 	Last Page	Последняя страница
 	Latin	Латиница
+	Thai	Тайская
 	Latin Extended	Расширенная латиница
 	Latin-1 Supplement	Дополнение Latin-1
 	Layer	Слой
@@ -1561,6 +1562,7 @@
 	Move Rows	Переместить строки
 	Move Slices	Переместить фрагменты
 	Move Spine Point	Переместить точку остова
+	Reshape Spine Segment	Изменить форму сегмента остова
 	Move Swatch	Переместить образец
 	Move Up	Переместить вверх
 	Move…	Переместить…
@@ -2048,6 +2050,10 @@
 	Proof Setup	Настройка цветопробы
 	Properties	Свойства
 	Proportional Metrics	Пропорциональные метрики
+	Digits	Цифры
+	Arabic	Арабские
+	Hindi	Хинди
+	Farsi	Фарси
 	Proportional Oldstyle	Пропорциональные старого стиля
 	Pucker & Bloat…	Сморщивание и раздувание…
 	Pucker Tool	Инструмент «Сморщивание»
@@ -2150,6 +2156,9 @@
 	Redefine Symbol	Переопределить символ
 	Redefine {kind} Style	Переопределить стиль {kind}
 	Redo	Повторить
+	List Folder	Показать содержимое папки
+	Begin Undo Group	Начать группу отмены
+	End Undo Group	Завершить группу отмены
 	Redo {name}	Повторить {name}
 	Redo {}	Повторить {}
 	Reduce Colors	Сократить число цветов
@@ -2633,6 +2642,7 @@
 	Size Tile to Art	Подогнать плитку по рисунку
 	Size/Leading	Размер/интерлиньяж
 	Size:	Размер:
+	Ridges per segment:	Гребней на сегмент:
 	Size: {size}  Tracking: {tracking}	Размер: {size}  Трекинг: {tracking}
 	Skew	Скос
 	Skin Tone Ramps	Шкалы тонов кожи
@@ -3529,7 +3539,7 @@ axis	Both	Оба
 @msg	freeform point {i} needs `at` [x, y] and a valid `color`	произвольной точке {i} нужны `at` [x, y] и допустимый `color`
 @msg	freeform line {i} must be an array of point indices	произвольная линия {i} должна быть массивом индексов точек
 @msg	give both `start` and `end` [x, y] (or neither)	укажите и `start`, и `end` [x, y] (или ни одного)
-@msg	give corners of the path: anchors between two straight sides	укажите углы контура: опорные точки между двумя прямыми сторонами
+@msg	give corners of the path: anchors where its sides meet at an angle	укажите углы контура: опорные точки, в которых его стороны сходятся под углом
 @msg	give horizontal or vertical	укажите horizontal или vertical
 @msg	give the path `id` and the width point `index`	укажите `id` контура и `index` точки ширины
 @msg	guides are locked	направляющие заблокированы
@@ -4141,3 +4151,5 @@ lighting	Light	Свет
 @msg	invalid native panel set	Недопустимый собственный набор панелей
 @msg	missing panel layout	Отсутствует расположение панелей
 @msg	unsupported native docking operation	Неподдерживаемая собственная операция прикрепления
+	Linux Display Server	Дисплейный сервер Linux
+	X11 (XWayland)	X11 (XWayland)

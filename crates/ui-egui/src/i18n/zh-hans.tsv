@@ -1494,6 +1494,7 @@
 	Move Plane to Match Object	移动平面以符合对象
 	Move Slices	移动切片
 	Move Spine Point	移动脊线点
+	Reshape Spine Segment	整形脊线线段
 	Move Swatch	移动色板
 	Move Up	上移
 	Move…	移动…
@@ -1977,6 +1978,10 @@
 	Proof Setup	校样设置
 	Properties	属性
 	Proportional Metrics	比例度量
+	Digits	数字
+	Arabic	阿拉伯数字
+	Hindi	印地数字
+	Farsi	波斯数字
 	Proportional Oldstyle	比例旧式数字
 	Pucker & Bloat…	缩拢与膨胀…
 	Pucker Tool	收缩工具
@@ -2079,6 +2084,9 @@
 	Redefine Symbol	重新定义符号
 	Redefine {kind} Style	重新定义{kind}样式
 	Redo	重做
+	List Folder	列出文件夹
+	Begin Undo Group	开始还原组
+	End Undo Group	结束还原组
 	Redo {name}	重做 {name}
 	Redo {}	重做 {}
 	Reduce Colors	减少颜色
@@ -2525,6 +2533,7 @@
 	Size Tile to Art	使拼贴适合图稿
 	Size/Leading	字号/行距
 	Size:	尺寸：
+	Ridges per segment:	每段起伏数：
 	Size: {size}  Tracking: {tracking}	大小：{size}  字距：{tracking}
 	Skew	倾斜
 	Skin Tone Ramps	肤色渐变
@@ -3415,6 +3424,7 @@
 	Graphics: {adapter}	显卡：{adapter}
 	Japanese	日文
 	Latin	拉丁文
+	Thai	泰文
 	Layer Options	图层选项
 	Layers Panel Options	图层面板选项
 	Monospaced	等宽
@@ -3744,3 +3754,5 @@ lighting	Light	光源
 	Vertical Guide	垂直参考线
 	Horizontal Guide	水平参考线
 	Move Guide to Layer	将参考线移至图层
+	Linux Display Server	Linux 显示服务器
+	X11 (XWayland)	X11 (XWayland)

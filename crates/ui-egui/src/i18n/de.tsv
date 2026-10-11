@@ -1323,6 +1323,7 @@
 	Last Effect…	Letzter Effekt…
 	Last Page	Letzte Seite
 	Latin	Lateinisch
+	Thai	Thai
 	Latin Extended	Lateinisch, erweitert
 	Latin-1 Supplement	Lateinisch-1, Ergänzung
 	Layer	Ebene
@@ -1545,6 +1546,7 @@
 	Move Rows	Zeilen verschieben
 	Move Slices	Slices verschieben
 	Move Spine Point	Achsenpunkt verschieben
+	Reshape Spine Segment	Achsensegment umformen
 	Move Swatch	Farbfeld verschieben
 	Move Up	Nach oben verschieben
 	Move…	Verschieben…
@@ -2001,6 +2003,10 @@
 	Proof Setup	Proof einrichten
 	Properties	Eigenschaften
 	Proportional Metrics	Proportionale Metrik
+	Digits	Ziffern
+	Arabic	Arabisch
+	Hindi	Hindi
+	Farsi	Farsi
 	Proportional Oldstyle	Proportionale Mediävalziffern
 	Pucker & Bloat…	Zusammenziehen und aufblasen…
 	Pucker Tool	Zusammenziehen-Werkzeug
@@ -2103,6 +2109,9 @@
 	Redefine Symbol	Symbol neu definieren
 	Redefine {kind} Style	{kind}format neu definieren
 	Redo	Wiederholen
+	List Folder	Ordner auflisten
+	Begin Undo Group	Rückgängig-Gruppe beginnen
+	End Undo Group	Rückgängig-Gruppe beenden
 	Redo {name}	Wiederholen: {name}
 	Redo {}	Wiederholen: {}
 	Reduce Colors	Farben reduzieren
@@ -2586,6 +2595,8 @@
 	Size Tile to Art	Kachelgröße an Grafik anpassen
 	Size/Leading	Größe/Zeilenabstand
 	Size:	Größe:
+	Ridges per segment:	Zacken pro Segment:
+effect	Points	Punkte
 	Size: {size}  Tracking: {tracking}	Größe: {size}  Laufweite: {tracking}
 	Skew	Neigen
 	Skin Tone Ramps	Hauttonskalen
@@ -3432,7 +3443,7 @@ theme	Appearance	Erscheinungsbild
 @msg	freeform point {i} needs `at` [x, y] and a valid `color`	Freiformpunkt {i} braucht `at` [x, y] und eine gültige `color`
 @msg	freeform line {i} must be an array of point indices	Freiformlinie {i} muss ein Array von Punktindizes sein
 @msg	give both `start` and `end` [x, y] (or neither)	geben Sie sowohl `start` als auch `end` [x, y] an (oder keines von beiden)
-@msg	give corners of the path: anchors between two straight sides	geben Sie Ecken des Pfads an: Ankerpunkte zwischen zwei geraden Seiten
+@msg	give corners of the path: anchors where its sides meet at an angle	geben Sie Ecken des Pfads an: Ankerpunkte, an denen seine Seiten im Winkel aufeinandertreffen
 @msg	give horizontal or vertical	geben Sie horizontal oder vertical an
 @msg	give the path `id` and the width point `index`	geben Sie die `id` des Pfads und den `index` des Breitenpunkts an
 @msg	guides are locked	die Hilfslinien sind gesperrt
@@ -4098,3 +4109,5 @@ theme	Appearance	Erscheinungsbild
 @msg	invalid native panel set	Ungültiger nativer Bedienfeldsatz
 @msg	missing panel layout	Bedienfeldanordnung fehlt
 @msg	unsupported native docking operation	Nicht unterstützte native Docking-Operation
+	Linux Display Server	Linux-Anzeigeserver
+	X11 (XWayland)	X11 (XWayland)

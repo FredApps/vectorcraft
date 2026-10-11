@@ -1341,6 +1341,7 @@
 	Last Effect…	Último efecto…
 	Last Page	Última página
 	Latin	Latín
+	Thai	Tailandés
 	Latin Extended	Latín extendido
 	Latin-1 Supplement	Suplemento Latín-1
 	Layer	Capa
@@ -1563,6 +1564,7 @@
 	Move Rows	Mover filas
 	Move Slices	Mover sectores
 	Move Spine Point	Mover punto del eje
+	Reshape Spine Segment	Remodelar segmento del eje
 	Move Swatch	Mover muestra
 	Move Up	Subir
 	Move…	Mover…
@@ -2052,6 +2054,10 @@
 	Proof Setup	Ajuste de prueba
 	Properties	Propiedades
 	Proportional Metrics	Métrica proporcional
+	Digits	Dígitos
+	Arabic	Árabes
+	Hindi	Hindi
+	Farsi	Farsi
 	Proportional Oldstyle	Estilo antiguo proporcional
 	Pucker & Bloat…	Fruncir y engordar…
 	Pucker Tool	Herramienta Fruncir
@@ -2154,6 +2160,9 @@
 	Redefine Symbol	Redefinir símbolo
 	Redefine {kind} Style	Redefinir estilo de {kind}
 	Redo	Rehacer
+	List Folder	Listar carpeta
+	Begin Undo Group	Iniciar grupo de deshacer
+	End Undo Group	Finalizar grupo de deshacer
 	Redo {name}	Rehacer {name}
 	Redo {}	Rehacer {}
 	Reduce Colors	Reducir colores
@@ -2637,6 +2646,7 @@
 	Size Tile to Art	Ajustar tamaño del mosaico a la ilustración
 	Size/Leading	Tamaño/interlineado
 	Size:	Tamaño:
+	Ridges per segment:	Crestas por segmento:
 	Size: {size}  Tracking: {tracking}	Tamaño: {size}  Espaciado: {tracking}
 	Skew	Sesgar
 	Skin Tone Ramps	Rampas de tonos de piel
@@ -3533,7 +3543,7 @@ axis	Both	Ambos
 @msg	freeform point {i} needs `at` [x, y] and a valid `color`	el punto de forma libre {i} necesita `at` [x, y] y un `color` válido
 @msg	freeform line {i} must be an array of point indices	la línea de forma libre {i} debe ser una lista de índices de puntos
 @msg	give both `start` and `end` [x, y] (or neither)	indica `start` y `end` [x, y] (o ninguno de los dos)
-@msg	give corners of the path: anchors between two straight sides	indica esquinas del trazado: puntos de ancla entre dos lados rectos
+@msg	give corners of the path: anchors where its sides meet at an angle	indica esquinas del trazado: puntos de ancla donde sus lados se unen en ángulo
 @msg	give horizontal or vertical	indica horizontal o vertical
 @msg	give the path `id` and the width point `index`	indica el `id` del trazado y el `index` del punto de anchura
 @msg	guides are locked	las guías están bloqueadas
@@ -4143,3 +4153,5 @@ lighting	Light	Luz
 @msg	invalid native panel set	Conjunto nativo de paneles no válido
 @msg	missing panel layout	Falta la distribución de paneles
 @msg	unsupported native docking operation	Operación nativa de anclaje no admitida
+	Linux Display Server	Servidor de pantalla de Linux
+	X11 (XWayland)	X11 (XWayland)

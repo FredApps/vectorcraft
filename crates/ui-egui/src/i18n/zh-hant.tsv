@@ -1316,6 +1316,7 @@
 	Last Effect…	最後一次效果…
 	Last Page	最後一頁
 	Latin	拉丁文
+	Thai	泰文
 	Latin Extended	拉丁文擴充
 	Latin-1 Supplement	拉丁文-1 補充
 	Layer	圖層
@@ -1538,6 +1539,7 @@
 	Move Rows	移動列
 	Move Slices	移動切片
 	Move Spine Point	移動脊線點
+	Reshape Spine Segment	改變脊線線段外框
 	Move Swatch	移動色票
 	Move Up	上移
 	Move…	移動…
@@ -2030,6 +2032,10 @@
 	Proof Setup	校樣設定
 	Properties	內容
 	Proportional Metrics	比例度量
+	Digits	數字
+	Arabic	阿拉伯數字
+	Hindi	印地數字
+	Farsi	波斯數字
 	Proportional Oldstyle	比例舊式數字
 	Pucker & Bloat…	縮攏與膨脹…
 	Pucker Tool	縮攏工具
@@ -2132,6 +2138,9 @@
 	Redefine Symbol	重新定義符號
 	Redefine {kind} Style	重新定義{kind}樣式
 	Redo	重做
+	List Folder	列出資料夾
+	Begin Undo Group	開始還原群組
+	End Undo Group	結束還原群組
 	Redo {name}	重做 {name}
 	Redo {}	重做 {}
 	Reduce Colors	縮減顏色
@@ -2615,6 +2624,7 @@
 	Size Tile to Art	拼貼符合圖稿大小
 	Size/Leading	大小/行距
 	Size:	大小：
+	Ridges per segment:	每段起伏數：
 	Size: {size}  Tracking: {tracking}	大小：{size}  字距：{tracking}
 	Skew	傾斜
 	Skin Tone Ramps	膚色漸階
@@ -3525,3 +3535,5 @@ lighting	Light	光源
 	Vertical Guide	垂直參考線
 	Horizontal Guide	水平參考線
 	Move Guide to Layer	將參考線移至圖層
+	Linux Display Server	Linux 顯示伺服器
+	X11 (XWayland)	X11 (XWayland)

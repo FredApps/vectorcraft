@@ -1341,6 +1341,7 @@
 	Last Effect…	Ultimo effetto…
 	Last Page	Ultima pagina
 	Latin	Latino
+	Thai	Thailandese
 	Latin Extended	Latino esteso
 	Latin-1 Supplement	Supplemento Latino-1
 	Layer	Livello
@@ -1563,6 +1564,7 @@
 	Move Rows	Sposta righe
 	Move Slices	Sposta sezioni
 	Move Spine Point	Sposta punto dorsale
+	Reshape Spine Segment	Rimodella segmento della dorsale
 	Move Swatch	Sposta campione
 	Move Up	Sposta su
 	Move…	Sposta…
@@ -2052,6 +2054,10 @@
 	Proof Setup	Impostazione prova
 	Properties	Proprietà
 	Proportional Metrics	Metrica proporzionale
+	Digits	Cifre
+	Arabic	Arabe
+	Hindi	Hindi
+	Farsi	Farsi
 	Proportional Oldstyle	Proporzionali stile antico
 	Pucker & Bloat…	Contrai e gonfia…
 	Pucker Tool	Strumento Contrai
@@ -2154,6 +2160,9 @@
 	Redefine Symbol	Ridefinisci simbolo
 	Redefine {kind} Style	Ridefinisci stile {kind}
 	Redo	Ripeti
+	List Folder	Elenca cartella
+	Begin Undo Group	Inizia gruppo di annullamento
+	End Undo Group	Termina gruppo di annullamento
 	Redo {name}	Ripeti {name}
 	Redo {}	Ripeti {}
 	Reduce Colors	Riduci colori
@@ -2637,6 +2646,7 @@
 	Size Tile to Art	Adatta tassello alla grafica
 	Size/Leading	Dimensione/interlinea
 	Size:	Dimensione:
+	Ridges per segment:	Creste per segmento:
 	Size: {size}  Tracking: {tracking}	Dimensione: {size}  Spaziatura caratteri: {tracking}
 	Skew	Inclinazione
 	Skin Tone Ramps	Scale di tonalità della pelle
@@ -3533,7 +3543,7 @@ axis	Both	Entrambi
 @msg	freeform point {i} needs `at` [x, y] and a valid `color`	il punto a forma libera {i} richiede `at` [x, y] e un `color` valido
 @msg	freeform line {i} must be an array of point indices	la linea a forma libera {i} deve essere un array di indici di punti
 @msg	give both `start` and `end` [x, y] (or neither)	specifica sia `start` sia `end` [x, y] (o nessuno dei due)
-@msg	give corners of the path: anchors between two straight sides	specifica angoli del tracciato: punti di ancoraggio tra due lati diritti
+@msg	give corners of the path: anchors where its sides meet at an angle	specifica angoli del tracciato: punti di ancoraggio in cui i suoi lati si incontrano ad angolo
 @msg	give horizontal or vertical	specifica horizontal o vertical
 @msg	give the path `id` and the width point `index`	specifica l'`id` del tracciato e l'`index` del punto di larghezza
 @msg	guides are locked	le guide sono bloccate
@@ -4145,3 +4155,5 @@ lighting	Light	Luce
 @msg	invalid native panel set	Gruppo nativo di pannelli non valido
 @msg	missing panel layout	Disposizione dei pannelli mancante
 @msg	unsupported native docking operation	Operazione nativa di ancoraggio non supportata
+	Linux Display Server	Server di visualizzazione Linux
+	X11 (XWayland)	X11 (XWayland)

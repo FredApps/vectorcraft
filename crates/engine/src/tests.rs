@@ -381,6 +381,31 @@ fn clipping_and_compound() {
     assert_eq!(s.doc().unwrap().selection.objects, vec![b]);
 }
 
+/// #1163: a path of several subpaths (an SVG `d` with several `M`s) is a compound path to Release:
+/// one path per subpath, each with the path's paint, in its stacking order, in one undo step.
+#[test]
+fn release_splits_a_path_of_several_subpaths() {
+    let mut s = session();
+    let id = NodeId(
+        s.execute("path.create", &json!({"d": "M0 0 L10 0 L10 10 Z M20 0 L30 0 L30 10 Z M40 0 L50 0 L50 10 Z"})).unwrap()["id"].as_u64().unwrap(),
+    );
+    s.execute("paint.setFill", &json!({"color": "#ff0000"})).unwrap();
+    let undo = s.doc().unwrap().history.undo.len();
+    s.execute("object.compoundPath.release", &json!({})).unwrap();
+    let st = s.doc().unwrap();
+    assert_eq!(st.history.undo.len(), undo + 1);
+    let sel = st.selection.objects.clone();
+    assert_eq!((sel.len(), sel[0]), (3, id), "the first keeps its id");
+    let layer = st.doc.layers[0].children().unwrap();
+    for (k, n) in sel.iter().map(|i| st.doc.node(*i).unwrap()).enumerate() {
+        let NodeKind::Path { path, .. } = &n.kind else { panic!("a path") };
+        assert_eq!(path.subpaths.len(), 1);
+        assert_eq!(path.bounds().unwrap().x0, 20.0 * k as f64, "in order");
+        assert_eq!(n.appearance.fill_paint().color().unwrap().to_hex(), "#ff0000", "the path's paint");
+        assert_eq!(layer[k].id, n.id, "stacked bottom to top");
+    }
+}
+
 /// `object.align` without `horizontal` or `vertical` (an unknown key such as `align` counts as
 /// neither) returns an error: nothing moves, and the undo and redo stacks stay as they were.
 #[test]
@@ -1644,4 +1669,70 @@ fn path_commands_reject_bad_anchors_before_modifying_geometry() {
     assert_eq!(s.doc().unwrap().history.undo.len(), history);
     s.execute("path.setAnchors", &json!({"id": a.0, "subpaths": [{"anchors": [{"x": 0, "y": 0}, {"x": 30, "y": 40}], "closed": false}]})).unwrap();
     assert_eq!(s.doc().unwrap().doc.node(a).unwrap().path_data().unwrap().anchor_count(), 2);
+}
+
+/// #1163: `file.list` lists a folder's files and folders by name, held to the automation read root
+/// when one is in force.
+#[test]
+fn file_list_lists_a_folder_within_the_read_root() {
+    let base = std::env::temp_dir().join(format!("vc-file-list-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&base);
+    for d in ["in/sub", "outside"] {
+        std::fs::create_dir_all(base.join(d)).unwrap();
+    }
+    std::fs::write(base.join("in/b.svg"), "<svg/>").unwrap();
+    std::fs::write(base.join("in/a.pdf"), "1234").unwrap();
+    let path = |d: &str| base.join(d).to_string_lossy().into_owned();
+    let mut s = Session::new();
+    let r = s.execute("file.list", &json!({"path": path("in")})).unwrap();
+    assert_eq!(
+        r["entries"],
+        json!([{"name": "a.pdf", "kind": "file", "size": 4}, {"name": "b.svg", "kind": "file", "size": 6}, {"name": "sub", "kind": "folder"}])
+    );
+    assert_eq!(r["truncated"], false);
+    let roots = crate::file_access::AutomationRoots::new(Some(&base.join("in")), None).unwrap().unwrap();
+    crate::file_access::confine(Some(&roots), || {
+        assert!(s.execute("file.list", &json!({"path": path("in/sub")})).is_ok());
+        assert!(s.execute("file.list", &json!({"path": path("outside")})).is_err(), "outside the read root");
+    });
+    assert!(s.execute("file.list", &json!({"path": path("in/b.svg")})).is_err(), "not a folder");
+    assert!(s.execute("file.list", &json!({})).is_err());
+    let _ = std::fs::remove_dir_all(base);
+}
+
+/// #1180: with anchor points selected (Direct Selection), Align moves those points, not the whole
+/// path: to the points' own bounds, or to the artboard.
+#[test]
+fn align_moves_selected_anchor_points() {
+    let mut s = session();
+    let id = NodeId(s.execute("path.create", &json!({"d": "M100 40 L200 60 L150 160 Z"})).unwrap()["id"].as_u64().unwrap());
+    let anchors = |s: &Session| -> Vec<(f64, f64)> {
+        s.doc().unwrap().doc.node(id).unwrap().path_data().unwrap().anchors().map(|(_, _, a)| (a.p.x, a.p.y)).collect()
+    };
+    s.execute("select.anchors", &json!({"id": id.0, "anchors": [[0, 0], [0, 1]], "mode": "set"})).unwrap();
+    s.execute("object.align", &json!({"vertical": "top", "to": "selection"})).unwrap();
+    assert_eq!(anchors(&s), [(100.0, 40.0), (200.0, 40.0), (150.0, 160.0)]);
+    s.execute("object.align", &json!({"horizontal": "center", "to": "artboard"})).unwrap();
+    let mid = s.doc().unwrap().doc.artboards[0].rect.center().x;
+    assert_eq!(anchors(&s), [(mid, 40.0), (mid, 40.0), (150.0, 160.0)], "the third point stays");
+    // A path selected whole still moves as an object.
+    s.execute("select.set", &json!({"ids": [id.0]})).unwrap();
+    s.execute("object.align", &json!({"vertical": "top", "to": "artboard"})).unwrap();
+    assert_eq!(anchors(&s)[2].1 - anchors(&s)[0].1, 120.0, "its shape kept");
+}
+
+/// #1197: Make Compound Path cuts holes where the paths in front overlap the backmost one, also
+/// when they were drawn running the same way.
+#[test]
+fn a_compound_path_has_holes_where_its_paths_overlap() {
+    let mut s = session();
+    let square = rect(&mut s, 0.0, 0.0, 100.0, 100.0);
+    let diamond = NodeId(s.execute("path.create", &json!({"d": "M50 -20 L120 50 L50 120 L-20 50 Z"})).unwrap()["id"].as_u64().unwrap());
+    s.execute("select.set", &json!({"ids": [square.0, diamond.0]})).unwrap();
+    let c = NodeId(s.execute("object.compoundPath.make", &json!({})).unwrap()["id"].as_u64().unwrap());
+    let hit =
+        |x: f64, y: f64| vectorcraft_doc::hit::hit_test(&s.doc().unwrap().doc, Point::new(x, y), Default::default()).map(|h| h.top_object(None));
+    assert_eq!(hit(50.0, 50.0), None, "the overlap is a hole");
+    assert_eq!(hit(3.0, 3.0), Some(c), "the square's corner is filled");
+    assert_eq!(hit(110.0, 50.0), Some(c), "the diamond's point outside the square is filled");
 }

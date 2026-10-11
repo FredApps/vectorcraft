@@ -21,7 +21,10 @@ compile_error!("windows7 requires --target x86_64-win7-windows-msvc; the ordinar
 #[cfg(all(target_vendor = "win7", not(feature = "windows7")))]
 compile_error!("the win7 target requires --no-default-features --features windows7");
 
+mod automation_args;
 mod clipboard;
+#[cfg(feature = "wgpu")]
+mod compositor_gpu;
 mod control_server;
 #[cfg(feature = "wgpu")]
 mod gpu;
@@ -39,6 +42,7 @@ mod printing;
 #[cfg(all(windows, not(target_vendor = "win7")))]
 mod system_fonts;
 mod window;
+mod xwayland;
 
 use vectorcraft_engine::Session;
 use vectorcraft_engine::cmd::fileio;
@@ -585,7 +589,36 @@ fn native_options(custom_titlebar: bool) -> eframe::NativeOptions {
 }
 
 fn main() -> std::process::ExitCode {
-    // First, so every start-up warning is recorded (`logging`).
+    // Validate roots before logging, font scans, preferences or the window: a missing value
+    // must not clear an environment root and start the control channel without confinement.
+    let mut control_port: Option<u16> = std::env::var("VECTORCRAFT_CONTROL_PORT").ok().and_then(|p| p.parse().ok());
+    let root_env = |name: &str| std::env::var_os(name).filter(|v| !v.is_empty()).map(std::path::PathBuf::from);
+    let mut roots_args =
+        automation_args::AutomationArgs::new(root_env("VECTORCRAFT_AUTOMATION_READ_ROOT"), root_env("VECTORCRAFT_AUTOMATION_WRITE_ROOT"));
+    let mut files = Vec::new();
+    let mut in_window_menus = std::env::var_os("VECTORCRAFT_IN_WINDOW_MENUS").is_some_and(|v| !v.is_empty() && v != "0");
+    let mut args = std::env::args().skip(1);
+    while let Some(a) = args.next() {
+        match roots_args.consume(&a, &mut args) {
+            Ok(true) => continue,
+            Ok(false) => {}
+            Err(e) => {
+                eprintln!("vectorcraft: {e}");
+                return std::process::ExitCode::FAILURE;
+            }
+        }
+        match a.as_str() {
+            "--control" => control_port = args.next().and_then(|p| p.parse().ok()),
+            "--in-window-menus" => in_window_menus = true,
+            "--version" => {
+                println!("vectorcraft {}", env!("CARGO_PKG_VERSION"));
+                return std::process::ExitCode::SUCCESS;
+            }
+            _ => files.push(a),
+        }
+    }
+    let automation_args::AutomationArgs { read_root, write_root, .. } = roots_args;
+    // Before desktop services, so every start-up warning is recorded (`logging`).
     let logger = logging::install();
     vectorcraft_ui_egui::i18n::detect_system_lang_in_background();
     // Before the first font scan (the app's start): the fonts font services load (#579).
@@ -595,28 +628,6 @@ fn main() -> std::process::ExitCode {
     mac_fonts::install();
     // VectorCraft's own Fonts folder, which text.addFontFiles copies fonts into.
     prefs_dir::install_fonts();
-    let mut control_port: Option<u16> = std::env::var("VECTORCRAFT_CONTROL_PORT").ok().and_then(|p| p.parse().ok());
-    let root_env = |name: &str| std::env::var_os(name).filter(|v| !v.is_empty()).map(std::path::PathBuf::from);
-    let mut read_root = root_env("VECTORCRAFT_AUTOMATION_READ_ROOT");
-    let mut write_root = root_env("VECTORCRAFT_AUTOMATION_WRITE_ROOT");
-    let mut files = Vec::new();
-    let mut in_window_menus = std::env::var_os("VECTORCRAFT_IN_WINDOW_MENUS").is_some_and(|v| !v.is_empty() && v != "0");
-    let mut args = std::env::args().skip(1);
-    while let Some(a) = args.next() {
-        match a.as_str() {
-            "--control" => control_port = args.next().and_then(|p| p.parse().ok()),
-            "--automation-read-root" => read_root = args.next().map(std::path::PathBuf::from),
-            "--automation-write-root" => write_root = args.next().map(std::path::PathBuf::from),
-            _ if a.starts_with("--automation-read-root=") => read_root = a.split_once('=').map(|(_, d)| d.into()),
-            _ if a.starts_with("--automation-write-root=") => write_root = a.split_once('=').map(|(_, d)| d.into()),
-            "--in-window-menus" => in_window_menus = true,
-            "--version" => {
-                println!("vectorcraft {}", env!("CARGO_PKG_VERSION"));
-                return std::process::ExitCode::SUCCESS;
-            }
-            _ => files.push(a),
-        }
-    }
     // The log file lives in the settings directory, next to the preferences; opened after the
     // arguments, so `--version` leaves no file behind. Records logged until now are written to it
     // first. Runs without preferences (agents' test runs) log to standard error only, so they
@@ -661,6 +672,9 @@ fn main() -> std::process::ExitCode {
     // every black-window report.
     #[cfg(feature = "wgpu")]
     let displays = gpu::preferred_displays(gpu_pref, power_env);
+    // Under Wayland, the GPU the compositor draws with comes even before those (src/compositor_gpu.rs).
+    #[cfg(feature = "wgpu")]
+    let compositor = gpu::preferred_compositor(gpu_pref, power_env);
     #[cfg(feature = "wgpu")]
     let chosen_gpu = !gpu::automatic(gpu_pref, power_env);
     #[cfg(feature = "wgpu")]
@@ -674,6 +688,25 @@ fn main() -> std::process::ExitCode {
     let startup = std::sync::Arc::new(gpu::Startup::default());
     let custom_titlebar = custom_titlebar(saved.as_ref());
     let options = native_options(custom_titlebar);
+    // winit picks Wayland whenever `WAYLAND_DISPLAY` is set; Preferences › Performance › Linux
+    // Display Server › X11 opens the window through XWayland instead, where file drops work (#1151).
+    #[cfg(target_os = "linux")]
+    let options = {
+        let mut options = options;
+        let pref = saved.as_ref().and_then(|ui| ui.engine_prefs.get("linuxDisplayServer")).and_then(serde_json::Value::as_str);
+        if xwayland::wanted(pref, |name| std::env::var_os(name)) {
+            if xwayland::x11_libraries_found() {
+                log::info!("opening the window through XWayland (Preferences › Performance › Linux Display Server)");
+                use winit::platform::x11::EventLoopBuilderExtX11 as _;
+                options.event_loop_builder = Some(Box::new(|builder| {
+                    builder.with_x11();
+                }));
+            } else {
+                log::warn!("Linux Display Server is X11, but the X11 libraries aren't all installed: opening the window on Wayland");
+            }
+        }
+        options
+    };
     #[cfg(feature = "wgpu")]
     let options = {
         let mut options = options;
@@ -682,13 +715,18 @@ fn main() -> std::process::ExitCode {
         options.wgpu_options.surface = eframe::egui_wgpu::SurfaceConfig::LOW_LATENCY;
         // Only adapters that can show the window, in the order `gpu` gives (#306, #502).
         if let eframe::egui_wgpu::WgpuSetup::CreateNew(create) = &mut options.wgpu_options.wgpu_setup {
-            create.native_adapter_selector = Some(gpu::selector(power, displays, startup.clone()));
+            create.native_adapter_selector = Some(gpu::selector(power, displays, compositor, startup.clone()));
             // Nothing draws or dispatches indirectly, so wgpu's check of indirect arguments only
             // costs a compute shader at start-up, one some drivers can't compile (OCLP-patched
             // Metal on an Iris Pro, #651). `WGPU_VALIDATION_INDIRECT_CALL=1` turns it back on.
             create.instance_descriptor.flags =
                 (eframe::wgpu::InstanceFlags::from_build_config() - eframe::wgpu::InstanceFlags::VALIDATION_INDIRECT_CALL).with_env();
             create.instance_descriptor.backends = gpu::backends(create.instance_descriptor.backends, std::env::var_os("WGPU_BACKEND").is_some());
+            // DX12 shaders compile with FXC, part of Windows: wgpu's default loads whichever
+            // dxcompiler.dll the search path finds, and one without its dxil.dll fails every shader,
+            // losing the device before the first frame (#1194). `WGPU_DX12_COMPILER` picks another.
+            create.instance_descriptor.backend_options.dx12.shader_compiler =
+                eframe::wgpu::Dx12Compiler::from_env().unwrap_or(eframe::wgpu::Dx12Compiler::Fxc);
         }
         options
     };

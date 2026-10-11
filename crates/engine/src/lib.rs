@@ -100,6 +100,8 @@ pub struct UndoGroup {
     first: Option<Arc<Document>>,
     /// The journal's length when the group began: a cancelled group drops the entries after it.
     journal: usize,
+    /// The undo step's name; else the first edit's.
+    label: Option<String>,
 }
 
 /// Per-document editing state.
@@ -285,13 +287,16 @@ impl DocState {
     }
     /// Record undo step `e` (the document before an edit). In an undo group only the group's first
     /// edit records one: the edits after it extend that step.
-    fn push_undo(&mut self, e: HistoryEntry) {
+    fn push_undo(&mut self, mut e: HistoryEntry) {
         if let Some(g) = &mut self.undo_group {
             let recorded = |first: &Arc<Document>| self.history.undo.last().is_some_and(|l| Arc::ptr_eq(&l.doc, first));
             if g.first.as_ref().is_some_and(recorded) {
                 return;
             }
             g.first = Some(e.doc.clone());
+            if let Some(l) = &g.label {
+                e.label = l.clone();
+            }
         }
         self.history.undo.push(e);
         if self.history.undo.len() > self.history.limit {
@@ -564,6 +569,9 @@ pub struct Prefs {
     pub real_time_drawing: bool,
     /// Rasterizer worker threads; -1 = automatic.
     pub render_threads: i32,
+    /// Linux: `automatic` opens the window on the session's display server; `x11` opens it through
+    /// XWayland on a Wayland session, where dropped files arrive (#1151). Read when the app starts.
+    pub linux_display_server: String,
     // File Handling
     pub background_save: bool,
     pub background_export: bool,
@@ -769,6 +777,7 @@ impl Default for Prefs {
             history_states: 500,
             real_time_drawing: true,
             render_threads: -1,
+            linux_display_server: s("automatic"),
             background_save: true,
             background_export: true,
             autosave_recovery: true,
@@ -1413,11 +1422,16 @@ impl Session {
     /// applies each value it passes as its own command, as a typed value is applied; the drag is
     /// one step.
     pub fn begin_undo_group(&mut self) {
+        self.begin_named_undo_group(None);
+    }
+
+    /// [`Session::begin_undo_group`] with the undo step named `label` (else after its first edit).
+    pub fn begin_named_undo_group(&mut self, label: Option<String>) {
         let journal = self.journal.len();
         if let Some(st) = self.active_mut()
             && st.undo_group.is_none()
         {
-            st.undo_group = Some(UndoGroup { first: None, journal });
+            st.undo_group = Some(UndoGroup { first: None, journal, label });
         }
     }
 
