@@ -2142,6 +2142,12 @@
 	Rectangle: Sunshine	Rettangolo: Sole
 	Rectangle…	Rettangolo…
 	Rectangular Grid	Griglia rettangolare
+# Rectangular Grid click dialog.
+	Horizontal dividers:	Divisori orizzontali:
+	Vertical dividers:	Divisori verticali:
+@msg	Grid position must be finite.	Le coordinate della griglia devono essere finite.
+@msg	Grid width and height must be positive, finite lengths.	La larghezza e l'altezza della griglia devono essere lunghezze positive e finite.
+@msg	Grid divider counts must be whole numbers from 0 to 999.	Il numero di divisori della griglia deve essere un intero da 0 a 999 in ciascuna direzione.
 	Rectangular Grid Tool	Strumento Griglia rettangolare
 	Red	Rosso
 	Redefine Character Style	Ridefinisci stile carattere
@@ -4142,9 +4148,5 @@ lighting	Light	Luce
 @msg	invalid native panel set	Gruppo nativo di pannelli non valido
 @msg	missing panel layout	Disposizione dei pannelli mancante
 @msg	unsupported native docking operation	Operazione nativa di ancoraggio non supportata
-# Rectangular Grid click dialog.
-	Horizontal dividers:	Divisori orizzontali:
-	Vertical dividers:	Divisori verticali:
-@msg	Grid position must be finite.	Le coordinate della griglia devono essere finite.
-@msg	Grid width and height must be positive, finite lengths.	La larghezza e l'altezza della griglia devono essere lunghezze positive e finite.
-@msg	Grid divider counts must be whole numbers from 0 to 999.	Il numero di divisori della griglia deve essere un intero da 0 a 999 in ciascuna direzione.
+	Linux Display Server	Server di visualizzazione Linux
+	X11 (XWayland)	X11 (XWayland)

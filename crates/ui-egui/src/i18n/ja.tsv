@@ -2142,6 +2142,12 @@
 	Rectangle Properties:	長方形のプロパティ:
 	Rectangle Tool	長方形ツール
 	Rectangular Grid	長方形グリッド
+# Rectangular Grid click dialog.
+	Horizontal dividers:	水平方向の分割線:
+	Vertical dividers:	垂直方向の分割線:
+@msg	Grid position must be finite.	グリッドの位置には有限の座標を指定してください。
+@msg	Grid width and height must be positive, finite lengths.	グリッドの幅と高さには正の有限の長さを指定してください。
+@msg	Grid divider counts must be whole numbers from 0 to 999.	グリッドの分割線の本数には、0～999 の整数を指定してください。
 	Rectangular Grid Tool	長方形グリッドツール
 	Red	レッド
 	Redefine Character Style	文字スタイルを再定義
@@ -4136,9 +4142,5 @@ lighting	Light	ライト
 @msg	invalid native panel set	ネイティブパネルセットが無効です
 @msg	missing panel layout	パネル配置がありません
 @msg	unsupported native docking operation	ネイティブドッキング操作は未対応です
-# Rectangular Grid click dialog.
-	Horizontal dividers:	水平方向の分割線:
-	Vertical dividers:	垂直方向の分割線:
-@msg	Grid position must be finite.	グリッドの位置には有限の座標を指定してください。
-@msg	Grid width and height must be positive, finite lengths.	グリッドの幅と高さには正の有限の長さを指定してください。
-@msg	Grid divider counts must be whole numbers from 0 to 999.	グリッドの分割線の本数には、0～999 の整数を指定してください。
+	Linux Display Server	Linux ディスプレイサーバー
+	X11 (XWayland)	X11 (XWayland)
