@@ -5275,3 +5275,19 @@ swatch	Bright Violet	Kirkas violetti
 	Chrome	Kromi
 	Plaster…	Kipsi…
 	Plaster	Kipsi
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Lisää Typst
+	Edit Typst	Muokkaa Typstia
+	Typst Info	Typst-tiedot
+	Preamble:	Johdanto:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst tarvitsee työpöytäsovelluksen: verkkosovellus ei voi suorittaa typst-ohjelmaa
+@msg	Typst took longer than {_1} seconds	Typst kesti yli {_1} sekuntia
+@msg	Typst's SVG is larger than {_1} MB	Typstin SVG on yli {_1} Mt
+@msg	Typst's SVG: {e}	Typstin SVG: {e}
+@msg	couldn't wait for `{program}`: {e}	ohjelmaa `{program}` ei voitu odottaa: {e}
+@msg	select a Typst object	valitse Typst-objekti
+@msg	select one Typst object	valitse vain yksi Typst-objekti
+@msg	the page is empty	sivu on tyhjä
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst ei ole asennettu: ohjelmaa `{program}` ei löytynyt (asenna se osoitteesta typst.app tai aseta VECTORCRAFT_TYPST sen poluksi)
+@msg	couldn't run `{program}`: {e}	ohjelmaa `{program}` ei voitu suorittaa: {e}

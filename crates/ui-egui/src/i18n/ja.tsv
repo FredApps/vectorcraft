@@ -4898,3 +4898,19 @@ lighting	Light	ライト
 	Chrome	クロム
 	Plaster…	石膏…
 	Plaster	石膏
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Typst を挿入
+	Edit Typst	Typst を編集
+	Typst Info	Typst 情報
+	Preamble:	プリアンブル:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst にはデスクトップアプリが必要です: Web アプリでは typst プログラムを実行できません
+@msg	Typst took longer than {_1} seconds	Typst の処理が {_1} 秒を超えました
+@msg	Typst's SVG is larger than {_1} MB	Typst の SVG が {_1} MB を超えています
+@msg	Typst's SVG: {e}	Typst の SVG: {e}
+@msg	couldn't wait for `{program}`: {e}	`{program}` の終了を待てませんでした: {e}
+@msg	select a Typst object	Typst オブジェクトを選択してください
+@msg	select one Typst object	Typst オブジェクトを 1 つだけ選択してください
+@msg	the page is empty	ページが空です
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst がインストールされていません: `{program}` が見つかりません (typst.app からインストールするか、VECTORCRAFT_TYPST にパスを設定してください)
+@msg	couldn't run `{program}`: {e}	`{program}` を実行できませんでした: {e}

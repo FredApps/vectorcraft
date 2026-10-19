@@ -5081,3 +5081,19 @@ lighting	Light	光源
 	Chrome	铬黄
 	Plaster…	塑料效果…
 	Plaster	塑料效果
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	插入 Typst
+	Edit Typst	编辑 Typst
+	Typst Info	Typst 信息
+	Preamble:	导言区：
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst 需要桌面应用：网页应用无法运行 typst 程序
+@msg	Typst took longer than {_1} seconds	Typst 运行超过 {_1} 秒
+@msg	Typst's SVG is larger than {_1} MB	Typst 的 SVG 大于 {_1} MB
+@msg	Typst's SVG: {e}	Typst 的 SVG：{e}
+@msg	couldn't wait for `{program}`: {e}	无法等待 `{program}`：{e}
+@msg	select a Typst object	请选择一个 Typst 对象
+@msg	select one Typst object	请只选择一个 Typst 对象
+@msg	the page is empty	页面为空
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	未安装 Typst：找不到 `{program}`（请从 typst.app 安装，或将 VECTORCRAFT_TYPST 设为其路径）
+@msg	couldn't run `{program}`: {e}	无法运行 `{program}`：{e}

@@ -5230,3 +5230,19 @@ imageTrace	Outline	Körvonal
 	Chrome	Króm
 	Plaster…	Gipsz…
 	Plaster	Gipsz
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Typst beszúrása
+	Edit Typst	Typst szerkesztése
+	Typst Info	Typst-információ
+	Preamble:	Preambulum:
+@msg	Typst needs the desktop app: the web app can't run the typst program	A Typsthez az asztali alkalmazás kell: a webes alkalmazás nem tudja futtatni a typst programot
+@msg	Typst took longer than {_1} seconds	A Typst {_1} másodpercnél tovább futott
+@msg	Typst's SVG is larger than {_1} MB	A Typst SVG-je nagyobb, mint {_1} MB
+@msg	Typst's SVG: {e}	A Typst SVG-je: {e}
+@msg	couldn't wait for `{program}`: {e}	nem sikerült megvárni a(z) `{program}` programot: {e}
+@msg	select a Typst object	jelöljön ki egy Typst-objektumot
+@msg	select one Typst object	csak egy Typst-objektumot jelöljön ki
+@msg	the page is empty	az oldal üres
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	A Typst nincs telepítve: a(z) `{program}` nem található (telepítse a typst.app oldalról, vagy állítsa a VECTORCRAFT_TYPST változót az elérési útjára)
+@msg	couldn't run `{program}`: {e}	nem sikerült futtatni a(z) `{program}` programot: {e}

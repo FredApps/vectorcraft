@@ -4876,3 +4876,19 @@ lighting	Light	光源
 	Chrome	鉻黃
 	Plaster…	塑膠效果…
 	Plaster	塑膠效果
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	插入 Typst
+	Edit Typst	編輯 Typst
+	Typst Info	Typst 資訊
+	Preamble:	導言區：
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst 需要桌面版應用程式：網頁版應用程式無法執行 typst 程式
+@msg	Typst took longer than {_1} seconds	Typst 執行超過 {_1} 秒
+@msg	Typst's SVG is larger than {_1} MB	Typst 的 SVG 大於 {_1} MB
+@msg	Typst's SVG: {e}	Typst 的 SVG：{e}
+@msg	couldn't wait for `{program}`: {e}	無法等待 `{program}`：{e}
+@msg	select a Typst object	請選取一個 Typst 物件
+@msg	select one Typst object	請只選取一個 Typst 物件
+@msg	the page is empty	頁面是空的
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	未安裝 Typst：找不到 `{program}`（請從 typst.app 安裝，或將 VECTORCRAFT_TYPST 設為其路徑）
+@msg	couldn't run `{program}`: {e}	無法執行 `{program}`：{e}

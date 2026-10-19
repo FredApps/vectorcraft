@@ -5151,3 +5151,19 @@ imageTrace	Outline	კონტური
 	Chrome	ქრომი
 	Plaster…	თაბაშირი…
 	Plaster	თაბაშირი
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Typst-ის ჩასმა
+	Edit Typst	Typst-ის რედაქტირება
+	Typst Info	Typst-ის ინფორმაცია
+	Preamble:	პრეამბულა:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst-ს დესკტოპის აპი სჭირდება: ვებ-აპს typst პროგრამის გაშვება არ შეუძლია
+@msg	Typst took longer than {_1} seconds	Typst-მა {_1} წამზე მეტი დრო მოითხოვა
+@msg	Typst's SVG is larger than {_1} MB	Typst-ის SVG {_1} MB-ზე დიდია
+@msg	Typst's SVG: {e}	Typst-ის SVG: {e}
+@msg	couldn't wait for `{program}`: {e}	`{program}`-ის მოლოდინი ვერ მოხერხდა: {e}
+@msg	select a Typst object	მონიშნეთ Typst-ის ობიექტი
+@msg	select one Typst object	მონიშნეთ მხოლოდ ერთი Typst-ის ობიექტი
+@msg	the page is empty	გვერდი ცარიელია
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst არ არის დაყენებული: `{program}` ვერ მოიძებნა (დააყენეთ typst.app-დან ან VECTORCRAFT_TYPST-ში მიუთითეთ მისი მისამართი)
+@msg	couldn't run `{program}`: {e}	`{program}`-ის გაშვება ვერ მოხერხდა: {e}

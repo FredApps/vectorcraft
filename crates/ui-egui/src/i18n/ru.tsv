@@ -4854,3 +4854,19 @@ lighting	Light	Свет
 	Chrome	Хром
 	Plaster…	Гипс…
 	Plaster	Гипс
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Вставить Typst
+	Edit Typst	Изменить Typst
+	Typst Info	Сведения о Typst
+	Preamble:	Преамбула:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Для Typst нужно настольное приложение: веб-приложение не может запустить программу typst
+@msg	Typst took longer than {_1} seconds	Typst работал дольше {_1} с
+@msg	Typst's SVG is larger than {_1} MB	SVG от Typst больше {_1} МБ
+@msg	Typst's SVG: {e}	SVG от Typst: {e}
+@msg	couldn't wait for `{program}`: {e}	не удалось дождаться `{program}`: {e}
+@msg	select a Typst object	выделите объект Typst
+@msg	select one Typst object	выделите только один объект Typst
+@msg	the page is empty	страница пуста
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst не установлен: `{program}` не найден (установите его с typst.app или укажите путь к нему в VECTORCRAFT_TYPST)
+@msg	couldn't run `{program}`: {e}	не удалось запустить `{program}`: {e}

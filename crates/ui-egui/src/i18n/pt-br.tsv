@@ -5161,3 +5161,19 @@ mark-style	Japanese	Japonesas
 	Chrome	Cromo
 	Plaster…	Gesso…
 	Plaster	Gesso
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Inserir Typst
+	Edit Typst	Editar Typst
+	Typst Info	Informações do Typst
+	Preamble:	Preâmbulo:
+@msg	Typst needs the desktop app: the web app can't run the typst program	O Typst precisa do aplicativo para desktop: o aplicativo web não pode executar o programa typst
+@msg	Typst took longer than {_1} seconds	O Typst levou mais de {_1} segundos
+@msg	Typst's SVG is larger than {_1} MB	O SVG do Typst tem mais de {_1} MB
+@msg	Typst's SVG: {e}	SVG do Typst: {e}
+@msg	couldn't wait for `{program}`: {e}	não foi possível aguardar `{program}`: {e}
+@msg	select a Typst object	selecione um objeto Typst
+@msg	select one Typst object	selecione um único objeto Typst
+@msg	the page is empty	a página está vazia
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	O Typst não está instalado: `{program}` não foi encontrado (instale-o de typst.app ou defina VECTORCRAFT_TYPST com o caminho dele)
+@msg	couldn't run `{program}`: {e}	não foi possível executar `{program}`: {e}

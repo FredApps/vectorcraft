@@ -5096,3 +5096,19 @@ mark-style	Japanese	Japońskie
 	Chrome	Chrom
 	Plaster…	Gips…
 	Plaster	Gips
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Wstaw Typst
+	Edit Typst	Edytuj Typst
+	Typst Info	Informacje o Typst
+	Preamble:	Preambuła:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst wymaga aplikacji komputerowej: aplikacja internetowa nie może uruchomić programu typst
+@msg	Typst took longer than {_1} seconds	Typst działał dłużej niż {_1} s
+@msg	Typst's SVG is larger than {_1} MB	SVG z Typsta jest większy niż {_1} MB
+@msg	Typst's SVG: {e}	SVG z Typsta: {e}
+@msg	couldn't wait for `{program}`: {e}	nie można zaczekać na `{program}`: {e}
+@msg	select a Typst object	zaznacz obiekt Typst
+@msg	select one Typst object	zaznacz tylko jeden obiekt Typst
+@msg	the page is empty	strona jest pusta
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst nie jest zainstalowany: nie znaleziono `{program}` (zainstaluj go z typst.app lub ustaw VECTORCRAFT_TYPST na jego ścieżkę)
+@msg	couldn't run `{program}`: {e}	nie można uruchomić `{program}`: {e}

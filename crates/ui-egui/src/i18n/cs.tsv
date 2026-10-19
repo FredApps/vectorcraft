@@ -5244,3 +5244,19 @@ mark-style	Japanese	Japonské
 	Chrome	Chrom
 	Plaster…	Sádra…
 	Plaster	Sádra
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Vložit Typst
+	Edit Typst	Upravit Typst
+	Typst Info	Informace o Typst
+	Preamble:	Preambule:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst potřebuje desktopovou aplikaci: webová aplikace nemůže spustit program typst
+@msg	Typst took longer than {_1} seconds	Typst trval déle než {_1} sekund
+@msg	Typst's SVG is larger than {_1} MB	SVG z Typstu je větší než {_1} MB
+@msg	Typst's SVG: {e}	SVG z Typstu: {e}
+@msg	couldn't wait for `{program}`: {e}	nelze počkat na `{program}`: {e}
+@msg	select a Typst object	vyberte objekt Typst
+@msg	select one Typst object	vyberte jeden objekt Typst
+@msg	the page is empty	stránka je prázdná
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst není nainstalován: `{program}` nebyl nalezen (nainstalujte jej z typst.app nebo nastavte VECTORCRAFT_TYPST na jeho cestu)
+@msg	couldn't run `{program}`: {e}	nelze spustit `{program}`: {e}

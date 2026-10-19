@@ -2335,6 +2335,8 @@ mod tests_typearea;
 #[cfg(test)]
 mod tests_typescale;
 #[cfg(test)]
+mod tests_typst;
+#[cfg(test)]
 mod tests_units;
 #[cfg(test)]
 mod tests_variables;

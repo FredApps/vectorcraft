@@ -5243,3 +5243,19 @@ theme	Appearance	Apparence
 	Chrome	Chrome
 	Plaster…	Plâtre…
 	Plaster	Plâtre
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Insérer du Typst
+	Edit Typst	Modifier le Typst
+	Typst Info	Informations Typst
+	Preamble:	Préambule :
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst nécessite l’application de bureau : l’application web ne peut pas exécuter le programme typst
+@msg	Typst took longer than {_1} seconds	Typst a pris plus de {_1} secondes
+@msg	Typst's SVG is larger than {_1} MB	Le SVG de Typst dépasse {_1} Mo
+@msg	Typst's SVG: {e}	SVG de Typst : {e}
+@msg	couldn't wait for `{program}`: {e}	impossible d’attendre `{program}` : {e}
+@msg	select a Typst object	sélectionnez un objet Typst
+@msg	select one Typst object	sélectionnez un seul objet Typst
+@msg	the page is empty	la page est vide
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst n’est pas installé : `{program}` est introuvable (installez-le depuis typst.app ou définissez VECTORCRAFT_TYPST sur son chemin)
+@msg	couldn't run `{program}`: {e}	impossible d’exécuter `{program}` : {e}

@@ -4824,3 +4824,19 @@ effect	Soft	Weich
 	Chrome	Chrom
 	Plaster…	Gipsabdruck…
 	Plaster	Gipsabdruck
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Typst einfügen
+	Edit Typst	Typst bearbeiten
+	Typst Info	Typst-Informationen
+	Preamble:	Präambel:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst benötigt die Desktop-App: Die Web-App kann das Programm typst nicht ausführen
+@msg	Typst took longer than {_1} seconds	Typst hat länger als {_1} Sekunden gebraucht
+@msg	Typst's SVG is larger than {_1} MB	Das SVG von Typst ist größer als {_1} MB
+@msg	Typst's SVG: {e}	SVG von Typst: {e}
+@msg	couldn't wait for `{program}`: {e}	Warten auf `{program}` nicht möglich: {e}
+@msg	select a Typst object	Wählen Sie ein Typst-Objekt aus
+@msg	select one Typst object	Wählen Sie genau ein Typst-Objekt aus
+@msg	the page is empty	Die Seite ist leer
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst ist nicht installiert: `{program}` wurde nicht gefunden (installieren Sie es von typst.app oder setzen Sie VECTORCRAFT_TYPST auf seinen Pfad)
+@msg	couldn't run `{program}`: {e}	`{program}` konnte nicht ausgeführt werden: {e}

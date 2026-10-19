@@ -4838,3 +4838,19 @@ theme	Appearance	Giao diện
 	Chrome	Crôm
 	Plaster…	Thạch cao…
 	Plaster	Thạch cao
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Chèn Typst
+	Edit Typst	Sửa Typst
+	Typst Info	Thông tin Typst
+	Preamble:	Phần mở đầu:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst cần ứng dụng máy tính: ứng dụng web không thể chạy chương trình typst
+@msg	Typst took longer than {_1} seconds	Typst mất hơn {_1} giây
+@msg	Typst's SVG is larger than {_1} MB	SVG của Typst lớn hơn {_1} MB
+@msg	Typst's SVG: {e}	SVG của Typst: {e}
+@msg	couldn't wait for `{program}`: {e}	không thể chờ `{program}`: {e}
+@msg	select a Typst object	hãy chọn một đối tượng Typst
+@msg	select one Typst object	chỉ chọn một đối tượng Typst
+@msg	the page is empty	trang trống
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst chưa được cài đặt: không tìm thấy `{program}` (hãy cài đặt từ typst.app hoặc đặt VECTORCRAFT_TYPST thành đường dẫn của nó)
+@msg	couldn't run `{program}`: {e}	không thể chạy `{program}`: {e}

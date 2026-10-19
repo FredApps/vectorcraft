@@ -86,6 +86,7 @@ pub(crate) mod textwrap;
 pub(crate) mod threads;
 pub(crate) mod typecmd;
 mod typemenu;
+pub mod typst;
 mod variablecmds;
 pub(crate) mod views;
 pub mod wand;
@@ -299,6 +300,7 @@ pub fn command_specs() -> &'static [CommandSpec] {
         v.extend(perspgrid::specs());
         v.extend(shortcutset::specs());
         v.extend(importmatches::specs());
+        v.extend(typst::specs());
         v
     })
 }

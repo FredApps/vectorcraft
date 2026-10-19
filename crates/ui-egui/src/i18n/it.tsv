@@ -4858,3 +4858,19 @@ lighting	Light	Luce
 	Chrome	Cromo
 	Plaster…	Gesso…
 	Plaster	Gesso
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Inserisci Typst
+	Edit Typst	Modifica Typst
+	Typst Info	Informazioni Typst
+	Preamble:	Preambolo:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst richiede l'app desktop: l'app web non può eseguire il programma typst
+@msg	Typst took longer than {_1} seconds	Typst ha impiegato più di {_1} secondi
+@msg	Typst's SVG is larger than {_1} MB	L'SVG di Typst supera {_1} MB
+@msg	Typst's SVG: {e}	SVG di Typst: {e}
+@msg	couldn't wait for `{program}`: {e}	impossibile attendere `{program}`: {e}
+@msg	select a Typst object	seleziona un oggetto Typst
+@msg	select one Typst object	seleziona un solo oggetto Typst
+@msg	the page is empty	la pagina è vuota
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst non è installato: `{program}` non trovato (installalo da typst.app o imposta VECTORCRAFT_TYPST sul suo percorso)
+@msg	couldn't run `{program}`: {e}	impossibile eseguire `{program}`: {e}

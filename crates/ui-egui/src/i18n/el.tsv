@@ -5196,3 +5196,19 @@ effect	Points	Σημεία
 	Chrome	Χρώμιο
 	Plaster…	Γύψος…
 	Plaster	Γύψος
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Εισαγωγή Typst
+	Edit Typst	Επεξεργασία Typst
+	Typst Info	Πληροφορίες Typst
+	Preamble:	Προοίμιο:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Το Typst χρειάζεται την εφαρμογή υπολογιστή: η εφαρμογή ιστού δεν μπορεί να εκτελέσει το πρόγραμμα typst
+@msg	Typst took longer than {_1} seconds	Το Typst χρειάστηκε περισσότερο από {_1} δευτερόλεπτα
+@msg	Typst's SVG is larger than {_1} MB	Το SVG του Typst είναι μεγαλύτερο από {_1} MB
+@msg	Typst's SVG: {e}	SVG του Typst: {e}
+@msg	couldn't wait for `{program}`: {e}	δεν ήταν δυνατή η αναμονή για το `{program}`: {e}
+@msg	select a Typst object	επιλέξτε ένα αντικείμενο Typst
+@msg	select one Typst object	επιλέξτε μόνο ένα αντικείμενο Typst
+@msg	the page is empty	η σελίδα είναι κενή
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Το Typst δεν είναι εγκατεστημένο: το `{program}` δεν βρέθηκε (εγκαταστήστε το από το typst.app ή ορίστε το VECTORCRAFT_TYPST στη διαδρομή του)
+@msg	couldn't run `{program}`: {e}	δεν ήταν δυνατή η εκτέλεση του `{program}`: {e}

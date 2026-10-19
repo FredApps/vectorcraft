@@ -575,6 +575,8 @@ pub struct NodeExtras {
     /// Object › Objects on Path: the group's path and the objects attached to it (see
     /// [`crate::objects_on_path`]).
     pub objects_on_path: Option<Box<crate::objects_on_path::ObjectsOnPath>>,
+    /// Typst object: the group's art was typeset from this source (Type › Typst…).
+    pub typst: Option<Box<crate::typst::TypstSpec>>,
 }
 
 /// No extras: what [`Node::extras`] gives for a node without any.
@@ -594,6 +596,7 @@ static NO_EXTRAS: NodeExtras = NodeExtras {
     intertwine: None,
     live_paint_gaps: None,
     objects_on_path: None,
+    typst: None,
 };
 
 /// A node's [`NodeExtras`], if it has any ([`Node::extras`]). Extras that are all unset equal
@@ -729,6 +732,7 @@ impl Serialize for Node {
             e.intertwine.is_none(),
             e.live_paint_gaps.is_none(),
             e.objects_on_path.is_none(),
+            e.typst.is_none(),
         ];
         let mut st = s.serialize_struct("Node", skips.iter().filter(|s| !**s).count())?;
         let mut skip = skips.into_iter();
@@ -768,6 +772,7 @@ impl Serialize for Node {
         field!("intertwine", &e.intertwine);
         field!("live_paint_gaps", &e.live_paint_gaps);
         field!("objects_on_path", &e.objects_on_path);
+        field!("typst", &e.typst);
         st.end()
     }
 }
@@ -829,6 +834,8 @@ struct NodeWire {
     live_paint_gaps: Option<Box<crate::live_paint::GapOptions>>,
     #[serde(default)]
     objects_on_path: Option<Box<crate::objects_on_path::ObjectsOnPath>>,
+    #[serde(default)]
+    typst: Option<Box<crate::typst::TypstSpec>>,
 }
 
 impl From<NodeWire> for Node {
@@ -849,6 +856,7 @@ impl From<NodeWire> for Node {
             intertwine: w.intertwine,
             live_paint_gaps: w.live_paint_gaps,
             objects_on_path: w.objects_on_path,
+            typst: w.typst,
         };
         Node {
             id: w.id,
@@ -1035,6 +1043,7 @@ impl Node {
             NodeKind::Layer { .. } => "Layer",
             NodeKind::Group { clip: true, .. } => "Clip Group",
             NodeKind::Group { .. } if self.extras().objects_on_path.is_some() => "Objects on Path",
+            NodeKind::Group { .. } if self.extras().typst.is_some() => "Typst",
             NodeKind::Group { .. } => "Group",
             NodeKind::Path { live: Some(l), .. } => l.label(),
             NodeKind::Path { guide: true, .. } => "Guide",
@@ -1286,6 +1295,12 @@ impl Node {
             && let Some(on_path) = &mut e.objects_on_path
         {
             on_path.transform(a);
+        }
+        // A Typst object's page moves with its art, so typesetting it again keeps its place.
+        if let Some(e) = self.extras_if_any()
+            && let Some(typst) = &mut e.typst
+        {
+            typst.transform(a);
         }
         if !self.is_layer() {
             self.bbox_angle = crate::orient::transformed_angle(self.bbox_angle, a);

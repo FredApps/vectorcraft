@@ -5200,3 +5200,19 @@ theme	Appearance	Utseende
 	Chrome	Krom
 	Plaster…	Gips…
 	Plaster	Gips
+	Typst…	Typst…
+	Typst	Typst
+	Insert Typst	Infoga Typst
+	Edit Typst	Redigera Typst
+	Typst Info	Typst-information
+	Preamble:	Preambel:
+@msg	Typst needs the desktop app: the web app can't run the typst program	Typst kräver skrivbordsappen: webbappen kan inte köra programmet typst
+@msg	Typst took longer than {_1} seconds	Typst tog längre tid än {_1} sekunder
+@msg	Typst's SVG is larger than {_1} MB	Typsts SVG är större än {_1} MB
+@msg	Typst's SVG: {e}	Typsts SVG: {e}
+@msg	couldn't wait for `{program}`: {e}	kunde inte vänta på `{program}`: {e}
+@msg	select a Typst object	markera ett Typst-objekt
+@msg	select one Typst object	markera bara ett Typst-objekt
+@msg	the page is empty	sidan är tom
+@msg	Typst isn't installed: `{program}` wasn't found (install it from typst.app, or set VECTORCRAFT_TYPST to its path)	Typst är inte installerat: `{program}` hittades inte (installera det från typst.app eller ange dess sökväg i VECTORCRAFT_TYPST)
+@msg	couldn't run `{program}`: {e}	kunde inte köra `{program}`: {e}
