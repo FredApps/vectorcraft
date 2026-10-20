@@ -385,11 +385,11 @@ mod run {
     }
 
     /// The project root: the document's folder, else an empty folder of our own. While automation
-    /// is confined ([`crate::file_access`]), the document's folder only when it may read it: Typst
-    /// reads its root itself, past the checks the app's own reads go through.
+    /// is confined ([`crate::file_access`]), always the empty folder: Typst reads its root itself,
+    /// past the checks the app's own reads go through, and follows links in it to anywhere.
     fn root(doc_path: Option<&str>) -> Result<std::path::PathBuf, String> {
-        let readable = |d: &std::path::Path| d.to_str().is_some_and(|d| crate::file_access::check_read(d).is_ok());
-        if let Some(dir) = doc_path.and_then(|p| std::path::Path::new(p).parent()).filter(|d| d.is_dir() && readable(d)) {
+        let confined = crate::file_access::current().is_some();
+        if let Some(dir) = doc_path.and_then(|p| std::path::Path::new(p).parent()).filter(|d| !confined && d.is_dir()) {
             return Ok(dir.to_path_buf());
         }
         let dir = std::env::temp_dir().join(format!("vectorcraft-typst-{}", std::process::id()));

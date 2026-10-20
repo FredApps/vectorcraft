@@ -215,8 +215,9 @@ fn confined_automation_keeps_typst_out_of_folders_it_may_not_read() {
     let roots = crate::file_access::AutomationRoots::new(Some(&allowed), None).unwrap();
     let r = crate::file_access::confine(roots.as_ref(), || s.execute("type.typst.insert", &read));
     assert!(r.is_err(), "{r:?}");
-    // Confined to a folder that holds it, it is.
+    // Nor confined to a folder that holds it: a link in it could lead anywhere.
     let roots = crate::file_access::AutomationRoots::new(Some(&base), None).unwrap();
-    crate::file_access::confine(roots.as_ref(), || s.execute("type.typst.insert", &read)).unwrap();
+    let r = crate::file_access::confine(roots.as_ref(), || s.execute("type.typst.insert", &read));
+    assert!(r.is_err(), "{r:?}");
     let _ = std::fs::remove_dir_all(&base);
 }

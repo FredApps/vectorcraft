@@ -34,8 +34,9 @@ export the paths.
 - Typst finds fonts as it always does: the fonts it embeds, the system's, and `TYPST_FONT_PATHS`.
 - `#import "@preview/…"` packages are downloaded by Typst, as on the command line.
 - `#image` and `#read` paths are relative to the document's folder (an empty folder of its own for a document
-  not yet saved). Typst can't read outside it. When automation is confined (`--automation-read-root`), Typst
-  gets the document's folder only if that folder lies inside the read root, else the empty folder.
+  not yet saved). Typst can't read outside it, except through links in it. When automation is confined
+  (`--automation-read-root`), Typst always gets the empty folder, since a link in the document's folder could
+  lead outside the read root.
 - Typst gets 30 seconds per typesetting.
 
 ## Commands
