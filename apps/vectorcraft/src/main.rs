@@ -23,6 +23,7 @@ compile_error!("windows7 requires --target x86_64-win7-windows-msvc; the ordinar
 compile_error!("the win7 target requires --no-default-features --features windows7");
 
 mod automation_args;
+mod caption_style;
 mod clipboard;
 #[cfg(feature = "wgpu")]
 mod compositor_gpu;
@@ -569,6 +570,8 @@ fn services(parent: Parent, ui: egui::Context) -> Services {
         screen_color: Some(mac_screen_color::sampler(sampled_ui)),
         // File → Print: the system's printers and print queue.
         print: Some(Box::new(printing::SystemPrint)),
+        // Classic OG's caption buttons look like the desktop's (Linux).
+        caption_style: caption_style::detect(),
         ..Default::default()
     }
 }

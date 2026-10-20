@@ -25,23 +25,40 @@ pub fn paint_icon_button(ui: &mut Ui, resp: Response, icon: &str, tip: &str, sel
     } else {
         Color32::TRANSPARENT
     };
-    ui.painter().rect_filled(rect, CornerRadius::same(5), bg);
+    // Classic OG: VectorCraft 0.11's smaller corners and lettering.
+    ui.painter().rect_filled(rect, CornerRadius::same(if t.flat { 3 } else { 5 }), bg);
     let pad = (size * 0.2).round();
-    icons::paint(ui, icon, rect.shrink(pad), if selected { t.text_strong } else { t.icon });
+    let selected_ink = if t.flat { t.text } else { t.text_strong };
+    icons::paint(ui, icon, rect.shrink(pad), if selected { selected_ink } else { t.icon });
     resp.widget_info(|| icon_button_info(ui.is_enabled(), selected, tl!(tip)));
     if !tip.is_empty() { resp.on_hover_text(tl!(tip)) } else { resp }
 }
 
-/// Small flat text button (Quick Actions style).
+/// Small flat text button (Quick Actions style). Classic OG draws VectorCraft 0.11's outlined one.
 pub fn flat_button(ui: &mut Ui, text: &str, width: f32) -> Response {
     let t = Tokens::get(ui.ctx());
     let (rect, resp) = ui.allocate_exact_size(vec2(width, 24.0), Sense::click());
     let rect = rect.shrink2(vec2(0.0, 0.5));
-    ui.painter().rect_filled(rect, CornerRadius::same(5), t.button);
-    flat_fill(ui, rect, &resp);
+    if t.flat {
+        flat_fill(ui, rect, &resp);
+        outline(ui, &t, rect, resp.hovered());
+    } else {
+        ui.painter().rect_filled(rect, CornerRadius::same(5), t.button);
+        flat_fill(ui, rect, &resp);
+    }
     ui.painter().with_clip_rect(rect).text(rect.center(), egui::Align2::CENTER_CENTER, tl!(text), egui::FontId::proportional(12.5), t.text_strong);
     resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, ui.is_enabled(), tl!(text)));
     resp
+}
+
+/// The outline of VectorCraft 0.11's flat buttons (Classic OG): brighter under the pointer.
+fn outline(ui: &Ui, t: &Tokens, rect: Rect, hovered: bool) {
+    ui.painter().rect_stroke(rect, flat_corners(t), Stroke::new(1.0, if hovered { t.text } else { t.button_border }), StrokeKind::Inside);
+}
+
+/// The corners of flat buttons and their fills: 0.11's 2 pt with Classic OG.
+fn flat_corners(t: &Tokens) -> CornerRadius {
+    CornerRadius::same(if t.flat { 2 } else { 5 })
 }
 
 /// Width of a [`split_button`]'s arrow.
@@ -64,10 +81,18 @@ pub fn split_button_named(ui: &mut Ui, text: &str, arrow_tip: &str, width: f32) 
     let arrow_rect = Rect::from_min_max(pos2(split, rect.top()), rect.max);
     let main = ui.interact(main_rect, ui.id().with((text, "split")), Sense::click());
     let arrow = ui.interact(arrow_rect, ui.id().with((text, "split-arrow")), Sense::click());
-    ui.painter().rect_filled(rect, CornerRadius::same(5), t.button);
-    flat_fill(ui, main_rect, &main);
-    flat_fill(ui, arrow_rect, &arrow);
-    ui.painter().vline(split, rect.y_range().shrink(5.0), Stroke::new(1.0, t.panel));
+    if t.flat {
+        // VectorCraft 0.11's outlined button, its arrow set off by a line in the outline's colour.
+        flat_fill(ui, main_rect, &main);
+        flat_fill(ui, arrow_rect, &arrow);
+        outline(ui, &t, rect, main.hovered() || arrow.hovered());
+        ui.painter().vline(split, rect.y_range().shrink(4.0), Stroke::new(1.0, t.button_border));
+    } else {
+        ui.painter().rect_filled(rect, CornerRadius::same(5), t.button);
+        flat_fill(ui, main_rect, &main);
+        flat_fill(ui, arrow_rect, &arrow);
+        ui.painter().vline(split, rect.y_range().shrink(5.0), Stroke::new(1.0, t.panel));
+    }
     ui.painter().with_clip_rect(main_rect).text(
         main_rect.center(),
         egui::Align2::CENTER_CENTER,
@@ -87,10 +112,11 @@ pub fn split_button_named(ui: &mut Ui, text: &str, arrow_tip: &str, width: f32) 
 /// The pressed or hovered fill of a flat button part.
 fn flat_fill(ui: &Ui, rect: Rect, resp: &Response) {
     let t = Tokens::get(ui.ctx());
+    let r = flat_corners(&t);
     if resp.is_pointer_button_down_on() {
-        ui.painter().rect_filled(rect, CornerRadius::same(5), t.tool_active);
+        ui.painter().rect_filled(rect, r, t.tool_active);
     } else if resp.hovered() {
-        ui.painter().rect_filled(rect, CornerRadius::same(5), t.hover);
+        ui.painter().rect_filled(rect, r, t.hover);
     }
 }
 
@@ -117,21 +143,22 @@ fn primary_button_sized(ui: &mut Ui, text: &str, enabled: bool, min_width: f32) 
     let galley = ui.painter().layout_no_wrap(tl!(text).to_string(), theme::semibold(12.5), fg);
     let w = galley.size().x + 32.0;
     let (rect, resp) = ui.allocate_exact_size(vec2(w.max(min_width), 28.0), if enabled { Sense::click() } else { Sense::hover() });
+    let r = t.button_radius(rect.height(), 6);
     let bg = match (enabled, resp.hovered()) {
         (false, _) => t.input,
         (true, true) => t.accent,
         (true, false) => t.accent_strong,
     };
-    ui.painter().rect_filled(rect, CornerRadius::same(6), bg);
+    ui.painter().rect_filled(rect, r, bg);
     if !enabled {
-        ui.painter().rect_stroke(rect, CornerRadius::same(6), egui::Stroke::new(1.0, t.button_border), egui::StrokeKind::Inside);
+        ui.painter().rect_stroke(rect, r, egui::Stroke::new(1.0, t.button_border), egui::StrokeKind::Inside);
     }
     ui.painter().galley(rect.center() - galley.size() / 2.0, galley, fg);
     resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, enabled && ui.is_enabled(), tl!(text)));
     resp
 }
 
-/// The quiet secondary button (dialog Cancel).
+/// The quiet secondary button (dialog Cancel). Classic OG draws it as an outlined pill.
 pub fn secondary_button(ui: &mut Ui, text: &str) -> Response {
     secondary_button_width(ui, text, 72.0)
 }
@@ -142,7 +169,16 @@ pub(crate) fn secondary_button_width(ui: &mut Ui, text: &str, min_width: f32) ->
     let galley = ui.painter().layout_no_wrap(tl!(text).to_string(), theme::semibold(12.5), t.text);
     let w = galley.size().x + 32.0;
     let (rect, resp) = ui.allocate_exact_size(vec2(w.max(min_width), 28.0), Sense::click());
-    ui.painter().rect_filled(rect, CornerRadius::same(6), if resp.hovered() { t.hover } else { t.button });
+    if t.flat {
+        // VectorCraft 0.11's outlined pill.
+        let r = t.button_radius(rect.height(), 6);
+        if resp.hovered() {
+            ui.painter().rect_filled(rect, r, t.hover);
+        }
+        ui.painter().rect_stroke(rect, r, Stroke::new(1.5, t.text_dim), StrokeKind::Inside);
+    } else {
+        ui.painter().rect_filled(rect, CornerRadius::same(6), if resp.hovered() { t.hover } else { t.button });
+    }
     ui.painter().galley(rect.center() - galley.size() / 2.0, galley, t.text);
     resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, ui.is_enabled(), tl!(text)));
     resp
@@ -152,7 +188,9 @@ pub(crate) fn secondary_button_width(ui: &mut Ui, text: &str, min_width: f32) ->
 pub fn section_header(ui: &mut Ui, text: &str) {
     let t = Tokens::get(ui.ctx());
     ui.add_space(2.0);
-    ui.label(egui::RichText::new(tl!(text)).size(12.5).color(t.text_strong));
+    // Classic OG: VectorCraft 0.11's headers.
+    let (size, color) = if t.flat { (13.0, t.text) } else { (12.5, t.text_strong) };
+    ui.label(egui::RichText::new(tl!(text)).size(size).color(color));
     ui.add_space(2.0);
 }
 
@@ -573,7 +611,8 @@ fn recessed_text(ui: &mut Ui, id: egui::Id, shown: &str, width: f32, rows: usize
         .allocate_ui_with_layout(vec2(width, height), layout, |ui| {
             ui.set_min_size(vec2(width, height));
             let rect = ui.max_rect();
-            ui.painter().rect(rect, 5.0, t.input, Stroke::new(1.0, if editing { t.accent } else { t.input_border }), StrokeKind::Inside);
+            let corners = if t.flat { 2.0 } else { 5.0 };
+            ui.painter().rect(rect, corners, t.input, Stroke::new(1.0, if editing { t.accent } else { t.input_border }), StrokeKind::Inside);
             let margin = egui::Margin { left: 7, right: 7, top: if rows > 1 { 4 } else { 0 }, bottom: 0 };
             let resp = egui::Frame::NONE
                 .inner_margin(margin)
@@ -1881,7 +1920,7 @@ pub fn hex_field(ui: &mut Ui, id: impl std::hash::Hash + std::fmt::Debug, hex: &
     let resp = egui::Frame::NONE
         .fill(t.input)
         .stroke(Stroke::new(1.0, if editing { t.accent } else { t.input_border }))
-        .corner_radius(5)
+        .corner_radius(if t.flat { 2 } else { 5 })
         .inner_margin(egui::Margin::symmetric(6, 4))
         .show(ui, |ui| {
             // As tall as the other fields (26 points with the margin), whatever the font's line height.

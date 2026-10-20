@@ -299,6 +299,10 @@ pub struct Services {
     /// default one would never come back once the canvas hid it: the canvas keeps the system
     /// pointer visible next to the tool glyph ([`cursors::hide_system_pointer`], #2450).
     pub no_cursor_theme: bool,
+    /// The desktop's caption buttons (Linux: GNOME's, KDE's or plain round ones, in the desktop's
+    /// button layout), which the custom title bar draws with the Classic OG colour scheme
+    /// ([`titlebar`]). Without it, Windows' buttons.
+    pub caption_style: Option<titlebar::CaptionStyle>,
 }
 
 /// Cached canvas raster.

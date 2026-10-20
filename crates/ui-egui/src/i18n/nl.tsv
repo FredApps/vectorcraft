@@ -4961,6 +4961,7 @@ mark-style	Japanese	Japans
 	Violet	Violet
 	Color Scheme	Kleurschema
 	Modern	Modern
+	Classic OG	Klassiek OG
 @msg	`{key}` must be an array of these names: {_1}	`{key}` moet een matrix van deze namen zijn: {_1}
 	Mode	Modus
 	Blur Mode	Vervagingsmodus

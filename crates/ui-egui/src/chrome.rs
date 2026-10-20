@@ -26,10 +26,16 @@ const WIDGET_H: f32 = 22.0;
 /// On macOS, under the system's transparent title bar, its empty space drags and zooms the window
 /// too ([`titlebar::drag_area`]). With the system title bar (Windows and Linux, `system_title_bar`) the OS draws its own icon and
 /// title, so the in-app bar shows Home, menus and workspace controls only: no brand mark.
+///
+/// With the Classic OG colour scheme it is laid out as PhotoCraft's: the caption buttons follow the
+/// desktop and may sit at either end ([`titlebar::reserved`]), the workspace switcher is a boxed
+/// dropdown, and the document's name (or VectorCraft) is centred in the room between the menus and
+/// the controls.
 pub fn app_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
     let t = Tokens::get(ui.ctx());
     let custom = app.custom_titlebar;
     let system = system_title_bar(app);
+    let (caption_left, caption_right) = titlebar::reserved(app, ui.ctx());
     let left = app.titlebar_inset.clamp(8.0, f32::from(i8::MAX)) as i8;
     let frame = egui::Frame::NONE.fill(t.app_bar).inner_margin(egui::Margin { left, right: if custom { 0 } else { 14 }, top: 0, bottom: 0 });
     let bar = egui::Panel::top("app_bar").exact_size(APP_BAR_HEIGHT).frame(frame.stroke(Stroke::new(1.0, t.border))).show(ui, |ui| {
@@ -39,6 +45,11 @@ pub fn app_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
             titlebar::drag_area(ui, ui.max_rect());
         }
         ui.horizontal_centered(|ui| {
+            // Caption buttons at the left end (a desktop that puts them there): the bar starts
+            // after them.
+            if caption_left > 0.0 {
+                ui.add_space((caption_left - f32::from(left) + 4.0).max(0.0));
+            }
             // With the system title bar the OS draws its own icon: no in-app brand mark.
             if !system {
                 let (r, _) = ui.allocate_exact_size(vec2(MARK, MARK), Sense::hover());
@@ -56,7 +67,7 @@ pub fn app_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
             // short, Discord goes first (it is also under Help), then the search icon (the palette
             // stays under its shortcut), then the workspace switcher narrows.
             let full = ui.max_rect();
-            let right_edge = if custom { full.right() - titlebar::WIDTH - 10.0 } else { full.right() };
+            let right_edge = if custom { full.right() - caption_right - 10.0 } else { full.right() };
             let right = egui::Rect::from_min_max(egui::pos2(menus_end + 8.0, full.top()), egui::pos2(right_edge, full.bottom()));
             let room = right.width();
             // Built-in workspace names translate; the user's own stay as typed.
@@ -74,7 +85,18 @@ pub fn app_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
             let ui = &mut rui;
             // Workspace switcher: shows the current workspace, opens Window → Workspace.
             let (wr, wresp) = ui.allocate_exact_size(vec2(ws_w, WIDGET_H), Sense::click());
-            ui.painter().rect_filled(wr, CornerRadius::same(4), if wresp.hovered() { t.hover } else { t.panel });
+            if t.flat {
+                // Classic OG: a boxed dropdown, as PhotoCraft's workspace switcher.
+                ui.painter().rect(
+                    wr,
+                    CornerRadius::same(4),
+                    if wresp.hovered() { t.hover } else { t.input },
+                    Stroke::new(1.0, t.input_border),
+                    egui::StrokeKind::Inside,
+                );
+            } else {
+                ui.painter().rect_filled(wr, CornerRadius::same(4), if wresp.hovered() { t.hover } else { t.panel });
+            }
             ui.painter().with_clip_rect(wr.shrink2(vec2(4.0, 0.0))).galley(wr.left_center() + vec2(10.0, -ws.size().y / 2.0), ws, t.text);
             icons::paint(ui, "chevron-down", egui::Rect::from_center_size(wr.right_center() - vec2(12.0, 0.0), vec2(12.0, 12.0)), t.text_dim);
             let wresp = wresp.on_hover_text(tl!("Switch workspace"));
@@ -95,7 +117,10 @@ pub fn app_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
                 ui.add_space(10.0);
                 crate::community::discord_button(app, ui, false);
             }
-            if app.services.native_menu.is_some() {
+            if t.flat && !system {
+                // Classic OG: PhotoCraft's title, in the room between the menus and the controls.
+                bar_title(app, ui, &t, full, menus_end, ui.min_rect().left());
+            } else if app.services.native_menu.is_some() {
                 let title = ui.painter().layout_no_wrap("VectorCraft".into(), egui::FontId::proportional(13.5), t.text);
                 let title_rect = egui::Rect::from_center_size(full.center(), title.size());
                 // Keep the title centered only while the interactive groups leave room for it.
@@ -107,6 +132,33 @@ pub fn app_bar(app: &mut VectorcraftApp, ui: &mut Ui) {
     });
     if custom {
         titlebar::caption_buttons(app, ui, bar.response.rect);
+    }
+}
+
+/// Room the bar's title keeps from the menus and the controls (PhotoCraft's).
+const TITLE_GAP: f32 = 16.0;
+
+/// The bar's title with Classic OG, as in PhotoCraft: the active document's name (`*` before it with
+/// unsaved changes, as on its tab) or VectorCraft. It is centred on the window, slid along when that
+/// would bring it near the menus (which end at `from`) or the controls (which start at `to`), and
+/// shortened next to the menus when the room between them is too small for all of it; it is left
+/// out when only a sliver is free.
+fn bar_title(app: &VectorcraftApp, ui: &Ui, t: &Tokens, full: egui::Rect, from: f32, to: f32) {
+    let title = app.session.active().map(|d| format!("{}{}", if d.is_dirty() { "*" } else { "" }, d.title())).unwrap_or_else(|| "VectorCraft".into());
+    let font = theme::semibold(13.0);
+    let galley = ui.painter().layout_no_wrap(title.clone(), font.clone(), t.text_dim);
+    let y = full.center().y - galley.size().y / 2.0;
+    let (lo, hi) = (from + TITLE_GAP, to - TITLE_GAP - galley.size().x);
+    // `hi >= lo` is false when either is NaN, so the clamp below has a valid range.
+    if hi >= lo {
+        // The window's centre: the bar's own rect starts after its left margin.
+        let x = (ui.ctx().content_rect().center().x - galley.size().x / 2.0).clamp(lo, hi);
+        ui.painter().galley(egui::pos2(x, y), galley, t.text_dim);
+    } else if to - from - 2.0 * TITLE_GAP > 80.0 {
+        let mut job = egui::text::LayoutJob::simple_singleline(title, font, t.text_dim);
+        job.wrap = egui::text::TextWrapping::truncate_at_width(to - from - 2.0 * TITLE_GAP);
+        let g = ui.painter().layout_job(job);
+        ui.painter().galley(egui::pos2(lo, y), g, t.text_dim);
     }
 }
 

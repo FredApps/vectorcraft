@@ -280,7 +280,12 @@ not commands, so drive them with `ui.click` if needed. Close runs `app.quit` (th
 modified documents), and empty bar space and the 5 pt window edges move and resize the window. Preferences › User
 Interface › System Title Bar (`systemTitleBar`, read when the app starts) gives the window its OS decorations back
 instead: the OS title then shows the active document (`*name — VectorCraft` with unsaved changes) and the app bar
-drops its brand mark. On macOS the window buttons are centred on the app bar; the web build is unchanged.
+drops its brand mark. On macOS the window buttons are centred on the app bar; the web build is unchanged. With the
+Classic OG colour scheme (`prefs.set {key: "uiColorScheme", value: "classicOg"}`) the caption buttons look like the
+desktop's, as PhotoCraft's do: Linux draws GNOME's (libadwaita), KDE's (Breeze, also SteamOS) or plain round buttons, in
+the desktop's button layout (either end of the bar), and `VECTORCRAFT_CAPTION_STYLE` (`windows`, `adwaita`, `breeze`,
+`generic`) and `VECTORCRAFT_CAPTION_LAYOUT` (a GTK layout such as `close,minimize:`) override what is found. The bar
+then also centres the active document's name (or VectorCraft) between the menus and the controls.
 
 Fill/Stroke chips and panel shortcuts: the Control bar's and Properties' Fill and Stroke chips bring their proxy
 forward (`paint.toggleActive {fill}`) and open a popover with the Swatches panel (Shift-click: the Color panel's mixer);

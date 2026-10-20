@@ -95,6 +95,10 @@ pub fn set_collapsed(app: &mut VectorcraftApp, collapsed: bool) {
 pub(crate) fn collapse_header(ui: &mut Ui, collapsed: bool) -> bool {
     let t = Tokens::get(ui.ctx());
     let (hdr, resp) = ui.allocate_exact_size(vec2(ui.available_width(), HEADER), Sense::click());
+    if t.flat {
+        // Classic OG: VectorCraft 0.11's strip, in the tab strips' grey.
+        ui.painter().rect_filled(hdr, 0.0, t.tab_strip);
+    }
     let arrow = Rect::from_min_size(hdr.right_top() + vec2(-16.0, 1.0), vec2(12.0, 12.0));
     if resp.hovered() {
         ui.painter().rect_filled(arrow, CornerRadius::same(2), t.hover);
@@ -175,7 +179,8 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
             if collapsed && collapse_header(ui, true) {
                 toggle(app, false);
             }
-            egui::Frame::NONE.inner_margin(egui::Margin::symmetric(1, 4)).show(ui, |ui| {
+            let margin = if t.flat { egui::Margin::symmetric(4, 6) } else { egui::Margin::symmetric(1, 4) };
+            egui::Frame::NONE.inner_margin(margin).show(ui, |ui| {
                 ui.spacing_mut().item_spacing.y = 2.0;
                 // The icons scroll in a window too short for them.
                 widgets::strip_scroll(ui, "icon_column", |ui| {
@@ -226,7 +231,13 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
 fn tab_strip(app: &mut VectorcraftApp, ui: &mut Ui, active: DockTab) -> bool {
     let t = Tokens::get(ui.ctx());
     let (strip, _) = ui.allocate_exact_size(vec2(ui.available_width(), 33.0), Sense::hover());
-    ui.painter().line_segment([strip.left_bottom(), strip.right_bottom()], Stroke::new(1.0, t.divider));
+    if t.flat {
+        // Classic OG: VectorCraft 0.11's tab strip, the shown tab in the panel's grey on it.
+        ui.painter().rect_filled(strip, 0.0, t.tab_strip);
+        ui.painter().line_segment([strip.left_bottom(), strip.right_bottom()], Stroke::new(1.0, t.border));
+    } else {
+        ui.painter().line_segment([strip.left_bottom(), strip.right_bottom()], Stroke::new(1.0, t.divider));
+    }
     let outside = ui.input(|i| i.pointer.interact_pos()).is_some_and(|p| !strip.contains(p));
     // What a drag out of the strip floats: the panels, the one shown, where its tab began.
     let mut tear: Option<(Vec<&'static str>, &'static str, f32)> = None;
@@ -315,11 +326,16 @@ pub(crate) fn panel_tabs(
             .sense(Sense::click_and_drag())
             .focus_stroke(Stroke::new(1.0, t.accent))
             .show_at(ui, rect, |ui, _| {
-                if i == selected {
+                if i == selected && t.flat {
+                    // Classic OG: VectorCraft 0.11's tabs, the shown one in the panel's grey.
+                    ui.painter().rect_filled(rect, 0.0, t.panel);
+                } else if i == selected {
                     ui.painter().rect_filled(rect.shrink2(vec2(3.0, 5.0)), 6.0, t.button);
                 }
                 ui.painter().with_clip_rect(rect.intersect(ui.clip_rect())).galley(rect.center() - galley.size() / 2.0, galley, t.text);
-                let _ = separators;
+                if separators && t.flat {
+                    ui.painter().line_segment([rect.right_top(), rect.right_bottom()], Stroke::new(1.0, t.border));
+                }
             });
         out.responses.push((i, if shrunk { resp.on_hover_text(*label) } else { resp }));
         out.right = rect.right();

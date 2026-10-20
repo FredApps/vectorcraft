@@ -4949,6 +4949,7 @@ mark-style	Japanese	Jepang
 	Violet	Violet
 	Color Scheme	Skema warna
 	Modern	Modern
+	Classic OG	Klasik OG
 @msg	`{key}` must be an array of these names: {_1}	`{key}` harus berupa array dari nama-nama ini: {_1}
 	Mode	Mode
 	Blur Mode	Mode blur

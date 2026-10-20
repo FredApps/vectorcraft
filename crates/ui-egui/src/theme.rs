@@ -85,22 +85,26 @@ impl Accent {
     }
 }
 
-/// User Interface › Color Scheme: Modern (the default: slate greys and the chosen accent) or
-/// Classic (the neutral greys and blue accent of earlier versions). Both keep the same layout,
-/// cards and corners; only the colours differ.
+/// User Interface › Color Scheme: Modern (the default: slate greys and the chosen accent), Classic
+/// (the neutral greys and blue accent of earlier versions) or Classic OG (VectorCraft 0.11's look,
+/// with the desktop's window buttons as in PhotoCraft). Modern and Classic keep the same layout,
+/// cards and corners; only the colours differ. Classic OG also brings back 0.11's chrome
+/// ([`Tokens::flat`]).
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Scheme {
     #[default]
     Modern,
     Classic,
+    ClassicOg,
 }
 
 impl Scheme {
-    pub const ALL: [Scheme; 2] = [Scheme::Modern, Scheme::Classic];
+    pub const ALL: [Scheme; 3] = [Scheme::Modern, Scheme::Classic, Scheme::ClassicOg];
     pub fn id(self) -> &'static str {
         match self {
             Scheme::Modern => "modern",
             Scheme::Classic => "classic",
+            Scheme::ClassicOg => "classicOg",
         }
     }
     pub fn parse(s: &str) -> Option<Self> {
@@ -164,6 +168,12 @@ pub struct Tokens {
     pub axis_x: Color32,
     pub axis_y: Color32,
     pub axis_z: Color32,
+    /// VectorCraft 0.11's chrome (Classic OG): flat panels edged in the `border` colour instead of
+    /// [`card`]s, panel tabs on a `tab_strip` with the shown tab in the panel colour, pill buttons
+    /// ([`crate::widgets::primary_button`]), Source Sans 3 for the interface, and, as in PhotoCraft,
+    /// caption buttons that follow the desktop ([`crate::titlebar`]), a boxed workspace switcher and
+    /// a centred title ([`crate::chrome::app_bar`]).
+    pub flat: bool,
 }
 
 impl Tokens {
@@ -214,6 +224,7 @@ impl Tokens {
             axis_x: hex(0xef6058),
             axis_y: hex(0x45af63),
             axis_z: hex(0x378ef0),
+            flat: false,
         };
         match b {
             Brightness::Dark => base,
@@ -418,12 +429,38 @@ impl Tokens {
         }
     }
 
-    /// The tokens for `b` in `scheme`; Modern takes `accent`, Classic has its own blue.
+    /// The Classic OG colour scheme at brightness `b`: VectorCraft 0.11's look, from before the
+    /// cards and soft corners came. Classic's greys and blue (which are 0.11's), with the title bar the
+    /// panels' grey at Medium Dark as it was then, 0.11's small corners and Source Sans 3 for the
+    /// interface; [`Self::flat`] brings back its flat panels, tab strips and pill buttons, and the
+    /// caption buttons follow the desktop as PhotoCraft's do.
+    pub fn classic_og(b: Brightness) -> Self {
+        let hex = |s: u32| Color32::from_rgb((s >> 16) as u8, (s >> 8) as u8, s as u8);
+        let classic = Self::classic(b);
+        Tokens {
+            flat: true,
+            radius: 2,
+            // Classic sets the frame a shade below the panels at Medium Dark so its cards stand out;
+            // without cards the title bar is the panels' grey again.
+            app_bar: if b == Brightness::MediumDark { hex(0x535353) } else { classic.app_bar },
+            ..classic
+        }
+    }
+
+    /// The tokens for `b` in `scheme`; Modern takes `accent`, Classic and Classic OG have their own
+    /// blue.
     pub fn for_scheme(scheme: Scheme, b: Brightness, accent: Accent) -> Self {
         match scheme {
             Scheme::Modern => Self::for_brightness(b).with_accent(accent),
             Scheme::Classic => Self::classic(b),
+            Scheme::ClassicOg => Self::classic_og(b),
         }
+    }
+
+    /// The corners of a dialog button `height` points tall: a pill (Classic OG, as in 0.11 and
+    /// PhotoCraft) or the usual soft corners (`radius`).
+    pub fn button_radius(&self, height: f32, radius: u8) -> CornerRadius {
+        if self.flat { CornerRadius::same((height / 2.0).clamp(0.0, f32::from(u8::MAX)) as u8) } else { CornerRadius::same(radius) }
     }
 
     /// These tokens with `accent`: the accent, buttons filled with it, the active item in flyouts and
@@ -455,8 +492,20 @@ impl Tokens {
 }
 
 /// The toolbar, the panel dock and the icon rail are cards: `body` drawn on the panel colour with
-/// soft corners, `margin` of the window's frame colour around it.
+/// soft corners, `margin` of the window's frame colour around it. With [`Tokens::flat`] (Classic
+/// OG) they are VectorCraft 0.11's flat panels instead: square, edged with the frame colour and no
+/// margin.
 pub fn card<R>(ui: &mut egui::Ui, t: &Tokens, margin: egui::Margin, body: impl FnOnce(&mut egui::Ui) -> R) -> R {
+    if t.flat {
+        return egui::Frame::NONE
+            .fill(t.panel)
+            .stroke(Stroke::new(1.5, t.border))
+            .show(ui, |ui| {
+                ui.set_min_size(ui.available_size());
+                body(ui)
+            })
+            .inner;
+    }
     egui::Frame::NONE
         .fill(t.app_bar)
         .inner_margin(margin)
@@ -495,6 +544,19 @@ pub fn mono(size: f32) -> FontId {
     FontId::new(size, FontFamily::Name(FONT_MONO.into()))
 }
 
+/// Where [`apply_with`] notes whether the interface is in Source Sans 3 (Classic OG, as VectorCraft
+/// 0.11 was) rather than Inter.
+fn classic_face_id() -> egui::Id {
+    egui::Id::new("vc-ui-face-classic")
+}
+
+/// Whether [`install_fonts`] puts Source Sans 3 first (Classic OG).
+pub(crate) fn classic_face(ctx: &egui::Context) -> bool {
+    ctx.data(|d| d.get_temp::<bool>(classic_face_id())).unwrap_or(false)
+}
+
+/// The app's fonts: Inter for the interface (Source Sans 3 with Classic OG, [`classic_face`]),
+/// JetBrains Mono for numbers, the craft-fonts faces as fallbacks.
 pub fn install_fonts(ctx: &egui::Context) {
     let mut fonts = FontDefinitions::default();
     let add = |f: &mut FontDefinitions, name: &str, bytes: &'static [u8]| {
@@ -510,13 +572,18 @@ pub fn install_fonts(ctx: &egui::Context) {
     add(&mut fonts, "SourceSans3-Semibold", include_bytes!("../../../assets/fonts/SourceSans3-Semibold.ttf"));
     add(&mut fonts, "JetBrainsMono", include_bytes!("../../../assets/fonts/JetBrainsMono-Regular.ttf"));
     let fallback: Vec<String> = fonts.families.get(&FontFamily::Proportional).cloned().unwrap_or_default();
-    let mut prop = vec!["Inter".to_string(), "SourceSans3".to_string()];
+    let (regular, semibold) = if classic_face(ctx) {
+        (["SourceSans3", "Inter"], ["SourceSans3-Semibold", "Inter-SemiBold"])
+    } else {
+        (["Inter", "SourceSans3"], ["Inter-SemiBold", "SourceSans3-Semibold"])
+    };
+    let mut prop: Vec<String> = regular.map(str::to_string).to_vec();
     prop.extend(fallback.clone());
     fonts.families.insert(FontFamily::Proportional, prop);
-    let mut semi = vec!["Inter-SemiBold".to_string(), "SourceSans3-Semibold".to_string()];
+    let mut semi: Vec<String> = semibold.map(str::to_string).to_vec();
     semi.extend(fallback.clone());
     fonts.families.insert(FontFamily::Name(FONT_UI_SEMIBOLD.into()), semi);
-    let mut ui = vec!["Inter".to_string(), "SourceSans3".to_string()];
+    let mut ui: Vec<String> = regular.map(str::to_string).to_vec();
     ui.extend(fallback.clone());
     fonts.families.insert(FontFamily::Name(FONT_UI.into()), ui);
     let mut mono = vec!["JetBrainsMono".to_string()];
@@ -555,6 +622,11 @@ pub fn apply(ctx: &egui::Context, b: Brightness) {
 pub fn apply_with(ctx: &egui::Context, b: Brightness, accent: Accent, scheme: Scheme) {
     let t = Tokens::for_scheme(scheme, b, accent);
     ctx.data_mut(|d| d.insert_temp(egui::Id::NULL, t));
+    // Classic OG sets the interface in Source Sans 3, as VectorCraft 0.11 did; the others in Inter.
+    if classic_face(ctx) != t.flat {
+        ctx.data_mut(|d| d.insert_temp(classic_face_id(), t.flat));
+        install_fonts(ctx);
+    }
     let mut v = if t.dark { Visuals::dark() } else { Visuals::light() };
     v.panel_fill = t.panel;
     v.window_fill = t.panel;
@@ -579,6 +651,11 @@ pub fn apply_with(ctx: &egui::Context, b: Brightness, accent: Accent, scheme: Sc
     w.inactive.bg_stroke = Stroke::NONE;
     w.hovered.bg_stroke = Stroke::new(1.0, t.input_border);
     w.active.bg_stroke = Stroke::new(1.0, t.accent);
+    if t.flat {
+        // VectorCraft 0.11's windows and menus.
+        v.window_corner_radius = CornerRadius::same(6);
+        v.menu_corner_radius = CornerRadius::same(6);
+    }
     ctx.set_visuals(v);
     ctx.global_style_mut(|s| {
         s.spacing.item_spacing = egui::vec2(6.0, 5.0);
@@ -635,6 +712,84 @@ mod tests {
             assert_ne!(classic.app_bar, classic.panel, "{b:?}: the cards need a frame");
             assert_eq!(classic.accent, Color32::from_rgb(0x37, 0x8e, 0xf0));
             assert_eq!(Scheme::parse(Scheme::Classic.id()), Some(Scheme::Classic));
+            assert!(!classic.flat && !modern.flat, "{b:?}: only Classic OG is flat");
         }
+    }
+
+    /// Classic OG is VectorCraft 0.11's look: Classic's greys and blue whatever accent is chosen,
+    /// the title bar the panels' grey at Medium Dark, 0.11's small corners, on flat chrome with pill
+    /// buttons.
+    #[test]
+    fn classic_og_is_0_11s_look() {
+        assert_eq!(Scheme::parse("classicOg"), Some(Scheme::ClassicOg));
+        assert_eq!(Scheme::parse("CLASSICOG"), Some(Scheme::ClassicOg));
+        let hex = |s: u32| Color32::from_rgb((s >> 16) as u8, (s >> 8) as u8, s as u8);
+        // 0.11's Medium Dark, the default brightness: one grey for the title bar and the panels.
+        let medium = Tokens::for_scheme(Scheme::ClassicOg, Brightness::MediumDark, Accent::Green);
+        assert_eq!((medium.app_bar, medium.panel, medium.tab_strip, medium.border), (hex(0x535353), hex(0x535353), hex(0x424242), hex(0x383838)));
+        // 0.11's Dark: a darker title bar over #323232 panels.
+        let dark = Tokens::for_scheme(Scheme::ClassicOg, Brightness::Dark, Accent::Pink);
+        assert_eq!((dark.app_bar, dark.panel), (hex(0x262626), hex(0x323232)));
+        for b in Brightness::ALL {
+            let (og, classic) = (Tokens::for_scheme(Scheme::ClassicOg, b, Accent::Violet), Tokens::classic(b));
+            assert!(og.flat, "{b:?}");
+            assert_eq!((og.radius, og.dark), (2, classic.dark), "{b:?}");
+            assert_eq!((og.panel, og.text, og.accent, og.tab_strip), (classic.panel, classic.text, classic.accent, classic.tab_strip), "{b:?}");
+            assert_ne!(og.tab_strip, og.panel, "{b:?}: the shown tab stands out of its strip");
+            assert_eq!(og.button_radius(28.0, 6), CornerRadius::same(14), "a pill");
+            assert_eq!(Tokens::for_brightness(b).button_radius(28.0, 6), CornerRadius::same(6));
+        }
+    }
+
+    /// Classic OG's cards are 0.11's flat panels: square, edged with the frame colour, no margin.
+    #[test]
+    fn flat_cards_are_square_panels() {
+        let flat = Tokens::classic_og(Brightness::MediumDark);
+        let ctx = egui::Context::default();
+        let mut rects = vec![];
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            card(ui, &flat, egui::Margin::same(6), |ui| {
+                ui.label("x");
+            });
+        });
+        out.textures_delta.clear();
+        fn walk(s: &egui::Shape, v: &mut Vec<egui::epaint::RectShape>) {
+            match s {
+                egui::Shape::Rect(r) => v.push(r.clone()),
+                egui::Shape::Vec(s) => s.iter().for_each(|s| walk(s, v)),
+                _ => {}
+            }
+        }
+        out.shapes.iter().for_each(|c| walk(&c.shape, &mut rects));
+        let panel = rects.iter().find(|r| r.fill == flat.panel).expect("the panel's fill");
+        assert_eq!((panel.corner_radius, panel.stroke.color), (CornerRadius::ZERO, flat.border));
+        assert_eq!(panel.rect.min, egui::Pos2::ZERO, "no margin");
+        assert!(!rects.iter().any(|r| r.fill == flat.app_bar && r.rect != panel.rect), "no frame around it: {rects:?}");
+    }
+
+    /// Classic OG sets the interface in Source Sans 3, as 0.11 did, and the other schemes in Inter.
+    #[test]
+    fn classic_og_switches_the_interface_font() {
+        let ctx = egui::Context::default();
+        install_fonts(&ctx);
+        apply(&ctx, Brightness::MediumDark);
+        let first = |ctx: &egui::Context| {
+            let mut first = String::new();
+            let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+                first =
+                    ui.ctx().fonts(|f| f.definitions().families.get(&FontFamily::Proportional).and_then(|v| v.first().cloned()).unwrap_or_default());
+            });
+            out.textures_delta.clear();
+            first
+        };
+        // set_fonts lands with the next pass.
+        let _ = first(&ctx);
+        assert_eq!(first(&ctx), "Inter");
+        apply_with(&ctx, Brightness::MediumDark, Accent::default(), Scheme::ClassicOg);
+        let _ = first(&ctx);
+        assert_eq!(first(&ctx), "SourceSans3");
+        apply_with(&ctx, Brightness::MediumDark, Accent::default(), Scheme::Classic);
+        let _ = first(&ctx);
+        assert_eq!(first(&ctx), "Inter");
     }
 }

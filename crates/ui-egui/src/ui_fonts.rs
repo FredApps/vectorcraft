@@ -32,6 +32,12 @@ impl UiFonts {
     /// After a frame is laid out: add the fallback fonts found since the last frame, and look for
     /// fonts covering the characters this frame painted that the UI fonts lack.
     pub(crate) fn frame(&mut self, ctx: &egui::Context) {
+        // A change to or from the Classic OG colour scheme installs the UI fonts again
+        // (`theme::apply_with`), without the fallbacks added here: look for them again.
+        if !self.added.is_empty() && ctx.fonts(|f| self.added.iter().any(|name| !f.definitions().font_data.contains_key(name))) {
+            self.added.clear();
+            self.seen.clear();
+        }
         #[cfg(not(target_arch = "wasm32"))]
         if let Some(faces) = self.pending.as_ref().and_then(|rx| rx.try_recv().ok()) {
             self.pending = None;

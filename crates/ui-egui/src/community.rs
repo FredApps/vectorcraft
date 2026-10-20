@@ -12,8 +12,9 @@ const DISCORD: Color32 = Color32::from_rgb(0x58, 0x65, 0xF2);
 
 /// The Discord button's label, height and width.
 fn discord_layout(ui: &Ui, large: bool) -> (std::sync::Arc<egui::Galley>, f32, f32) {
-    let (h, font, label) =
-        if large { (36.0, theme::semibold(14.0), tl!("Join our Discord")) } else { (24.0, egui::FontId::proportional(12.0), "Discord") };
+    // Classic OG: VectorCraft 0.11's semibold label in the app bar.
+    let bar_font = if Tokens::get(ui.ctx()).flat { theme::semibold(12.0) } else { egui::FontId::proportional(12.0) };
+    let (h, font, label) = if large { (36.0, theme::semibold(14.0), tl!("Join our Discord")) } else { (24.0, bar_font, "Discord") };
     let galley = ui.painter().layout_no_wrap(label.to_string(), font, Color32::PLACEHOLDER);
     let w = galley.size().x + h * 0.55 + h * 0.9;
     (galley, h, w)
@@ -24,14 +25,15 @@ pub fn discord_width(ui: &Ui, large: bool) -> f32 {
     discord_layout(ui, large).2
 }
 
-/// The Discord button: compact and quiet for the app bar, large for About / Home.
+/// The Discord button: compact and quiet for the app bar, large for About / Home. Classic OG keeps
+/// VectorCraft 0.11's Discord-coloured pill in the app bar too.
 pub fn discord_button(app: &mut VectorcraftApp, ui: &mut Ui, large: bool) -> egui::Response {
     let (galley, h, w) = discord_layout(ui, large);
     let icon = h * 0.55;
     let (r, resp) = ui.allocate_exact_size(vec2(w, h), Sense::click());
     let at = egui::pos2(0.0, r.center().y - galley.size().y / 2.0);
     let ir = egui::Rect::from_center_size(r.left_center() + vec2(h * 0.35 + icon / 2.0, 0.0), vec2(icon, icon));
-    if large {
+    if large || Tokens::get(ui.ctx()).flat {
         let fill = if resp.hovered() { DISCORD.gamma_multiply(0.85) } else { DISCORD };
         ui.painter().rect_filled(r, CornerRadius::same((h / 2.0) as u8), fill);
         icons::paint(ui, "message-circle", ir, Color32::WHITE);

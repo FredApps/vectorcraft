@@ -680,11 +680,19 @@ pub(crate) fn show(app: &mut VectorcraftApp, ui: &mut egui::Ui) -> bool {
         }
         let mut style = craft_ui::docking::DockStyle::from_ui(ui);
         style.tab_height = 33.0;
-        // The dock is a card (`theme::card`): its panes and tab strip lie on the card's colour
-        // (square fills would cover its rounded corners). Floating groups get the fills below.
-        style.background = egui::Color32::TRANSPARENT;
-        style.tab_background = egui::Color32::TRANSPARENT;
-        style.active_background = t.button;
+        if t.flat {
+            // Classic OG: VectorCraft 0.11's dock, the shown tab in the panel's grey on a darker
+            // tab strip.
+            style.background = t.panel;
+            style.tab_background = t.tab_strip;
+            style.active_background = t.panel;
+        } else {
+            // The dock is a card (`theme::card`): its panes and tab strip lie on the card's colour
+            // (square fills would cover its rounded corners). Floating groups get the fills below.
+            style.background = egui::Color32::TRANSPARENT;
+            style.tab_background = egui::Color32::TRANSPARENT;
+            style.active_background = t.button;
+        }
         style.text = t.text_strong;
         style.inactive_text = t.text_dim;
         style.border = egui::Stroke::new(1.0, t.border);

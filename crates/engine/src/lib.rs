@@ -916,8 +916,9 @@ pub struct Prefs {
     pub ui_brightness: String,
     /// User Interface › Accent Color: the colour of what is on, chosen or focused.
     pub ui_accent: String,
-    /// User Interface › Color Scheme: "modern" (with the accent above) or "classic" (neutral
-    /// greys and a blue accent).
+    /// User Interface › Color Scheme: "modern" (with the accent above), "classic" (neutral greys
+    /// and a blue accent) or "classicOg" (VectorCraft 0.11's look: Classic's greys on flat panels,
+    /// with tab strips, pill buttons and the desktop's caption buttons, as in PhotoCraft).
     pub ui_color_scheme: String,
     pub canvas_color: String,
     pub auto_collapse_icon_panels: bool,

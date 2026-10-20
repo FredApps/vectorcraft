@@ -3,8 +3,14 @@
 //! double-click there maximizes it, caption buttons at the far right minimize, maximize/restore and
 //! close, and thin invisible zones along the window's edges resize it. On macOS the app bar sits
 //! under the system's transparent title bar and only its [`drag_area`] is used.
+//!
+//! The caption buttons are Windows' 46 pt buttons. With the Classic OG colour scheme they follow the
+//! desktop instead, as PhotoCraft's do ([`CaptionStyle`], from [`crate::Services::caption_style`]):
+//! on Linux libadwaita's round buttons (GNOME), Breeze's (KDE, SteamOS) or a plain round set
+//! elsewhere, with the set of buttons and their side taken from the desktop's button layout. The
+//! shapes are drawn here.
 
-use egui::{CursorIcon, Id, LayerId, Order, PointerButton, Rect, ResizeDirection, Sense, Stroke, Ui, ViewportCommand, pos2, vec2};
+use egui::{Color32, CursorIcon, Id, LayerId, Order, PointerButton, Pos2, Rect, ResizeDirection, Sense, Stroke, Ui, ViewportCommand, pos2, vec2};
 use serde_json::json;
 
 use crate::VectorcraftApp;
@@ -12,21 +18,159 @@ use crate::theme::Tokens;
 
 /// One caption button: as wide as the native Windows ones.
 pub const BUTTON_WIDTH: f32 = 46.0;
-/// The three caption buttons together.
+/// The three Windows caption buttons together.
 pub const WIDTH: f32 = 3.0 * BUTTON_WIDTH;
 /// Resize zone thickness along an edge, and the side of a corner zone.
 const EDGE: f32 = 5.0;
 const CORNER: f32 = 12.0;
+/// Breeze's Close button on hover and press (KDE's Breeze decoration colours).
+const BREEZE_CLOSE_HOVER: Color32 = Color32::from_rgb(0xff, 0x98, 0xa2);
+const BREEZE_CLOSE_PRESSED: Color32 = Color32::from_rgb(0x6d, 0x22, 0x29);
 
-#[derive(Clone, Copy, PartialEq, Debug)]
-enum Caption {
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Caption {
     Minimize,
     Maximize,
     Close,
 }
 
-/// Left to right.
+/// Windows' order, left to right.
 const CAPTIONS: [Caption; 3] = [Caption::Minimize, Caption::Maximize, Caption::Close];
+
+/// Which desktop's caption buttons to look like (Classic OG).
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub enum CaptionFamily {
+    /// Windows 10/11: full-height buttons 46 pt wide; Close turns red on hover.
+    #[default]
+    Windows,
+    /// GNOME (libadwaita): 24 pt round buttons on a faint disc that darkens on hover and press.
+    Adwaita,
+    /// KDE (Breeze decoration): smaller round buttons, bare at rest, inverted on hover.
+    Breeze,
+    /// Other Linux desktops: libadwaita's buttons without the disc at rest.
+    Generic,
+}
+
+impl CaptionFamily {
+    /// `windows`, `adwaita`, `breeze` or `generic`, in any case.
+    pub fn parse(name: &str) -> Option<Self> {
+        match name.trim().to_ascii_lowercase().as_str() {
+            "windows" => Some(Self::Windows),
+            "adwaita" => Some(Self::Adwaita),
+            "breeze" => Some(Self::Breeze),
+            "generic" => Some(Self::Generic),
+            _ => None,
+        }
+    }
+
+    /// The button side, gap on each side of it, and gap between the outermost button and the
+    /// window's edge. libadwaita: 24 pt buttons 13 pt apart, 10 pt from the edge (the gap is split
+    /// between neighbours, so the hit areas touch). Breeze sizes buttons by the font (about 1.3 em,
+    /// 18 pt at KDE's default 10 pt font), half a button apart, 8 pt from the edge.
+    fn metrics(self) -> (f32, f32, f32) {
+        match self {
+            Self::Windows => (BUTTON_WIDTH, 0.0, 0.0),
+            Self::Adwaita | Self::Generic => (24.0, 6.5, 10.0),
+            Self::Breeze => (18.0, 4.5, 8.0),
+        }
+    }
+}
+
+/// The caption buttons' look and placement.
+#[derive(Clone, PartialEq, Debug)]
+pub struct CaptionStyle {
+    pub family: CaptionFamily,
+    /// The buttons at the bar's left end, left to right.
+    pub left: Vec<Caption>,
+    /// The buttons at the bar's right end, left to right.
+    pub right: Vec<Caption>,
+}
+
+impl Default for CaptionStyle {
+    fn default() -> Self {
+        Self { family: CaptionFamily::Windows, left: vec![], right: CAPTIONS.to_vec() }
+    }
+}
+
+impl CaptionStyle {
+    /// `family` with the buttons a GTK decoration layout names (`gtk-decoration-layout`, GNOME's
+    /// `button-layout`, e.g. `appmenu:minimize,maximize,close`): those before the colon go left,
+    /// those after it right; without a colon all go left, as in GTK. Names other than `minimize`,
+    /// `maximize` and `close` (`appmenu`, `icon`, `spacer`, …) are skipped, and a button named
+    /// twice is placed once.
+    pub fn from_gtk_layout(family: CaptionFamily, layout: &str) -> Self {
+        let (left, right) = layout.split_once(':').unwrap_or((layout, ""));
+        let mut seen = vec![];
+        let mut side = |names: &str| {
+            let mut v = vec![];
+            for name in names.split(',') {
+                let c = match name.trim() {
+                    "minimize" => Caption::Minimize,
+                    "maximize" => Caption::Maximize,
+                    "close" => Caption::Close,
+                    _ => continue,
+                };
+                if !seen.contains(&c) {
+                    seen.push(c);
+                    v.push(c);
+                }
+            }
+            v
+        };
+        let left = side(left);
+        let right = side(right);
+        Self { family, left, right }
+    }
+}
+
+/// The caption style in use: the desktop's (as the host reports it) with Classic OG, Windows'
+/// otherwise and when the host reports none.
+fn style(app: &VectorcraftApp, ctx: &egui::Context) -> CaptionStyle {
+    if Tokens::get(ctx).flat { app.services.caption_style.clone().unwrap_or_default() } else { CaptionStyle::default() }
+}
+
+/// The width the caption buttons take at the bar's (left, right) end: zero for a side without
+/// buttons, and for both without the custom title bar.
+pub fn reserved(app: &VectorcraftApp, ctx: &egui::Context) -> (f32, f32) {
+    if !app.custom_titlebar {
+        return (0.0, 0.0);
+    }
+    let s = style(app, ctx);
+    let width = |side: &[Caption]| slots(s.family, side, 0.0, true).last().map_or(0.0, |(_, r, _)| r.1);
+    (width(&s.left), width(&s.right))
+}
+
+/// Each button's horizontal extent (left, right) and face centre on a side starting at `from`, in
+/// order. `outer_left` puts the edge gap on the first button's left (the left end) instead of the
+/// last button's right.
+fn slots(family: CaptionFamily, side: &[Caption], from: f32, outer_left: bool) -> Vec<(Caption, (f32, f32), f32)> {
+    let (size, gap, end) = family.metrics();
+    let mut x = from;
+    let n = side.len();
+    side.iter()
+        .enumerate()
+        .map(|(i, &c)| {
+            let before = if outer_left && i == 0 { end } else { gap };
+            let after = if !outer_left && i + 1 == n { end } else { gap };
+            let slot = (x, x + before + size + after);
+            let centre = x + before + size / 2.0;
+            x = slot.1;
+            (c, slot, centre)
+        })
+        .collect()
+}
+
+/// Every caption button's hit rect (full bar height down to its bottom border, flush with the
+/// window's edge) and face centre, for a bar `bar` between the window's `left` and `right` edges.
+fn layout(s: &CaptionStyle, bar: Rect, left: f32, right: f32) -> Vec<(Caption, Rect, Pos2)> {
+    let rect = |(c, (l, r), centre): (Caption, (f32, f32), f32)| {
+        (c, Rect::from_min_max(pos2(l, bar.top()), pos2(r, bar.bottom() - 1.0)), pos2(centre, bar.center().y))
+    };
+    let lefts = slots(s.family, &s.left, left, true);
+    let width = slots(s.family, &s.right, 0.0, false).last().map_or(0.0, |(_, r, _)| r.1);
+    let rights = slots(s.family, &s.right, right - width, false);
+    lefts.into_iter().chain(rights).map(rect).collect()
+}
 
 /// Caption button ids (stable, so tests and agents can find them).
 fn caption_id(c: Caption) -> Id {
@@ -69,33 +213,47 @@ fn handed_to_os(ctx: &egui::Context) {
     ctx.input_mut(|i| i.pointer = Default::default());
 }
 
-/// Minimize, Maximize/Restore and Close at the right end of `bar` (the app bar's outer rect), full
-/// bar height down to its bottom border, flush with the window's edge so a maximized window's
-/// corner hits Close. Close runs `app.quit`, which asks about unsaved documents first.
+/// Minimize, Maximize/Restore and Close at the ends of `bar` (the app bar's outer rect), full bar
+/// height down to its bottom border, flush with the window's edges so a maximized window's corner
+/// hits the outermost one: Windows' buttons at the right end, or with Classic OG the desktop's
+/// ([`style`]). Close runs `app.quit`, which asks about unsaved documents first. The desktop's round
+/// buttons drag the window too, as GTK's and KDE's do.
 pub fn caption_buttons(app: &mut VectorcraftApp, ui: &mut Ui, bar: Rect) {
     let t = Tokens::get(ui.ctx());
+    let s = style(app, ui.ctx());
     let max = maximized(ui.ctx());
+    let content = ui.ctx().content_rect();
+    let windows = s.family == CaptionFamily::Windows;
     let mut clicked = None;
-    for (i, c) in CAPTIONS.into_iter().enumerate() {
-        let r = Rect::from_min_size(pos2(bar.right() - WIDTH + i as f32 * BUTTON_WIDTH, bar.top()), vec2(BUTTON_WIDTH, bar.height() - 1.0));
-        let resp = ui.interact(r, caption_id(c), Sense::click());
-        let close = c == Caption::Close;
-        let fill = match (resp.is_pointer_button_down_on(), resp.hovered()) {
-            (true, _) if close => t.caption_close.gamma_multiply(0.8),
-            (_, true) if close => t.caption_close,
-            (true, _) => t.tool_active,
-            (_, true) => t.hover,
-            _ => egui::Color32::TRANSPARENT,
-        };
-        ui.painter().rect_filled(r, 0.0, fill);
-        let ink = if close && resp.hovered() { t.caption_close_text } else { t.icon };
-        paint_glyph(ui, c, max, r.center(), Stroke::new(1.0, ink));
+    for (c, r, centre) in layout(&s, bar, bar.left().max(content.left()), bar.right().min(content.right())) {
+        let resp = ui.interact(r, caption_id(c), if windows { Sense::click() } else { Sense::click_and_drag() });
+        if resp.drag_started_by(PointerButton::Primary) {
+            ui.ctx().send_viewport_cmd(ViewportCommand::StartDrag);
+            handed_to_os(ui.ctx());
+        }
+        if windows {
+            let close = c == Caption::Close;
+            let fill = match (resp.is_pointer_button_down_on(), resp.hovered()) {
+                (true, _) if close => t.caption_close.gamma_multiply(0.8),
+                (_, true) if close => t.caption_close,
+                (true, _) => t.tool_active,
+                (_, true) => t.hover,
+                _ => Color32::TRANSPARENT,
+            };
+            ui.painter().rect_filled(r, 0.0, fill);
+            let ink = if close && resp.hovered() { t.caption_close_text } else { t.icon };
+            paint_glyph(ui, c, max, r.center(), Stroke::new(1.0, ink));
+        } else {
+            let pressed = resp.is_pointer_button_down_on() && resp.hovered();
+            paint_round(ui, &t, s.family, c, max, centre, resp.hovered(), pressed);
+        }
         let tip = match c {
             Caption::Minimize => tl!("Minimize"),
             Caption::Maximize if max => tl!("Restore"),
             Caption::Maximize => tl!("Maximize"),
             Caption::Close => tl!("Close"),
         };
+        resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, tip));
         if resp.on_hover_text(tip).clicked() {
             clicked = Some(c);
         }
@@ -110,7 +268,7 @@ pub fn caption_buttons(app: &mut VectorcraftApp, ui: &mut Ui, bar: Rect) {
     }
 }
 
-/// The 10 pt line glyphs of the caption buttons.
+/// The 10 pt line glyphs of the Windows caption buttons.
 fn paint_glyph(ui: &Ui, c: Caption, maximized: bool, at: egui::Pos2, s: Stroke) {
     let p = ui.painter();
     let g = Rect::from_center_size(at, vec2(10.0, 10.0));
@@ -130,6 +288,84 @@ fn paint_glyph(ui: &Ui, c: Caption, maximized: bool, at: egui::Pos2, s: Stroke) 
         Caption::Close => {
             p.line_segment([g.left_top(), g.right_bottom()], s);
             p.line_segment([g.right_top(), g.left_bottom()], s);
+        }
+    }
+}
+
+/// A round Linux caption button centred at `centre`: its disc, then its glyph on a 16 pt grid. The
+/// disc is the icon colour at a fraction of its opacity (libadwaita's `alpha(currentColor)`), so it
+/// suits light and dark themes alike; Breeze instead fills it with the icon colour on hover and
+/// draws the glyph in the bar's colour. The same shapes as PhotoCraft's.
+#[allow(clippy::too_many_arguments)]
+fn paint_round(ui: &Ui, t: &Tokens, family: CaptionFamily, c: Caption, maximized: bool, centre: Pos2, hovered: bool, pressed: bool) {
+    let (size, _, _) = family.metrics();
+    // Whole pixels, so the glyphs' edges stay sharp.
+    let ppp = ui.ctx().pixels_per_point();
+    let centre = pos2((centre.x * ppp).round() / ppp, (centre.y * ppp).round() / ppp);
+    let close = c == Caption::Close;
+    let (fill, ink) = if family == CaptionFamily::Breeze {
+        match (hovered, pressed) {
+            (_, true) if close => (BREEZE_CLOSE_PRESSED, t.app_bar),
+            (true, _) if close => (BREEZE_CLOSE_HOVER, t.app_bar),
+            (_, true) => (t.icon.gamma_multiply(0.5), t.app_bar),
+            (true, _) => (t.icon, t.app_bar),
+            _ => (Color32::TRANSPARENT, t.icon),
+        }
+    } else {
+        let rest = if family == CaptionFamily::Adwaita { 0.10 } else { 0.0 };
+        let target = if pressed {
+            0.30
+        } else if hovered {
+            0.15
+        } else {
+            rest
+        };
+        // libadwaita eases the disc over 0.2 s.
+        let a = ui.ctx().animate_value_with_time(caption_id(c).with("disc"), target, 0.2);
+        (t.icon.gamma_multiply(a), t.icon)
+    };
+    let p = ui.painter();
+    if fill.a() > 0 {
+        p.circle_filled(centre, size / 2.0, fill);
+    }
+    // The glyph grid: 16 pt, or 2 pt less than a smaller button.
+    let k = (size - 2.0).min(16.0) / 16.0;
+    let at = |x: f32, y: f32| centre + vec2(x - 8.0, y - 8.0) * k;
+    if family == CaptionFamily::Breeze {
+        // Breeze: 1 pt chevrons (down to minimize, up to maximize), a diamond to restore, an X.
+        let s = Stroke::new(1.0, ink);
+        match c {
+            Caption::Minimize => {
+                p.line(vec![at(2.5, 5.5), at(8.0, 11.0), at(13.5, 5.5)], s);
+            }
+            Caption::Maximize if maximized => {
+                p.add(egui::Shape::closed_line(vec![at(8.0, 3.0), at(13.0, 8.0), at(8.0, 13.0), at(3.0, 8.0)], s));
+            }
+            Caption::Maximize => {
+                p.line(vec![at(2.5, 10.5), at(8.0, 5.0), at(13.5, 10.5)], s);
+            }
+            Caption::Close => {
+                let s = Stroke::new(1.2, ink);
+                p.line_segment([at(3.6, 3.6), at(12.4, 12.4)], s);
+                p.line_segment([at(12.4, 3.6), at(3.6, 12.4)], s);
+            }
+        }
+    } else {
+        // libadwaita: a 2 pt bar low down, a 2 pt square outline (smaller to restore), an X.
+        let frame = |a: f32, b: f32| Rect::from_min_max(at(a, a), at(b, b));
+        match c {
+            Caption::Minimize => {
+                p.rect_filled(Rect::from_min_max(at(4.0, 10.0), at(12.0, 12.0)), 0.0, ink);
+            }
+            Caption::Maximize => {
+                let square = if maximized { frame(5.0, 11.0) } else { frame(4.0, 12.0) };
+                p.rect_stroke(square, 0.0, Stroke::new(2.0 * k, ink), egui::StrokeKind::Inside);
+            }
+            Caption::Close => {
+                let s = Stroke::new(1.5 * k, ink);
+                p.line_segment([at(4.5, 4.5), at(11.5, 11.5)], s);
+                p.line_segment([at(11.5, 4.5), at(4.5, 11.5)], s);
+            }
         }
     }
 }
@@ -418,5 +654,128 @@ mod tests {
         let mut cmds = sent(w.frame(vec![button(moved, false)]));
         cmds.extend(w.click(moved));
         assert!(cmds.is_empty(), "{cmds:?}");
+    }
+
+    /// A [`Win`] in the Classic OG colour scheme on a desktop whose caption buttons are `style`.
+    fn classic_og(width: f32, style: CaptionStyle) -> Win {
+        let mut w = Win::new(width);
+        crate::theme::apply_with(&w.ctx, Default::default(), Default::default(), crate::theme::Scheme::ClassicOg);
+        w.app.services.caption_style = Some(style);
+        w
+    }
+
+    /// Classic OG draws the desktop's caption buttons, as PhotoCraft does: round buttons where the
+    /// desktop's layout puts them, flush with the window's edges, the bar's widgets clear of them;
+    /// they click, and a drag that starts on one moves the window.
+    #[test]
+    fn classic_og_draws_the_desktops_buttons_where_its_layout_puts_them() {
+        use Caption::*;
+        for (family, size, gap, end) in [(CaptionFamily::Adwaita, 24.0, 6.5, 10.0), (CaptionFamily::Breeze, 18.0, 4.5, 8.0)] {
+            let width = 1100.0;
+            let mut w = classic_og(width, CaptionStyle { family, left: vec![Close], right: vec![Minimize, Maximize] });
+            w.frame(vec![]);
+            w.frame(vec![]);
+            let [min, max, close] = CAPTIONS.map(|c| w.caption(c));
+            assert_eq!((close.left(), close.width()), (0.0, end + size + gap), "{family:?}");
+            assert_eq!((max.right(), max.width()), (width, gap + size + end), "{family:?}");
+            assert_eq!((min.right(), min.width()), (max.left(), 2.0 * gap + size), "{family:?}");
+            assert_eq!(reserved(&w.app, &w.ctx), (end + size + gap, 2.0 * gap + size + gap + size + end), "{family:?}");
+            for a in w.bar_widgets() {
+                assert!(a.left() >= close.right() && a.right() <= min.left(), "{a:?} runs into the caption buttons ({family:?})");
+            }
+            assert!(w.click(max.center()).contains(&ViewportCommand::Maximized(true)));
+            assert!(w.click(min.center()).contains(&ViewportCommand::Minimized(true)));
+            // A drag that starts on a button moves the window instead of pressing it.
+            let at = min.center();
+            let cmds = w.gesture(&[at, at + vec2(12.0, 4.0), at + vec2(30.0, 8.0)]);
+            assert_eq!(cmds.iter().filter(|c| matches!(c, ViewportCommand::StartDrag)).count(), 1, "{cmds:?}");
+            assert!(!cmds.contains(&ViewportCommand::Minimized(true)), "{cmds:?}");
+            // Close quits, asking first about unsaved work.
+            w.click(close.center());
+            assert_eq!(w.app.ui.status, "quit", "{family:?}");
+        }
+    }
+
+    /// KDE's default layout (SteamOS's desktop mode): Breeze's three buttons at the right end, and
+    /// the bar's controls stop before them.
+    #[test]
+    fn classic_og_on_kde_puts_breezes_buttons_at_the_right() {
+        let style = CaptionStyle::from_gtk_layout(CaptionFamily::Breeze, ":minimize,maximize,close");
+        let mut w = classic_og(1440.0, style);
+        w.frame(vec![]);
+        w.frame(vec![]);
+        let [min, max, close] = CAPTIONS.map(|c| w.caption(c));
+        assert_eq!(close.right(), 1440.0);
+        assert!(min.right() <= max.left() && max.right() <= close.left());
+        assert!([min, max, close].iter().all(|r| r.width() < BUTTON_WIDTH), "round buttons, not Windows' 46 pt ones");
+        for a in w.bar_widgets() {
+            assert!(a.right() <= min.left() - 8.0, "{a:?} runs into the caption buttons");
+        }
+    }
+
+    /// The other colour schemes keep Windows' buttons whatever the desktop.
+    #[test]
+    fn other_schemes_keep_windows_buttons() {
+        let mut w = Win::new(1100.0);
+        w.app.services.caption_style = Some(CaptionStyle::from_gtk_layout(CaptionFamily::Breeze, "close:minimize"));
+        w.frame(vec![]);
+        w.frame(vec![]);
+        let [min, max, close] = CAPTIONS.map(|c| w.caption(c));
+        assert!([min, max, close].iter().all(|r| r.width() == BUTTON_WIDTH));
+        assert_eq!(close.right(), 1100.0);
+        assert_eq!(reserved(&w.app, &w.ctx), (0.0, WIDTH));
+        // Without the custom title bar no side is reserved.
+        w.app.custom_titlebar = false;
+        assert_eq!(reserved(&w.app, &w.ctx), (0.0, 0.0));
+    }
+
+    /// Classic OG's bar shows the title in the room between the menus and the controls, as
+    /// PhotoCraft's does: centred on the window, slid along near the menus, shortened, or left out,
+    /// and never over them.
+    #[test]
+    fn classic_og_centres_the_title() {
+        let mut slid = false;
+        for width in (700..=1440).step_by(20) {
+            let width = width as f32;
+            let mut w = classic_og(width, CaptionStyle::from_gtk_layout(CaptionFamily::Breeze, ":minimize,maximize,close"));
+            w.frame(vec![]);
+            let out = w.frame(vec![]);
+            // The title, whole or shortened ("Vect…"); never over the menus or the controls.
+            let titles: Vec<(String, Rect)> = texts(&out)
+                .into_iter()
+                .filter(|(t, _)| {
+                    let start = t.trim_end_matches('…');
+                    !start.is_empty() && "VectorCraft".starts_with(start)
+                })
+                .collect();
+            for (t, r) in &titles {
+                for a in w.bar_widgets() {
+                    assert!(!a.intersects(r.shrink(0.5)), "{width}: {t} over {a:?}");
+                }
+            }
+            let whole = titles.iter().find(|(t, _)| t == "VectorCraft").map(|(_, r)| *r);
+            if width == 1440.0 {
+                let title = whole.expect("the whole title");
+                assert!((title.center().x - 720.0).abs() < 1.0, "centred on the window: {title:?}");
+            }
+            // Where centring would bring it near the menus, PhotoCraft's title slides along whole.
+            slid |= whole.is_some_and(|r| (r.center().x - width / 2.0).abs() > 1.0);
+        }
+        assert!(slid, "some width slides the title along instead of shortening it");
+    }
+
+    #[test]
+    fn gtk_layouts_pick_the_buttons_and_their_sides() {
+        use Caption::*;
+        let s = CaptionStyle::from_gtk_layout(CaptionFamily::Adwaita, "appmenu:minimize,maximize,close");
+        assert_eq!((s.left, s.right), (vec![], vec![Minimize, Maximize, Close]));
+        // Unknown names are skipped, spaces trimmed, a repeat placed once, a second colon is a name.
+        let s = CaptionStyle::from_gtk_layout(CaptionFamily::Adwaita, "close,close , minimize:icon,maximize:close");
+        assert_eq!((s.left, s.right), (vec![Close, Minimize], vec![]));
+        let s = CaptionStyle::from_gtk_layout(CaptionFamily::Breeze, "minimize,close");
+        assert_eq!((s.left, s.right), (vec![Minimize, Close], vec![]), "no colon: GTK puts them all at the start");
+        assert_eq!(CaptionFamily::parse(" Breeze "), Some(CaptionFamily::Breeze));
+        assert_eq!(CaptionFamily::parse("aqua"), None);
+        assert_eq!(CaptionStyle::default(), CaptionStyle { family: CaptionFamily::Windows, left: vec![], right: CAPTIONS.to_vec() });
     }
 }
