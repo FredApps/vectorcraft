@@ -4587,6 +4587,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "vectorcraft-cdr"
+version = "0.13.1"
+dependencies = [
+ "crc32fast",
+ "flate2",
+ "image",
+ "proptest",
+ "vectorcraft-color",
+ "vectorcraft-doc",
+ "vectorcraft-geom",
+]
+
+[[package]]
 name = "vectorcraft-cli"
 version = "0.13.1"
 dependencies = [
@@ -4673,6 +4686,7 @@ dependencies = [
  "vectorcraft-affinity",
  "vectorcraft-brush",
  "vectorcraft-cad",
+ "vectorcraft-cdr",
  "vectorcraft-color",
  "vectorcraft-doc",
  "vectorcraft-eps",

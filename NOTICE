@@ -92,3 +92,12 @@ Assets already bundled through Hayro's default features retain their licences:
   non-visual character-mapping data; see licenses/pdf-backend/hayro-cmap/LICENSE.txt.
   Adobe and contributor names do not endorse or promote this product.
 Per-file hashes and sources are recorded in ASSETS.md.
+
+CorelDRAW file-format reference
+
+The independent Rust CDR reader consulted the MIT-licensed Kaitai CDR grammar
+(Copyright 2020 Kaitai team), at revision 9d8e2704b946961f5114115f1a488750a3c86ed0:
+https://github.com/kaitai-io/coreldraw_cdr.ksy.
+Its attribution and MIT license are retained in crates/cdr/LICENSE-kaitai.txt.
+Further documentation and the original-fixture verification boundary are recorded
+in crates/cdr/README.md and docs/cdr-import.md.

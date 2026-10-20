@@ -1118,6 +1118,7 @@ mod tests {
         ("af", "application/x-affinity"),
         ("afdesign", "application/x-affinity"),
         ("afpub", "application/x-affinity"),
+        ("cdr", "application/vnd.corel-draw"),
     ];
 
     /// The types in `LINUX_TYPES` that shared-mime-info defines. The MIME package declares every
@@ -1137,6 +1138,7 @@ mod tests {
         "image/emf",
         "image/wmf",
         "image/x-eps",
+        "application/vnd.corel-draw",
     ];
 
     /// Extensions in `LINUX_TYPES` whose type the MIME package matches by file content and not by a

@@ -17,7 +17,7 @@ from the public specifications, and users' own `.ai` files are used locally only
 
 | | Illustrator | VectorCraft | Notes |
 |---|---:|---:|---|
-| Formats opened or placed | ~30 | 25 | missing: FreeHand, CorelDRAW, DWG, HEIC/HEIF, JPEG 2000, PICT, PCX, Pixar, Word `.doc`, PS |
+| Formats opened or placed | ~30 | 26 | CorelDRAW import is partial; missing: FreeHand, DWG, HEIC/HEIF, JPEG 2000, PICT, PCX, Pixar, Word `.doc`, PS |
 | Formats saved (Save As) | 6 (AI, AIT, PDF, EPS, SVG, SVGZ) | 6 + native | `.ai` written PDF-compatible (no Illustrator editing data) or as legacy version 7 (layers and groups, one artboard per file) |
 | Formats exported | ~16 | 17 | missing: DWG, 3D (OBJ/USDA/glTF); extra: GIF/PNG-8 palette export, DXF up to 2018, layered PSD |
 | **Overall (weighted by use)** | | **~75%** | `.ai` and PDF dominate the weighting |
@@ -108,7 +108,7 @@ the app's own editing copy of a file (an EPS after its `%%EOF`, a `.ai`'s `AIPri
 | JPEG 2000 | open, place | no | no | |
 | PICT, PCX, Pixar PXR | open, place (legacy) | no | no | rarely used |
 | FreeHand `.fh*` | open (legacy) | no | no | |
-| CorelDRAW `.cdr` | open | no | no | |
+| CorelDRAW `.cdr` | open | partial | no | native geometry, pages, groups, paint and cropped embedded images; explicit loss warnings; see [CDR import](cdr-import.md) |
 | Text `.txt` | place, export | place (Text Import Options) | yes | |
 | RTF `.rtf` | place | place (area type with fonts, size, bold, italic, underline, strikethrough, caps, superscript and subscript, color, alignment, indents and paragraph spacing) | no | `tests_textimport.rs`, `place/rtf.rs`; fuzzed (`text_import_fuzz.rs`); `\'hh` bytes read as Windows-1252 or Mac Roman only |
 | Word `.docx` | place | place (area type with the document's styles and its fonts, size, bold, italic, underline, strikethrough, caps, superscript and subscript, color, alignment, indents and paragraph spacing) | no | `tests_textimport.rs`, `place/docx.rs`; fuzzed (`text_import_fuzz.rs`); list numbers, pictures and text boxes are left out |
@@ -131,6 +131,10 @@ the app's own editing copy of a file (an EPS after its `%%EOF`, a `.ai`'s `AIPri
 | Date | Change | Summary |
 |---|---|---|
 | 2026-10-18 | minor | DXF circular cubic paths export as native CIRCLE/ARC where stroke semantics permit (R13–2018 for weighted strokes; R12 weighted strokes remain POLYLINE); R12 stroked circles/arcs retain their POLYLINE width, and ClosePath geometry with an implicit closing chord is not promoted to CIRCLE (#1299); scores and hours unchanged |
+| 2026-10-19 | minor | CDR.1: bounded native CorelDRAW import, explicit feature-loss warnings and original CorelDRAW 15/16/27 fixture checks; see [CDR import](cdr-import.md). Scores and estimates unchanged. |
+| 2026-10-19 | minor | CDR.4: native embedded bitmap data, continuous alpha and editable crop outlines; first display fits artwork outside every artboard without changing document coordinates. Original bitmap/SVG oracles and viewport regressions; scores and estimates unchanged. |
+| 2026-10-20 | minor | CDR.5: keep CDR revision entries apart from the shared format summary and the current upstream history entry, allowing independent format documentation updates to merge. |
+| 2026-10-20 | minor | CDR.6: share identical bitmap resource aliases before decoding; accept different raw encodings of the same image identifier only when dimensions and complete decoded PNG bytes agree; retain cumulative work quotas and reject conflicting content. |
 | 2026-10-17 | minor | PDF Place and clipboard paste preserve live text; explicit outlines remain supported on Place. Synthetic regressions; scores and hours unchanged. |
 | 2026-10-16 | minor | An Illustrator 3 file without prolog or layers (an image editor's exported paths) opens with its art on one layer instead of being refused (storytold/photocraft#6036); scores unchanged |
 | 2026-10-16 | minor | EPS editing data: legacy mesh corners, vector opacity masks and compound member paint retained; raster page comparison filters minification without relaxing limits; scores and hours unchanged. Synthetic EPS/parser/minification regressions; user EPS/SVG/JPG kept local. |

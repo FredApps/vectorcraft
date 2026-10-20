@@ -158,12 +158,16 @@ pub fn mods(m: egui::Modifiers, space: bool) -> Mods {
 
 /// Fit the view (View → Fit Artboard / Fit All / Actual Size).
 pub fn fit(app: &mut VectorcraftApp, how: &str) {
-    let Some(rect) = app.canvas_rect else {
+    // An explicit navigation command takes precedence over a pending first-display hint.
+    if let Some(v) = app.view_mut() {
+        v.initial_target = None;
+    }
+    if app.canvas_rect.is_none() {
         if let Some(v) = app.view_mut() {
             v.fitted = false;
         }
         return;
-    };
+    }
     let current = app.view().map_or(0, |v| v.artboard);
     let Some(st) = app.session.active() else { return };
     let target = match how {
@@ -174,7 +178,13 @@ pub fn fit(app: &mut VectorcraftApp, how: &str) {
         _ => st.doc.artboards.get(current).or(st.doc.artboards.first()).map(|a| a.rect),
     };
     let Some(target) = target else { return };
-    let zoom = if how == "view.actualSize" {
+    fit_rect(app, target, how == "view.actualSize");
+}
+
+/// Fit a camera target without moving artwork or changing an artboard.
+fn fit_rect(app: &mut VectorcraftApp, target: Rect, actual_size: bool) {
+    let Some(rect) = app.canvas_rect else { return };
+    let zoom = if actual_size {
         actual_size_zoom(app.session.prefs.display_print_size)
     } else {
         // The width and height of the box round the target turned with the view, at zoom 1.
@@ -221,7 +231,10 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
     app.canvas_rect = Some(rect);
     let fitted = app.view().is_some_and(|v| v.fitted);
     if !fitted {
-        fit(app, "view.fitArtboard");
+        match app.view_mut().and_then(|v| v.initial_target.take()) {
+            Some(target) => fit_rect(app, target, false),
+            None => fit(app, "view.fitArtboard"),
+        }
     }
     // Before the canvas's own interaction, so the view the canvas draws is the one they moved to.
     if bars {
@@ -6179,6 +6192,77 @@ mod tests {
         app.session.execute("prefs.set", &json!({"key": "displayPrintSize", "value": true})).unwrap();
         app.run("view.actualSize", json!({})).unwrap();
         assert!((app.view().unwrap().zoom - 96.0 / 72.0).abs() < 1e-12, "an inch is 96 screen points");
+    }
+
+    /// Create original geometry well outside its artboard without storing a camera.
+    fn off_artboard_session() -> Session {
+        let mut session = Session::new();
+        session.execute("file.new", &json!({"width": 842, "height": 595})).unwrap();
+        session.execute("shape.rectangle", &json!({"x": -12000, "y": 9000, "width": 960, "height": 1300})).unwrap();
+        session
+    }
+
+    /// An imported drawing can keep its art metres away from its real page. Only the camera
+    /// changes, and the target waits for the first canvas rather than using an absent size.
+    #[test]
+    fn first_frame_fits_off_artboard_art_without_changing_document() {
+        let mut app = VectorcraftApp::new(off_artboard_session(), Default::default());
+        let before = app.session.doc().unwrap().doc.clone();
+        let undo = app.session.doc().unwrap().history.undo.len();
+        let target = vectorcraft_render::encode::art_bounds(&before).unwrap();
+        assert_eq!(app.view().unwrap().initial_target, Some(target));
+        assert!(app.canvas_rect.is_none());
+        assert!(!app.view().unwrap().fitted);
+        assert!(serde_json::to_value(app.view().unwrap()).unwrap().get("initial_target").is_none());
+        frame(&mut app, &egui::Context::default(), vec![]);
+        let view = app.view().unwrap();
+        assert_eq!(view.center, target.center());
+        assert!(view.fitted && view.initial_target.is_none());
+        let canvas = app.canvas_rect.unwrap();
+        assert!(Xf::new(canvas, view).quad(target).iter().all(|p| canvas.contains(*p)));
+        assert!(std::sync::Arc::ptr_eq(&before, &app.session.doc().unwrap().doc));
+        assert_eq!(app.session.doc().unwrap().history.undo.len(), undo);
+        app.run("view.fitArtboard", json!({})).unwrap();
+        assert_eq!(app.view().unwrap().center, before.artboards[0].rect.center());
+    }
+
+    #[test]
+    /// Keep the usual page framing when there is no artwork or its bounds touch the page.
+    fn first_frame_keeps_artboard_for_empty_or_overlapping_art() {
+        for x in [None, Some(20), Some(-10)] {
+            let mut session = Session::new();
+            session.execute("file.new", &json!({"width": 200, "height": 100})).unwrap();
+            if let Some(x) = x {
+                session.execute("shape.rectangle", &json!({"x": x, "y": 20, "width": 40, "height": 30})).unwrap();
+            }
+            let mut app = VectorcraftApp::new(session, Default::default());
+            let before = app.session.doc().unwrap().doc.clone();
+            assert!(app.view().unwrap().initial_target.is_none());
+            frame(&mut app, &egui::Context::default(), vec![]);
+            assert_eq!(app.view().unwrap().center, before.artboards[0].rect.center());
+            assert!(std::sync::Arc::ptr_eq(&before, &app.session.doc().unwrap().doc));
+        }
+    }
+
+    #[test]
+    /// Honor a stored camera and allow explicit navigation to cancel the initial artwork target.
+    fn saved_view_and_explicit_artboard_fit_override_off_page_initial_target() {
+        let mut session = off_artboard_session();
+        let saved = vectorcraft_doc::SavedView { name: String::new(), center: Point::new(12.0, 34.0), zoom: 2.0, rotation: 15.0 };
+        session.doc_mut().unwrap().view = Some(saved.clone());
+        let mut app = VectorcraftApp::new(session, Default::default());
+        assert!(app.view().unwrap().fitted);
+        assert!(app.view().unwrap().initial_target.is_none());
+        frame(&mut app, &egui::Context::default(), vec![]);
+        let view = app.view().unwrap();
+        assert_eq!((view.center, view.zoom, view.rotation), (saved.center, saved.zoom, saved.rotation));
+
+        let mut app = VectorcraftApp::new(off_artboard_session(), Default::default());
+        assert!(app.view().unwrap().initial_target.is_some());
+        fit(&mut app, "view.fitArtboard");
+        assert!(app.view().unwrap().initial_target.is_none());
+        frame(&mut app, &egui::Context::default(), vec![]);
+        assert_eq!(app.view().unwrap().center, app.session.doc().unwrap().doc.artboards[0].rect.center());
     }
 
     /// Fit Artboard in Window fits the artboard as a rotated view shows it: at 45° every corner is

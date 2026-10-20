@@ -665,6 +665,7 @@ pub const FORMATS: &[Format] = &[
     reader("psb", "PSB", &["psb"], "image/x-psb", true),
     // PostScript programs, read as EPS files are; Print to PostScript writes them, exports don't.
     reader("ps", "PostScript", &["ps"], "application/postscript", false),
+    reader("cdr", "CorelDRAW", &["cdr"], "application/vnd.corel-draw", false),
 ];
 
 /// Every extension `document.open` reads (the "All readable files" filter of open dialogs).
@@ -700,6 +701,7 @@ pub const OPEN_EXTS: &[&str] = &[
     "af",
     "afdesign",
     "afpub",
+    "cdr",
 ];
 
 /// Extensions in [`OPEN_EXTS`] the packaging declares no type for: Photoshop documents belong to
@@ -764,6 +766,7 @@ pub const PLACE_EXTS: &[&str] = &[
     "af",
     "afdesign",
     "afpub",
+    "cdr",
     "txt",
     "rtf",
     "docx",
@@ -1319,6 +1322,8 @@ pub(crate) fn write_or_return(path: Option<&str>, bytes: &[u8], extra: Value) ->
 mod tests;
 #[cfg(test)]
 mod tests_affinity;
+#[cfg(test)]
+mod tests_cdr;
 #[cfg(test)]
 mod tests_pdf;
 #[cfg(test)]
