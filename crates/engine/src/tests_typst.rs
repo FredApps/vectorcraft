@@ -148,3 +148,75 @@ fn bad_params_fail_before_typesetting() {
     s.execute("shape.rectangle", &json!({"x": 10, "y": 10, "width": 20, "height": 20})).unwrap();
     assert!(s.execute("type.typst.info", &json!({})).is_err());
 }
+
+/// The node `id` of the active document, to change as a file could have.
+fn node_mut(s: &mut Session, id: u64) -> &mut vectorcraft_doc::Node {
+    std::sync::Arc::make_mut(&mut s.doc_mut().unwrap().doc).node_mut(NodeId(id)).unwrap()
+}
+
+#[test]
+fn edit_keeps_what_the_group_itself_has() {
+    if !have_typst() {
+        return;
+    }
+    let mut s = session();
+    let id = id_of(&s.execute("type.typst.insert", &json!({"source": "$ a $"})).unwrap());
+    {
+        let n = node_mut(&mut s, id);
+        n.name = Some("Formula".into());
+        n.opacity = 0.5;
+        n.isolate = true;
+        n.extras_mut().attrs = Some(Box::new(vectorcraft_doc::ObjectAttributes { note: "eq. 3".into(), ..Default::default() }));
+        n.extras_mut().graphic_style = Some(7);
+    }
+    let new = id_of(&s.execute("type.typst.edit", &json!({"source": "$ b $"})).unwrap());
+    let d = &s.doc().unwrap().doc;
+    let n = d.node(NodeId(new)).unwrap();
+    assert_eq!((n.name.as_deref(), n.opacity, n.isolate), (Some("Formula"), 0.5, true));
+    assert_eq!(n.extras().attrs.as_ref().map(|a| a.note.as_str()), Some("eq. 3"));
+    assert_eq!(n.extras().graphic_style, Some(7));
+    assert_eq!(n.extras().typst.as_ref().map(|t| t.source.as_str()), Some("$ b $"));
+}
+
+#[test]
+fn a_files_spec_is_checked_before_typesetting() {
+    if !have_typst() {
+        return;
+    }
+    let mut s = session();
+    let id = id_of(&s.execute("type.typst.insert", &json!({"source": "$ a $"})).unwrap());
+    // A size Typst can't use is typeset at the default.
+    node_mut(&mut s, id).extras_mut().typst.as_mut().unwrap().font_size = f64::NAN;
+    let new = id_of(&s.execute("type.typst.edit", &json!({})).unwrap());
+    assert_eq!(s.execute("type.typst.info", &json!({})).unwrap()["fontSize"], cmd::typst::DEFAULT_FONT_SIZE);
+    // A source too long to typeset is refused, unless the edit replaces it.
+    node_mut(&mut s, new).extras_mut().typst.as_mut().unwrap().source = "a".repeat(vectorcraft_doc::typst::MAX_TYPST_SOURCE + 1);
+    let e = s.execute("type.typst.edit", &json!({})).unwrap_err().to_string();
+    assert!(e.contains("longer than"), "{e}");
+    s.execute("type.typst.edit", &json!({"source": "$ c $"})).unwrap();
+}
+
+#[test]
+fn confined_automation_keeps_typst_out_of_folders_it_may_not_read() {
+    if !have_typst() {
+        return;
+    }
+    let base = std::env::temp_dir().join(format!("vectorcraft-typst-roots-{}", std::process::id()));
+    let (docs, allowed) = (base.join("docs"), base.join("allowed"));
+    std::fs::create_dir_all(&docs).unwrap();
+    std::fs::create_dir_all(&allowed).unwrap();
+    std::fs::write(docs.join("secret.txt"), "secret").unwrap();
+    let mut s = session();
+    s.doc_mut().unwrap().path = Some(docs.join("figure.vectorcraft").to_string_lossy().into_owned());
+    let read = json!({"source": "#read(\"secret.txt\")"});
+    // Unconfined (the person at the keyboard), the document's folder is Typst's root.
+    s.execute("type.typst.insert", &read).unwrap();
+    // Confined to another folder, it isn't.
+    let roots = crate::file_access::AutomationRoots::new(Some(&allowed), None).unwrap();
+    let r = crate::file_access::confine(roots.as_ref(), || s.execute("type.typst.insert", &read));
+    assert!(r.is_err(), "{r:?}");
+    // Confined to a folder that holds it, it is.
+    let roots = crate::file_access::AutomationRoots::new(Some(&base), None).unwrap();
+    crate::file_access::confine(roots.as_ref(), || s.execute("type.typst.insert", &read)).unwrap();
+    let _ = std::fs::remove_dir_all(&base);
+}

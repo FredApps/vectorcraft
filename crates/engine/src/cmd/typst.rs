@@ -67,6 +67,19 @@ fn has_typst(s: &Session) -> std::result::Result<(), String> {
     target(s, &Value::Null, INFO).map(|_| ()).map_err(|e| e.to_string())
 }
 
+/// The Typst objects the selection is in: each selected object, or the nearest group around it
+/// that is a Typst object (Type › Typst… edits when there is one, inserts when there is none).
+pub fn selected(s: &Session) -> Result<Vec<NodeId>> {
+    let st = s.doc()?;
+    let d = &st.doc;
+    let typst = |id: NodeId| d.node(id).is_some_and(|n| n.extras().typst.is_some());
+    let mut found: Vec<NodeId> =
+        st.selection.objects.iter().filter_map(|id| std::iter::successors(Some(*id), |c| d.parent_of(*c)).find(|c| typst(*c))).collect();
+    found.sort_by_key(|id| id.0);
+    found.dedup();
+    Ok(found)
+}
+
 /// The Typst object `id` names, else the one selected: a selected object inside one counts.
 fn target(s: &Session, p: &Value, cmd: &str) -> Result<NodeId> {
     let st = s.doc()?;
@@ -78,10 +91,7 @@ fn target(s: &Session, p: &Value, cmd: &str) -> Result<NodeId> {
         let id = checked_id(s, v, cmd)?;
         return around(id).ok_or_else(|| bad(cmd, format!("object {} is not a Typst object", id.0)));
     }
-    let mut found: Vec<NodeId> = st.selection.objects.iter().filter_map(|id| around(*id)).collect();
-    found.sort_by_key(|id| id.0);
-    found.dedup();
-    match found[..] {
+    match selected(s)?[..] {
         [id] => Ok(id),
         [] => Err(EngineError::Other("select a Typst object".into())),
         _ => Err(EngineError::Other("select one Typst object".into())),
@@ -141,7 +151,13 @@ fn edit(s: &mut Session, p: &Value) -> Result<Value> {
     let Some(was) = old.extras().typst.as_deref().cloned() else { return Err(bad(EDIT, "not a Typst object")) };
     let source = text_param(p, "source", EDIT)?.unwrap_or(was.source);
     let preamble = text_param(p, "preamble", EDIT)?.unwrap_or(was.preamble);
+    // What the object keeps came from a file, unchecked: too long is refused, and a size Typst
+    // can't use is its default.
+    if source.len() > MAX_TYPST_SOURCE || preamble.len() > MAX_TYPST_SOURCE {
+        return Err(bad(EDIT, format!("the Typst source is longer than {MAX_TYPST_SOURCE} bytes")));
+    }
     let font_size = size_param(p, EDIT)?.unwrap_or(was.font_size);
+    let font_size = if (1.0..=1296.0).contains(&font_size) { font_size } else { DEFAULT_FONT_SIZE };
     // A file's spec is untrusted: one that can't place the page puts it where the art was.
     let xf = Some(was.xf).filter(|a| a.as_coeffs().iter().all(|c| c.is_finite()) && a.determinant().abs() > 1e-12);
     let art = typeset(&source, &preamble, font_size, st.path.as_deref(), EDIT)?;
@@ -153,11 +169,17 @@ fn edit(s: &mut Session, p: &Value) -> Result<Value> {
             Affine::translate(c - art.page.center())
         }
     };
-    let (name, opacity, blend, locked, visible) = (old.name.clone(), old.opacity, old.blend, old.locked, old.visible);
+    // The group keeps everything of its own (name, appearance, transparency, opacity mask,
+    // attributes, graphic style…): only its contents and its spec are new.
+    let kept = old.clone();
     let spec = TypstSpec { source, preamble, font_size, page: art.page, xf: Affine::IDENTITY };
     s.edit("Edit Typst", |d, sel| {
-        let mut node = group(d, art, spec, m);
-        (node.name, node.opacity, node.blend, node.locked, node.visible) = (name, opacity, blend, locked, visible);
+        let new = group(d, art, spec, m);
+        let mut node = kept;
+        node.id = new.id;
+        node.bbox_angle = new.bbox_angle;
+        node.extras_mut().typst = new.extras().typst.clone();
+        node.kind = new.kind;
         let size = node.geometric_bounds_with(&d.symbol_boxes()).unwrap_or_default();
         let (par, index, _) = d.position(id).ok_or(EngineError::NoNode(id))?;
         d.remove(id)?;
@@ -328,11 +350,16 @@ mod run {
         };
         let out = read(child.stdout.take().map(|p| Box::new(p) as Box<dyn Read + Send>), MAX_SVG + 1);
         let err = read(child.stderr.take().map(|p| Box::new(p) as Box<dyn Read + Send>), MAX_MESSAGES);
-        if let Some(mut stdin) = child.stdin.take() {
-            // A program that exits before reading it all says why on stderr.
-            let _ = stdin.write_all(input.as_bytes());
-        }
         let deadline = Instant::now() + TIMEOUT;
+        // Written while it runs too: a program that doesn't read it can't stall this past the
+        // deadline (killed, it closes the pipe and the writer ends).
+        if let Some(mut stdin) = child.stdin.take() {
+            let input = input.as_bytes().to_vec();
+            std::thread::spawn(move || {
+                // A program that exits before reading it all says why on stderr.
+                let _ = stdin.write_all(&input);
+            });
+        }
         let status = loop {
             match child.try_wait() {
                 Ok(Some(status)) => break status,
@@ -357,9 +384,12 @@ mod run {
         String::from_utf8(out).map_err(|_| "Typst's SVG isn't UTF-8".into())
     }
 
-    /// The project root: the document's folder, else an empty folder of our own.
+    /// The project root: the document's folder, else an empty folder of our own. While automation
+    /// is confined ([`crate::file_access`]), the document's folder only when it may read it: Typst
+    /// reads its root itself, past the checks the app's own reads go through.
     fn root(doc_path: Option<&str>) -> Result<std::path::PathBuf, String> {
-        if let Some(dir) = doc_path.and_then(|p| std::path::Path::new(p).parent()).filter(|d| d.is_dir()) {
+        let readable = |d: &std::path::Path| d.to_str().is_some_and(|d| crate::file_access::check_read(d).is_ok());
+        if let Some(dir) = doc_path.and_then(|p| std::path::Path::new(p).parent()).filter(|d| d.is_dir() && readable(d)) {
             return Ok(dir.to_path_buf());
         }
         let dir = std::env::temp_dir().join(format!("vectorcraft-typst-{}", std::process::id()));

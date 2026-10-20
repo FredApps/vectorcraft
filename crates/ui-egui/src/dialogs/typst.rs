@@ -32,14 +32,20 @@ pub(super) const SPEC: DialogSpec = DialogSpec {
 
 /// Open Type › Typst…: on the selected Typst object's source, else to insert.
 pub fn open(app: &mut VectorcraftApp) -> Result<Value, String> {
-    let fields = match app.session.execute("type.typst.info", &json!({})) {
-        Ok(i) => json!({ "source": i["source"], "preamble": i["preamble"], "fontSize": i["fontSize"], "__id": i["id"] }),
-        Err(_) => json!({
+    let selected = vectorcraft_engine::cmd::typst::selected(&app.session).unwrap_or_default();
+    let fields = match selected[..] {
+        [] => json!({
             "source": EXAMPLE,
             "preamble": "",
             "fontSize": vectorcraft_engine::cmd::typst::DEFAULT_FONT_SIZE,
             "__id": null,
         }),
+        [id] => {
+            let i = app.session.execute("type.typst.info", &json!({ "id": id.0 })).map_err(|e| e.to_string())?;
+            json!({ "source": i["source"], "preamble": i["preamble"], "fontSize": i["fontSize"], "__id": i["id"] })
+        }
+        // Not a new object either: which one to edit is unclear.
+        _ => return Err("select one Typst object".into()),
     };
     app.ui.dialog = Some(Dialog::new(KIND, fields));
     Ok(Value::Null)
@@ -157,5 +163,19 @@ mod tests {
         assert!(super::super::confirm(&mut app).is_err());
         let d = app.ui.dialog.clone().unwrap();
         assert!(d.str("__error").contains("line 1:"), "{:?}", d.fields);
+    }
+
+    #[test]
+    fn two_typst_objects_selected_open_nothing() {
+        if !have_typst() {
+            return;
+        }
+        let mut app = crate::VectorcraftApp::new(vectorcraft_engine::Session::new(), crate::Services::default());
+        app.session.execute("file.new", &json!({"width": 400, "height": 300})).unwrap();
+        app.session.execute("type.typst.insert", &json!({"source": "a", "at": [100, 100]})).unwrap();
+        app.session.execute("type.typst.insert", &json!({"source": "b", "at": [300, 100]})).unwrap();
+        app.session.execute("select.all", &json!({})).unwrap();
+        assert_eq!(open(&mut app).unwrap_err(), "select one Typst object");
+        assert!(app.ui.dialog.is_none());
     }
 }

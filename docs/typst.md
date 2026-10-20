@@ -19,7 +19,8 @@ or in the preamble (`line 2:4: error: expected expression`).
 The page is as big as what it draws, with no margins and no fill; only the first page is placed. Glyphs come in
 as plain filled paths (no fonts are needed to open, print or export the document), in the colours the markup
 gives them. The group can be moved, scaled, rotated and recoloured like any other. Editing it typesets it
-again: its centre stays where it is, with its scale and rotation, but colours and other changes to the paths
+again: its centre stays where it is, with its scale and rotation, and the group keeps its own name,
+appearance, opacity, opacity mask, attributes and graphic style, but colours and other changes to the paths
 inside are replaced by what Typst draws. Ungroup it to keep the paths as ordinary art.
 
 The source is saved in the VectorCraft document (`.vectorcraft`). Formats that only carry art (SVG, PDF, EPS…)
@@ -33,7 +34,8 @@ export the paths.
 - Typst finds fonts as it always does: the fonts it embeds, the system's, and `TYPST_FONT_PATHS`.
 - `#import "@preview/…"` packages are downloaded by Typst, as on the command line.
 - `#image` and `#read` paths are relative to the document's folder (an empty folder of its own for a document
-  not yet saved). Typst can't read outside it.
+  not yet saved). Typst can't read outside it. When automation is confined (`--automation-read-root`), Typst
+  gets the document's folder only if that folder lies inside the read root, else the empty folder.
 - Typst gets 30 seconds per typesetting.
 
 ## Commands
@@ -45,7 +47,8 @@ export the paths.
 | `type.typst.info` | `{id?}` | `{id, source, preamble, fontSize}` |
 | `ui.typst` | `{}` | opens the dialog (`typst`: fields `source`, `preamble`, `fontSize`) |
 
-`id` defaults to the selected Typst object (an object selected inside one counts). Each insert or edit is one
+`id` defaults to the selected Typst object (an object selected inside one counts); with two or more selected,
+`ui.typst` and the commands ask to select one. Each insert or edit is one
 undo step. The program is never chosen by command params, so the control channel and MCP can't make the app run
 another one.
 

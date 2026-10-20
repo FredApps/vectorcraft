@@ -4,7 +4,8 @@
 use serde::{Deserialize, Serialize};
 use vectorcraft_geom::{Affine, Rect};
 
-/// The longest source or preamble a Typst object keeps (bytes): a file can't make it hold more.
+/// The longest source or preamble typeset (bytes). A file's longer one is kept as it is, but
+/// editing refuses to typeset it.
 pub const MAX_TYPST_SOURCE: usize = 1 << 20;
 
 /// What a Typst object was typeset from, and where its art went.
