@@ -631,12 +631,24 @@ fn drop_shadow_fields(ui: &mut egui::Ui, d: &mut Dialog, unit: vectorcraft_doc::
         if widgets::radio(ui, tl!("Color"), !darkness, true) {
             d.fields.insert("shade".into(), json!("color"));
         }
-        ui.add_enabled_ui(!darkness, |ui| match d.fields.get("color") {
-            Some(Value::String(_)) | None => {
-                form::text(ui, d, "color", 128.0);
-            }
-            Some(other) => {
-                widgets::dim_label(ui, &other.to_string());
+        ui.add_enabled_ui(!darkness, |ui| {
+            // A color object shows as its hex and stays as it is until the text is edited.
+            let object = d.fields.get("color").and_then(|v| Some((v.clone(), form::color_object(v)?)));
+            match object {
+                Some((v, c)) => {
+                    d.fields.insert("color".into(), json!(c.to_hex()));
+                    if !form::text(ui, d, "color", 128.0) {
+                        d.fields.insert("color".into(), v);
+                    }
+                }
+                None => match d.fields.get("color") {
+                    Some(Value::String(_)) | None => {
+                        form::text(ui, d, "color", 128.0);
+                    }
+                    Some(other) => {
+                        widgets::dim_label(ui, &other.to_string());
+                    }
+                },
             }
         });
         ui.end_row();

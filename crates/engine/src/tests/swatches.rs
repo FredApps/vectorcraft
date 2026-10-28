@@ -192,6 +192,152 @@ fn document_color_mode_converts_the_tile_that_pattern_cancel_puts_back() {
     assert_eq!(tile, [red]);
 }
 
+/// The `color` stored in each effect of `a` (the object's, then each fill's and stroke's) that has
+/// one, read as a color, and the `lightColor` of each effect that has one.
+fn effect_colors(a: &vectorcraft_doc::Appearance) -> (Vec<Color>, Vec<Value>) {
+    let effects: Vec<&vectorcraft_doc::Effect> = a.effects.iter().chain(a.items.iter().flat_map(|i| i.effects())).collect();
+    let colors = effects
+        .iter()
+        .filter_map(|e| e.params.get("color"))
+        .map(|v| v.as_str().map_or_else(|| serde_json::from_value(v.clone()).unwrap(), |h| Color::from_hex(h).unwrap()))
+        .collect();
+    (colors, effects.iter().filter_map(|e| e.params.get("lightColor").cloned()).collect())
+}
+
+/// Document Color Mode converts the colors that effects draw with, on objects (the effects of a
+/// fill included) and in graphic styles, as it converts the art. An effect that drew its default
+/// color keeps the converted default as its own; the light color of a 3D effect stays RGB. The
+/// reply counts the object's effect colors, and one undo step takes them back.
+#[test]
+fn document_color_mode_converts_effect_colors() {
+    let build = |effects: bool| {
+        let mut s = session();
+        let id = rect(&mut s);
+        run(&mut s, "paint.setFill", json!({"color": "#ff0000", "ids": [id.0]}));
+        run(&mut s, "paint.setStroke", json!({"none": true, "ids": [id.0]}));
+        if effects {
+            run(&mut s, "effect.apply", json!({"ids": [id.0], "effect": "stylize.dropShadow", "params": {"color": "#ff0000"}}));
+            run(&mut s, "effect.apply", json!({"ids": [id.0], "effect": "stylize.outerGlow", "item": null}));
+            run(&mut s, "effect.apply", json!({"ids": [id.0], "effect": "stylize.innerGlow", "item": 0, "params": {"color": "#ff0000"}}));
+            run(&mut s, "effect.apply", json!({"ids": [id.0], "effect": "threeD.rotate", "item": null}));
+            // The Outer Glow draws its default color, as in a file that leaves `color` out.
+            s.edit("Default color", |d, _| {
+                let glow = &mut d.node_mut(id).unwrap().appearance.effects[1];
+                assert_eq!(glow.id, "stylize.outerGlow");
+                if let Some(p) = glow.params.as_object_mut() {
+                    p.remove("color");
+                }
+                Ok(())
+            })
+            .unwrap();
+        }
+        run(&mut s, "select.set", json!({"ids": [id.0]}));
+        run(&mut s, "graphicStyle.new", json!({"name": "Glow"}));
+        (s, id)
+    };
+    let (mut s, id) = build(true);
+    let object = |s: &Session| effect_colors(&doc(s).node(id).unwrap().appearance);
+    let style = |s: &Session| effect_colors(&doc(s).graphic_style("Glow").unwrap().appearance);
+    let before = (object(&s), style(&s));
+    assert_eq!(before.0.0.len(), 2, "the Outer Glow stores no color: {before:?}");
+    assert_eq!(before.1.0.len(), 2, "{before:?}");
+    let undo = s.doc().unwrap().history.undo.len();
+
+    let changed = run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}))["changed"].as_u64().unwrap();
+    let red = first_fill(doc(&s).node(id).unwrap());
+    assert!(matches!(red, Color::Cmyk { .. }), "{red:?}");
+    for (colors, lights) in [object(&s), style(&s)] {
+        assert_eq!(colors.len(), 3, "{colors:?}");
+        // Drop Shadow, then the Outer Glow's default yellow, then the fill's Inner Glow.
+        assert_eq!([colors[0], colors[2]], [red; 2]);
+        assert!(matches!(colors[1], Color::Cmyk { .. }), "{colors:?}");
+        assert_eq!(lights, [json!("#ffffff")]);
+    }
+    // The three effect colors on the object count; those of the graphic style, like its paints, do not.
+    let (mut plain, _) = build(false);
+    let without = run(&mut plain, "file.documentColorMode", json!({"mode": "cmyk"}))["changed"].as_u64().unwrap();
+    assert_eq!(changed, without + 3);
+    assert_eq!(s.doc().unwrap().history.undo.len(), undo + 1);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!((object(&s), style(&s)), before);
+}
+
+/// Document Color Mode converts the series paints and label styles a graph keeps, so a graph drawn
+/// again after the switch paints its series and labels in the new mode.
+#[test]
+fn document_color_mode_converts_the_paints_a_graph_keeps() {
+    let mut s = session();
+    let red = rect(&mut s);
+    run(&mut s, "paint.setFill", json!({"color": "#ff0000", "ids": [red.0]}));
+    let csv = ",2024,2025\nQ1,3,2\nQ2,5,4";
+    let id = NodeId(
+        run(&mut s, "graph.create", json!({"type": "column", "x": 10, "y": 10, "width": 60, "height": 40, "csv": csv}))["id"].as_u64().unwrap(),
+    );
+    let part = |s: &Session, name: &str| -> vectorcraft_doc::Node {
+        let g = doc(s).node(id).unwrap();
+        g.children().unwrap().iter().find(|c| c.name.as_deref() == Some(name)).map(|c| (**c).clone()).unwrap_or_else(|| panic!("no {name}"))
+    };
+    let series = part(&s, "2024").id;
+    let label = part(&s, "Axes").children().unwrap().iter().find(|c| matches!(c.kind, vectorcraft_doc::NodeKind::Text(_))).unwrap().id;
+    for target in [series, label] {
+        run(&mut s, "paint.setFill", json!({"color": "#ff0000", "ids": [target.0]}));
+    }
+    let kept = |s: &Session| -> Vec<Color> {
+        let g = doc(s).node(id).unwrap().extras().graph.as_deref().unwrap().clone();
+        let labels = [g.label_styles.values, g.label_styles.categories, g.label_styles.legend];
+        let labels = labels.into_iter().flatten().map(|st| st.fill.color().unwrap());
+        g.series_paints.iter().filter_map(|p| p.fill.as_ref()?.color()).chain(labels).collect()
+    };
+    let before = kept(&s);
+    assert_eq!(before, [Color::rgb(1.0, 0.0, 0.0); 2]);
+    let undo = s.doc().unwrap().history.undo.len();
+
+    run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+    let cmyk = first_fill(doc(&s).node(red).unwrap());
+    assert!(matches!(cmyk, Color::Cmyk { .. }), "{cmyk:?}");
+    assert_eq!(kept(&s), [cmyk; 2]);
+    assert_eq!(s.doc().unwrap().history.undo.len(), undo + 1);
+    // Drawn again from new data, the series keeps the converted color.
+    run(&mut s, "graph.setData", json!({"id": id.0, "rows": [[2, 3], [4, 5]]}));
+    let marks = part(&s, "2024");
+    assert!(marks.children().unwrap().iter().all(|m| m.appearance.fill_paint().color() == Some(cmyk)), "{marks:?}");
+    run(&mut s, "edit.undo", json!({}));
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(kept(&s), before);
+}
+
+/// Document Color Mode converts the fill and stroke that new art takes, so an object drawn after
+/// the switch gets the same colors in the new mode as the art drawn before it.
+#[test]
+fn document_color_mode_converts_the_colors_new_art_takes() {
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"color": "#ff0000"}));
+    run(&mut s, "paint.setStroke", json!({"color": "#0000ff"}));
+    let old = rect(&mut s);
+    run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+    let paints = |a: &vectorcraft_doc::Appearance| (a.fill_paint().color(), a.stroke().and_then(|st| st.paint.color()));
+    let converted = paints(&doc(&s).node(old).unwrap().appearance);
+    assert!(matches!(converted, (Some(Color::Cmyk { .. }), Some(Color::Cmyk { .. }))), "{converted:?}");
+    assert_eq!(paints(&s.new_art()), converted);
+    let new = rect(&mut s);
+    assert_eq!(paints(&doc(&s).node(new).unwrap().appearance), converted);
+
+    // As a `command.batch` step too; a batch that fails leaves them as they were.
+    for fails in [false, true] {
+        let mut s = session();
+        run(&mut s, "paint.setFill", json!({"color": "#ff0000"}));
+        run(&mut s, "paint.setStroke", json!({"color": "#0000ff"}));
+        let before = paints(&s.new_art());
+        let mut steps = vec![json!({"command": "file.documentColorMode", "params": {"mode": "cmyk"}})];
+        if fails {
+            steps.push(json!({"command": "no.such.command"}));
+        }
+        let r = s.execute("command.batch", &json!({"commands": steps}));
+        assert_eq!(r.is_err(), fails, "{r:?}");
+        assert_eq!(paints(&s.new_art()), if fails { before } else { converted }, "fails {fails}");
+    }
+}
+
 #[test]
 fn grouped_spot_swatches_print_on_their_own_plate() {
     let mut s = session();
