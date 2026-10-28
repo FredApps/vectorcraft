@@ -578,12 +578,16 @@ come back without a path), `file.newFromTemplate {path}`, `file.revert` and `fil
 with the values a save would use). Without a path the save commands return `{dataBase64, name, folder?, warnings}`. A document saved as SVG or PDF
 remembers its options, so the next save reuses them. A PDF opened with `pages`, `cropTo` or `password` is only part
 of the file, so Save asks for a new name instead of writing it back.
-`file.documentColorMode {mode, convert?, intent?, grays?}` switches the document colour mode, converting the colours of
-the art, symbols, pattern tiles and swatches through the colour settings (`object.convertDocumentColorMode` is an
-alias kept for older scripts). Gray colours stay Gray and print on the black plate only. RGB greys are colours like any
+`file.documentColorMode {mode, convert?, intent?, grays?}` switches the document color mode, converting the colors of
+the art (opacity masks included), symbols, graph designs, pattern tiles (with the tile that pattern editing's Cancel
+puts back), graphic styles, brushes (their art and a Hue Shift key color) and swatches through the color settings, in
+one undo step (`object.convertDocumentColorMode` is an alias kept for older scripts). Gray colors stay Gray and print
+on the black plate only. RGB grays are colors like any
 other: to CMYK they separate through the profile into four-colour greys and a rich black, as Illustrator converts
 them. `grays: "black"` puts RGB greys with R = G = B on the black plate instead, K = their grey value (the inks Edit Colors ›
-Convert to Grayscale before the switch would give); other colours convert as usual.
+Convert to Grayscale before the switch would give); other colors convert as usual. The reply's `changed` counts the
+colors that changed in the art, symbols, graph designs and pattern tiles; it does not count the colors of graphic
+styles and brushes.
 
 SVG import keeps what the canvas edits live. `<pattern>` becomes a pattern swatch. A `<symbol>` with `<use>` becomes a
 symbol (named after its `data-name`, else its id) with an instance per `<use>`; a `<use>` that shows it differently
