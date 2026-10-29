@@ -560,6 +560,23 @@ fn isolation_mode_leaves_art_outside_the_isolated_group() {
     assert!(a.is_empty(), "does not add the group outside isolation ({outer:?}): {a:?}");
 }
 
+/// #4466: in isolation mode a Direct Selection double-click outside the isolated art (on the
+/// object beside it, or on nothing) leaves isolation mode, as the Selection tool's does; on the
+/// isolated art it doesn't.
+#[test]
+fn a_double_click_outside_isolation_leaves_it() {
+    let (d, _, _, inner, _) = nested_group_doc();
+    let p = paint();
+    let none = Selection::default();
+    let isolated = ToolContext { isolation: Some(inner), ..cx(&d, &none, &p) };
+    let double = |x: f64, y: f64| DirectSelectionTool::new(false).pointer(&isolated, &PointerEvent::new(PointerKind::DoubleClick, x, y));
+    let exit = vec![Action::Exec("object.exitIsolation".into(), json!({}))];
+    assert_eq!(double(350.0, 350.0), exit, "on the object beside the isolated group");
+    assert_eq!(double(700.0, 700.0), exit, "on nothing");
+    assert!(double(150.0, 150.0).is_empty(), "on the isolated art");
+    assert!(DirectSelectionTool::new(false).pointer(&cx(&d, &none, &p), &PointerEvent::new(PointerKind::DoubleClick, 700.0, 700.0)).is_empty());
+}
+
 /// #927: a marquee across type selects the type object whole, beside the anchors it holds.
 #[test]
 fn marquee_selects_type_it_touches() {
