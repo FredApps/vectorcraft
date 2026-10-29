@@ -70,12 +70,23 @@ fn curve_point(p: &egui::Painter, c: Pos2, color: Color32, filled: bool, size: f
 
 pub(super) fn selection_overlay(app: &mut VectorcraftApp, p: &egui::Painter, xf: &Xf, curve_points_from_tool: bool) {
     // The Selection tool's bounding box (rotated with the objects after a rotation). It hides while
-    // a drag moves or resizes the selection, so only the art is seen going with the pointer (#712).
+    // a drag moves or rotates the selection or adjusts a widget, so only the art is seen going with
+    // the pointer (#712). A resize by a handle shows the box's outline at the changing bounds,
+    // without its handles (#3526).
+    let resizing = app.session.tool_resizing();
     let show_box = app.session.tool_id() == "selection"
-        && !app.session.tool_transforming()
+        && (resizing || !app.session.tool_transforming())
         && app.ui.view.bounding_box
         && app.session.active().is_some_and(|st| !st.selection.is_empty() && st.selection.anchors.is_empty());
-    let bbox = if show_box { app.selection_box() } else { None };
+    // With Real-time Drawing off the document stays at the drag's snapshot, so the box is measured
+    // from the pending preview; otherwise each step's revision measures it once (`selection_box`).
+    let bbox = if !show_box {
+        None
+    } else if let Some(b) = resizing.then(|| app.session.deferred_transform_box()).flatten() {
+        Some(b)
+    } else {
+        app.selection_box()
+    };
     let st = app.session.active();
     let big = st.is_some_and(|st| too_many_anchors(st.selection.objects.iter().filter_map(|id| st.doc.node(*id))));
     let big_bounds = if big { app.selection_bounds() } else { None };
@@ -240,18 +251,18 @@ pub(super) fn selection_overlay(app: &mut VectorcraftApp, p: &egui::Painter, xf:
             p.circle_filled(sp, 1.0, color);
         }
     }
-    // Bounding box with handles (Selection tool).
+    // Bounding box with handles (Selection tool); its outline alone during a resize.
     if let Some(b) = bbox {
         let color = c32(st.doc.layer_color(st.selection.objects[0]));
         p.add(Shape::closed_line(b.corners().iter().map(|q| xf.to_screen(*q)).collect(), Stroke::new(1.0, color)));
-        for h in vectorcraft_tools::bbox::Handle::ALL {
+        for h in vectorcraft_tools::bbox::Handle::ALL.into_iter().filter(|_| !resizing) {
             let c = xf.to_screen(b.to_doc() * h.pos(b.rect));
             let hr = egui::Rect::from_center_size(c, vec2(6.0 + grow, 6.0 + grow));
             p.rect_filled(hr, 0.0, Color32::WHITE);
             p.rect_stroke(hr, 0.0, Stroke::new(1.0, color), StrokeKind::Inside);
         }
         // The type widget beside it: hollow on point type, filled on area type.
-        if let Some(w) = vectorcraft_tools::typewidget::TypeWidget::of(&st.doc, &st.selection, &b, xf.zoom) {
+        if !resizing && let Some(w) = vectorcraft_tools::typewidget::TypeWidget::of(&st.doc, &st.selection, &b, xf.zoom) {
             let (c, r) = (xf.to_screen(w.at), vectorcraft_tools::typewidget::RADIUS_PX);
             p.circle_filled(c, r, if w.area { color } else { Color32::WHITE });
             p.circle_stroke(c, r, Stroke::new(1.0, color));

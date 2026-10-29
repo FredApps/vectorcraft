@@ -617,6 +617,10 @@ impl Tool for SelectionTool {
         }
     }
 
+    fn resizing(&self) -> bool {
+        matches!(self.state, State::Scaling { .. })
+    }
+
     fn pointer(&mut self, cx: &ToolContext, ev: &PointerEvent) -> Vec<Action> {
         let hovering = ev.kind == PointerKind::Move && matches!(self.state, State::Idle);
         self.alt_hover = hovering && ev.mods.alt;

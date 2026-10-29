@@ -142,6 +142,11 @@ pub trait Tool: Send {
     fn transforming(&self) -> bool {
         false
     }
+    /// Is the transforming drag a resize by a bounding-box handle? The canvas then draws the box's
+    /// outline at the changing bounds, without its handles.
+    fn resizing(&self) -> bool {
+        false
+    }
     /// Does the tool take `key` now, ahead of the command shortcuts bound to it (the Gradient tool
     /// with a stop selected takes Delete and the arrows)?
     fn claims_key(&self, _cx: &ToolContext, _key: ToolKey) -> bool {
