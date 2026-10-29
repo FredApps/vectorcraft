@@ -62,7 +62,7 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
         }
         ui.add_enabled_ui(false, |ui| {
             let (r, _) = ui.allocate_exact_size(egui::vec2(ui.available_width().min(90.0), 26.0), egui::Sense::hover());
-            ui.painter().rect_filled(r, 2, t.hover.gamma_multiply(0.5));
+            ui.painter().rect_filled(r, t.cr(), t.hover.gamma_multiply(0.5));
             ui.painter().text(r.center(), egui::Align2::CENTER_CENTER, tl!("Expand"), egui::FontId::proportional(12.5), t.text_disabled);
         })
         .response
