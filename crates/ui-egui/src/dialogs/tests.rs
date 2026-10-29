@@ -198,11 +198,12 @@ fn effect_dialog_refuses_a_color_it_cannot_draw() {
     }
 }
 
-/// After File › Document Color Mode, a Drop Shadow's and an Outer Glow's dialog show the
-/// converted color as its hex in an editable field, and OK without editing it keeps the color.
+/// After File › Document Color Mode, a Drop Shadow's, an Outer Glow's and a Shift to Color's
+/// dialog show the converted color as its hex in an editable field, and OK without editing it
+/// keeps the color.
 #[test]
 fn effect_dialogs_edit_a_color_that_document_color_mode_converted() {
-    for effect in ["stylize.dropShadow", "stylize.outerGlow"] {
+    for effect in ["stylize.dropShadow", "stylize.outerGlow", "adjust.shiftToColor"] {
         let mut app = app();
         let id = app.run("shape.rectangle", json!({"x": 10, "y": 10, "width": 50, "height": 50})).unwrap()["id"].as_u64().unwrap();
         app.run("select.set", json!({"ids": [id]})).unwrap();
