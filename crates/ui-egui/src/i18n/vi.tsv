@@ -4420,6 +4420,7 @@ theme	Appearance	Giao diện
 @msg	no current layer	không có lớp hiện tại
 @msg	no data	không có dữ liệu
 @msg	no dialog open	không có hộp thoại đang mở
+@msg	the open dialog has no Reset	hộp thoại đang mở không có nút Đặt lại
 @msg	no document	không có tài liệu
 @msg	no document open	không có tài liệu nào đang mở
 @msg	no effect applied yet	chưa áp dụng hiệu ứng

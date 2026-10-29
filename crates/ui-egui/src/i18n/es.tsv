@@ -4112,6 +4112,7 @@ axis	Both	Ambos
 @msg	no current layer	no hay capa actual
 @msg	no data	no hay datos
 @msg	no dialog open	no hay ningún cuadro de diálogo abierto
+@msg	the open dialog has no Reset	el cuadro de diálogo abierto no tiene el botón Restablecer
 @msg	no document	no hay documento
 @msg	no document open	no hay ningún documento abierto
 @msg	no effect applied yet	todavía no se aplicó ningún efecto

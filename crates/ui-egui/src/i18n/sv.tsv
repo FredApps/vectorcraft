@@ -4026,6 +4026,7 @@ axis	Both	Båda
 @msg	no current layer	inget aktuellt lager
 @msg	no data	inga data
 @msg	no dialog open	ingen dialogruta är öppen
+@msg	the open dialog has no Reset	den öppna dialogrutan har ingen Återställ-knapp
 @msg	no document	inget dokument
 @msg	no document open	inget dokument är öppet
 @msg	no effect applied yet	ingen effekt har använts än

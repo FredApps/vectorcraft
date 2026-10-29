@@ -4033,6 +4033,7 @@ theme	Appearance	Erscheinungsbild
 @msg	no current layer	keine aktuelle Ebene
 @msg	no data	keine Daten
 @msg	no dialog open	kein Dialogfeld geöffnet
+@msg	the open dialog has no Reset	das geöffnete Dialogfeld hat keine Schaltfläche „Zurücksetzen“
 @msg	no document	kein Dokument
 @msg	no document open	kein Dokument geöffnet
 @msg	no effect applied yet	noch kein Effekt angewendet

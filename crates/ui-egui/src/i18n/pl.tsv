@@ -4239,6 +4239,7 @@ imageTrace	Outline	Kontur
 @msg	no current layer	brak bieżącej warstwy
 @msg	no data	brak danych
 @msg	no dialog open	brak otwartego okna dialogowego
+@msg	the open dialog has no Reset	otwarte okno dialogowe nie ma przycisku Resetuj
 @msg	no document	brak dokumentu
 @msg	no document open	brak otwartego dokumentu
 @msg	no effect applied yet	nie zastosowano jeszcze żadnego efektu
