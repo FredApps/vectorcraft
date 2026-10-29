@@ -91,6 +91,17 @@ impl Session {
                 continue;
             }
             let Some(g) = st.undo_group.take() else { continue };
+            // Redo of a group that changed document color mode restores the new-art colors the
+            // whole group left, not the ones right after the conversion.
+            if !cancel
+                && let Some(first) = &g.first
+                && let Some(e) = st.history.undo.last_mut().filter(|e| Arc::ptr_eq(&e.doc, first))
+                && let Some((_, after)) = &mut e.color_mode_paints
+            {
+                after.clone_from(&self.paint);
+                e.recost_paints();
+                st.history.trim();
+            }
             // Only while the group's step is still the newest one.
             if cancel
                 && let Some(first) = g.first

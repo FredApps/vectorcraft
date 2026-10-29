@@ -49,7 +49,12 @@ pub(super) fn batch(s: &mut Session, p: &Value) -> Result<Value> {
     // Each document the steps edited keeps them as one undo step.
     s.remember_pending_paint();
     for st in &mut s.docs {
-        if let Some(it) = st.interaction.take() {
+        if let Some(mut it) = st.interaction.take() {
+            // Redo restores the new-art colors the whole batch left, not the ones right after a
+            // color-mode step.
+            if let Some((_, after)) = &mut it.color_mode_paints {
+                after.clone_from(&s.paint);
+            }
             st.keep_interaction(it);
         }
     }
