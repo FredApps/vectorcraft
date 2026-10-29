@@ -572,6 +572,78 @@ fn model_param_must_be_a_string_when_given() {
     assert_eq!(fill(&s, art).to_hex(), "#1a1a1a", "nothing changed");
 }
 
+/// Sets the Layers panel's lock and visibility of `ids` (objects or layers).
+fn set_props(s: &mut Session, ids: &[NodeId], props: Value) {
+    let mut p = props;
+    p["ids"] = json!(ids.iter().map(|i| i.0).collect::<Vec<_>>());
+    run(s, "layer.setProps", p);
+}
+
+#[test]
+fn recolor_of_everything_counts_the_locked_and_hidden_objects_it_left_out() {
+    let mut s = session();
+    let open = rect(&mut s, json!("#ff0000"));
+    let locked = rect(&mut s, json!("#ff0000"));
+    let hidden = rect(&mut s, json!("#ff0000"));
+    let both = rect(&mut s, json!("#ff0000"));
+    // A locked object the map leaves as it is was not left out of anything.
+    let other = rect(&mut s, json!("#00ff00"));
+    set_props(&mut s, &[locked, other], json!({"locked": true}));
+    set_props(&mut s, &[hidden], json!({"visible": false}));
+    set_props(&mut s, &[both], json!({"visible": false, "locked": true}));
+    // The objects of a locked layer count as locked; a template layer's art is not counted.
+    let layer = NodeId(run(&mut s, "layer.new", json!({}))["id"].as_u64().unwrap());
+    let on_locked_layer = rect(&mut s, json!("#ff0000"));
+    set_props(&mut s, &[layer], json!({"locked": true}));
+    let template = NodeId(run(&mut s, "layer.new", json!({}))["id"].as_u64().unwrap());
+    rect(&mut s, json!("#ff0000"));
+    set_props(&mut s, &[template], json!({"template": true}));
+    select_all(&mut s);
+    let r = run(&mut s, "recolor.apply", json!({"map": {"#ff0000": "#0000ff"}}));
+    assert_eq!(r["notChanged"], json!({"locked": 2, "hidden": 2}), "{r}");
+    assert_eq!(r["warning"], "Recolor completed; 2 locked objects and 2 hidden objects were left unchanged");
+    assert_eq!(fill(&s, open).to_hex(), "#0000ff");
+    for id in [locked, hidden, both, on_locked_layer] {
+        assert_eq!(fill(&s, id).to_hex(), "#ff0000", "locked and hidden art keeps its colors");
+    }
+}
+
+#[test]
+fn locked_and_hidden_members_of_a_selected_group_are_recolored_and_not_counted() {
+    let mut s = session();
+    let ids = [rect(&mut s, json!("#ff0000")), rect(&mut s, json!("#ff0000")), rect(&mut s, json!("#ff0000"))];
+    select_all(&mut s);
+    run(&mut s, "object.group", json!({}));
+    set_props(&mut s, &ids[1..2], json!({"locked": true}));
+    set_props(&mut s, &ids[2..3], json!({"visible": false}));
+    let node = |s: &Session, id: NodeId| s.doc().unwrap().doc.node(id).unwrap().clone();
+    assert!(node(&s, ids[1]).locked && !node(&s, ids[2]).visible);
+    select_all(&mut s);
+    let r = run(&mut s, "recolor.apply", json!({"map": {"#ff0000": "#0000ff"}}));
+    assert_eq!(r["notChanged"], json!({"locked": 0, "hidden": 0}), "{r}");
+    assert!(r.get("warning").is_none(), "{r}");
+    assert!(ids.iter().all(|id| fill(&s, *id).to_hex() == "#0000ff"));
+}
+
+#[test]
+fn recolor_of_part_of_the_art_counts_nothing_left_out() {
+    let mut s = session();
+    let picked = rect(&mut s, json!("#ff0000"));
+    let locked = rect(&mut s, json!("#ff0000"));
+    rect(&mut s, json!("#ff0000"));
+    set_props(&mut s, &[locked], json!({"locked": true}));
+    run(&mut s, "select.set", json!({"ids": [picked.0]}));
+    let r = run(&mut s, "recolor.apply", json!({"map": {"#ff0000": "#0000ff"}}));
+    assert_eq!(r["notChanged"], json!({"locked": 0, "hidden": 0}), "{r}");
+    assert!(r.get("warning").is_none(), "{r}");
+    // Everything selected, with nothing locked or hidden.
+    run(&mut s, "object.unlockAll", json!({}));
+    select_all(&mut s);
+    let r = run(&mut s, "recolor.apply", json!({"map": {"#ff0000": "#00ff00"}}));
+    assert_eq!(r["notChanged"], json!({"locked": 0, "hidden": 0}), "{r}");
+    assert!(r.get("warning").is_none(), "{r}");
+}
+
 #[test]
 fn document_model_converts_the_colours_of_a_group_too() {
     let mut s = session();
