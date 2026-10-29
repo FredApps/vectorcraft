@@ -37,7 +37,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use serde_json::{Value, json};
-use vectorcraft_doc::hit::{Hit, HitKind, hit_test, marquee, objects_at};
+use vectorcraft_doc::hit::{Hit, HitKind, hit_test, marquee, objects_at, selected_hidden_at};
 use vectorcraft_doc::{NodeId, OrientedBox};
 use vectorcraft_geom::{Affine, Point, Rect, Vec2};
 
@@ -120,6 +120,9 @@ pub struct SelectionTool {
     /// What a bounding-box handle being dragged snaps to.
     targets: Option<PointSnap>,
     moving: Option<MoveSnap>,
+    /// The params of the move's last preview: in Shaper's Construction mode the move ends with
+    /// them and `releaseOutside` ([`construction`]).
+    last_move: Option<Value>,
     /// The move snapped to a point or a guide at its last step: the arrow turns hollow.
     snapped: bool,
     guide: GuideEdit,
@@ -195,6 +198,12 @@ impl MoveSnap {
             copy_points: points(&[]),
             rulers: (guides && cx.snap_to_point).then(|| Targets::rulers(cx)),
         }
+    }
+
+    /// Snap to Grid and Snap to Pixel alone, for a move whose box is `bounds`: the grid lands an
+    /// edge of the box on a gridline, and pixels put its top-left on whole pixels.
+    pub(crate) fn grid_only(bounds: Option<Rect>) -> Self {
+        Self { bounds, targets: None, points: None, copy_targets: None, copy_points: None, rulers: None }
     }
 
     /// The move (`copy`: the copy) by `d` of the selection grabbed at `start`, snapped, and its
@@ -731,7 +740,7 @@ impl Tool for SelectionTool {
                         out
                     }
                     None => {
-                        self.state = State::Marquee { start: p, cur: p, toggle: m.shift, enclosed: false };
+                        self.press_nothing(cx, p, grab, m);
                         vec![]
                     }
                 }
@@ -803,8 +812,17 @@ impl Tool for SelectionTool {
                 self.measure = None;
                 self.guides.clear();
                 self.moving = None;
+                let last = self.last_move.take();
                 match (began, deselect, key) {
-                    (true, ..) => vec![Action::Commit],
+                    // In Construction mode, an original shape dropped wholly outside the group's
+                    // bounds leaves the group, in the move's undo step (`releaseOutside`).
+                    (true, ..) => match last.filter(|p| construction(cx) && p["copy"] != json!(true)) {
+                        Some(mut params) => {
+                            params["releaseOutside"] = json!(true);
+                            vec![Action::Preview("object.transform".into(), params), Action::Commit]
+                        }
+                        None => vec![Action::Commit],
+                    },
                     (false, Some(id), _) => vec![Action::Exec("select.toggle".into(), json!({ "id": id.0 }))],
                     // A click on the key object again: no key.
                     (false, None, Some(id)) if cx.selection.key == Some(id) => vec![Action::Exec("select.key".into(), json!({}))],
@@ -957,6 +975,11 @@ fn can_be_key(cx: &ToolContext, id: NodeId) -> bool {
     // `paint_owner` returns a compound-path member's compound path.
     let member = crate::xform::paint_owner(cx.doc, id) != id;
     cx.doc.node(id).is_some_and(|n| !n.is_layer()) && !inside_selected && !member
+}
+
+/// Shaper's Construction mode: a Shaper Group's original shapes are isolated.
+fn construction(cx: &ToolContext) -> bool {
+    cx.isolation.and_then(|id| cx.doc.node(id)).is_some_and(|n| n.name.as_deref() == Some(vectorcraft_doc::shaper::SOURCES))
 }
 
 /// Is `n` area type (text in a frame) whose frame the tools reshape? Type in perspective isn't:
@@ -1168,6 +1191,17 @@ impl SelectionTool {
 }
 
 impl SelectionTool {
+    /// A press at `p` that hits no object starts a marquee, except where a clipping mask hides
+    /// the art of a selected object (picked in the Layers panel, say): there, without Shift, it
+    /// grabs the selection by that art (at `grab`), as a press on its visible part does.
+    fn press_nothing(&mut self, cx: &ToolContext, p: Point, grab: Point, m: Mods) {
+        self.state = if !m.shift && selected_hidden_at(cx.doc, p, cx.selection_hit_options(), &cx.selection.objects).is_some() {
+            State::Moving { start: grab, press: p, hold: grab, began: false, deselect: None, key: None }
+        } else {
+            State::Marquee { start: p, cur: p, toggle: m.shift, enclosed: false }
+        };
+    }
+
     fn drag_moving(&mut self, cx: &ToolContext, p: Point, m: Mods, (start, press, hold, began): (Point, Point, Point, bool)) -> Vec<Action> {
         let mut out = vec![];
         if !began {
@@ -1186,7 +1220,9 @@ impl SelectionTool {
         self.snapped = (d - unsnapped).hypot() > 1e-9;
         self.state = State::Moving { start, press, hold, began: true, deselect: None, key: None };
         self.measure = cx.measurement_labels.then(|| (p, cx.offset_label(d.x, d.y)));
-        out.push(Action::Preview("object.transform".into(), json!({ "matrix": matrix_json(Affine::translate(d)), "copy": m.alt })));
+        let params = json!({ "matrix": matrix_json(Affine::translate(d)), "copy": m.alt });
+        self.last_move = Some(params.clone());
+        out.push(Action::Preview("object.transform".into(), params));
         out
     }
 }

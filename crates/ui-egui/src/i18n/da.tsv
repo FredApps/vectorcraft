@@ -176,6 +176,7 @@
 	Other Layers	Andre lag
 	Unlock All	Lås alle op
 	Hide	Skjul
+	Unselected Artwork	Ikke-markeret grafik
 	Show All	Vis alle
 	Expand…	Udvid…
 	Expand Appearance	Udvid udseende
@@ -375,6 +376,11 @@
 	Fill Color	Fyldfarve
 	Opacity	Opacitet
 	Stroke Color	Stregfarve
+	Fill Gradient	Fyldgradient
+	Stroke Gradient	Streggradient
+	Fill Pattern	Fyldmønster
+	Stroke Pattern	Stregmønster
+	Patterns	Mønstre
 	Stroke Weight	Stregtykkelse
 	Graphic Style	Grafisk stil
 	Symbol Instance	Symbolforekomst
@@ -757,6 +763,7 @@
 	Shaper	Shaper
 	Expand Shaper Group	Udvid shapergruppe
 	Release Shaper Group	Frigør shapergruppe
+	Remove from Shaper Group	Fjern fra shapergruppe
 	Select Shaper Face	Markér shaperflade
 	Constrain	Begræns
 	Free Transform	Fri transformering
@@ -1495,6 +1502,12 @@ lighting	Light	Lys
 	Document Library	Dokumentbibliotek
 	Library:	Bibliotek:
 	Tracing Presets	Vektoriseringsforudindstillinger
+	Manage Presets	Administrer forudindstillinger
+	Save as New Preset…	Gem som ny forudindstilling…
+	Rename…	Omdøb…
+	Rename Preset	Omdøb forudindstilling
+	Save Image Trace Preset	Gem forudindstilling til billedsporing
+	Delete Image Trace Preset	Slet forudindstilling til billedsporing
 	Method:	Metode:
 	Mode:	Tilstand:
 	Noise	Støj
@@ -4198,6 +4211,7 @@ imageTrace	Outline	Kontur
 @msg	not an EMF or WMF file	ikke en EMF- eller WMF-fil
 @msg	not found	ikke fundet
 @msg	not in pattern editing mode	ikke i mønsterredigeringstilstand
+@msg	finish editing the pattern first	afslut først redigeringen af mønsteret
 @msg	nothing encoded	intet kodet
 @msg	nothing selected	intet markeret
 @msg	nothing selected is in a group	intet af det markerede er i en gruppe
@@ -5559,4 +5573,6 @@ axis	Y Axis	Y-akse
 	Save Brush Library…	Gem penselbibliotek…
 @msg	no empty artboards to delete	ingen tomme tegneflader at slette
 	Scale Presets	Skaleringsforudindstillinger
+# Object › Expand… dimmed until Expand Appearance (#3089).
+	Expand Appearance first (Object › Expand Appearance)	Udvid først udseendet (Objekt › Udvid udseende)
 	Live preview	Direkte forhåndsvisning
