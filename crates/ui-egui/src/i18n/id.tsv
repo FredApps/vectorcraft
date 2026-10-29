@@ -4124,6 +4124,7 @@ imageTrace	Outline	Kontur
 @msg	no current layer	tidak ada lapisan saat ini
 @msg	no data	tidak ada data
 @msg	no dialog open	tidak ada dialog yang terbuka
+@msg	the open dialog has no Reset	dialog yang terbuka tidak memiliki tombol Atur ulang
 @msg	no document	tidak ada dokumen
 @msg	no document open	tidak ada dokumen yang terbuka
 @msg	no effect applied yet	belum ada efek yang diterapkan

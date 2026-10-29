@@ -4124,6 +4124,7 @@ imageTrace	Outline	Kontur
 @msg	no current layer	intet aktuelt lag
 @msg	no data	ingen data
 @msg	no dialog open	ingen åben dialogboks
+@msg	the open dialog has no Reset	den åbne dialogboks har ingen Nulstil-knap
 @msg	no document	intet dokument
 @msg	no document open	intet åbent dokument
 @msg	no effect applied yet	ingen effekt er anvendt endnu

@@ -4277,6 +4277,7 @@ imageTrace	Outline	轮廓
 @msg	can't parse shortcut `{c}`	无法解析快捷键 `{c}`
 @msg	can't parse shortcut `{s}` for `{k}`	无法解析 `{k}` 的快捷键 `{s}`
 @msg	no dialog open	没有打开的对话框
+@msg	the open dialog has no Reset	打开的对话框没有重置按钮
 @msg	no file reader	没有文件读取器
 @msg	no file writer	没有文件写入器
 @msg	not a VectorCraft shortcut set (missing `overrides`)	不是 VectorCraft 快捷键组 (缺少 `overrides`)

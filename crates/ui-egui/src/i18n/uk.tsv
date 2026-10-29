@@ -4136,6 +4136,7 @@ axis	Both	Обидві
 @msg	no current layer	немає поточного шару
 @msg	no data	немає даних
 @msg	no dialog open	немає відкритого діалогового вікна
+@msg	the open dialog has no Reset	у відкритому діалоговому вікні немає кнопки «Скинути»
 @msg	no document	немає документа
 @msg	no document open	немає відкритого документа
 @msg	no effect applied yet	ефект ще не застосований

@@ -2232,6 +2232,7 @@ file-filter	Templates	範本
 @msg	can't parse shortcut `{c}`	無法剖析快速鍵 `{c}`
 @msg	can't parse shortcut `{s}` for `{k}`	無法剖析 `{k}` 的快速鍵 `{s}`
 @msg	no dialog open	沒有開啟的對話框
+@msg	the open dialog has no Reset	開啟的對話框沒有「重設」按鈕
 @msg	no file reader	沒有檔案讀取器
 @msg	no file writer	沒有檔案寫入器
 @msg	not a VectorCraft shortcut set (missing `overrides`)	不是 VectorCraft 快速鍵組 (沒有 `overrides`)

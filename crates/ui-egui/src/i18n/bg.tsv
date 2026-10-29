@@ -4014,6 +4014,7 @@ axis	Both	И двете
 @msg	no current layer	няма текущ слой
 @msg	no data	няма данни
 @msg	no dialog open	няма отворен диалогов прозорец
+@msg	the open dialog has no Reset	отвореният диалогов прозорец няма бутон „Нулиране“
 @msg	no document	няма документ
 @msg	no document open	няма отворен документ
 @msg	no effect applied yet	все още няма приложен ефект

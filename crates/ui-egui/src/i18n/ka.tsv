@@ -3889,6 +3889,7 @@ font-technology	Variable	ცვლადი
 @msg	no current layer	მიმდინარე შრე არ არის
 @msg	no data	მონაცემები არ არის
 @msg	no dialog open	დიალოგი გახსნილი არ არის
+@msg	the open dialog has no Reset	გახსნილ დიალოგში ღილაკი ჩამოყრა არ არის
 @msg	no document	დოკუმენტი არ არის
 @msg	no document open	გახსნილი დოკუმენტი არ არის
 @msg	no effect applied yet	ეფექტი ჯერ არ გამოყენებულა

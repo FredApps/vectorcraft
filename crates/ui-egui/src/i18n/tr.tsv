@@ -3886,6 +3886,7 @@ axis	Both	Her İkisi
 @msg	no current layer	geçerli katman yok
 @msg	no data	veri yok
 @msg	no dialog open	iletişim kutusu açık değil
+@msg	the open dialog has no Reset	açık iletişim kutusunda Sıfırla düğmesi yok
 @msg	no document	belge yok
 @msg	no document open	hiçbir belge açık değil
 @msg	no effect applied yet	henüz hiçbir efekt uygulanmadı
