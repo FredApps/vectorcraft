@@ -635,6 +635,7 @@ trap, and the defaults (0.25 pt, 100%, 40%) are VectorCraft's own, the pages giv
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-29 | minor | G8: a blend makes at most 100,000 steps in all, the steps of blends nested in its keys and steps included; past it each pair of keys keeps the same share of its steps (#3579). No entry closed, estimates unchanged. |
 | 2026-10-26 | minor | G7: View › New View… / Edit Views… ([public source](https://helpx.adobe.com/illustrator/using/viewing-artwork.html)): the View menu lists every one of a document's 25 saved views (it listed 10), Edit Views… lists them to rename or delete in one undo step (`view.saved.edit {edits}`), and a file's views are checked when it opens; New View/Edit Views leave G7's missing list; estimate unchanged |
 | 2026-10-25 | minor | G4: a double-click on a threaded port with the Selection tool breaks the thread there (`text.thread.break {id, port}`): the story flows into the frames before the break, the frames after it are left empty and stay threaded with each other when two or more; a double-click on a port with no thread does nothing; estimate unchanged |
 | 2026-10-25 | minor | G1: a selected Grid Repeat shows handles: the one below the grid adds or removes rows, the one right of it columns, the one past its bottom-right corner both, and the sliders between the first two columns and rows set the horizontal and vertical spacing; each drag is one undo step and Escape cancels it (#2691); bounding-box handles keep priority where they meet; Radial Repeat handles remain; estimates unchanged. |
@@ -817,6 +818,7 @@ trap, and the defaults (0.25 pt, 100%, 40%) are VectorCraft's own, the pages giv
 | 2026-10-10 | minor | G9 evidence counted from the tracker (28 `.ai`/EPS issues, 20 fixed); impact narrowed to handing files back |
 | 2026-10-10 | minor | Alpha blockers checked against the core-workflow gate: none |
 | 2026-10-10 | major | Moved from the ROADMAP's "Where we're lacking"; kept ids G1–G8, added G9–G19 (file formats, stability, bugs, preferences, 30.x additions, pen hardware, performance, localization, ecosystem, AI, accessibility) and re-ranked |
+| 2026-10-28 | minor | Document Color Mode: Undo restores original current fill, stroke and template appearance colors with the document; Redo reapplies their converted values. Accepted color-mode previews convert the current paints once; cancelled, failed and replaced previews preserve the original paints. Failed batches preserve the original paints. Freeform gradient control colors convert with their stops, including new-art templates and stored graph paints. This is an application consistency rule. Scores and remaining estimates unchanged. |
 
 > **Tab-drag status (2026-10-22):** updated from upstream, including the Turkish catalog and all three tab-drag translations requested in #3479; Selection-tool reset regression-checked and clipboard evidence scoped to internal state; drag lifecycle, insertion and regression contracts documented; behavior, scores and estimates unchanged.
 
@@ -826,5 +828,3 @@ trap, and the defaults (0.25 pt, 100%, 40%) are VectorCraft's own, the pages giv
 | 2026-10-22 | minor | Merge current main and complete the Turkish tab-drag labels and validation messages requested by the maintainer; all 24 catalogs covered; scores and estimates unchanged. |
 | 2026-10-22 | minor | Tab-drag follow-up: reconcile upstream progress updates and document drag lifecycle, insertion behavior and regression contracts; behavior, scores and estimates unchanged. |
 | 2026-10-22 | minor | Artwork dragged with Selection switches visible document tabs after a 400 ms hover, then copies editable artwork on canvas release; source and clipboard stay intact; scores and hours unchanged |
-
-2026-10-28 behavior correction: Document Color Mode: Undo restores original current fill, stroke and template appearance colors with the document; Redo reapplies their converted values. Failed batches preserve the original paints. Freeform gradient control colors convert with their stops, including new-art templates and stored graph paints. This is an application consistency rule. Scores and remaining estimates unchanged.

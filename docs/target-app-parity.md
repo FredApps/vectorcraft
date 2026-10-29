@@ -1387,6 +1387,7 @@ applies to fills). Tests: `color::gradient::tests` (perceptual midpoint, expansi
 | 2026-10-10 | major | Full re-measure against Illustrator 2026 30.x from code counts, open issues and public docs; added breadth/depth/ready-for-real-work numbers, generative-AI row, calibration from PR timestamps; merged the ROADMAP's parity estimate, honest assessment and "Shipped so far" into this file |
 | 2026-10-05 | major | (in ROADMAP.md) M3 and M4 rows re-derived after the paint and files milestones |
 | 2026-10-02 | major | (in ROADMAP.md) First 22-area weighted estimate |
+| 2026-10-28 | minor | Document Color Mode: Undo restores original current fill, stroke and template appearance colors with the document; Redo reapplies their converted values. Accepted color-mode previews convert the current paints once; cancelled, failed and replaced previews preserve the original paints. Failed batches preserve the original paints. Freeform gradient control colors convert with their stops, including new-art templates and stored graph paints. This is an application consistency rule. Scores and remaining estimates unchanged. |
 
 > **Tab-drag status (2026-10-22):** updated from upstream, including the Turkish catalog and all three tab-drag translations requested in #3479; Selection-tool reset regression-checked and clipboard evidence scoped to internal state; drag lifecycle, insertion and regression contracts documented; behavior, scores and estimates unchanged.
 
@@ -1396,5 +1397,3 @@ applies to fills). Tests: `color::gradient::tests` (perceptual midpoint, expansi
 | 2026-10-22 | minor | Merge current main and complete the Turkish tab-drag labels and validation messages requested by the maintainer; all 24 catalogs covered; scores and estimates unchanged. |
 | 2026-10-22 | minor | Tab-drag follow-up: reconcile upstream progress updates and document drag lifecycle, insertion behavior and regression contracts; behavior, scores and estimates unchanged. |
 | 2026-10-22 | minor | Artwork dragged with Selection switches visible document tabs after a 400 ms hover, then copies editable artwork on canvas release; source and clipboard stay intact; scores and hours unchanged |
-
-2026-10-28 behavior correction: Document Color Mode: Undo restores original current fill, stroke and template appearance colors with the document; Redo reapplies their converted values. Failed batches preserve the original paints. Freeform gradient control colors convert with their stops, including new-art templates and stored graph paints. This is an application consistency rule. Scores and remaining estimates unchanged.

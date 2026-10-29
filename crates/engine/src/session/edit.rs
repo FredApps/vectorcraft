@@ -183,6 +183,7 @@ impl Session {
             selection: Arc::new(st.selection.clone()),
             preview: None,
             color_mode_paints: None,
+            deferred_color_mode: None,
             active_layer: st.active_layer,
             layer_rows: st.layer_rows.clone(),
             variables_highlight: st.variables_highlight.clone(),
@@ -198,7 +199,7 @@ impl Session {
         {
             let menu = self.menu.clone();
             let st = self.doc_mut()?;
-            let Some(it) = &st.interaction else { return Err(EngineError::Other("no interaction in progress".into())) };
+            let Some(it) = &mut st.interaction else { return Err(EngineError::Other("no interaction in progress".into())) };
             // Undoing the previous preview counts as a change, so views redraw even when the command
             // below returns without an edit.
             let selection_changed = st.selection != *it.selection;
@@ -206,6 +207,7 @@ impl Session {
                 st.revision += 1;
             }
             st.doc = it.doc.clone();
+            it.deferred_color_mode = None;
             if selection_changed {
                 st.selection.clone_from(&it.selection);
             }
@@ -218,9 +220,15 @@ impl Session {
         self.pending_paint = None;
         let rw = cmd::distortcmds::perspective_rewrite(self, cmd, params).or_else(|| cmd::bounds_rewrite(self, cmd, params));
         let (cmd, params) = rw.as_ref().map_or((cmd, params), |(c, p)| (c.as_str(), p));
+        // A selected object's converted appearance must not replace the current paints while
+        // this tentative color-mode preview is still cancellable.
+        let color_mode_paint = matches!(cmd, "file.documentColorMode" | "object.convertDocumentColorMode").then(|| self.paint.clone());
         let outer = std::mem::replace(&mut self.previewing, true);
         let r = self.execute(cmd, params);
         self.previewing = outer;
+        if let Some(paint) = color_mode_paint {
+            self.paint = paint;
+        }
         let params = self.noted(params);
         let st = self.doc_mut()?;
         if let Some(it) = &mut st.interaction {
@@ -234,6 +242,7 @@ impl Session {
     pub fn commit_interaction(&mut self) -> Result<()> {
         self.clear_deferred_overlay_cache();
         self.remember_pending_paint();
+        cmd::colormgmt::commit_new_art_colors(self)?;
         let st = self.doc_mut()?;
         let Some(mut it) = st.interaction.take() else { return Ok(()) };
         let Some(preview) = it.preview.take() else { return Ok(()) };

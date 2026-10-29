@@ -318,41 +318,69 @@ pub(crate) fn convert_mode(s: &mut Session, p: &Value) -> Result<Value> {
         Ok(())
     })?;
     if convert {
-        let before = s.paint.clone();
-        convert_new_art_colors(s, mode, intent, grays)?;
-        let after = s.paint.clone();
-        if before != after {
-            let st = s.doc_mut()?;
-            let slot = if let Some(it) = &mut st.interaction {
-                Some(&mut it.color_mode_paints)
-            } else {
-                st.history.undo.last_mut().map(|e| &mut e.color_mode_paints)
-            };
-            if let Some(slot) = slot {
-                match slot {
-                    Some((_, end)) => *end = after,
-                    slot => *slot = Some((before, after)),
-                }
+        if s.in_interaction() && s.batch_stash.is_none() {
+            if let Some(it) = &mut s.doc_mut()?.interaction {
+                it.deferred_color_mode = Some(DeferredColorMode { mode, intent, grays });
             }
-            if st.interaction.is_none() {
-                if let Some(e) = st.history.undo.last_mut() {
-                    e.recost_paints();
-                }
-                st.history.trim();
-            }
+        } else {
+            let before = s.paint.clone();
+            convert_new_art_colors(s, mode, intent, grays)?;
+            record_new_art_colors(s, before)?;
         }
     }
     Ok(json!({ "changed": changed }))
 }
 
+/// The validated conversion choices of the current tentative color-mode preview.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct DeferredColorMode {
+    mode: ColorMode,
+    intent: Option<Intent>,
+    grays: Grays,
+}
+
+/// Complete the deferred new-art conversion before the interaction becomes an Undo step.
+pub(crate) fn commit_new_art_colors(s: &mut Session) -> Result<()> {
+    let pending =
+        s.doc()?.interaction.as_ref().filter(|it| it.preview.is_some() && it.color_mode_paints.is_none()).and_then(|it| it.deferred_color_mode);
+    if let Some(DeferredColorMode { mode, intent, grays }) = pending {
+        let before = s.paint.clone();
+        convert_new_art_colors(s, mode, intent, grays)?;
+        record_new_art_colors(s, before)?;
+    }
+    Ok(())
+}
+
+fn record_new_art_colors(s: &mut Session, before: vectorcraft_tools::PaintDefaults) -> Result<()> {
+    let after = s.paint.clone();
+    if before != after {
+        let st = s.doc_mut()?;
+        let slot = if let Some(it) = &mut st.interaction {
+            Some(&mut it.color_mode_paints)
+        } else {
+            st.history.undo.last_mut().map(|e| &mut e.color_mode_paints)
+        };
+        if let Some(slot) = slot {
+            match slot {
+                Some((_, end)) => *end = after,
+                slot => *slot = Some((before, after)),
+            }
+        }
+        if st.interaction.is_none() {
+            if let Some(e) = st.history.undo.last_mut() {
+                e.recost_paints();
+            }
+            st.history.trim();
+        }
+    }
+    Ok(())
+}
+
 /// Convert the fill and stroke that new art takes, and the colors of its template appearance
 /// (paints and effect colors), as [`set_color_mode`] converted the active document's art. The
-/// command records their original values for Undo. Nothing changes during an interaction other than a `command.batch`
-/// step (a failed batch puts the paint defaults back itself).
+/// command records their original values for Undo. Previews defer this until acceptance;
+/// a batch converts immediately and restores the values itself when it fails.
 fn convert_new_art_colors(s: &mut Session, mode: ColorMode, intent: Option<Intent>, grays: Grays) -> Result<()> {
-    if s.in_interaction() && s.batch_stash.is_none() {
-        return Ok(());
-    }
     let d = &s.doc()?.doc;
     let bases = global_bases(d);
     let conv = mode_converter(mode, intent, grays);

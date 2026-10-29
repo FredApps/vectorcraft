@@ -8,6 +8,8 @@ pub struct Interaction {
     /// The selection the previews start from (shared, so a preview frame copies nothing).
     pub selection: Arc<Selection>,
     pub preview: Option<(String, Value)>,
+    /// Conversion of new-art paints waits until a color-mode preview is accepted.
+    pub(crate) deferred_color_mode: Option<cmd::colormgmt::DeferredColorMode>,
     pub(crate) color_mode_paints: Option<(vectorcraft_tools::PaintDefaults, vectorcraft_tools::PaintDefaults)>,
     /// Per-document state restored on cancel (current layer, highlighted Layers panel rows,
     /// isolation).

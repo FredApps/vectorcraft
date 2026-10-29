@@ -415,6 +415,114 @@ fn color_mode_cancelled_joined_scope_restores_paints_and_history_metadata() {
     }
 }
 
+fn color_mode_preview_session(selected: bool) -> Session {
+    let mut s = session();
+    if selected {
+        rect(&mut s);
+    }
+    run(&mut s, "paint.setFill", json!({"color": "#808080"}));
+    run(&mut s, "paint.setStroke", json!({"color": "#123456"}));
+    let mut appearance = s.new_art();
+    appearance.effects.push(vectorcraft_doc::Effect { id: "stylize.dropShadow".into(), params: json!({"color":"#d37a42"}), visible: true });
+    s.paint.appearance = Some(appearance);
+    s
+}
+
+#[test]
+fn color_mode_preview_commit_converts_new_art_once_and_keeps_exact_history() {
+    for selected in [false, true] {
+        let mut s = color_mode_preview_session(selected);
+        let before = s.paint.clone();
+        let depth = s.doc().unwrap().history.undo.len();
+        let mut expected = color_mode_preview_session(false);
+        expected.paint = before.clone();
+        run(&mut expected, "file.documentColorMode", json!({"mode":"cmyk", "grays":"black"}));
+        // The template is intentionally independent from selected artwork.
+        let after = expected.paint.clone();
+        s.begin_interaction("Document Color Mode").unwrap();
+        for grays in ["profile", "black", "profile", "black"] {
+            s.preview("file.documentColorMode", &json!({"mode":"cmyk", "grays":grays})).unwrap();
+            assert_eq!(s.paint, before, "preview must leave new-art paints tentative");
+            assert_eq!(s.doc().unwrap().history.undo.len(), depth);
+        }
+        s.commit_interaction().unwrap();
+        assert_eq!(s.paint, after);
+        assert_eq!(s.doc().unwrap().history.undo.len(), depth + 1);
+        let e = s.doc().unwrap().history.undo.last().unwrap();
+        assert_eq!(e.color_mode_paints, Some((before.clone(), after.clone())));
+        let history_bytes = e.bytes;
+        assert!(history_bytes >= 2 * std::mem::size_of::<vectorcraft_tools::PaintDefaults>());
+        for _ in 0..3 {
+            run(&mut s, "edit.undo", json!({}));
+            assert_eq!(s.paint, before);
+            assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+            assert_eq!(s.doc().unwrap().history.redo.last().unwrap().color_mode_paints, Some((before.clone(), after.clone())));
+            run(&mut s, "edit.redo", json!({}));
+            assert_eq!(s.paint, after);
+            assert_eq!(s.doc().unwrap().history.undo.last().unwrap().bytes, history_bytes);
+        }
+        s.commit_interaction().unwrap();
+        assert_eq!(s.paint, after, "a second commit cannot convert twice");
+    }
+}
+
+#[test]
+fn color_mode_preview_cancel_replacement_and_failure_do_not_convert_new_art() {
+    for finish in ["cancel", "noop", "failed", "mode-only"] {
+        let mut s = color_mode_preview_session(true);
+        let before = s.paint.clone();
+        let depth = s.doc().unwrap().history.undo.len();
+        s.begin_interaction("Document Color Mode").unwrap();
+        s.preview("file.documentColorMode", &json!({"mode":"cmyk"})).unwrap();
+        match finish {
+            "cancel" => s.cancel_interaction().unwrap(),
+            "noop" => {
+                s.preview("file.documentColorMode", &json!({"mode":"rgb"})).unwrap();
+                s.commit_interaction().unwrap();
+            }
+            "failed" => {
+                assert!(s.preview("file.documentColorMode", &json!({"mode":"invalid"})).is_err());
+                s.commit_interaction().unwrap();
+            }
+            _ => {
+                s.preview("file.documentColorMode", &json!({"mode":"cmyk", "convert":false})).unwrap();
+                s.commit_interaction().unwrap();
+            }
+        }
+        assert_eq!(s.paint, before, "{finish}");
+        assert_eq!(s.doc().unwrap().history.undo.len(), depth + usize::from(finish == "mode-only"), "{finish}");
+    }
+}
+
+#[test]
+fn color_mode_preview_commit_joins_paint_history_and_group_cancel_restores_it() {
+    for cancel in [false, true] {
+        let mut s = color_mode_preview_session(false);
+        let before = s.paint.clone();
+        let depth = s.doc().unwrap().history.undo.len();
+        s.begin_undo_group();
+        // Existing grouped metadata must keep its original snapshot when the preview commits.
+        run(&mut s, "file.documentColorMode", json!({"mode":"cmyk"}));
+        s.begin_interaction("Document Color Mode").unwrap();
+        s.preview("object.convertDocumentColorMode", &json!({"mode":"rgb"})).unwrap();
+        s.commit_interaction().unwrap();
+        let after = s.paint.clone();
+        let e = s.doc().unwrap().history.undo.last().unwrap();
+        assert_eq!(e.color_mode_paints, Some((before.clone(), after.clone())));
+        assert_eq!(s.doc().unwrap().history.undo.len(), depth + 1);
+        s.end_undo_group(cancel);
+        if cancel {
+            assert_eq!(s.paint, before);
+            assert_eq!(s.doc().unwrap().history.undo.len(), depth);
+        } else {
+            run(&mut s, "edit.undo", json!({}));
+            assert_eq!(s.paint, before);
+            run(&mut s, "edit.redo", json!({}));
+            assert_eq!(s.paint, after);
+        }
+    }
+}
+
 #[test]
 fn grouped_spot_swatches_print_on_their_own_plate() {
     let mut s = session();
