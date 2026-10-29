@@ -826,3 +826,5 @@ trap, and the defaults (0.25 pt, 100%, 40%) are VectorCraft's own, the pages giv
 | 2026-10-22 | minor | Merge current main and complete the Turkish tab-drag labels and validation messages requested by the maintainer; all 24 catalogs covered; scores and estimates unchanged. |
 | 2026-10-22 | minor | Tab-drag follow-up: reconcile upstream progress updates and document drag lifecycle, insertion behavior and regression contracts; behavior, scores and estimates unchanged. |
 | 2026-10-22 | minor | Artwork dragged with Selection switches visible document tabs after a 400 ms hover, then copies editable artwork on canvas release; source and clipboard stay intact; scores and hours unchanged |
+
+2026-10-28 behavior correction: Document Color Mode: Undo restores original current fill, stroke and template appearance colors with the document; Redo reapplies their converted values. Failed batches preserve the original paints. Freeform gradient control colors convert with their stops, including new-art templates and stored graph paints. This is an application consistency rule. Scores and remaining estimates unchanged.

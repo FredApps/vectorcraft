@@ -182,6 +182,7 @@ impl Session {
             doc: st.doc.clone(),
             selection: Arc::new(st.selection.clone()),
             preview: None,
+            color_mode_paints: None,
             active_layer: st.active_layer,
             layer_rows: st.layer_rows.clone(),
             variables_highlight: st.variables_highlight.clone(),

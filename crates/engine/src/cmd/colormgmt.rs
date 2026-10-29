@@ -318,14 +318,36 @@ pub(crate) fn convert_mode(s: &mut Session, p: &Value) -> Result<Value> {
         Ok(())
     })?;
     if convert {
+        let before = s.paint.clone();
         convert_new_art_colors(s, mode, intent, grays)?;
+        let after = s.paint.clone();
+        if before != after {
+            let st = s.doc_mut()?;
+            let slot = if let Some(it) = &mut st.interaction {
+                Some(&mut it.color_mode_paints)
+            } else {
+                st.history.undo.last_mut().map(|e| &mut e.color_mode_paints)
+            };
+            if let Some(slot) = slot {
+                match slot {
+                    Some((_, end)) => *end = after,
+                    slot => *slot = Some((before, after)),
+                }
+            }
+            if st.interaction.is_none() {
+                if let Some(e) = st.history.undo.last_mut() {
+                    e.recost_paints();
+                }
+                st.history.trim();
+            }
+        }
     }
     Ok(json!({ "changed": changed }))
 }
 
 /// Convert the fill and stroke that new art takes, and the colors of its template appearance
-/// (paints and effect colors), as [`set_color_mode`] converted the active document's art. Undo
-/// does not take them back. Nothing changes during an interaction other than a `command.batch`
+/// (paints and effect colors), as [`set_color_mode`] converted the active document's art. The
+/// command records their original values for Undo. Nothing changes during an interaction other than a `command.batch`
 /// step (a failed batch puts the paint defaults back itself).
 fn convert_new_art_colors(s: &mut Session, mode: ColorMode, intent: Option<Intent>, grays: Grays) -> Result<()> {
     if s.in_interaction() && s.batch_stash.is_none() {
@@ -561,13 +583,18 @@ fn map_graph_colors(g: &mut vectorcraft_doc::GraphSpec, f: &mut dyn FnMut(&Color
     }
 }
 
-/// `f` applied to a solid paint's color or a gradient's stop colors, given their swatch link.
+/// `f` applied to solid, gradient-stop and freeform-control colors, with any swatch link.
 fn map_paint_colors(p: &mut Paint, f: &mut dyn FnMut(&Color, proof::Link) -> Color) {
     match p {
         Paint::Solid { color, swatch, tint } => *color = f(color, swatch.as_deref().map(|s| (s, *tint))),
         Paint::Gradient(g) => {
             for st in &mut g.gradient.stops {
                 st.color = f(&st.color, st.swatch.as_deref().map(|s| (s, st.tint)));
+            }
+            if let Some(freeform) = &mut g.freeform {
+                for point in &mut freeform.points {
+                    point.color = f(&point.color, None);
+                }
             }
         }
         _ => {}

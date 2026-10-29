@@ -8,6 +8,7 @@ pub struct Interaction {
     /// The selection the previews start from (shared, so a preview frame copies nothing).
     pub selection: Arc<Selection>,
     pub preview: Option<(String, Value)>,
+    pub(crate) color_mode_paints: Option<(vectorcraft_tools::PaintDefaults, vectorcraft_tools::PaintDefaults)>,
     /// Per-document state restored on cancel (current layer, highlighted Layers panel rows,
     /// isolation).
     pub active_layer: Option<NodeId>,
@@ -83,4 +84,8 @@ pub struct UndoScope {
     /// that the group's undo step keeps, as they were when the scope began; `None` when the scope
     /// opened the group.
     pub(crate) joined: Option<(Arc<Document>, Selection, Option<Arc<Document>>)>,
+    /// The new-art colors and the group's color-mode history metadata at the scope's start.
+    /// Only used when cancelling a joined scope that converted those colors.
+    pub(crate) paint: vectorcraft_tools::PaintDefaults,
+    pub(crate) color_mode_paints: Option<(vectorcraft_tools::PaintDefaults, vectorcraft_tools::PaintDefaults)>,
 }

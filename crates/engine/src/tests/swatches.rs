@@ -339,6 +339,83 @@ fn document_color_mode_converts_the_colors_new_art_takes() {
 }
 
 #[test]
+fn color_mode_undo_restores_original_new_art_colors_and_redo_reapplies_them() {
+    for batch in [false, true] {
+        let mut s = session();
+        run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+        run(&mut s, "paint.setStroke", json!({"color": "#123456"}));
+        let before = s.paint.clone();
+        if batch {
+            run(
+                &mut s,
+                "command.batch",
+                json!({"commands": [
+                    {"command": "file.documentColorMode", "params": {"mode": "cmyk"}}
+                ]}),
+            );
+        } else {
+            run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+        }
+        let after = s.paint.clone();
+        assert_ne!(before.fill, after.fill);
+        run(&mut s, "edit.undo", json!({}));
+        assert_eq!(s.paint, before, "batch {batch}: exact original values");
+        assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+        run(&mut s, "edit.redo", json!({}));
+        assert_eq!(s.paint, after, "batch {batch}");
+        let id = rect(&mut s);
+        assert_eq!(doc(&s).node(id).unwrap().appearance.fill_paint(), after.fill);
+    }
+}
+
+#[test]
+fn color_mode_undo_restores_template_paints_and_effect_colors() {
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+    run(&mut s, "paint.setStroke", json!({"color": "#123456"}));
+    let mut appearance = s.new_art();
+    appearance.effects.push(vectorcraft_doc::Effect { id: "stylize.dropShadow".into(), params: json!({"color":"#d37a42"}), visible: true });
+    s.paint.appearance = Some(appearance);
+    let before = s.paint.clone();
+    run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+    let after = s.paint.clone();
+    assert_ne!(before.appearance, after.appearance);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(s.paint, after);
+    let id = rect(&mut s);
+    assert_eq!(doc(&s).node(id).unwrap().appearance.effects, after.appearance.unwrap().effects);
+}
+
+#[test]
+fn color_mode_cancelled_joined_scope_restores_paints_and_history_metadata() {
+    for converted_before_scope in [false, true] {
+        let mut s = session();
+        run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+        let original = s.paint.clone();
+        s.begin_undo_group();
+        rect(&mut s);
+        if converted_before_scope {
+            run(&mut s, "file.documentColorMode", json!({"mode":"cmyk"}));
+        }
+        let before_scope = s.paint.clone();
+        let mode = doc(&s).color_mode;
+        let scope = s.begin_undo_scope().unwrap();
+        run(&mut s, "file.documentColorMode", json!({"mode": if converted_before_scope {"rgb"} else {"cmyk"}}));
+        s.end_undo_scope(scope, true);
+        assert_eq!(s.paint, before_scope);
+        assert_eq!(doc(&s).color_mode, mode);
+        s.end_undo_group(false);
+        run(&mut s, "edit.undo", json!({}));
+        assert_eq!(s.paint, if converted_before_scope { original } else { before_scope.clone() });
+        run(&mut s, "edit.redo", json!({}));
+        assert_eq!(doc(&s).color_mode, mode);
+        assert_eq!(s.paint, before_scope, "redo must not reapply the cancelled conversion");
+    }
+}
+
+#[test]
 fn grouped_spot_swatches_print_on_their_own_plate() {
     let mut s = session();
     grouped_swatch(&mut s, "Brights", "Signal Orange", Color::cmyk(0.0, 0.6, 1.0, 0.0));
@@ -673,4 +750,80 @@ fn global_swatch_edits_reach_opacity_mask_art() {
     // Undo brings the mask's colour back with the swatch.
     run(&mut s, "edit.undo", json!({}));
     assert_eq!(mask_fill(&s).color(), Some(Color::rgb(1.0, 1.0, 1.0)));
+}
+
+#[test]
+fn color_mode_converts_freeform_defaults_templates_and_stored_graph_paints() {
+    use vectorcraft_color::{Freeform, FreeformPoint, Gradient, GradientKind, GradientPaint};
+    let mut s = session();
+    let id = NodeId(
+        run(
+            &mut s,
+            "graph.create",
+            json!({"type":"column", "x":0, "y":0, "width":60, "height":40,
+        "csv":",2024\nQ1,3\nQ2,5"}),
+        )["id"]
+            .as_u64()
+            .unwrap(),
+    );
+    let mut gradient = GradientPaint::new(Gradient::new(GradientKind::Freeform, vec![]));
+    gradient.set_freeform(Freeform {
+        points: vec![
+            FreeformPoint::new((0.0, 0.0).into(), Color::rgb(0.8, 0.2, 0.1)),
+            FreeformPoint::new((20.0, 10.0).into(), Color::rgb(0.1, 0.3, 0.9)),
+        ],
+        lines: vec![vec![0, 1]],
+        ..Default::default()
+    });
+    let paint = Paint::Gradient(Box::new(gradient));
+    s.edit("Stored graph paint", |d, _| {
+        d.node_mut(id).unwrap().extras_mut().graph.as_mut().unwrap().series_paints =
+            vec![vectorcraft_doc::SeriesPaint { fill: Some(paint.clone()), stroke: Some(paint.clone()), ..Default::default() }];
+        Ok(())
+    })
+    .unwrap();
+    s.paint.fill = paint.clone();
+    s.paint.stroke = paint.clone();
+    s.paint.stroke_width = 1.0;
+    s.paint.appearance = None;
+    s.paint.appearance = Some(s.new_art());
+    let before = s.paint.clone();
+    let stored = |s: &Session| doc(s).node(id).unwrap().extras().graph.as_ref().unwrap().series_paints.clone();
+    let before_graph = stored(&s);
+    run(&mut s, "file.documentColorMode", json!({"mode":"cmyk"}));
+    let after = s.paint.clone();
+    let after_graph = stored(&s);
+    let converted = |paint: &Paint| {
+        let Paint::Gradient(g) = paint else { panic!("expected gradient") };
+        assert!(g.gradient.stops.iter().all(|p| matches!(p.color, Color::Cmyk { .. })));
+        assert!(g.freeform.as_ref().unwrap().points.iter().all(|p| matches!(p.color, Color::Cmyk { .. })));
+    };
+    converted(&after.fill);
+    converted(&after.stroke);
+    converted(&after.appearance.as_ref().unwrap().fill_paint());
+    converted(&after.appearance.as_ref().unwrap().stroke().unwrap().paint);
+    converted(after_graph[0].fill.as_ref().unwrap());
+    converted(after_graph[0].stroke.as_ref().unwrap());
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(s.paint, before);
+    assert_eq!(stored(&s), before_graph);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(s.paint, after);
+    assert_eq!(stored(&s), after_graph);
+    let new = rect(&mut s);
+    let new_fill = doc(&s).node(new).unwrap().appearance.fill_paint();
+    converted(&new_fill);
+    let control_colors = |paint: &Paint| {
+        let Paint::Gradient(g) = paint else { panic!("expected gradient") };
+        g.freeform.as_ref().unwrap().points.iter().map(|p| p.color).collect::<Vec<_>>()
+    };
+    assert_eq!(control_colors(&new_fill), control_colors(&after.fill));
+    run(&mut s, "graph.setData", json!({"id":id.0, "rows":[[2], [4]]}));
+    assert_eq!(stored(&s), after_graph);
+    let graph = doc(&s).node(id).unwrap();
+    let series = graph.children().unwrap().iter().find(|n| n.name.as_deref() == Some("2024")).unwrap();
+    for mark in series.children().unwrap() {
+        converted(&mark.appearance.fill_paint());
+        converted(&mark.appearance.stroke().unwrap().paint);
+    }
 }

@@ -583,7 +583,8 @@ the art (opacity masks, effect colors and the series paints and label styles tha
 graph designs, pattern tiles (with the tile that pattern editing's Cancel puts back), graphic styles (their effect
 colors included), brushes (their art and a Hue Shift key color) and swatches through the color settings, in one undo
 step (`object.convertDocumentColorMode` is an alias kept for older scripts). It also converts the fill, stroke and
-effect colors that new art takes; undo does not change those back. The light colors of 3D effects stay RGB.
+effect colors that new art takes; Undo restores their original values and Redo reapplies the conversion. The light
+colors of 3D effects stay RGB.
 Gray colors stay Gray and print
 on the black plate only. RGB grays are colors like any
 other: to CMYK they separate through the profile into four-colour greys and a rich black, as Illustrator converts
