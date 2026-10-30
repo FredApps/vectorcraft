@@ -5360,3 +5360,37 @@ anchor	Points:	Точки:
 @msg	`{id}` is not a colour adjustment	`{id}` не є корекцією кольору
 @msg	missing `effect`	відсутня `effect`
 @msg	`params` must be an object	`params` має бути об’єктом
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Інструменти точного редагування контурів
+	Anchor Eraser Brush	Пензель-гумка опорних точок
+	Extend Path Tool	Інструмент «Подовження контуру»
+	Measure & Inspect Tool	Інструмент «Вимірювання й аналіз»
+	Anchor Inspector	Інспектор опорних точок
+	Add Points at Crossings	Додати точки на перетинах
+	Split at Crossings	Розрізати на перетинах
+	Extend Path	Подовжити контур
+	Measure & Inspect	Вимірювання й аналіз
+	Set Anchor	Задати опорну точку
+	Make Smooth	Зробити гладкою
+	Make Corner	Зробити кутовою
+	Equalize Handles	Вирівняти довжину маркерів
+	Remove Points, Keep Shape	Забрати точки, зберегти форму
+	Add Points to Segments…	Додати точки до сегментів…
+	Add Points to Segments	Додати точки до сегментів
+	Open a document to edit its anchor points.	Відкрийте документ, щоб редагувати його опорні точки.
+	Anchors selected: {count}	Вибрано опорних точок: {count}
+	Direct-select anchor points to edit them.	Виділіть опорні точки напряму, щоб редагувати їх.
+	Length	Довжина
+	In:	Вхід:
+	Out:	Вихід:
+	Add Points	Додати точки
+	Points per segment	Точок на сегмент
+	Close Path:	Замкнути контур:
+	Keep Handles	Зберегти маркери
+	Straight	Прямий
+	Stretch Curve	Розтягнути криву
+@msg	direct-select the anchor points to remove	виділіть напряму опорні точки, які треба забрати
+@msg	select segments, or paths, to add points to	виділіть сегменти або контури, до яких треба додати точки
+@msg	select open paths to close	виділіть незамкнені контури, щоб замкнути їх
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	контурів забагато або вони надто заплутані, щоб знайти їхні перетини (не більше 10000 сегментів)
+@msg	the paths have too many anchors to edit at once	у контурів забагато опорних точок, щоб редагувати їх за раз

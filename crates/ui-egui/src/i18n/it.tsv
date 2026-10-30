@@ -5380,3 +5380,37 @@ anchor	Points:	Punti:
 @msg	`{id}` is not a colour adjustment	`{id}` non è una regolazione del colore
 @msg	missing `effect`	manca `effect`
 @msg	`params` must be an object	`params` deve essere un oggetto
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Strumenti di precisione per tracciati
+	Anchor Eraser Brush	Pennello gomma punti di ancoraggio
+	Extend Path Tool	Strumento Estendi tracciato
+	Measure & Inspect Tool	Strumento Misura e ispeziona
+	Anchor Inspector	Ispettore punti di ancoraggio
+	Add Points at Crossings	Aggiungi punti agli incroci
+	Split at Crossings	Dividi agli incroci
+	Extend Path	Estendi tracciato
+	Measure & Inspect	Misura e ispeziona
+	Set Anchor	Imposta punto di ancoraggio
+	Make Smooth	Rendi arrotondato
+	Make Corner	Rendi angolo
+	Equalize Handles	Uguaglia maniglie
+	Remove Points, Keep Shape	Rimuovi punti, mantieni forma
+	Add Points to Segments…	Aggiungi punti ai segmenti…
+	Add Points to Segments	Aggiungi punti ai segmenti
+	Open a document to edit its anchor points.	Apri un documento per modificarne i punti di ancoraggio.
+	Anchors selected: {count}	Punti di ancoraggio selezionati: {count}
+	Direct-select anchor points to edit them.	Seleziona direttamente i punti di ancoraggio per modificarli.
+	Length	Lunghezza
+	In:	Entrata:
+	Out:	Uscita:
+	Add Points	Aggiungi punti
+	Points per segment	Punti per segmento
+	Close Path:	Chiudi tracciato:
+	Keep Handles	Mantieni maniglie
+	Straight	Diritto
+	Stretch Curve	Allunga curva
+@msg	direct-select the anchor points to remove	seleziona direttamente i punti di ancoraggio da rimuovere
+@msg	select segments, or paths, to add points to	seleziona segmenti, o tracciati, a cui aggiungere punti
+@msg	select open paths to close	seleziona tracciati aperti da chiudere
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	tracciati troppi o troppo intricati per trovarne gli incroci (al massimo 10000 segmenti)
+@msg	the paths have too many anchors to edit at once	i tracciati hanno troppi punti di ancoraggio da modificare in una volta

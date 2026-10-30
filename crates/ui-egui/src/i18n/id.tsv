@@ -5669,3 +5669,36 @@ anchor	Points:	Titik:
 @msg	`{id}` is not a colour adjustment	`{id}` bukan penyesuaian warna
 @msg	missing `effect`	`effect` tidak ada
 @msg	`params` must be an object	`params` harus berupa objek
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Alat presisi jalur
+	Anchor Eraser Brush	Kuas penghapus titik jangkar
+	Extend Path Tool	Alat perpanjang jalur
+	Measure & Inspect Tool	Alat ukur dan periksa
+	Anchor Inspector	Pemeriksa titik jangkar
+	Add Points at Crossings	Tambahkan titik di persilangan
+	Split at Crossings	Pisahkan di persilangan
+	Extend Path	Perpanjang jalur
+	Measure & Inspect	Ukur dan periksa
+	Set Anchor	Atur titik jangkar
+	Make Smooth	Jadikan halus
+	Make Corner	Jadikan sudut
+	Equalize Handles	Samakan pegangan
+	Remove Points, Keep Shape	Hapus titik, pertahankan bentuk
+	Add Points to Segments…	Tambahkan titik ke segmen…
+	Add Points to Segments	Tambahkan titik ke segmen
+	Open a document to edit its anchor points.	Buka dokumen untuk menyunting titik jangkarnya.
+	Anchors selected: {count}	Titik jangkar terpilih: {count}
+	Direct-select anchor points to edit them.	Pilih langsung titik jangkar untuk menyuntingnya.
+	In:	Masuk:
+	Out:	Keluar:
+	Add Points	Tambahkan titik
+	Points per segment	Titik per segmen
+	Close Path:	Tutup jalur:
+	Keep Handles	Pertahankan pegangan
+	Straight	Lurus
+	Stretch Curve	Regangkan kurva
+@msg	direct-select the anchor points to remove	pilih langsung titik jangkar yang akan dihapus
+@msg	select segments, or paths, to add points to	pilih segmen, atau jalur, untuk ditambahi titik
+@msg	select open paths to close	pilih jalur terbuka untuk ditutup
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	jalur terlalu banyak atau terlalu kusut untuk menemukan persilangannya (paling banyak 10000 segmen)
+@msg	the paths have too many anchors to edit at once	jalur memiliki terlalu banyak titik jangkar untuk disunting sekaligus

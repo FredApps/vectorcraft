@@ -5654,3 +5654,36 @@ anchor	Points:	Точки:
 @msg	`{id}` is not a colour adjustment	`{id}` не е цветова корекция
 @msg	missing `effect`	липсва `effect`
 @msg	`params` must be an object	`params` трябва да бъде обект
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Инструменти за прецизни пътища
+	Anchor Eraser Brush	Четка за изтриване на опорни точки
+	Extend Path Tool	Инструмент „Удължаване на път“
+	Measure & Inspect Tool	Инструмент „Измерване и проверка“
+	Anchor Inspector	Инспектор на опорни точки
+	Add Points at Crossings	Добавяне на точки в пресичанията
+	Split at Crossings	Разделяне в пресичанията
+	Extend Path	Удължаване на път
+	Measure & Inspect	Измерване и проверка
+	Set Anchor	Задаване на опорна точка
+	Make Smooth	Направи гладка
+	Make Corner	Направи ъглова
+	Equalize Handles	Изравняване на дръжките
+	Remove Points, Keep Shape	Премахване на точки, запазване на формата
+	Add Points to Segments…	Добавяне на точки към сегменти…
+	Add Points to Segments	Добавяне на точки към сегменти
+	Open a document to edit its anchor points.	Отворете документ, за да редактирате опорните му точки.
+	Anchors selected: {count}	Избрани опорни точки: {count}
+	Direct-select anchor points to edit them.	Изберете опорните точки директно, за да ги редактирате.
+	In:	Вход:
+	Out:	Изход:
+	Add Points	Добавяне на точки
+	Points per segment	Точки на сегмент
+	Close Path:	Затваряне на пътя:
+	Keep Handles	Запазване на дръжките
+	Straight	Прав
+	Stretch Curve	Разтягане на кривата
+@msg	direct-select the anchor points to remove	изберете директно опорните точки за премахване
+@msg	select segments, or paths, to add points to	изберете сегменти или пътища, към които да се добавят точки
+@msg	select open paths to close	изберете отворени пътища за затваряне
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	пътищата са твърде много или твърде заплетени, за да се намерят пресичанията им (най-много 10000 сегмента)
+@msg	the paths have too many anchors to edit at once	пътищата имат твърде много опорни точки, за да се редактират наведнъж

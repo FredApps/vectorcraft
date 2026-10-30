@@ -18,7 +18,7 @@ use crate::{EngineError, Result, Session};
 
 /// Simplify Anchors' tolerance by default, and the drift (pt) each step of it allows.
 const TOLERANCE: f64 = 20.0;
-const PT_PER_TOLERANCE: f64 = 0.02;
+pub(super) const PT_PER_TOLERANCE: f64 = 0.02;
 /// Rejoin Path Pieces' gap by default, and the widest (pt).
 const GAP: f64 = 0.1;
 const MAX_GAP: f64 = 6.0;

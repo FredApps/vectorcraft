@@ -113,6 +113,18 @@ pub fn simplify_keep_shape(path: &PathData, tolerance: f64, protect_corners: boo
     PathData::new(path.subpaths.iter().map(|sp| Reducer::new(sp, protect_corners).run(tolerance)).collect())
 }
 
+/// [`simplify_keep_shape`] on subpath `sp` where only the anchors `may_go` marks (one flag per
+/// anchor, by index) may go: what the Anchor Eraser Brush passes over. Open ends always stay. An
+/// infinite tolerance removes every marked anchor that can go.
+pub fn simplify_anchors_keep_shape(sp: &SubPath, tolerance: f64, may_go: &[bool]) -> SubPath {
+    if tolerance.is_nan() || tolerance <= 0.0 {
+        return sp.clone();
+    }
+    let mut r = Reducer::new(sp, false);
+    r.kept = (0..sp.anchors.len()).map(|i| !may_go.get(i).copied().unwrap_or(false)).collect();
+    r.run(tolerance)
+}
+
 /// One subpath being reduced: what is left of it, and where its anchors were in the original.
 struct Reducer<'a> {
     original: &'a SubPath,

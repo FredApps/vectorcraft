@@ -5764,3 +5764,36 @@ anchor	Points:	Body:
 @msg	`{id}` is not a colour adjustment	`{id}` není úprava barev
 @msg	missing `effect`	chybí `effect`
 @msg	`params` must be an object	`params` musí být objekt
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Přesné nástroje pro cesty
+	Anchor Eraser Brush	Štětec gumy kotevních bodů
+	Extend Path Tool	Nástroj Prodloužit cestu
+	Measure & Inspect Tool	Nástroj Měřit a zkoumat
+	Anchor Inspector	Inspektor kotevních bodů
+	Add Points at Crossings	Přidat body v křížení
+	Split at Crossings	Rozdělit v křížení
+	Extend Path	Prodloužit cestu
+	Measure & Inspect	Měřit a zkoumat
+	Set Anchor	Nastavit kotevní bod
+	Make Smooth	Změnit na hladký
+	Make Corner	Změnit na rohový
+	Equalize Handles	Vyrovnat úchyty
+	Remove Points, Keep Shape	Odstranit body, zachovat tvar
+	Add Points to Segments…	Přidat body do segmentů…
+	Add Points to Segments	Přidat body do segmentů
+	Open a document to edit its anchor points.	Otevřete dokument a upravte jeho kotevní body.
+	Anchors selected: {count}	Vybrané kotevní body: {count}
+	Direct-select anchor points to edit them.	Kotevní body pro úpravy vyberte přímým výběrem.
+	In:	Vstup:
+	Out:	Výstup:
+	Add Points	Přidat body
+	Points per segment	Bodů na segment
+	Close Path:	Uzavřít cestu:
+	Keep Handles	Zachovat úchyty
+	Straight	Přímý
+	Stretch Curve	Natáhnout křivku
+@msg	direct-select the anchor points to remove	přímým výběrem vyberte kotevní body k odstranění
+@msg	select segments, or paths, to add points to	vyberte segmenty nebo cesty, do nichž přidat body
+@msg	select open paths to close	vyberte otevřené cesty k uzavření
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	příliš mnoho nebo příliš spletených cest pro nalezení jejich křížení (nejvýše 10000 segmentů)
+@msg	the paths have too many anchors to edit at once	cesty mají příliš mnoho kotevních bodů na úpravu najednou

@@ -147,6 +147,9 @@ pub(super) fn cursor_icon(c: Cursor) -> egui::CursorIcon {
         | Cursor::Scissors
         | Cursor::ScissorsNotAllowed
         | Cursor::MeshAdd
-        | Cursor::PuppetPin => cursor_icon(c.stand_in().unwrap_or(Cursor::Crosshair)),
+        | Cursor::PuppetPin
+        | Cursor::AnchorEraser
+        | Cursor::ExtendPath
+        | Cursor::MeasureInspect => cursor_icon(c.stand_in().unwrap_or(Cursor::Crosshair)),
     }
 }

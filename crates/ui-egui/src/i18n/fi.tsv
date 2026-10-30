@@ -5795,3 +5795,36 @@ anchor	Points:	Pisteet:
 @msg	`{id}` is not a colour adjustment	`{id}` ei ole värisäätö
 @msg	missing `effect`	`effect` puuttuu
 @msg	`params` must be an object	`params` on oltava objekti
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Polkujen tarkkuustyökalut
+	Anchor Eraser Brush	Ankkuripisteiden pyyhintäsivellin
+	Extend Path Tool	Polun jatkamistyökalu
+	Measure & Inspect Tool	Mittaus- ja tarkastelutyökalu
+	Anchor Inspector	Ankkuripisteiden tarkastelu
+	Add Points at Crossings	Lisää pisteet risteyskohtiin
+	Split at Crossings	Jaa risteyskohdista
+	Extend Path	Jatka polkua
+	Measure & Inspect	Mittaa ja tarkastele
+	Set Anchor	Aseta ankkuripiste
+	Make Smooth	Tee tasaiseksi
+	Make Corner	Tee kulmapisteeksi
+	Equalize Handles	Tasaa kahvat
+	Remove Points, Keep Shape	Poista pisteet, säilytä muoto
+	Add Points to Segments…	Lisää pisteitä osiin…
+	Add Points to Segments	Lisää pisteitä osiin
+	Open a document to edit its anchor points.	Avaa asiakirja muokataksesi sen ankkuripisteitä.
+	Anchors selected: {count}	Valittuja ankkuripisteitä: {count}
+	Direct-select anchor points to edit them.	Valitse ankkuripisteet suoraan muokataksesi niitä.
+	In:	Sisään:
+	Out:	Ulos:
+	Add Points	Lisää pisteitä
+	Points per segment	Pisteitä osaa kohden
+	Close Path:	Sulje polku:
+	Keep Handles	Säilytä kahvat
+	Straight	Suora
+	Stretch Curve	Venytä käyrää
+@msg	direct-select the anchor points to remove	valitse poistettavat ankkuripisteet suoraan
+@msg	select segments, or paths, to add points to	valitse osat tai polut, joihin pisteitä lisätään
+@msg	select open paths to close	valitse suljettavat avoimet polut
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	liian monta tai liian sotkuista polkua niiden risteyskohtien löytämiseen (enintään 10000 osaa)
+@msg	the paths have too many anchors to edit at once	poluissa on liian monta ankkuripistettä muokattavaksi kerralla

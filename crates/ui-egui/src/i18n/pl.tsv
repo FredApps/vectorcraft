@@ -5618,3 +5618,37 @@ anchor	Points:	Punkty:
 @msg	`{id}` is not a colour adjustment	`{id}` nie jest korektą koloru
 @msg	missing `effect`	brak `effect`
 @msg	`params` must be an object	`params` musi być obiektem
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Precyzyjne narzędzia ścieżek
+	Anchor Eraser Brush	Pędzel gumki punktów kontrolnych
+	Extend Path Tool	Narzędzie Przedłuż ścieżkę
+	Measure & Inspect Tool	Narzędzie Mierz i badaj
+	Anchor Inspector	Inspektor punktów kontrolnych
+	Add Points at Crossings	Dodaj punkty na skrzyżowaniach
+	Split at Crossings	Podziel na skrzyżowaniach
+	Extend Path	Przedłuż ścieżkę
+	Measure & Inspect	Mierz i badaj
+	Set Anchor	Ustaw punkt kontrolny
+	Make Smooth	Zmień na gładki
+	Make Corner	Zmień na narożny
+	Equalize Handles	Wyrównaj uchwyty
+	Remove Points, Keep Shape	Usuń punkty, zachowaj kształt
+	Add Points to Segments…	Dodaj punkty do segmentów…
+	Add Points to Segments	Dodaj punkty do segmentów
+	Open a document to edit its anchor points.	Otwórz dokument, aby edytować jego punkty kontrolne.
+	Anchors selected: {count}	Zaznaczone punkty kontrolne: {count}
+	Direct-select anchor points to edit them.	Zaznacz bezpośrednio punkty kontrolne, aby je edytować.
+	Length	Długość
+	In:	Wejście:
+	Out:	Wyjście:
+	Add Points	Dodaj punkty
+	Points per segment	Punkty na segment
+	Close Path:	Zamknij ścieżkę:
+	Keep Handles	Zachowaj uchwyty
+	Straight	Prosty
+	Stretch Curve	Rozciągnij krzywą
+@msg	direct-select the anchor points to remove	zaznacz bezpośrednio punkty kontrolne do usunięcia
+@msg	select segments, or paths, to add points to	zaznacz segmenty lub ścieżki, do których dodać punkty
+@msg	select open paths to close	zaznacz otwarte ścieżki do zamknięcia
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	za dużo ścieżek lub są zbyt splątane, by znaleźć ich skrzyżowania (najwyżej 10000 segmentów)
+@msg	the paths have too many anchors to edit at once	ścieżki mają za dużo punktów kontrolnych, by edytować je naraz

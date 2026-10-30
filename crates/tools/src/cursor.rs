@@ -171,6 +171,12 @@ pub enum Cursor {
     MeshAdd,
     /// Puppet Warp over the selection's mesh where a pin can go: a click adds one.
     PuppetPin,
+    /// The Anchor Eraser Brush (Path Precision Tools add-on); the brush's circle is drawn round it.
+    AnchorEraser,
+    /// The Extend Path tool (Path Precision Tools add-on).
+    ExtendPath,
+    /// The Measure & Inspect tool (Path Precision Tools add-on).
+    MeasureInspect,
 }
 
 impl Cursor {
@@ -261,7 +267,10 @@ impl Cursor {
             | Cursor::SymbolStyler
             | Cursor::Scissors
             | Cursor::MeshAdd
-            | Cursor::PuppetPin => Cursor::Crosshair,
+            | Cursor::PuppetPin
+            | Cursor::AnchorEraser
+            | Cursor::ExtendPath
+            | Cursor::MeasureInspect => Cursor::Crosshair,
             c => c,
         }
     }
@@ -295,7 +304,10 @@ impl Cursor {
             | Cursor::SymbolStainer
             | Cursor::SymbolScreener
             | Cursor::SymbolStyler
-            | Cursor::Scissors => Some(Cursor::Crosshair),
+            | Cursor::Scissors
+            | Cursor::AnchorEraser
+            | Cursor::ExtendPath
+            | Cursor::MeasureInspect => Some(Cursor::Crosshair),
             Cursor::TypeVertical => Some(Cursor::Text),
             Cursor::MeshAdd | Cursor::PuppetPin => Some(Cursor::PenAdd),
             Cursor::ScissorsNotAllowed => Some(Cursor::NotAllowed),

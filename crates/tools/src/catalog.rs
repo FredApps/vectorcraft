@@ -137,8 +137,9 @@ pub const TOOL_GROUPS: &[&[ToolInfo]] = &[
     &[t("zoom", "Zoom Tool", Some("Z"), "tool-zoom")],
 ];
 
+/// Every tool: the toolbar's, then the add-ons' ([`crate::addons::GROUPS`]).
 pub fn all_tools() -> impl Iterator<Item = &'static ToolInfo> {
-    TOOL_GROUPS.iter().flat_map(|g| g.iter())
+    TOOL_GROUPS.iter().chain(crate::addons::GROUPS).flat_map(|g| g.iter())
 }
 
 pub fn tool_info(id: &str) -> Option<&'static ToolInfo> {

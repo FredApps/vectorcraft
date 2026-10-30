@@ -5722,3 +5722,36 @@ anchor	Points:	Noktalar:
 @msg	`{id}` is not a colour adjustment	`{id}` bir renk ayarı değil
 @msg	missing `effect`	"isim" eksik
 @msg	`params` must be an object	"gradyan" bir nesne olmalıdır
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Yol Hassasiyet Araçları
+	Anchor Eraser Brush	Bağlantı Noktası Silgi Fırçası
+	Extend Path Tool	Yolu Uzat Aracı
+	Measure & Inspect Tool	Ölç ve İncele Aracı
+	Anchor Inspector	Bağlantı Noktası Denetçisi
+	Add Points at Crossings	Kesişimlere Nokta Ekle
+	Split at Crossings	Kesişimlerden Böl
+	Extend Path	Yolu Uzat
+	Measure & Inspect	Ölç ve İncele
+	Set Anchor	Bağlantı Noktasını Ayarla
+	Make Smooth	Yumuşak Yap
+	Make Corner	Köşe Yap
+	Equalize Handles	Kolları Eşitle
+	Remove Points, Keep Shape	Noktaları Kaldır, Şekli Koru
+	Add Points to Segments…	Bölümlere Nokta Ekle…
+	Add Points to Segments	Bölümlere Nokta Ekle
+	Open a document to edit its anchor points.	Bağlantı noktalarını düzenlemek için bir belge açın.
+	Anchors selected: {count}	Seçili bağlantı noktaları: {count}
+	Direct-select anchor points to edit them.	Düzenlemek için bağlantı noktalarını doğrudan seçin.
+	In:	Giriş:
+	Out:	Çıkış:
+	Add Points	Nokta Ekle
+	Points per segment	Bölüm başına nokta
+	Close Path:	Yolu Kapat:
+	Keep Handles	Kolları Koru
+	Straight	Düz
+	Stretch Curve	Eğriyi Uzat
+@msg	direct-select the anchor points to remove	kaldırılacak bağlantı noktalarını doğrudan seçin
+@msg	select segments, or paths, to add points to	nokta eklenecek bölümleri veya yolları seçin
+@msg	select open paths to close	kapatılacak açık yolları seçin
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	kesişimlerini bulmak için yollar çok fazla veya çok karışık (en fazla 10000 bölüm)
+@msg	the paths have too many anchors to edit at once	yolların aynı anda düzenlenemeyecek kadar çok bağlantı noktası var

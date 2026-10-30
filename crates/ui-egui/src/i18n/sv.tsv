@@ -5788,3 +5788,36 @@ anchor	Points:	Punkter:
 @msg	`{id}` is not a colour adjustment	`{id}` är ingen färgjustering
 @msg	missing `effect`	`effect` saknas
 @msg	`params` must be an object	`params` måste vara ett objekt
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Precisionsverktyg för banor
+	Anchor Eraser Brush	Ankarpunktsraderpensel
+	Extend Path Tool	Förläng bana-verktyget
+	Measure & Inspect Tool	Mät och granska-verktyget
+	Anchor Inspector	Ankarpunktsgranskare
+	Add Points at Crossings	Lägg till punkter vid korsningar
+	Split at Crossings	Dela vid korsningar
+	Extend Path	Förläng bana
+	Measure & Inspect	Mät och granska
+	Set Anchor	Ange ankarpunkt
+	Make Smooth	Gör mjuk
+	Make Corner	Gör till hörn
+	Equalize Handles	Utjämna handtag
+	Remove Points, Keep Shape	Ta bort punkter, behåll formen
+	Add Points to Segments…	Lägg till punkter i segment…
+	Add Points to Segments	Lägg till punkter i segment
+	Open a document to edit its anchor points.	Öppna ett dokument för att redigera dess ankarpunkter.
+	Anchors selected: {count}	Valda ankarpunkter: {count}
+	Direct-select anchor points to edit them.	Direktmarkera ankarpunkter för att redigera dem.
+	In:	In:
+	Out:	Ut:
+	Add Points	Lägg till punkter
+	Points per segment	Punkter per segment
+	Close Path:	Stäng bana:
+	Keep Handles	Behåll handtag
+	Straight	Rak
+	Stretch Curve	Sträck kurvan
+@msg	direct-select the anchor points to remove	direktmarkera ankarpunkterna som ska tas bort
+@msg	select segments, or paths, to add points to	markera segment, eller banor, att lägga till punkter i
+@msg	select open paths to close	markera öppna banor att stänga
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	för många eller för trassliga banor för att hitta deras korsningar (högst 10000 segment)
+@msg	the paths have too many anchors to edit at once	banorna har för många ankarpunkter för att redigeras på en gång

@@ -5755,3 +5755,36 @@ anchor	Points:	Punts:
 @msg	`{id}` is not a colour adjustment	`{id}` no és un ajust de color
 @msg	missing `effect`	falta `effect`
 @msg	`params` must be an object	`params` ha de ser un objecte
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Eines de precisió de traçats
+	Anchor Eraser Brush	Pinzell esborrador de punts d’ancoratge
+	Extend Path Tool	Eina d’allargar el traçat
+	Measure & Inspect Tool	Eina de mesurar i inspeccionar
+	Anchor Inspector	Inspector de punts d’ancoratge
+	Add Points at Crossings	Afegeix punts als encreuaments
+	Split at Crossings	Divideix als encreuaments
+	Extend Path	Allarga el traçat
+	Measure & Inspect	Mesura i inspecciona
+	Set Anchor	Defineix el punt d’ancoratge
+	Make Smooth	Fes-lo suau
+	Make Corner	Fes-lo vèrtex
+	Equalize Handles	Iguala les nanses
+	Remove Points, Keep Shape	Elimina punts, mantén la forma
+	Add Points to Segments…	Afegeix punts als segments…
+	Add Points to Segments	Afegeix punts als segments
+	Open a document to edit its anchor points.	Obriu un document per editar-ne els punts d’ancoratge.
+	Anchors selected: {count}	Punts d’ancoratge seleccionats: {count}
+	Direct-select anchor points to edit them.	Seleccioneu directament punts d’ancoratge per editar-los.
+	In:	Entrada:
+	Out:	Sortida:
+	Add Points	Afegeix punts
+	Points per segment	Punts per segment
+	Close Path:	Tanca el traçat:
+	Keep Handles	Mantén les nanses
+	Straight	Recte
+	Stretch Curve	Estira la corba
+@msg	direct-select the anchor points to remove	seleccioneu directament els punts d’ancoratge que voleu eliminar
+@msg	select segments, or paths, to add points to	seleccioneu segments, o traçats, als quals afegir punts
+@msg	select open paths to close	seleccioneu traçats oberts per tancar-los
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	massa traçats, o massa enredats, per trobar-ne els encreuaments (10000 segments com a màxim)
+@msg	the paths have too many anchors to edit at once	els traçats tenen massa punts d’ancoratge per editar-los alhora

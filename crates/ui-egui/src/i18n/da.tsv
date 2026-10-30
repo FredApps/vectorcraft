@@ -5669,3 +5669,36 @@ anchor	Points:	Punkter:
 @msg	`{id}` is not a colour adjustment	`{id}` er ikke en farvejustering
 @msg	missing `effect`	`effect` mangler
 @msg	`params` must be an object	`params` skal være et objekt
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Præcisionsværktøjer til stier
+	Anchor Eraser Brush	Ankerpunktviskepensel
+	Extend Path Tool	Forlæng sti-værktøj
+	Measure & Inspect Tool	Mål og undersøg-værktøj
+	Anchor Inspector	Ankerpunktinspektør
+	Add Points at Crossings	Tilføj punkter ved krydsninger
+	Split at Crossings	Opdel ved krydsninger
+	Extend Path	Forlæng sti
+	Measure & Inspect	Mål og undersøg
+	Set Anchor	Angiv ankerpunkt
+	Make Smooth	Gør blødt
+	Make Corner	Gør til hjørne
+	Equalize Handles	Udlign håndtag
+	Remove Points, Keep Shape	Fjern punkter, bevar form
+	Add Points to Segments…	Tilføj punkter til segmenter…
+	Add Points to Segments	Tilføj punkter til segmenter
+	Open a document to edit its anchor points.	Åbn et dokument for at redigere dets ankerpunkter.
+	Anchors selected: {count}	Valgte ankerpunkter: {count}
+	Direct-select anchor points to edit them.	Vælg ankerpunkter direkte for at redigere dem.
+	In:	Ind:
+	Out:	Ud:
+	Add Points	Tilføj punkter
+	Points per segment	Punkter pr. segment
+	Close Path:	Luk sti:
+	Keep Handles	Bevar håndtag
+	Straight	Lige
+	Stretch Curve	Stræk kurve
+@msg	direct-select the anchor points to remove	vælg de ankerpunkter, der skal fjernes, direkte
+@msg	select segments, or paths, to add points to	vælg segmenter eller stier at tilføje punkter til
+@msg	select open paths to close	vælg åbne stier at lukke
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	for mange eller for sammenfiltrede stier til at finde deres krydsninger (højst 10000 segmenter)
+@msg	the paths have too many anchors to edit at once	stierne har for mange ankerpunkter til at blive redigeret på én gang
