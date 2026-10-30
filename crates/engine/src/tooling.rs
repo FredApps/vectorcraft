@@ -561,7 +561,7 @@ impl Session {
         self.pointer_held
     }
 
-    /// Is the active tool moving, scaling or rotating the selection with a drag?
+    /// Is the active tool moving, scaling or rotating the selection, or adjusting a widget?
     pub fn tool_transforming(&self) -> bool {
         self.tool.transforming()
     }
@@ -569,6 +569,16 @@ impl Session {
     /// Is the active tool resizing the selection by a bounding-box handle?
     pub fn tool_resizing(&self) -> bool {
         self.tool.resizing()
+    }
+
+    /// Is the active tool rotating the selection from the bounding box's rotate zone?
+    pub fn tool_rotating(&self) -> bool {
+        self.tool.rotating()
+    }
+
+    /// The path and corner index of the widget currently being adjusted, if any.
+    pub fn tool_adjusting_corner(&self) -> Option<(vectorcraft_doc::NodeId, usize)> {
+        self.tool.adjusting_corner()
     }
 
     /// Does the active tool take `key` ahead of the shortcuts bound to it (see `Tool::claims_key`)?
@@ -828,10 +838,10 @@ impl Session {
     }
 
     /// With Real-time Drawing off, the selection's transform box ([`Session::transform_box`]) as the
-    /// pending preview of a resize drag leaves it, measured once per preview step; `None` when no
-    /// resize preview is pending, or when the preview fails.
+    /// pending preview of a handle resize or rotation drag leaves it, measured once per preview
+    /// step; `None` when no such preview is pending, or when the preview fails.
     pub fn deferred_transform_box(&mut self) -> Option<vectorcraft_doc::OrientedBox> {
-        if !self.tool.resizing() {
+        if !self.tool.resizing() && !self.tool.rotating() {
             return None;
         }
         let (cmd, p) = self.unapplied_interaction_preview()?;
@@ -843,7 +853,7 @@ impl Session {
     }
 
     /// Canvas feedback while Real-time Drawing is off: run the pending preview command once, take
-    /// outlines from the objects it touched (and, during a resize, their transform box), then put
+    /// outlines from the objects it touched (and, during a resize or rotation, their transform box), then put
     /// the document back at the interaction snapshot.
     fn deferred_feedback(&mut self, cmd: &str, p: &Value) -> Option<&DeferredFeedback> {
         if !self.deferred_overlay_cache.as_ref().is_some_and(|f| f.cmd == cmd && f.params == *p) {
@@ -866,7 +876,7 @@ impl Session {
         let (overlays, transform_box) = if self.preview(cmd, p).is_ok() {
             let overlays = self.active().map(|st| outlines_for_selection(&st.doc, &st.selection)).unwrap_or_default();
             let objects = self.active().map(|st| st.selection.objects.clone()).unwrap_or_default();
-            (overlays, if self.tool.resizing() { self.transform_box(&objects) } else { None })
+            (overlays, if self.tool.resizing() || self.tool.rotating() { self.transform_box(&objects) } else { None })
         } else {
             (vec![], None)
         };
