@@ -22,6 +22,7 @@ macro_rules! tl {
     };
 }
 
+pub mod addons;
 pub mod background;
 mod brand;
 pub mod canvas;
@@ -184,6 +185,9 @@ pub struct VectorcraftApp {
     /// Last window title sent to the OS (`ViewportCommand::Title`, see `chrome::sync_window_title`):
     /// sent again only when it changes, so idle frames don't spam the backend.
     pub(crate) last_window_title: String,
+    /// Whether a screen mode put the window full screen (`chrome::sync_fullscreen`), so Normal
+    /// Screen Mode takes it back out, and leaves a window the user made full screen as it is.
+    pub(crate) fullscreen_for_mode: bool,
     /// The graphics adapter the window renders with ("name (backend)"), as the host reports it:
     /// shown in Help › About and `ui.inspect` for GPU bug reports. `None` when unknown.
     pub graphics_adapter: Option<String>,
