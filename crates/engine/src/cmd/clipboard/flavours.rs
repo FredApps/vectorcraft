@@ -10,9 +10,9 @@ use serde_json::{Value, json};
 use vectorcraft_doc::{Document, ImageObject, Node, NodeId, NodeKind, TextObject};
 use vectorcraft_geom::{Affine, Point};
 
-use super::super::fileio;
 use super::super::place::pt_per_px;
-use super::*;
+use super::super::{fileio, links};
+use super::{Clipboard, CommandSpec, Result, Session, always, bad, cmd, f64_or, has_doc, looks_like_svg, point_param, str_param};
 
 /// Plain text: a type-only copy's text, else the SVG markup (Include SVG Code).
 pub const TEXT: &str = "text/plain";
@@ -178,7 +178,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Load Image into Clipboard",
             [],
             None,
-            "{dataBase64 (PNG, JPEG, GIF, WebP, TIFF or BMP bytes), mime?: the type the system clipboard gave (an image/… type; the format is read from the bytes), center?: [x, y]} replace the clipboard with the image, embedded at 100% of its physical size (its resolution, else 72 ppi), centred on `center` (default: the first artboard) → {count, width, height (pt), pixelWidth, pixelHeight}; then run edit.paste",
+            "{dataBase64 (PNG, JPEG, GIF, WebP, TIFF or BMP bytes), mime?: the type the system clipboard gave (an image/… type; the format is read from the bytes), center?: [x, y]} replace the clipboard with the image, embedded at 100% of its physical size (its resolution, else 72 ppi), centred on `center` (default: the first artboard) → {count, width, height (pt), pixelWidth, pixelHeight}; then run edit.paste. A PNG, JPEG, GIF or WebP image whose pixels can't be read (a file cut short) is an error",
             has_doc,
             import_image
         ),
@@ -196,7 +196,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Load PDF into Clipboard",
             [],
             None,
-            "{dataBase64, page?: 1, password? (an encrypted PDF), editingData?: false (true: the data is a .ai or .ait file, read as document.open reads it; when document.open would use its editing data, every object of that data comes in, each layer's objects in stacking order and a hidden layer's objects hidden; else page `page`), center?: [x, y]} replace the clipboard with the objects of one PDF page, or of a .ai file's editing data (with the images, patterns and swatches they use), centred on `center` (default: the first artboard) → {count, warnings}; then run edit.paste",
+            "{dataBase64, page?: 1, password? (an encrypted PDF), editingData?: false (true: the data is a .ai or .ait file, read as document.open reads it; when document.open would use its editing data, every object of that data comes in, each layer's objects in stacking order and a hidden layer's objects hidden; else page `page`), center?: [x, y]} replace the clipboard with the objects of one PDF page, or of a .ai file's editing data (with the images, patterns and swatches they use; a .ai saved without PDF compatibility: every object of its editing data, as document.open reads it, with or without editingData), centred on `center` (default: the first artboard) → {count, warnings}; then run edit.paste",
             has_doc,
             import_pdf
         ),
@@ -418,11 +418,20 @@ fn import_image(s: &mut Session, p: &Value) -> Result<Value> {
     if let Some(m) = str_param(p, "mime").filter(|m| !m.starts_with("image/") || *m == SVG) {
         return Err(bad(C, format!("`{m}` isn't a bitmap: use clipboard.importSvg, importPdf or importText")));
     }
-    let img = fileio::raster_image(&data_param(p, C)?).map_err(|e| bad(C, e.to_string()))?;
+    let data = data_param(p, C)?;
+    let mut img = fileio::raster_image(&data).map_err(|e| bad(C, e.to_string()))?;
+    img.blob = links::readable_and_kept(img.blob, links::kept_unread(&data), false).map_err(|e| bad(C, e.to_string()))?;
     let (sx, sy) = pt_per_px(img.ppi);
     let (w, h) = (img.width, img.height);
-    let image =
-        ImageObject { key: img.key.clone(), width: w, height: h, xf: Affine::scale_non_uniform(sx, sy), link: None, placement: Default::default() };
+    let image = ImageObject {
+        key: img.key.clone(),
+        width: w,
+        height: h,
+        xf: Affine::scale_non_uniform(sx, sy),
+        link: None,
+        placement: Default::default(),
+        pixels: None,
+    };
     let mut clip = Clipboard { nodes: vec![Node::new(NodeId(1), NodeKind::Image(Box::new(image)))], ..Default::default() };
     clip.images.insert(img.key, img.blob);
     let count = s.load_clipboard(clip, p)?;
@@ -441,6 +450,7 @@ fn import_text(s: &mut Session, p: &Value) -> Result<Value> {
         return Err(bad(C, "the text is empty"));
     }
     let mut t = TextObject::point(Point::ZERO, text, super::super::create::new_type_style(s, &Value::Null));
+    t.system_layout = s.doc()?.doc.setup.system_layout;
     crate::cmd::typecmd::refresh_bounds(&mut t);
     let n = Node::new(NodeId(1), NodeKind::Text(Box::new(t)));
     let count = s.load_clipboard(Clipboard { nodes: vec![n], ..Default::default() }, p)?;
@@ -510,7 +520,15 @@ fn import_pdf(s: &mut Session, p: &Value) -> Result<Value> {
     {
         return import_loaded(s, p, C, loaded);
     }
-    let (mut doc, warnings) = fileio::page_document(&bytes, page - 1, &opts).map_err(|e| bad(C, e.to_string()))?;
+    let (mut doc, warnings) = match fileio::page_document(&bytes, page - 1, &opts) {
+        // For a .ai saved without PDF compatibility, the clipboard takes every object of its
+        // editing data, as document.open reads it.
+        Err(e) if fileio::is_placeholder(&e) => {
+            let loaded = fileio::load_with("Clipboard.ai", &bytes, &opts).map_err(|e| bad(C, e.to_string()))?;
+            return import_loaded(s, p, C, loaded);
+        }
+        read => read.map_err(|e| bad(C, e.to_string()))?,
+    };
     doc.drop_edit_modes();
     let clip = Clipboard::from_document(&doc);
     if clip.is_empty() {
