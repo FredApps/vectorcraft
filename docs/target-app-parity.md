@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (Color Effects, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (Path Precision Tools, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Color Effects, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1217,8 +1217,20 @@ Show, Fix Selected and Fix All (each one undo step), Deep Ungroup and Rejoin Pat
 alone; Fix All as one step; scopes; rejoin within the gap only) and `addons::cleanup::tests` in `vectorcraft-ui-egui`
 (the submenu opens the panel; Check lists what it finds). Commands: `docs/mcp.md` › Artwork Cleanup add-on.
 
-## Color Effects add-on (2026-10-30)
+## Path Precision Tools add-on (2026-10-30)
 
+A VectorCraft addition, not an Illustrator feature, so no area score moves. Object › Plug-ins › Path Precision Tools,
+its Anchor Inspector panel and three tools kept out of the shipped toolbars (listed in the All Tools drawer) run
+`addon.pathtools.*`: an Anchor Eraser Brush on the shared keep-shape kernel, an Extend Path tool (straight, stretched
+curve or arc; shortening back along the path), a Measure & Inspect tool with hover readouts (lengths, area, curvature,
+angles), the Anchor Inspector's numeric anchor and handle fields with Make Smooth (auto-smooth rule), Make Corner,
+Equalize Handles, Remove Points Keep Shape, Add Points and three ways to close, and Add Points at / Split at Crossings.
+Kernels in `vectorcraft_pathops::addons::pathtools`. Tests: `addons::pathtools` in `vectorcraft-pathops`,
+`vectorcraft-tools` and `vectorcraft-ui-egui`, `cmd::addons::pathtools::tests` in `vectorcraft-engine` (each command one
+undo step, bad params refused, the brush's stroke one step) and `edit_toolbar::tests::addon_tools_are_in_the_drawer_not_the_toolbars`.
+Commands: `docs/mcp.md` › Path Precision Tools add-on.
+
+## Color Effects add-on (2026-10-30)
 A VectorCraft addition, not an Illustrator feature, so no area score moves. Effect › Color Effects adds live Exposure
 (stops of linear light, offset and gamma), Desaturate and Invert Colors as colour adjustments evaluated with those of
 Effect › Color Adjustments (`vectorcraft_effects::addons::color`), and `addon.color.filter` applies any colour adjustment
@@ -1227,11 +1239,11 @@ Tests: `addons::color` in `vectorcraft-effects` (exposure in stops, desaturate k
 identity), `cmd::addons::color::tests` in `vectorcraft-engine` (drawn live without changing the colours; a filter as one
 undo step, with any adjustment and its params; bad requests refused) and `addons::color::tests` in
 `vectorcraft-ui-egui` (the menus and the panel). Commands: `docs/mcp.md` › Color Effects add-on.
-
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-30 | minor | Path Precision Tools add-on (a VectorCraft addition): evidence added; scores unchanged. |
 | 2026-10-30 | minor | Color Effects, a built-in add-on beyond Illustrator; scores and estimates unchanged |
 | 2026-10-30 | minor | Artwork Cleanup add-on (a VectorCraft addition): evidence added; scores unchanged. |
 | 2026-10-30 | minor | Hardware: a second finger cancels the tool press the first finger began, and a finger landing while another is down presses nothing, so a pinch only navigates (#4198); evidence added; scores unchanged (estimated). |

@@ -5713,3 +5713,36 @@ anchor	Points:	Punten:
 @msg	`{id}` is not a colour adjustment	`{id}` is geen kleuraanpassing
 @msg	missing `effect`	`effect` ontbreekt
 @msg	`params` must be an object	`params` moet een object zijn
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Precisiegereedschappen voor paden
+	Anchor Eraser Brush	Ankerpunt-gumpenseel
+	Extend Path Tool	Pad verlengen-gereedschap
+	Measure & Inspect Tool	Meten en inspecteren-gereedschap
+	Anchor Inspector	Ankerpuntinspecteur
+	Add Points at Crossings	Punten toevoegen bij kruisingen
+	Split at Crossings	Splitsen bij kruisingen
+	Extend Path	Pad verlengen
+	Measure & Inspect	Meten en inspecteren
+	Set Anchor	Ankerpunt instellen
+	Make Smooth	Vloeiend maken
+	Make Corner	Hoekpunt maken
+	Equalize Handles	Grepen gelijkmaken
+	Remove Points, Keep Shape	Punten verwijderen, vorm behouden
+	Add Points to Segments…	Punten aan segmenten toevoegen…
+	Add Points to Segments	Punten aan segmenten toevoegen
+	Open a document to edit its anchor points.	Open een document om de ankerpunten ervan te bewerken.
+	Anchors selected: {count}	Geselecteerde ankerpunten: {count}
+	Direct-select anchor points to edit them.	Selecteer ankerpunten direct om ze te bewerken.
+	In:	In:
+	Out:	Uit:
+	Add Points	Punten toevoegen
+	Points per segment	Punten per segment
+	Close Path:	Pad sluiten:
+	Keep Handles	Grepen behouden
+	Straight	Recht
+	Stretch Curve	Curve uitrekken
+@msg	direct-select the anchor points to remove	selecteer de te verwijderen ankerpunten direct
+@msg	select segments, or paths, to add points to	selecteer segmenten, of paden, om punten aan toe te voegen
+@msg	select open paths to close	selecteer open paden om te sluiten
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	te veel of te verwarde paden om hun kruisingen te vinden (hoogstens 10000 segmenten)
+@msg	the paths have too many anchors to edit at once	de paden hebben te veel ankerpunten om in één keer te bewerken

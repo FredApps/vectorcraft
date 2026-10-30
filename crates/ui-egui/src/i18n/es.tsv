@@ -5706,3 +5706,37 @@ anchor	Points:	Puntos:
 @msg	`{id}` is not a colour adjustment	`{id}` no es un ajuste de color
 @msg	missing `effect`	falta `effect`
 @msg	`params` must be an object	`params` debe ser un objeto
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Herramientas de precisión de trazados
+	Anchor Eraser Brush	Pincel borrador de puntos de ancla
+	Extend Path Tool	Herramienta Prolongar trazado
+	Measure & Inspect Tool	Herramienta Medir e inspeccionar
+	Anchor Inspector	Inspector de puntos de ancla
+	Add Points at Crossings	Agregar puntos en los cruces
+	Split at Crossings	Dividir en los cruces
+	Extend Path	Prolongar trazado
+	Measure & Inspect	Medir e inspeccionar
+	Set Anchor	Definir punto de ancla
+	Make Smooth	Suavizar punto
+	Make Corner	Convertir en vértice
+	Equalize Handles	Igualar manejadores
+	Remove Points, Keep Shape	Quitar puntos, mantener forma
+	Add Points to Segments…	Agregar puntos a segmentos…
+	Add Points to Segments	Agregar puntos a segmentos
+	Open a document to edit its anchor points.	Abra un documento para editar sus puntos de ancla.
+	Anchors selected: {count}	Puntos de ancla seleccionados: {count}
+	Direct-select anchor points to edit them.	Seleccione directamente puntos de ancla para editarlos.
+	Length	Longitud
+	In:	Entrada:
+	Out:	Salida:
+	Add Points	Agregar puntos
+	Points per segment	Puntos por segmento
+	Close Path:	Cerrar trazado:
+	Keep Handles	Mantener manejadores
+	Straight	Recto
+	Stretch Curve	Estirar curva
+@msg	direct-select the anchor points to remove	seleccione directamente los puntos de ancla que quitar
+@msg	select segments, or paths, to add points to	seleccione segmentos, o trazados, a los que agregar puntos
+@msg	select open paths to close	seleccione trazados abiertos que cerrar
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	hay demasiados trazados, o están demasiado enredados, para hallar sus cruces (10000 segmentos como máximo)
+@msg	the paths have too many anchors to edit at once	los trazados tienen demasiados puntos de ancla para editarlos a la vez

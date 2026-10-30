@@ -5362,3 +5362,37 @@ anchor	Points:	Điểm:
 @msg	`{id}` is not a colour adjustment	`{id}` không phải là điều chỉnh màu
 @msg	missing `effect`	thiếu `effect`
 @msg	`params` must be an object	`params` phải là một đối tượng
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Công cụ chính xác cho đường dẫn
+	Anchor Eraser Brush	Cọ tẩy điểm neo
+	Extend Path Tool	Công cụ Kéo dài đường dẫn
+	Measure & Inspect Tool	Công cụ Đo và kiểm tra
+	Anchor Inspector	Trình kiểm tra điểm neo
+	Add Points at Crossings	Thêm điểm tại chỗ giao nhau
+	Split at Crossings	Tách tại chỗ giao nhau
+	Extend Path	Kéo dài đường dẫn
+	Measure & Inspect	Đo và kiểm tra
+	Set Anchor	Đặt điểm neo
+	Make Smooth	Làm mượt
+	Make Corner	Chuyển thành góc
+	Equalize Handles	Cân bằng tay nắm
+	Remove Points, Keep Shape	Gỡ điểm, giữ hình dạng
+	Add Points to Segments…	Thêm điểm vào đoạn…
+	Add Points to Segments	Thêm điểm vào đoạn
+	Open a document to edit its anchor points.	Mở một tài liệu để sửa các điểm neo của nó.
+	Anchors selected: {count}	Điểm neo đã chọn: {count}
+	Direct-select anchor points to edit them.	Chọn trực tiếp các điểm neo để sửa chúng.
+	Length	Độ dài
+	In:	Vào:
+	Out:	Ra:
+	Add Points	Thêm điểm
+	Points per segment	Số điểm mỗi đoạn
+	Close Path:	Đóng đường dẫn:
+	Keep Handles	Giữ tay nắm
+	Straight	Thẳng
+	Stretch Curve	Kéo giãn đường cong
+@msg	direct-select the anchor points to remove	chọn trực tiếp các điểm neo cần gỡ
+@msg	select segments, or paths, to add points to	chọn các đoạn hoặc đường dẫn để thêm điểm
+@msg	select open paths to close	chọn các đường dẫn mở để đóng
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	quá nhiều đường dẫn hoặc chúng quá rối để tìm chỗ giao nhau (tối đa 10000 đoạn)
+@msg	the paths have too many anchors to edit at once	các đường dẫn có quá nhiều điểm neo để sửa cùng lúc

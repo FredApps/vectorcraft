@@ -5449,3 +5449,37 @@ anchor	Points:	ポイント:
 @msg	`{id}` is not a colour adjustment	`{id}` はカラー補正ではありません
 @msg	missing `effect`	`effect` が指定されていません
 @msg	`params` must be an object	`params` にはオブジェクトを指定してください
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	パス精密ツール
+	Anchor Eraser Brush	アンカーポイント消去ブラシ
+	Extend Path Tool	パス延長ツール
+	Measure & Inspect Tool	計測・検査ツール
+	Anchor Inspector	アンカーポイントインスペクター
+	Add Points at Crossings	交差点にポイントを追加
+	Split at Crossings	交差点で分割
+	Extend Path	パスを延長
+	Measure & Inspect	計測・検査
+	Set Anchor	アンカーポイントを設定
+	Make Smooth	スムーズにする
+	Make Corner	コーナーにする
+	Equalize Handles	ハンドルの長さを揃える
+	Remove Points, Keep Shape	ポイントを削除（形状を維持）
+	Add Points to Segments…	セグメントにポイントを追加…
+	Add Points to Segments	セグメントにポイントを追加
+	Open a document to edit its anchor points.	アンカーポイントを編集するにはドキュメントを開いてください。
+	Anchors selected: {count}	選択中のアンカーポイント：{count}
+	Direct-select anchor points to edit them.	編集するアンカーポイントをダイレクト選択してください。
+	Length	長さ
+	In:	イン：
+	Out:	アウト：
+	Add Points	ポイントを追加
+	Points per segment	セグメントあたりのポイント数
+	Close Path:	パスを閉じる：
+	Keep Handles	ハンドルを維持
+	Straight	直線
+	Stretch Curve	カーブを延長
+@msg	direct-select the anchor points to remove	削除するアンカーポイントをダイレクト選択してください
+@msg	select segments, or paths, to add points to	ポイントを追加するセグメントまたはパスを選択してください
+@msg	select open paths to close	閉じるオープンパスを選択してください
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	パスが多すぎるか複雑すぎて交差点を見つけられません（最大 10000 セグメント）
+@msg	the paths have too many anchors to edit at once	パスのアンカーポイントが多すぎて一度に編集できません

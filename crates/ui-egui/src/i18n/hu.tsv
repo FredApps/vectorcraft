@@ -5750,3 +5750,37 @@ anchor	Points:	Pontok:
 @msg	`{id}` is not a colour adjustment	`{id}` nem színkorrekció
 @msg	missing `effect`	hiányzik: `effect`
 @msg	`params` must be an object	`params`: objektum kell
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Útvonal-precíziós eszközök
+	Anchor Eraser Brush	Horgonypont-radírecset
+	Extend Path Tool	Útvonal meghosszabbítása eszköz
+	Measure & Inspect Tool	Mérés és vizsgálat eszköz
+	Anchor Inspector	Horgonypont-vizsgáló
+	Add Points at Crossings	Pontok hozzáadása a kereszteződésekben
+	Split at Crossings	Felosztás a kereszteződésekben
+	Extend Path	Útvonal meghosszabbítása
+	Measure & Inspect	Mérés és vizsgálat
+	Set Anchor	Horgonypont beállítása
+	Make Smooth	Simává alakítás
+	Make Corner	Sarokká alakítás
+	Equalize Handles	Fogantyúk kiegyenlítése
+	Remove Points, Keep Shape	Pontok eltávolítása, alak megtartása
+	Add Points to Segments…	Pontok hozzáadása a szakaszokhoz…
+	Add Points to Segments	Pontok hozzáadása a szakaszokhoz
+	Open a document to edit its anchor points.	Nyisson meg egy dokumentumot a horgonypontjai szerkesztéséhez.
+	Anchors selected: {count}	Kijelölt horgonypontok: {count}
+	Direct-select anchor points to edit them.	A szerkesztéshez jelölje ki közvetlenül a horgonypontokat.
+	Length	Hossz
+	In:	Be:
+	Out:	Ki:
+	Add Points	Pontok hozzáadása
+	Points per segment	Pont szakaszonként
+	Close Path:	Útvonal lezárása:
+	Keep Handles	Fogantyúk megtartása
+	Straight	Egyenes
+	Stretch Curve	Görbe nyújtása
+@msg	direct-select the anchor points to remove	jelölje ki közvetlenül az eltávolítandó horgonypontokat
+@msg	select segments, or paths, to add points to	jelöljön ki szakaszokat vagy útvonalakat, amelyekhez pontokat ad
+@msg	select open paths to close	jelöljön ki lezárandó nyitott útvonalakat
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	túl sok vagy túl összegabalyodott útvonal a kereszteződések megtalálásához (legfeljebb 10000 szakasz)
+@msg	the paths have too many anchors to edit at once	az útvonalaknak túl sok horgonypontjuk van az egyszerre szerkesztéshez

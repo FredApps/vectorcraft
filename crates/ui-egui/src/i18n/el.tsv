@@ -5716,3 +5716,36 @@ anchor	Points:	Σημεία:
 @msg	`{id}` is not a colour adjustment	Το `{id}` δεν είναι διόρθωση χρώματος
 @msg	missing `effect`	λείπει το `effect`
 @msg	`params` must be an object	Το `params` πρέπει να είναι αντικείμενο
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Εργαλεία ακρίβειας διαδρομών
+	Anchor Eraser Brush	Πινέλο διαγραφής σημείων αγκύρωσης (Anchor Eraser Brush)
+	Extend Path Tool	Επέκταση διαδρομής (Extend Path Tool)
+	Measure & Inspect Tool	Μέτρηση και επιθεώρηση (Measure & Inspect Tool)
+	Anchor Inspector	Επιθεωρητής σημείων αγκύρωσης
+	Add Points at Crossings	Προσθήκη σημείων στις διασταυρώσεις
+	Split at Crossings	Διαχωρισμός στις διασταυρώσεις
+	Extend Path	Επέκταση διαδρομής
+	Measure & Inspect	Μέτρηση και επιθεώρηση
+	Set Anchor	Ορισμός σημείου αγκύρωσης
+	Make Smooth	Μετατροπή σε ομαλό
+	Make Corner	Μετατροπή σε γωνία
+	Equalize Handles	Εξίσωση λαβών
+	Remove Points, Keep Shape	Αφαίρεση σημείων, διατήρηση σχήματος
+	Add Points to Segments…	Προσθήκη σημείων σε τμήματα…
+	Add Points to Segments	Προσθήκη σημείων σε τμήματα
+	Open a document to edit its anchor points.	Ανοίξτε ένα έγγραφο για να επεξεργαστείτε τα σημεία αγκύρωσής του.
+	Anchors selected: {count}	Επιλεγμένα σημεία αγκύρωσης: {count}
+	Direct-select anchor points to edit them.	Επιλέξτε απευθείας σημεία αγκύρωσης για να τα επεξεργαστείτε.
+	In:	Είσοδος:
+	Out:	Έξοδος:
+	Add Points	Προσθήκη σημείων
+	Points per segment	Σημεία ανά τμήμα
+	Close Path:	Κλείσιμο διαδρομής:
+	Keep Handles	Διατήρηση λαβών
+	Straight	Ευθύ
+	Stretch Curve	Τέντωμα καμπύλης
+@msg	direct-select the anchor points to remove	επιλέξτε απευθείας τα σημεία αγκύρωσης προς αφαίρεση
+@msg	select segments, or paths, to add points to	επιλέξτε τμήματα ή διαδρομές στα οποία θα προστεθούν σημεία
+@msg	select open paths to close	επιλέξτε ανοιχτές διαδρομές για κλείσιμο
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	οι διαδρομές είναι πάρα πολλές ή πολύ μπλεγμένες για να βρεθούν οι διασταυρώσεις τους (έως 10000 τμήματα)
+@msg	the paths have too many anchors to edit at once	οι διαδρομές έχουν πάρα πολλά σημεία αγκύρωσης για επεξεργασία με μία φορά

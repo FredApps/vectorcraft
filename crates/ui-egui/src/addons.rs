@@ -3,10 +3,16 @@
 
 pub mod cleanup;
 pub mod color;
+pub mod pathtools;
 
 use crate::menus::Item;
 
 /// The add-ons' submenus, then a separator: the head of Object › Plug-ins.
 pub fn plugin_menu() -> Vec<Item> {
-    vec![Item::Sub("Artwork Cleanup", cleanup::menu()), Item::Sub("Color Effects", color::menu()), Item::Sep]
+    vec![
+        Item::Sub("Artwork Cleanup", cleanup::menu()),
+        Item::Sub("Color Effects", color::menu()),
+        Item::Sub("Path Precision Tools", pathtools::menu()),
+        Item::Sep,
+    ]
 }

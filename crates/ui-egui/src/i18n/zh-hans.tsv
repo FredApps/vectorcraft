@@ -5603,3 +5603,37 @@ anchor	Points:	点：
 @msg	`{id}` is not a colour adjustment	`{id}` 不是颜色调整
 @msg	missing `effect`	缺少 `effect`
 @msg	`params` must be an object	`params` 必须是对象
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	路径精确工具
+	Anchor Eraser Brush	锚点橡皮擦画笔
+	Extend Path Tool	延长路径工具
+	Measure & Inspect Tool	测量与检查工具
+	Anchor Inspector	锚点检查器
+	Add Points at Crossings	在交叉处添加锚点
+	Split at Crossings	在交叉处分割
+	Extend Path	延长路径
+	Measure & Inspect	测量与检查
+	Set Anchor	设置锚点
+	Make Smooth	转为平滑
+	Make Corner	转为尖角
+	Equalize Handles	等长手柄
+	Remove Points, Keep Shape	删除锚点并保持形状
+	Add Points to Segments…	在线段中添加锚点…
+	Add Points to Segments	在线段中添加锚点
+	Open a document to edit its anchor points.	打开文档以编辑其锚点。
+	Anchors selected: {count}	已选锚点：{count}
+	Direct-select anchor points to edit them.	直接选择锚点以编辑它们。
+	Length	长度
+	In:	入：
+	Out:	出：
+	Add Points	添加锚点
+	Points per segment	每段锚点数
+	Close Path:	闭合路径：
+	Keep Handles	保留手柄
+	Straight	直线
+	Stretch Curve	拉伸曲线
+@msg	direct-select the anchor points to remove	请直接选择要删除的锚点
+@msg	select segments, or paths, to add points to	请选择要添加锚点的线段或路径
+@msg	select open paths to close	请选择要闭合的开放路径
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	路径太多或太复杂，无法找到交叉处（最多 10000 段）
+@msg	the paths have too many anchors to edit at once	路径的锚点太多，无法一次编辑

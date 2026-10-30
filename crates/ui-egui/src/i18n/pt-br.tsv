@@ -5681,3 +5681,37 @@ anchor	Points:	Pontos:
 @msg	`{id}` is not a colour adjustment	`{id}` não é um ajuste de cor
 @msg	missing `effect`	falta `effect`
 @msg	`params` must be an object	`params` deve ser um objeto
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Ferramentas de Precisão de Caminhos
+	Anchor Eraser Brush	Pincel Apagador de Pontos de Ancoragem
+	Extend Path Tool	Ferramenta Estender Caminho
+	Measure & Inspect Tool	Ferramenta Medir e Inspecionar
+	Anchor Inspector	Inspetor de Pontos de Ancoragem
+	Add Points at Crossings	Adicionar Pontos nos Cruzamentos
+	Split at Crossings	Dividir nos Cruzamentos
+	Extend Path	Estender Caminho
+	Measure & Inspect	Medir e Inspecionar
+	Set Anchor	Definir Ponto de Ancoragem
+	Make Smooth	Tornar Suave
+	Make Corner	Tornar Canto
+	Equalize Handles	Igualar Alças
+	Remove Points, Keep Shape	Remover Pontos, Manter Forma
+	Add Points to Segments…	Adicionar Pontos aos Segmentos…
+	Add Points to Segments	Adicionar Pontos aos Segmentos
+	Open a document to edit its anchor points.	Abra um documento para editar seus pontos de ancoragem.
+	Anchors selected: {count}	Pontos de ancoragem selecionados: {count}
+	Direct-select anchor points to edit them.	Selecione diretamente pontos de ancoragem para editá-los.
+	Length	Comprimento
+	In:	Entrada:
+	Out:	Saída:
+	Add Points	Adicionar Pontos
+	Points per segment	Pontos por segmento
+	Close Path:	Fechar Caminho:
+	Keep Handles	Manter Alças
+	Straight	Reto
+	Stretch Curve	Esticar Curva
+@msg	direct-select the anchor points to remove	selecione diretamente os pontos de ancoragem a remover
+@msg	select segments, or paths, to add points to	selecione segmentos, ou caminhos, aos quais adicionar pontos
+@msg	select open paths to close	selecione caminhos abertos para fechar
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	caminhos demais, ou emaranhados demais, para encontrar seus cruzamentos (no máximo 10000 segmentos)
+@msg	the paths have too many anchors to edit at once	os caminhos têm pontos de ancoragem demais para editar de uma vez

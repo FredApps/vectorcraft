@@ -5742,3 +5742,36 @@ anchor	Points:	Точки:
 @msg	`{id}` is not a colour adjustment	`{id}` не является цветокоррекцией
 @msg	missing `effect`	отсутствует `effect`
 @msg	`params` must be an object	`params` должно быть объектом
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Инструменты точной правки контуров
+	Anchor Eraser Brush	Кисть-ластик опорных точек
+	Extend Path Tool	Инструмент «Продление контура»
+	Measure & Inspect Tool	Инструмент «Измерение и анализ»
+	Anchor Inspector	Инспектор опорных точек
+	Add Points at Crossings	Добавить точки на пересечениях
+	Split at Crossings	Разрезать на пересечениях
+	Extend Path	Продлить контур
+	Measure & Inspect	Измерение и анализ
+	Set Anchor	Задать опорную точку
+	Make Smooth	Сделать гладкой
+	Make Corner	Сделать угловой
+	Equalize Handles	Выровнять длину маркеров
+	Remove Points, Keep Shape	Убрать точки, сохранить форму
+	Add Points to Segments…	Добавить точки в сегменты…
+	Add Points to Segments	Добавить точки в сегменты
+	Open a document to edit its anchor points.	Откройте документ, чтобы править его опорные точки.
+	Anchors selected: {count}	Выбрано опорных точек: {count}
+	Direct-select anchor points to edit them.	Выделите опорные точки напрямую, чтобы править их.
+	In:	Вход:
+	Out:	Выход:
+	Add Points	Добавить точки
+	Points per segment	Точек на сегмент
+	Close Path:	Замкнуть контур:
+	Keep Handles	Сохранить маркеры
+	Straight	Прямой
+	Stretch Curve	Растянуть кривую
+@msg	direct-select the anchor points to remove	выделите напрямую опорные точки, которые нужно убрать
+@msg	select segments, or paths, to add points to	выделите сегменты или контуры, в которые нужно добавить точки
+@msg	select open paths to close	выделите незамкнутые контуры, чтобы замкнуть их
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	контуров слишком много или они слишком запутаны, чтобы найти их пересечения (не более 10000 сегментов)
+@msg	the paths have too many anchors to edit at once	у контуров слишком много опорных точек, чтобы править их за раз

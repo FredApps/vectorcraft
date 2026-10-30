@@ -3,6 +3,7 @@
 
 mod cleanup;
 mod color;
+mod pathtools;
 
 use super::CommandSpec;
 
@@ -10,5 +11,6 @@ use super::CommandSpec;
 pub fn specs() -> Vec<CommandSpec> {
     let mut v = cleanup::specs();
     v.extend(color::specs());
+    v.extend(pathtools::specs());
     v
 }

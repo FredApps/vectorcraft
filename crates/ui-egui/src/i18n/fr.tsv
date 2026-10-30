@@ -5763,3 +5763,36 @@ anchor	Points:	Points :
 @msg	`{id}` is not a colour adjustment	`{id}` n'est pas un réglage de couleur
 @msg	missing `effect`	`effect` manquant
 @msg	`params` must be an object	`params` doit être un objet
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Outils de précision des tracés
+	Anchor Eraser Brush	Pinceau effaceur de points d’ancrage
+	Extend Path Tool	Outil Prolonger le tracé
+	Measure & Inspect Tool	Outil Mesurer et inspecter
+	Anchor Inspector	Inspecteur de points d’ancrage
+	Add Points at Crossings	Ajouter des points aux croisements
+	Split at Crossings	Scinder aux croisements
+	Extend Path	Prolonger le tracé
+	Measure & Inspect	Mesurer et inspecter
+	Set Anchor	Définir le point d’ancrage
+	Make Smooth	Rendre lisse
+	Make Corner	Rendre angulaire
+	Equalize Handles	Égaliser les poignées
+	Remove Points, Keep Shape	Supprimer des points, conserver la forme
+	Add Points to Segments…	Ajouter des points aux segments…
+	Add Points to Segments	Ajouter des points aux segments
+	Open a document to edit its anchor points.	Ouvrez un document pour modifier ses points d’ancrage.
+	Anchors selected: {count}	Points d’ancrage sélectionnés : {count}
+	Direct-select anchor points to edit them.	Sélectionnez directement des points d’ancrage pour les modifier.
+	In:	Entrée :
+	Out:	Sortie :
+	Add Points	Ajouter des points
+	Points per segment	Points par segment
+	Close Path:	Fermer le tracé :
+	Keep Handles	Conserver les poignées
+	Straight	Droit
+	Stretch Curve	Étirer la courbe
+@msg	direct-select the anchor points to remove	sélectionnez directement les points d’ancrage à supprimer
+@msg	select segments, or paths, to add points to	sélectionnez des segments, ou des tracés, auxquels ajouter des points
+@msg	select open paths to close	sélectionnez des tracés ouverts à fermer
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	trop de tracés, ou trop enchevêtrés, pour trouver leurs croisements (10000 segments au plus)
+@msg	the paths have too many anchors to edit at once	les tracés ont trop de points d’ancrage pour être modifiés en une fois

@@ -5346,3 +5346,37 @@ anchor	Points:	Punkte:
 @msg	`{id}` is not a colour adjustment	`{id}` ist keine Farbkorrektur
 @msg	missing `effect`	`effect` fehlt
 @msg	`params` must be an object	`params` muss ein Objekt sein
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	Pfad-Präzisionswerkzeuge
+	Anchor Eraser Brush	Ankerpunkt-Radierpinsel
+	Extend Path Tool	Pfad-verlängern-Werkzeug
+	Measure & Inspect Tool	Messen-und-Prüfen-Werkzeug
+	Anchor Inspector	Ankerpunkt-Inspektor
+	Add Points at Crossings	Punkte an Kreuzungen hinzufügen
+	Split at Crossings	An Kreuzungen teilen
+	Extend Path	Pfad verlängern
+	Measure & Inspect	Messen und prüfen
+	Set Anchor	Ankerpunkt festlegen
+	Make Smooth	Glätten
+	Make Corner	Zu Eckpunkt machen
+	Equalize Handles	Griffe angleichen
+	Remove Points, Keep Shape	Punkte entfernen, Form erhalten
+	Add Points to Segments…	Punkte zu Segmenten hinzufügen…
+	Add Points to Segments	Punkte zu Segmenten hinzufügen
+	Open a document to edit its anchor points.	Öffnen Sie ein Dokument, um seine Ankerpunkte zu bearbeiten.
+	Anchors selected: {count}	Ausgewählte Ankerpunkte: {count}
+	Direct-select anchor points to edit them.	Wählen Sie Ankerpunkte direkt aus, um sie zu bearbeiten.
+	Length	Länge
+	In:	Ein:
+	Out:	Aus:
+	Add Points	Punkte hinzufügen
+	Points per segment	Punkte pro Segment
+	Close Path:	Pfad schließen:
+	Keep Handles	Griffe beibehalten
+	Straight	Gerade
+	Stretch Curve	Kurve strecken
+@msg	direct-select the anchor points to remove	die zu entfernenden Ankerpunkte direkt auswählen
+@msg	select segments, or paths, to add points to	Segmente oder Pfade auswählen, denen Punkte hinzugefügt werden sollen
+@msg	select open paths to close	offene Pfade zum Schließen auswählen
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	zu viele oder zu verschlungene Pfade, um ihre Kreuzungen zu finden (höchstens 10000 Segmente)
+@msg	the paths have too many anchors to edit at once	die Pfade haben zu viele Ankerpunkte, um sie auf einmal zu bearbeiten

@@ -5343,3 +5343,37 @@ anchor	Points:	포인트:
 @msg	`{id}` is not a colour adjustment	`{id}`은(는) 색상 조정이 아닙니다
 @msg	missing `effect`	`effect`이 없습니다
 @msg	`params` must be an object	`params`는 개체여야 합니다
+# Path Precision Tools add-on (Object › Plug-ins › Path Precision Tools): its tools, Anchor Inspector panel, commands and messages.
+	Path Precision Tools	패스 정밀 도구
+	Anchor Eraser Brush	앵커 포인트 지우개 브러시
+	Extend Path Tool	패스 연장 도구
+	Measure & Inspect Tool	측정 및 검사 도구
+	Anchor Inspector	앵커 포인트 검사기
+	Add Points at Crossings	교차점에 포인트 추가
+	Split at Crossings	교차점에서 분할
+	Extend Path	패스 연장
+	Measure & Inspect	측정 및 검사
+	Set Anchor	앵커 포인트 설정
+	Make Smooth	매끄럽게 만들기
+	Make Corner	모서리로 만들기
+	Equalize Handles	핸들 길이 맞추기
+	Remove Points, Keep Shape	포인트 제거(모양 유지)
+	Add Points to Segments…	세그먼트에 포인트 추가…
+	Add Points to Segments	세그먼트에 포인트 추가
+	Open a document to edit its anchor points.	앵커 포인트를 편집하려면 문서를 여세요.
+	Anchors selected: {count}	선택한 앵커 포인트: {count}
+	Direct-select anchor points to edit them.	편집할 앵커 포인트를 직접 선택하세요.
+	Length	길이
+	In:	들어옴:
+	Out:	나감:
+	Add Points	포인트 추가
+	Points per segment	세그먼트당 포인트
+	Close Path:	패스 닫기:
+	Keep Handles	핸들 유지
+	Straight	직선
+	Stretch Curve	곡선 늘이기
+@msg	direct-select the anchor points to remove	제거할 앵커 포인트를 직접 선택하세요
+@msg	select segments, or paths, to add points to	포인트를 추가할 세그먼트나 패스를 선택하세요
+@msg	select open paths to close	닫을 열린 패스를 선택하세요
+@msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	패스가 너무 많거나 너무 얽혀 교차점을 찾을 수 없습니다(최대 10000개 세그먼트)
+@msg	the paths have too many anchors to edit at once	패스의 앵커 포인트가 너무 많아 한 번에 편집할 수 없습니다
