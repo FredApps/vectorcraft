@@ -325,7 +325,7 @@ pub(crate) fn convert_mode(s: &mut Session, p: &Value) -> Result<Value> {
                 it.deferred_color_mode = Some(DeferredColorMode { mode, intent, grays });
             }
         } else {
-            let before = s.paint.clone();
+            let before = new_art_colors_before(s)?;
             convert_new_art_colors(s, mode, intent, grays)?;
             record_new_art_colors(s, before)?;
         }
@@ -346,7 +346,7 @@ pub(crate) fn commit_new_art_colors(s: &mut Session) -> Result<()> {
     let pending =
         s.doc()?.interaction.as_ref().filter(|it| it.preview.is_some() && it.color_mode_paints.is_none()).and_then(|it| it.deferred_color_mode);
     if let Some(DeferredColorMode { mode, intent, grays }) = pending {
-        let before = s.paint.clone();
+        let before = new_art_colors_before(s)?;
         convert_new_art_colors(s, mode, intent, grays)?;
         record_new_art_colors(s, before)?;
     }
@@ -376,6 +376,11 @@ fn record_new_art_colors(s: &mut Session, before: vectorcraft_tools::PaintDefaul
         }
     }
     Ok(())
+}
+
+fn new_art_colors_before(s: &Session) -> Result<vectorcraft_tools::PaintDefaults> {
+    let st = s.doc()?;
+    Ok(st.undo_group.as_ref().map(|g| &g.paint).or_else(|| st.interaction.as_ref().map(|it| &it.paint)).cloned().unwrap_or_else(|| s.paint.clone()))
 }
 
 /// Convert the fill and stroke that new art takes, and the colors of its template appearance

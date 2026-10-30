@@ -60,6 +60,8 @@ pub(crate) struct PreviewCopies {
 /// An open undo group ([`Session::begin_undo_group`]): the edits made in it are one undo step.
 #[derive(Clone, Debug)]
 pub struct UndoGroup {
+    /// The new-art paints from before the group's first command.
+    pub(crate) paint: vectorcraft_tools::PaintDefaults,
     /// The document before the group's first edit, as the undo step that edit recorded keeps it.
     pub(crate) first: Option<Arc<Document>>,
     /// The numbers of the journal entries made in the group's document while it was open: a canceled

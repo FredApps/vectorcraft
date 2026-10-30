@@ -13,10 +13,11 @@ impl Session {
 
     /// [`Session::begin_undo_group`] with the undo step named `label` (else after its first edit).
     pub fn begin_named_undo_group(&mut self, label: Option<String>) {
+        let paint = self.paint.clone();
         if let Some(st) = self.active_mut()
             && st.undo_group.is_none()
         {
-            st.undo_group = Some(UndoGroup { first: None, journal: vec![], steps: vec![], label });
+            st.undo_group = Some(UndoGroup { first: None, journal: vec![], steps: vec![], label, paint });
         }
     }
 
@@ -27,9 +28,10 @@ impl Session {
     /// entry that made the document stays.
     pub(super) fn open_undo_groups_in_new_documents(&mut self, open: &[u64]) {
         let Some(label) = &self.explicit_undo_group else { return };
+        let paint = self.paint.clone();
         for st in &mut self.docs {
             if !open.contains(&st.uid) && st.undo_group.is_none() {
-                st.undo_group = Some(UndoGroup { first: None, journal: vec![], steps: vec![], label: label.clone() });
+                st.undo_group = Some(UndoGroup { first: None, journal: vec![], steps: vec![], label: label.clone(), paint: paint.clone() });
             }
         }
     }

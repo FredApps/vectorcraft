@@ -368,6 +368,44 @@ fn color_mode_undo_restores_original_new_art_colors_and_redo_reapplies_them() {
     }
 }
 
+#[test]
+fn color_mode_batch_undo_restores_paints_from_before_the_batch() {
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+    let before = s.paint.clone();
+    run(
+        &mut s,
+        "command.batch",
+        json!({"commands": [
+            {"command": "paint.setFill", "params": {"color": "#0000ff"}},
+            {"command": "file.documentColorMode", "params": {"mode": "cmyk"}}
+        ]}),
+    );
+    let after = s.paint.clone();
+    assert_ne!(before.fill, after.fill);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(s.paint, after);
+}
+
+#[test]
+fn color_mode_group_undo_restores_paints_from_before_the_group() {
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+    let before = s.paint.clone();
+    s.begin_undo_group();
+    run(&mut s, "paint.setFill", json!({"color": "#0000ff"}));
+    run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+    s.end_undo_group(false);
+    let after = s.paint.clone();
+    assert_ne!(before.fill, after.fill);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(s.paint, after);
+}
+
 /// Redo of a batch or undo group that converts the document color mode and then changes the paints
 /// new art takes restores the paints as the whole step left them.
 #[test]
