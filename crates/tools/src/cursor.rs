@@ -177,6 +177,9 @@ pub enum Cursor {
     ExtendPath,
     /// The Measure & Inspect tool (Path Precision Tools add-on).
     MeasureInspect,
+    /// The Smart Pen Tool (Smart Pen add-on) away from paths, where a click starts a new path (over
+    /// a path or while drawing it shows the Pen's and Direct Selection's cursors).
+    SmartPen,
 }
 
 impl Cursor {
@@ -270,7 +273,8 @@ impl Cursor {
             | Cursor::PuppetPin
             | Cursor::AnchorEraser
             | Cursor::ExtendPath
-            | Cursor::MeasureInspect => Cursor::Crosshair,
+            | Cursor::MeasureInspect
+            | Cursor::SmartPen => Cursor::Crosshair,
             c => c,
         }
     }
@@ -310,6 +314,7 @@ impl Cursor {
             | Cursor::MeasureInspect => Some(Cursor::Crosshair),
             Cursor::TypeVertical => Some(Cursor::Text),
             Cursor::MeshAdd | Cursor::PuppetPin => Some(Cursor::PenAdd),
+            Cursor::SmartPen => Some(Cursor::Pen),
             Cursor::ScissorsNotAllowed => Some(Cursor::NotAllowed),
             _ => None,
         }

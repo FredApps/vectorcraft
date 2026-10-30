@@ -5652,3 +5652,25 @@ anchor	Points:	Punkty:
 @msg	select open paths to close	zaznacz otwarte ścieżki do zamknięcia
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	za dużo ścieżek lub są zbyt splątane, by znaleźć ich skrzyżowania (najwyżej 10000 segmentów)
 @msg	the paths have too many anchors to edit at once	ścieżki mają za dużo punktów kontrolnych, by edytować je naraz
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Inteligentne pióro
+	Smart Pen Tool	Narzędzie Inteligentne pióro
+	Smart Pen Panel	Panel Inteligentne pióro
+	Next Segment	Następny segment
+	Curved	Zakrzywiony
+	Retract Handles	Schowaj uchwyty
+	Close or Join	Zamknij lub połącz
+	Open a document to draw with the Smart Pen.	Otwórz dokument, aby rysować inteligentnym piórem.
+	Straight or Curved Segment	Segment prosty lub zakrzywiony
+@msg	the path is locked or hidden	ścieżka jest zablokowana lub ukryta
+@msg	`id` is not a path	`id` nie jest ścieżką
+@msg	the path has no open subpath	ścieżka nie ma otwartej ścieżki podrzędnej
+@msg	the subpath is closed	ścieżka podrzędna jest zamknięta
+@msg	the subpath is closed or too short to close	ścieżka podrzędna jest zamknięta lub za krótka, by ją zamknąć
+@msg	the path is too short to remove a point from	ścieżka jest za krótka, by usunąć z niej punkt
+@msg	the segment can't be bent that far	segmentu nie da się tak bardzo wygiąć
+@msg	give `{a}` and `{b}`	podaj `{a}` i `{b}`
+@msg	`t` must be from 0 to 1	`t` musi mieć wartość od 0 do 1
+@msg	`segment` must be "straight" or "curved"	`segment` musi mieć wartość "straight" lub "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` musi mieć wartość "free", "keepAngles" lub "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` musi mieć postać [x, y]

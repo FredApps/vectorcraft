@@ -5767,22 +5767,90 @@ Commands:
 {"name":"run_command","arguments":{"command":"addon.pathtools.erase","params":{"points":[[100,40],[100,160]],"diameter":30}}}
 {"name":"run_command","arguments":{"command":"addon.pathtools.crossings","params":{"cut":true}}}
 ```
+
+## Smart Pen add-on
+
+Smart Pen is a built-in add-on: one tool that draws paths and edits their points, handles and segments without
+switching tools. Its commands are `addon.pen.*`; in the desktop app it lives in Object › Plug-ins › Smart Pen, in its
+panel (`window.panel {panel: "smartPen"}`) and in the Smart Pen Tool (`smartPen`), which the toolbars don't show until
+it is added from the All Tools drawer (or chosen with `tool.select`); it has no shortcut. Each gesture and each command is
+one undo step; an edit that changes nothing makes no step. The standard Pen tool is unchanged.
+
+The tool (`smartPen`), option `next`: `"straight"` (default) or `"curved"`, the segment a click adds:
+
+- Drawing: a click adds the next anchor with a straight segment into it (the previous anchor's handle on it retracted)
+  or a curved one (the previous anchor gets a handle if it has none: in line with its other handle, or, after a straight
+  segment, along it, so the curve leaves tangent). A drag makes a smooth anchor; Alt breaks the outgoing handle off,
+  Shift keeps it to 45° steps, Space moves the anchor. Tab switches the segment into the anchor being placed, or the
+  last segment drawn, between straight and curved. A rubber band shows the next segment. A press on the first anchor
+  closes the path; on an end of another open path it joins the two (`path.join`); with no path being drawn, a click on
+  an end of an open path draws on from it. Enter or Esc ends the path.
+- Points of the shown (selected) paths: a click selects one (`select.anchors`; Shift adds or removes it), and on an end
+  of an open path draws on from there; a drag moves it (`path.moveAnchor`, Shift: 45°); Alt-drag pulls out its outgoing
+  handle (`path.setHandle`); Alt-click removes it keeping the shape and Shift+Alt-click deletes it with the handles
+  beside it left as they are (`addon.pen.removePoint`); a double-click toggles it between smooth and corner
+  (`addon.pen.togglePoint`).
+- Handles of selected anchors drag (`path.setHandle`; Shift: 45°, Alt: the handle keeps its angle); a double-click on
+  one toggles its anchor.
+- Segments drag to reshape (`addon.pen.reshape`; Shift: `symmetric`, Alt: `keepAngles`); Alt-click adds an anchor
+  (`path.insertAnchor`); a click on a path that isn't selected selects it.
+
+Commands:
+
+- `addon.pen.append {id, subpath?, x, y, in?, out?, segment?}` adds an anchor at the end of an open subpath (by default
+  the last open one) and selects it. `segment`: `"straight"` (the previous anchor's handle on the new segment and the
+  new anchor's incoming handle retracted) or `"curved"` (the previous anchor gets a handle on it as a click does);
+  without it the anchor takes the handles given and the previous anchor stays as it is.
+- `addon.pen.close {id, subpath?, segment?}` closes an open subpath of two anchors or more, the closing segment
+  straight, curved or (without `segment`) with the handles its ends have.
+- `addon.pen.segment {id, subpath?, segment, curved}` makes one segment straight or curved → `{changed}`.
+- `addon.pen.removePoint {id, subpath?, anchor, plain?}` removes one anchor: the handles beside it are refitted so the
+  outline keeps its shape (an open end takes its segment with it), or with `plain` left as they are. A subpath keeps two
+  anchors (three when closed).
+- `addon.pen.togglePoint {id, subpath?, anchor, ratio?}`: a smooth anchor becomes a corner with its handles where they
+  are; any other is made smooth by the auto-smooth rule (`ratio` 0.1 to 0.5, 0.3905) → `{smooth}`.
+- `addon.pen.reshape {id, subpath?, segment, t?, dx, dy, mode?}` bends a segment so its point at `t` (0 to 1, held to
+  0.05…0.95) moves by `(dx, dy)`: `free` (default; both handles move, the one nearer the grab more), `keepAngles` (each
+  handle only changes length; a segment whose two directions are parallel bends freely) or `symmetric` (both handles
+  at right angles to the chord at one length). Missing handles grow out of their anchors; a smooth anchor stays smooth.
+- `addon.pen.nextSegment {curved}` sets the tool's `next` option → `{next}`.
+- `addon.pen.closeJoin {}`: with exactly two open path ends direct-selected, joins them (as `path.join`); otherwise
+  closes the selected open paths keeping their ends' handles (as `addon.pathtools.close`).
+
+The panel sets the next segment and runs Remove Points Keep Shape (`addon.pathtools.removeKeepShape`), Make Smooth
+(`addon.pathtools.smooth`), Make Corner (`addon.pathtools.corner {retract: false}`: nothing moves), Retract Handles
+(`addon.pathtools.corner {retract: true}`) and Close or Join (`addon.pen.closeJoin`).
+
+```json
+{"name":"run_command","arguments":{"command":"addon.pen.nextSegment","params":{"curved":true}}}
+{"name":"run_command","arguments":{"command":"addon.pen.append","params":{"id":12,"x":200,"y":150,"segment":"curved"}}}
+{"name":"run_command","arguments":{"command":"addon.pen.reshape","params":{"id":12,"segment":0,"t":0.3,"dx":0,"dy":-25}}}
+```
+
 ## Color Effects add-on
+
 Color Effects is a built-in add-on: its effects are colour adjustments in Effect › Color Effects, its command is
 `addon.color.filter`, and in the desktop app it also lives in Object › Plug-ins › Color Effects and in its panel
 (`window.panel {panel: "colorEffects"}`).
+
 Its live effects go on through `effect.apply` like any other and recolour what the object paints, in stack order with
 the other colour adjustments (Effect › Color Adjustments); each colour keeps its colour model:
+
 | Effect | Parameters | Does |
 |---|---|---|
 | `addon.color.exposure` (Exposure…) | `exposure` stops −20…20 (0), `offset` −0.5…0.5 (0), `gamma` 0.1…10 (1) | Scales the light in linear light (each stop doubles or halves it, mostly in the highlights), adds the offset (shadows and midtones) and applies the gamma |
 | `addon.color.desaturate` (Desaturate) | none | Turns every colour to the grey of its lightness |
 | `addon.color.invert` (Invert Colors) | none | Turns every colour to its RGB inverse |
+
 `addon.color.filter {effect, params?, fill?, stroke?, includeImages?, includePatterns?, ids?}` applies any colour
 adjustment, the add-on's or one of Effect › Color Adjustments', to the colours themselves instead of as a live effect:
 fills, strokes, type, gradient meshes, embedded images and pattern tiles, as `edit.colors.invert` reaches them, as one
 undo step. Missing `params` take the effect's dialog defaults; the objects' own effects stay as they are.
+
+```json
 {"name":"run_command","arguments":{"command":"effect.apply","params":{"effect":"addon.color.exposure","params":{"exposure":1.5}}}}
 {"name":"run_command","arguments":{"command":"addon.color.filter","params":{"effect":"adjust.hueSaturation","params":{"hue":120}}}}
+```
+
 The panel picks an adjustment (Brightness/Contrast, Hue/Saturation, Levels, Temperature/Tint, Exposure, Desaturate or
 Invert Colors), sets its values, and then Add as Effect (`effect.apply`) or Apply as Filter (`addon.color.filter`).

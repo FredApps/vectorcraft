@@ -5433,3 +5433,25 @@ anchor	Points:	點：
 @msg	select open paths to close	請選取要封閉的開放路徑
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	路徑太多或太複雜，無法找到交叉處（最多 10000 段）
 @msg	the paths have too many anchors to edit at once	路徑的錨點太多，無法一次編輯
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	智慧筆型
+	Smart Pen Tool	智慧筆型工具
+	Smart Pen Panel	智慧筆型面板
+	Next Segment	下一個線段
+	Curved	曲線
+	Retract Handles	收回控制把手
+	Close or Join	封閉或連接
+	Open a document to draw with the Smart Pen.	開啟文件以使用智慧筆型繪製。
+	Straight or Curved Segment	直線或曲線線段
+@msg	the path is locked or hidden	路徑已鎖定或隱藏
+@msg	`id` is not a path	`id` 不是路徑
+@msg	the path has no open subpath	路徑沒有開放的子路徑
+@msg	the subpath is closed	子路徑已封閉
+@msg	the subpath is closed or too short to close	子路徑已封閉或太短，無法封閉
+@msg	the path is too short to remove a point from	路徑太短，無法移除錨點
+@msg	the segment can't be bent that far	線段無法彎曲到這個程度
+@msg	give `{a}` and `{b}`	請提供 `{a}` 和 `{b}`
+@msg	`t` must be from 0 to 1	`t` 必須介於 0 到 1
+@msg	`segment` must be "straight" or "curved"	`segment` 必須是 "straight" 或 "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` 必須是 "free"、"keepAngles" 或 "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` 必須是 [x, y]

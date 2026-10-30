@@ -5821,3 +5821,25 @@ anchor	Points:	Punkter:
 @msg	select open paths to close	markera öppna banor att stänga
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	för många eller för trassliga banor för att hitta deras korsningar (högst 10000 segment)
 @msg	the paths have too many anchors to edit at once	banorna har för många ankarpunkter för att redigeras på en gång
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Smart penna
+	Smart Pen Tool	Smart penna-verktyget
+	Smart Pen Panel	Smart penna-panelen
+	Next Segment	Nästa segment
+	Curved	Böjd
+	Retract Handles	Dra in handtag
+	Close or Join	Stäng eller foga samman
+	Open a document to draw with the Smart Pen.	Öppna ett dokument för att rita med smart penna.
+	Straight or Curved Segment	Rakt eller böjt segment
+@msg	the path is locked or hidden	banan är låst eller dold
+@msg	`id` is not a path	`id` är inte en bana
+@msg	the path has no open subpath	banan har ingen öppen delbana
+@msg	the subpath is closed	delbanan är stängd
+@msg	the subpath is closed or too short to close	delbanan är stängd eller för kort för att stänga
+@msg	the path is too short to remove a point from	banan är för kort för att ta bort en punkt
+@msg	the segment can't be bent that far	segmentet kan inte böjas så långt
+@msg	give `{a}` and `{b}`	ange `{a}` och `{b}`
+@msg	`t` must be from 0 to 1	`t` måste vara från 0 till 1
+@msg	`segment` must be "straight" or "curved"	`segment` måste vara "straight" eller "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` måste vara "free", "keepAngles" eller "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` måste vara [x, y]

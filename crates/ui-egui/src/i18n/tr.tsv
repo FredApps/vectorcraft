@@ -5755,3 +5755,25 @@ anchor	Points:	Noktalar:
 @msg	select open paths to close	kapatılacak açık yolları seçin
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	kesişimlerini bulmak için yollar çok fazla veya çok karışık (en fazla 10000 bölüm)
 @msg	the paths have too many anchors to edit at once	yolların aynı anda düzenlenemeyecek kadar çok bağlantı noktası var
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Akıllı Kalem
+	Smart Pen Tool	Akıllı Kalem Aracı
+	Smart Pen Panel	Akıllı Kalem Paneli
+	Next Segment	Sonraki Segment
+	Curved	Eğri
+	Retract Handles	Kolları Geri Çek
+	Close or Join	Kapat veya Birleştir
+	Open a document to draw with the Smart Pen.	Akıllı kalemle çizmek için bir belge açın.
+	Straight or Curved Segment	Düz veya Eğri Segment
+@msg	the path is locked or hidden	yol kilitli veya gizli
+@msg	`id` is not a path	`id` bir yol değil
+@msg	the path has no open subpath	yolun açık alt yolu yok
+@msg	the subpath is closed	alt yol kapalı
+@msg	the subpath is closed or too short to close	alt yol kapalı veya kapatmak için çok kısa
+@msg	the path is too short to remove a point from	yol, bir nokta kaldırmak için çok kısa
+@msg	the segment can't be bent that far	segment bu kadar bükülemez
+@msg	give `{a}` and `{b}`	`{a}` ve `{b}` değerlerini verin
+@msg	`t` must be from 0 to 1	`t` 0 ile 1 arasında olmalıdır
+@msg	`segment` must be "straight" or "curved"	`segment` "straight" veya "curved" olmalıdır
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` "free", "keepAngles" veya "symmetric" olmalıdır
+@msg	`{key}` must be [x, y]	`{key}` [x, y] olmalıdır

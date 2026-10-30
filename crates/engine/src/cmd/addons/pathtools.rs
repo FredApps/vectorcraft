@@ -430,7 +430,7 @@ fn edit_anchors(s: &mut Session, label: &str, cmd: &str, f: impl Fn(&mut SubPath
 }
 
 /// A smoothing `ratio` param (default [`pt::SMOOTH_RATIO`]).
-fn ratio(p: &Value, cmd: &str) -> Result<f64> {
+pub(super) fn ratio(p: &Value, cmd: &str) -> Result<f64> {
     let r = number_or(p, "ratio", pt::SMOOTH_RATIO, cmd)?;
     let (lo, hi) = pt::SMOOTH_RATIO_RANGE;
     if !(lo..=hi).contains(&r) {
@@ -575,7 +575,7 @@ fn add_points(s: &mut Session, p: &Value) -> Result<Value> {
     Ok(json!({ "added": added }))
 }
 
-fn close(s: &mut Session, p: &Value) -> Result<Value> {
+pub(super) fn close(s: &mut Session, p: &Value) -> Result<Value> {
     const C: &str = "addon.pathtools.close";
     let mode = match text_param(p, "mode", C)? {
         None => pt::CloseMode::Handles,

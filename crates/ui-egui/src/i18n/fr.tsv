@@ -5796,3 +5796,25 @@ anchor	Points:	Points :
 @msg	select open paths to close	sélectionnez des tracés ouverts à fermer
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	trop de tracés, ou trop enchevêtrés, pour trouver leurs croisements (10000 segments au plus)
 @msg	the paths have too many anchors to edit at once	les tracés ont trop de points d’ancrage pour être modifiés en une fois
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Plume intelligente
+	Smart Pen Tool	Outil Plume intelligente
+	Smart Pen Panel	Panneau Plume intelligente
+	Next Segment	Segment suivant
+	Curved	Courbe
+	Retract Handles	Rétracter les poignées
+	Close or Join	Fermer ou joindre
+	Open a document to draw with the Smart Pen.	Ouvrez un document pour dessiner avec la plume intelligente.
+	Straight or Curved Segment	Segment droit ou courbe
+@msg	the path is locked or hidden	le tracé est verrouillé ou masqué
+@msg	`id` is not a path	`id` n’est pas un tracé
+@msg	the path has no open subpath	le tracé n’a aucun sous-tracé ouvert
+@msg	the subpath is closed	le sous-tracé est fermé
+@msg	the subpath is closed or too short to close	le sous-tracé est fermé ou trop court pour être fermé
+@msg	the path is too short to remove a point from	le tracé est trop court pour en retirer un point
+@msg	the segment can't be bent that far	le segment ne peut pas être courbé à ce point
+@msg	give `{a}` and `{b}`	indiquez `{a}` et `{b}`
+@msg	`t` must be from 0 to 1	`t` doit être compris entre 0 et 1
+@msg	`segment` must be "straight" or "curved"	`segment` doit être "straight" ou "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` doit être "free", "keepAngles" ou "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` doit être [x, y]

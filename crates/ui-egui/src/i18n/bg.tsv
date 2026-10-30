@@ -5687,3 +5687,25 @@ anchor	Points:	Точки:
 @msg	select open paths to close	изберете отворени пътища за затваряне
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	пътищата са твърде много или твърде заплетени, за да се намерят пресичанията им (най-много 10000 сегмента)
 @msg	the paths have too many anchors to edit at once	пътищата имат твърде много опорни точки, за да се редактират наведнъж
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Интелигентно перо
+	Smart Pen Tool	Инструмент „Интелигентно перо“
+	Smart Pen Panel	Панел „Интелигентно перо“
+	Next Segment	Следващ сегмент
+	Curved	Крив
+	Retract Handles	Прибиране на дръжките
+	Close or Join	Затваряне или свързване
+	Open a document to draw with the Smart Pen.	Отворете документ, за да рисувате с интелигентното перо.
+	Straight or Curved Segment	Прав или крив сегмент
+@msg	the path is locked or hidden	пътят е заключен или скрит
+@msg	`id` is not a path	`id` не е път
+@msg	the path has no open subpath	пътят няма отворен подпът
+@msg	the subpath is closed	подпътят е затворен
+@msg	the subpath is closed or too short to close	подпътят е затворен или е твърде къс, за да се затвори
+@msg	the path is too short to remove a point from	пътят е твърде къс, за да се премахне точка от него
+@msg	the segment can't be bent that far	сегментът не може да се огъне толкова
+@msg	give `{a}` and `{b}`	задайте `{a}` и `{b}`
+@msg	`t` must be from 0 to 1	`t` трябва да е от 0 до 1
+@msg	`segment` must be "straight" or "curved"	`segment` трябва да е "straight" или "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` трябва да е "free", "keepAngles" или "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` трябва да е [x, y]
