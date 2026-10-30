@@ -5691,3 +5691,67 @@ theme	Appearance	Aparença
 	Average & Join	Mitjana i unió
 anchor	Points:	Punts:
 @msg	select two open path ends, or two open paths, to average and join	selecciona dos extrems de traçats oberts, o dos traçats oberts, per fer-ne la mitjana i unir-los
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Neteja de l’art
+	Simplify Anchors (Keep Shape)…	Simplifica els punts d’ancoratge (mantén la forma)…
+	Health Check	Revisió de l’estat
+	Show Issue	Mostra el problema
+	Fix All Issues	Corregeix tots els problemes
+	Fix Issues	Corregeix els problemes
+	Deep Ungroup…	Desagrupa tots els nivells…
+	Rejoin Path Pieces…	Torna a unir els trossos de traçat…
+	Document Health Check	Revisió de l’estat del document
+	Check Selection	Revisa la selecció
+	Check Document	Revisa el document
+	No issues found.	No s’ha trobat cap problema.
+	Changed since the last check.	Ha canviat des de l’última revisió.
+	Fix Selected	Corregeix els seleccionats
+	Fix All	Corregeix-ho tot
+	Issues fixed: {count}	Problemes corregits: {count}
+	Open a document to check it for issues.	Obriu un document per revisar-ne els problemes.
+	Empty Text	Text buit
+	Unpainted Objects	Objectes sense pintura
+	Zero-Opacity Objects	Objectes amb opacitat zero
+	Duplicate Objects	Objectes duplicats
+	Off-Artboard Art	Art fora dels taulers
+	Duplicate Anchors	Punts d’ancoratge duplicats
+	Tiny Handles	Nanses minúscules
+	Collinear Anchors	Punts d’ancoratge col·lineals
+	Nearly Coincident Anchors	Punts d’ancoratge gairebé coincidents
+	Nearly Closed Paths	Traçats gairebé tancats
+	Filled Open Paths	Traçats oberts amb emplenament
+	Needless Clipping Groups	Grups de retall innecessaris
+	Needless Compound Paths	Traçats compostos innecessaris
+	Needless Groups	Grups innecessaris
+	Empty Artboards	Taulers buits
+	Protect Corners	Protegeix les cantonades
+	Gap	Separació
+	Include Clip Groups	Inclou els grups de retall
+@msg	`tolerance` must be from 1 to 100	`tolerance` ha d’estar entre 1 i 100
+@msg	`gap` must be from 0 to 6 pt	`gap` ha d’estar entre 0 i 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Simplifica els punts d’ancoratge: els traçats tenen massa punts d’ancoratge per simplificar-los d’un cop
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Torna a unir els trossos de traçat: massa traçats per unir-los d’un cop
+@msg	None of these issues are left: check again	Ja no queda cap d’aquests problemes: torneu a revisar
+@msg	`kinds` must be a list of issue kinds	`kinds` ha de ser una llista de tipus de problema
+@msg	missing `kind`	falta `kind`
+	Simplify Anchors (Keep Shape)	Simplifica els punts d’ancoratge (mantén la forma)
+	Deep Ungroup	Desagrupa tots els nivells
+	Rejoin Path Pieces	Torna a unir els trossos de traçat
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Efectes de color
+	Color Effects Panel	Tauler Efectes de color
+	Exposure	Exposició
+	Exposure…	Exposició…
+	Desaturate	Dessaturar
+	Adjustment	Ajust
+	Add as Effect	Afegeix com a efecte
+	Apply as Filter	Aplica com a filtre
+	Select objects to adjust their colors.	Seleccioneu objectes per ajustar-ne els colors.
+	Brightness/Contrast	Lluentor/Contrast
+	Hue/Saturation	To/saturació
+	Temperature/Tint	Temperatura/To
+@msg	`{id}` is not a colour adjustment	`{id}` no és un ajust de color
+@msg	missing `effect`	falta `effect`
+@msg	`params` must be an object	`params` ha de ser un objecte

@@ -5554,3 +5554,67 @@ axis	Y Axis	Oś Y
 	Average & Join	Uśrednij i połącz
 anchor	Points:	Punkty:
 @msg	select two open path ends, or two open paths, to average and join	zaznacz dwa końce otwartych ścieżek lub dwie otwarte ścieżki do uśrednienia i połączenia
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Porządkowanie grafiki
+	Simplify Anchors (Keep Shape)…	Uprość punkty kontrolne (zachowaj kształt)…
+	Health Check	Kontrola stanu
+	Show Issue	Pokaż problem
+	Fix All Issues	Napraw wszystkie problemy
+	Fix Issues	Napraw problemy
+	Deep Ungroup…	Rozgrupuj wszystkie poziomy…
+	Rejoin Path Pieces…	Ponownie połącz fragmenty ścieżek…
+	Document Health Check	Kontrola stanu dokumentu
+	Check Selection	Sprawdź zaznaczenie
+	Check Document	Sprawdź dokument
+	No issues found.	Nie znaleziono problemów.
+	Changed since the last check.	Zmieniono od ostatniego sprawdzenia.
+	Fix Selected	Napraw zaznaczone
+	Fix All	Napraw wszystko
+	Issues fixed: {count}	Naprawione problemy: {count}
+	Open a document to check it for issues.	Otwórz dokument, aby sprawdzić go pod kątem problemów.
+	Empty Text	Pusty tekst
+	Unpainted Objects	Obiekty bez koloru
+	Zero-Opacity Objects	Obiekty o zerowym kryciu
+	Duplicate Objects	Zduplikowane obiekty
+	Off-Artboard Art	Grafika poza obszarami kompozycji
+	Duplicate Anchors	Zduplikowane punkty kontrolne
+	Tiny Handles	Bardzo krótkie uchwyty
+	Collinear Anchors	Współliniowe punkty kontrolne
+	Nearly Coincident Anchors	Prawie pokrywające się punkty kontrolne
+	Nearly Closed Paths	Prawie zamknięte ścieżki
+	Filled Open Paths	Wypełnione otwarte ścieżki
+	Needless Clipping Groups	Zbędne grupy przycinające
+	Needless Compound Paths	Zbędne ścieżki złożone
+	Needless Groups	Zbędne grupy
+	Empty Artboards	Puste obszary kompozycji
+	Protect Corners	Chroń narożniki
+	Gap	Odstęp
+	Include Clip Groups	Uwzględnij grupy przycinające
+@msg	`tolerance` must be from 1 to 100	`tolerance` musi mieścić się w zakresie od 1 do 100
+@msg	`gap` must be from 0 to 6 pt	`gap` musi mieścić się w zakresie od 0 do 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Uprość punkty kontrolne: ścieżki mają zbyt wiele punktów kontrolnych, aby uprościć je naraz
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Ponownie połącz fragmenty ścieżek: zbyt wiele ścieżek do połączenia naraz
+@msg	None of these issues are left: check again	Żaden z tych problemów już nie występuje: sprawdź ponownie
+@msg	`kinds` must be a list of issue kinds	`kinds` musi być listą rodzajów problemów
+@msg	missing `kind`	brak `kind`
+	Simplify Anchors (Keep Shape)	Uprość punkty kontrolne (zachowaj kształt)
+	Deep Ungroup	Rozgrupuj wszystkie poziomy
+	Rejoin Path Pieces	Ponownie połącz fragmenty ścieżek
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Efekty koloru
+	Color Effects Panel	Panel Efekty koloru
+	Exposure	Ekspozycja
+	Exposure…	Ekspozycja…
+	Desaturate	Usuń nasycenie
+	Adjustment	Korekta
+	Add as Effect	Dodaj jako efekt
+	Apply as Filter	Zastosuj jako filtr
+	Select objects to adjust their colors.	Zaznacz obiekty, aby skorygować ich kolory.
+	Brightness/Contrast	Jasność/kontrast
+	Hue/Saturation	Barwa/nasycenie
+	Temperature/Tint	Temperatura/odcień
+@msg	`{id}` is not a colour adjustment	`{id}` nie jest korektą koloru
+@msg	missing `effect`	brak `effect`
+@msg	`params` must be an object	`params` musi być obiektem

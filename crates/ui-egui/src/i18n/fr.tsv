@@ -5699,3 +5699,67 @@ axis	Y Axis	Axe Y
 	Average & Join	Alignement et jonction
 anchor	Points:	Points :
 @msg	select two open path ends, or two open paths, to average and join	sélectionnez deux extrémités de tracés ouverts, ou deux tracés ouverts, à aligner et joindre
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Nettoyage des illustrations
+	Simplify Anchors (Keep Shape)…	Simplifier les points d’ancrage (conserver la forme)…
+	Health Check	Vérification de l’état
+	Show Issue	Afficher le problème
+	Fix All Issues	Corriger tous les problèmes
+	Fix Issues	Corriger les problèmes
+	Deep Ungroup…	Dissocier tous les niveaux…
+	Rejoin Path Pieces…	Rejoindre les morceaux de tracé…
+	Document Health Check	Vérification de l’état du document
+	Check Selection	Vérifier la sélection
+	Check Document	Vérifier le document
+	No issues found.	Aucun problème trouvé.
+	Changed since the last check.	Modifié depuis la dernière vérification.
+	Fix Selected	Corriger la sélection
+	Fix All	Tout corriger
+	Issues fixed: {count}	Problèmes corrigés : {count}
+	Open a document to check it for issues.	Ouvrez un document pour y rechercher des problèmes.
+	Empty Text	Texte vide
+	Unpainted Objects	Objets sans fond ni contour
+	Zero-Opacity Objects	Objets à opacité nulle
+	Duplicate Objects	Objets en double
+	Off-Artboard Art	Illustration hors des plans de travail
+	Duplicate Anchors	Points d’ancrage en double
+	Tiny Handles	Poignées minuscules
+	Collinear Anchors	Points d’ancrage alignés
+	Nearly Coincident Anchors	Points d’ancrage presque confondus
+	Nearly Closed Paths	Tracés presque fermés
+	Filled Open Paths	Tracés ouverts avec fond
+	Needless Clipping Groups	Groupes de découpe inutiles
+	Needless Compound Paths	Tracés transparents inutiles
+	Needless Groups	Groupes inutiles
+	Empty Artboards	Plans de travail vides
+	Protect Corners	Protéger les angles
+	Gap	Écart
+	Include Clip Groups	Inclure les groupes de découpe
+@msg	`tolerance` must be from 1 to 100	`tolerance` doit être compris entre 1 et 100
+@msg	`gap` must be from 0 to 6 pt	`gap` doit être compris entre 0 et 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Simplifier les points d’ancrage : les tracés ont trop de points d’ancrage pour être simplifiés en une fois
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Rejoindre les morceaux de tracé : trop de tracés à rejoindre en une fois
+@msg	None of these issues are left: check again	Aucun de ces problèmes ne subsiste : relancez la vérification
+@msg	`kinds` must be a list of issue kinds	`kinds` doit être une liste de types de problèmes
+@msg	missing `kind`	`kind` manquant
+	Simplify Anchors (Keep Shape)	Simplifier les points d’ancrage (conserver la forme)
+	Deep Ungroup	Dissocier tous les niveaux
+	Rejoin Path Pieces	Rejoindre les morceaux de tracé
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Effets de couleur
+	Color Effects Panel	Panneau Effets de couleur
+	Exposure	Exposition
+	Exposure…	Exposition…
+	Desaturate	Désaturer
+	Adjustment	Réglage
+	Add as Effect	Ajouter comme effet
+	Apply as Filter	Appliquer comme filtre
+	Select objects to adjust their colors.	Sélectionnez des objets pour régler leurs couleurs.
+	Brightness/Contrast	Luminosité/contraste
+	Hue/Saturation	Teinte/saturation
+	Temperature/Tint	Température/teinte
+@msg	`{id}` is not a colour adjustment	`{id}` n'est pas un réglage de couleur
+@msg	missing `effect`	`effect` manquant
+@msg	`params` must be an object	`params` doit être un objet
