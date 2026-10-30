@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (Color Effects, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1207,10 +1207,33 @@ applies to fills). Tests: `color::gradient::tests` (perceptual midpoint, expansi
 `pdf::tests::dithered_perceptual_gradients_export_as_images_with_noise_on_the_fill` and the Gradient panel's
 `the_method_menu_makes_the_gradient_perceptual`. Scores and hours unchanged.
 
+## Artwork Cleanup add-on (2026-10-30)
+
+A VectorCraft addition, not an Illustrator feature, so no area score moves. Object › Plug-ins › Artwork Cleanup and its
+panel run `addon.cleanup.*`: Simplify Anchors (Keep Shape) on the shared kernel
+`vectorcraft_pathops::addons::keep_shape`, a health check of 16 kinds of issue on the selection or the document with
+Show, Fix Selected and Fix All (each one undo step), Deep Ungroup and Rejoin Path Pieces. Tests: `addons::` in
+`vectorcraft-pathops`, `cmd::addons::cleanup::tests` in `vectorcraft-engine` (each kind found, fixed and clean art left
+alone; Fix All as one step; scopes; rejoin within the gap only) and `addons::cleanup::tests` in `vectorcraft-ui-egui`
+(the submenu opens the panel; Check lists what it finds). Commands: `docs/mcp.md` › Artwork Cleanup add-on.
+
+## Color Effects add-on (2026-10-30)
+
+A VectorCraft addition, not an Illustrator feature, so no area score moves. Effect › Color Effects adds live Exposure
+(stops of linear light, offset and gamma), Desaturate and Invert Colors as colour adjustments evaluated with those of
+Effect › Color Adjustments (`vectorcraft_effects::addons::color`), and `addon.color.filter` applies any colour adjustment
+to the colours themselves through the Edit Colors pass. Object › Plug-ins › Color Effects and its panel reach them.
+Tests: `addons::color` in `vectorcraft-effects` (exposure in stops, desaturate keeps lightness, invert twice is
+identity), `cmd::addons::color::tests` in `vectorcraft-engine` (drawn live without changing the colours; a filter as one
+undo step, with any adjustment and its params; bad requests refused) and `addons::color::tests` in
+`vectorcraft-ui-egui` (the menus and the panel). Commands: `docs/mcp.md` › Color Effects add-on.
+
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-30 | minor | Color Effects, a built-in add-on beyond Illustrator; scores and estimates unchanged |
+| 2026-10-30 | minor | Artwork Cleanup add-on (a VectorCraft addition): evidence added; scores unchanged. |
 | 2026-10-30 | minor | Hardware: a second finger cancels the tool press the first finger began, and a finger landing while another is down presses nothing, so a pinch only navigates (#4198); evidence added; scores unchanged (estimated). |
 | 2026-10-30 | minor | File formats: SVG export writes axis-aligned rectangles as `<rect>`, circles and ellipses as `<circle>`/`<ellipse>`, straight lines as `<line>` and other straight-segment paths as `<polygon>`/`<polyline>`, keeping `<path>` where a shape element would draw differently (#4652); evidence added; scores and hours unchanged (estimated). |
 | 2026-10-30 | minor | UI chrome: with Preferences › Performance › Real-time Drawing and Editing off, a ruler guide dragged out of a ruler or moved shows while it is dragged (#4646); evidence added; score and hours unchanged (estimated). |

@@ -5279,3 +5279,67 @@ axis	Y Axis	Y축
 	Average & Join	평균 및 결합
 anchor	Points:	포인트:
 @msg	select two open path ends, or two open paths, to average and join	평균 및 결합할 열린 패스의 끝점 두 개 또는 열린 패스 두 개를 선택하세요
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	아트워크 정리
+	Simplify Anchors (Keep Shape)…	앵커 포인트 단순화(모양 유지)…
+	Health Check	상태 점검
+	Show Issue	문제 표시
+	Fix All Issues	모든 문제 수정
+	Fix Issues	문제 수정
+	Deep Ungroup…	모든 단계 그룹 해제…
+	Rejoin Path Pieces…	패스 조각 다시 연결…
+	Document Health Check	문서 상태 점검
+	Check Selection	선택 영역 점검
+	Check Document	문서 점검
+	No issues found.	문제가 없습니다.
+	Changed since the last check.	마지막 점검 이후 변경되었습니다.
+	Fix Selected	선택한 항목 수정
+	Fix All	모두 수정
+	Issues fixed: {count}	수정한 문제: {count}
+	Open a document to check it for issues.	문서를 열면 문제를 점검할 수 있습니다.
+	Empty Text	빈 텍스트
+	Unpainted Objects	칠하지 않은 오브젝트
+	Zero-Opacity Objects	불투명도 0% 오브젝트
+	Duplicate Objects	중복 오브젝트
+	Off-Artboard Art	아트보드 밖의 아트워크
+	Duplicate Anchors	중복 앵커 포인트
+	Tiny Handles	아주 짧은 핸들
+	Collinear Anchors	일직선 위의 앵커 포인트
+	Nearly Coincident Anchors	거의 겹치는 앵커 포인트
+	Nearly Closed Paths	거의 닫힌 패스
+	Filled Open Paths	칠한 열린 패스
+	Needless Clipping Groups	불필요한 클리핑 그룹
+	Needless Compound Paths	불필요한 컴파운드 패스
+	Needless Groups	불필요한 그룹
+	Empty Artboards	빈 아트보드
+	Protect Corners	모서리 보호
+	Gap	간격
+	Include Clip Groups	클리핑 그룹 포함
+@msg	`tolerance` must be from 1 to 100	`tolerance`는 1에서 100 사이여야 합니다
+@msg	`gap` must be from 0 to 6 pt	`gap`은 0에서 6pt 사이여야 합니다
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	앵커 포인트 단순화: 패스의 앵커 포인트가 너무 많아 한 번에 단순화할 수 없습니다
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	패스 조각 다시 연결: 패스가 너무 많아 한 번에 연결할 수 없습니다
+@msg	None of these issues are left: check again	이 문제가 더 이상 남아 있지 않습니다. 다시 점검하세요
+@msg	`kinds` must be a list of issue kinds	`kinds`는 문제 종류의 목록이어야 합니다
+@msg	missing `kind`	`kind`가 없습니다
+	Simplify Anchors (Keep Shape)	앵커 포인트 단순화(모양 유지)
+	Deep Ungroup	모든 단계 그룹 해제
+	Rejoin Path Pieces	패스 조각 다시 연결
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	색상 효과
+	Color Effects Panel	색상 효과 패널
+	Exposure	노출
+	Exposure…	노출…
+	Desaturate	채도 감소
+	Adjustment	조정
+	Add as Effect	효과로 추가
+	Apply as Filter	필터로 적용
+	Select objects to adjust their colors.	색상을 조정할 개체를 선택하십시오.
+	Brightness/Contrast	밝기/대비
+	Hue/Saturation	색조/채도
+	Temperature/Tint	색온도/색조
+@msg	`{id}` is not a colour adjustment	`{id}`은(는) 색상 조정이 아닙니다
+@msg	missing `effect`	`effect`이 없습니다
+@msg	`params` must be an object	`params`는 개체여야 합니다

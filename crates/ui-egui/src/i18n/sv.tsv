@@ -5724,3 +5724,67 @@ axis	Y Axis	Y-axel
 	Average & Join	Medelvärde och foga samman
 anchor	Points:	Punkter:
 @msg	select two open path ends, or two open paths, to average and join	markera två ändar av öppna banor, eller två öppna banor, att medelvärdesberäkna och foga samman
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Upprensning av grafik
+	Simplify Anchors (Keep Shape)…	Förenkla ankarpunkter (behåll formen)…
+	Health Check	Hälsokontroll
+	Show Issue	Visa problem
+	Fix All Issues	Åtgärda alla problem
+	Fix Issues	Åtgärda problem
+	Deep Ungroup…	Dela upp grupper på alla nivåer…
+	Rejoin Path Pieces…	Foga samman banbitar igen…
+	Document Health Check	Hälsokontroll av dokument
+	Check Selection	Kontrollera markering
+	Check Document	Kontrollera dokument
+	No issues found.	Inga problem hittades.
+	Changed since the last check.	Ändrat sedan den senaste kontrollen.
+	Fix Selected	Åtgärda markerade
+	Fix All	Åtgärda alla
+	Issues fixed: {count}	Åtgärdade problem: {count}
+	Open a document to check it for issues.	Öppna ett dokument för att kontrollera det efter problem.
+	Empty Text	Tom text
+	Unpainted Objects	Ofärgade objekt
+	Zero-Opacity Objects	Objekt med 0 % opacitet
+	Duplicate Objects	Dubblettobjekt
+	Off-Artboard Art	Grafik utanför ritytorna
+	Duplicate Anchors	Dubbletter av ankarpunkter
+	Tiny Handles	Små handtag
+	Collinear Anchors	Kollineära ankarpunkter
+	Nearly Coincident Anchors	Nästan sammanfallande ankarpunkter
+	Nearly Closed Paths	Nästan slutna banor
+	Filled Open Paths	Fyllda öppna banor
+	Needless Clipping Groups	Onödiga klippgrupper
+	Needless Compound Paths	Onödiga sammansatta banor
+	Needless Groups	Onödiga grupper
+	Empty Artboards	Tomma ritytor
+	Protect Corners	Skydda hörn
+	Gap	Mellanrum
+	Include Clip Groups	Ta med klippgrupper
+@msg	`tolerance` must be from 1 to 100	`tolerance` måste vara från 1 till 100
+@msg	`gap` must be from 0 to 6 pt	`gap` måste vara från 0 till 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Förenkla ankarpunkter: banorna har för många ankarpunkter för att förenklas på en gång
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Foga samman banbitar igen: för många banor för att foga samman på en gång
+@msg	None of these issues are left: check again	Inget av dessa problem finns kvar: kontrollera igen
+@msg	`kinds` must be a list of issue kinds	`kinds` måste vara en lista med problemtyper
+@msg	missing `kind`	`kind` saknas
+	Simplify Anchors (Keep Shape)	Förenkla ankarpunkter (behåll formen)
+	Deep Ungroup	Dela upp grupper på alla nivåer
+	Rejoin Path Pieces	Foga samman banbitar igen
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Färgeffekter
+	Color Effects Panel	Panelen Färgeffekter
+	Exposure	Exponering
+	Exposure…	Exponering…
+	Desaturate	Avmätta
+	Adjustment	Justering
+	Add as Effect	Lägg till som effekt
+	Apply as Filter	Använd som filter
+	Select objects to adjust their colors.	Markera objekt för att justera deras färger.
+	Brightness/Contrast	Ljusstyrka/kontrast
+	Hue/Saturation	Nyans/mättnad
+	Temperature/Tint	Temperatur/färgton
+@msg	`{id}` is not a colour adjustment	`{id}` är ingen färgjustering
+@msg	missing `effect`	`effect` saknas
+@msg	`params` must be an object	`params` måste vara ett objekt

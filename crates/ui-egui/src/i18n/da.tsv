@@ -5605,3 +5605,67 @@ axis	Y Axis	Y-akse
 	Average & Join	Gennemsnit og forbind
 anchor	Points:	Punkter:
 @msg	select two open path ends, or two open paths, to average and join	markér to ender af åbne stier eller to åbne stier, der skal udlignes til gennemsnit og forbindes
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Oprydning i grafik
+	Simplify Anchors (Keep Shape)…	Forenkl ankerpunkter (bevar form)…
+	Health Check	Sundhedstjek
+	Show Issue	Vis problem
+	Fix All Issues	Ret alle problemer
+	Fix Issues	Ret problemer
+	Deep Ungroup…	Afgruppér alle niveauer…
+	Rejoin Path Pieces…	Forbind kurvestykker igen…
+	Document Health Check	Sundhedstjek af dokument
+	Check Selection	Kontrollér markering
+	Check Document	Kontrollér dokument
+	No issues found.	Ingen problemer fundet.
+	Changed since the last check.	Ændret siden sidste kontrol.
+	Fix Selected	Ret valgte
+	Fix All	Ret alle
+	Issues fixed: {count}	Rettede problemer: {count}
+	Open a document to check it for issues.	Åbn et dokument for at kontrollere det for problemer.
+	Empty Text	Tom tekst
+	Unpainted Objects	Objekter uden farve
+	Zero-Opacity Objects	Objekter med 0 % opacitet
+	Duplicate Objects	Dublerede objekter
+	Off-Artboard Art	Grafik uden for kunstpladerne
+	Duplicate Anchors	Dublerede ankerpunkter
+	Tiny Handles	Små håndtag
+	Collinear Anchors	Kollineære ankerpunkter
+	Nearly Coincident Anchors	Næsten sammenfaldende ankerpunkter
+	Nearly Closed Paths	Næsten lukkede kurver
+	Filled Open Paths	Udfyldte åbne kurver
+	Needless Clipping Groups	Unødvendige beskæringsgrupper
+	Needless Compound Paths	Unødvendige sammensatte kurver
+	Needless Groups	Unødvendige grupper
+	Empty Artboards	Tomme kunstplader
+	Protect Corners	Beskyt hjørner
+	Gap	Afstand
+	Include Clip Groups	Medtag beskæringsgrupper
+@msg	`tolerance` must be from 1 to 100	`tolerance` skal være fra 1 til 100
+@msg	`gap` must be from 0 to 6 pt	`gap` skal være fra 0 til 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Forenkl ankerpunkter: kurverne har for mange ankerpunkter til at blive forenklet på én gang
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Forbind kurvestykker igen: for mange kurver til at forbinde på én gang
+@msg	None of these issues are left: check again	Ingen af disse problemer er tilbage: kontrollér igen
+@msg	`kinds` must be a list of issue kinds	`kinds` skal være en liste over problemtyper
+@msg	missing `kind`	`kind` mangler
+	Simplify Anchors (Keep Shape)	Forenkl ankerpunkter (bevar form)
+	Deep Ungroup	Afgruppér alle niveauer
+	Rejoin Path Pieces	Forbind kurvestykker igen
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Farveeffekter
+	Color Effects Panel	Panelet Farveeffekter
+	Exposure	Eksponering
+	Exposure…	Eksponering…
+	Desaturate	Afmæt
+	Adjustment	Justering
+	Add as Effect	Tilføj som effekt
+	Apply as Filter	Anvend som filter
+	Select objects to adjust their colors.	Markér objekter for at justere deres farver.
+	Brightness/Contrast	Lysstyrke/kontrast
+	Hue/Saturation	Farvetone/mætning
+	Temperature/Tint	Temperatur/toning
+@msg	`{id}` is not a colour adjustment	`{id}` er ikke en farvejustering
+@msg	missing `effect`	`effect` mangler
+@msg	`params` must be an object	`params` skal være et objekt

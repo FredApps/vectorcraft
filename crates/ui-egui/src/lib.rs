@@ -22,6 +22,7 @@ macro_rules! tl {
     };
 }
 
+pub mod addons;
 pub mod background;
 mod brand;
 pub mod canvas;

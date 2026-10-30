@@ -5282,3 +5282,67 @@ axis	Y Axis	Y-Achse
 	Average & Join	Durchschnitt berechnen und zusammenfügen
 anchor	Points:	Punkte:
 @msg	select two open path ends, or two open paths, to average and join	wählen Sie zwei Enden offener Pfade oder zwei offene Pfade aus, um sie zu mitteln und zusammenzufügen
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Bildmaterial-Bereinigung
+	Simplify Anchors (Keep Shape)…	Ankerpunkte vereinfachen (Form erhalten)…
+	Health Check	Zustandsprüfung
+	Show Issue	Problem anzeigen
+	Fix All Issues	Alle Probleme beheben
+	Fix Issues	Probleme beheben
+	Deep Ungroup…	Alle Gruppierungsebenen aufheben…
+	Rejoin Path Pieces…	Pfadstücke wieder zusammenfügen…
+	Document Health Check	Dokument-Zustandsprüfung
+	Check Selection	Auswahl prüfen
+	Check Document	Dokument prüfen
+	No issues found.	Keine Probleme gefunden.
+	Changed since the last check.	Seit der letzten Prüfung geändert.
+	Fix Selected	Ausgewählte beheben
+	Fix All	Alle beheben
+	Issues fixed: {count}	Behobene Probleme: {count}
+	Open a document to check it for issues.	Öffnen Sie ein Dokument, um es auf Probleme zu prüfen.
+	Empty Text	Leerer Text
+	Unpainted Objects	Objekte ohne Farbe
+	Zero-Opacity Objects	Objekte mit 0 % Deckkraft
+	Duplicate Objects	Doppelte Objekte
+	Off-Artboard Art	Bildmaterial außerhalb der Zeichenflächen
+	Duplicate Anchors	Doppelte Ankerpunkte
+	Tiny Handles	Winzige Griffe
+	Collinear Anchors	Kollineare Ankerpunkte
+	Nearly Coincident Anchors	Fast deckungsgleiche Ankerpunkte
+	Nearly Closed Paths	Fast geschlossene Pfade
+	Filled Open Paths	Gefüllte offene Pfade
+	Needless Clipping Groups	Überflüssige Schnittgruppen
+	Needless Compound Paths	Überflüssige zusammengesetzte Pfade
+	Needless Groups	Überflüssige Gruppen
+	Empty Artboards	Leere Zeichenflächen
+	Protect Corners	Ecken schützen
+	Gap	Abstand
+	Include Clip Groups	Schnittgruppen einbeziehen
+@msg	`tolerance` must be from 1 to 100	`tolerance` muss zwischen 1 und 100 liegen
+@msg	`gap` must be from 0 to 6 pt	`gap` muss zwischen 0 und 6 pt liegen
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Ankerpunkte vereinfachen: Die Pfade haben zu viele Ankerpunkte, um sie auf einmal zu vereinfachen
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Pfadstücke wieder zusammenfügen: zu viele Pfade, um sie auf einmal zusammenzufügen
+@msg	None of these issues are left: check again	Keines dieser Probleme ist mehr vorhanden: Prüfen Sie erneut
+@msg	`kinds` must be a list of issue kinds	`kinds` muss eine Liste von Problemarten sein
+@msg	missing `kind`	`kind` fehlt
+	Simplify Anchors (Keep Shape)	Ankerpunkte vereinfachen (Form erhalten)
+	Deep Ungroup	Alle Gruppierungsebenen aufheben
+	Rejoin Path Pieces	Pfadstücke wieder zusammenfügen
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Farbeffekte
+	Color Effects Panel	Farbeffekte-Bedienfeld
+	Exposure	Belichtung
+	Exposure…	Belichtung…
+	Desaturate	Sättigung verringern
+	Adjustment	Korrektur
+	Add as Effect	Als Effekt hinzufügen
+	Apply as Filter	Als Filter anwenden
+	Select objects to adjust their colors.	Wählen Sie Objekte aus, um ihre Farben anzupassen.
+	Brightness/Contrast	Helligkeit/Kontrast
+	Hue/Saturation	Farbton/Sättigung
+	Temperature/Tint	Temperatur/Farbstich
+@msg	`{id}` is not a colour adjustment	`{id}` ist keine Farbkorrektur
+@msg	missing `effect`	`effect` fehlt
+@msg	`params` must be an object	`params` muss ein Objekt sein

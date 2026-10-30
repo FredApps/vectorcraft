@@ -5335,3 +5335,67 @@ axis	Y Axis	Y 軸
 	Average & Join	平均並連接
 anchor	Points:	點：
 @msg	select two open path ends, or two open paths, to average and join	請選取兩個開放路徑的端點或兩條開放路徑以進行平均並連接
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	圖稿清理
+	Simplify Anchors (Keep Shape)…	簡化錨點（保持形狀）…
+	Health Check	健康檢查
+	Show Issue	顯示問題
+	Fix All Issues	修正所有問題
+	Fix Issues	修正問題
+	Deep Ungroup…	解散所有層級群組…
+	Rejoin Path Pieces…	重新連接路徑片段…
+	Document Health Check	文件健康檢查
+	Check Selection	檢查選取範圍
+	Check Document	檢查文件
+	No issues found.	未發現問題。
+	Changed since the last check.	自上次檢查後已變更。
+	Fix Selected	修正選取項目
+	Fix All	全部修正
+	Issues fixed: {count}	已修正的問題：{count}
+	Open a document to check it for issues.	開啟文件以檢查其中的問題。
+	Empty Text	空白文字
+	Unpainted Objects	未上色物件
+	Zero-Opacity Objects	不透明度為零的物件
+	Duplicate Objects	重複物件
+	Off-Artboard Art	工作區域外的圖稿
+	Duplicate Anchors	重複錨點
+	Tiny Handles	極短控制把手
+	Collinear Anchors	共線錨點
+	Nearly Coincident Anchors	幾乎重合的錨點
+	Nearly Closed Paths	幾乎封閉的路徑
+	Filled Open Paths	有填色的開放路徑
+	Needless Clipping Groups	多餘的剪裁群組
+	Needless Compound Paths	多餘的複合路徑
+	Needless Groups	多餘的群組
+	Empty Artboards	空白工作區域
+	Protect Corners	保護尖角
+	Gap	間隙
+	Include Clip Groups	包含剪裁群組
+@msg	`tolerance` must be from 1 to 100	`tolerance` 必須介於 1 到 100 之間
+@msg	`gap` must be from 0 to 6 pt	`gap` 必須介於 0 到 6 pt 之間
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	簡化錨點：路徑的錨點太多，無法一次簡化
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	重新連接路徑片段：路徑太多，無法一次連接
+@msg	None of these issues are left: check again	這些問題都已不存在：請重新檢查
+@msg	`kinds` must be a list of issue kinds	`kinds` 必須是問題類型的清單
+@msg	missing `kind`	未指定 `kind`
+	Simplify Anchors (Keep Shape)	簡化錨點（保持形狀）
+	Deep Ungroup	解散所有層級群組
+	Rejoin Path Pieces	重新連接路徑片段
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	顏色效果
+	Color Effects Panel	顏色效果面板
+	Exposure	曝光度
+	Exposure…	曝光度…
+	Desaturate	去除飽和度
+	Adjustment	調整
+	Add as Effect	加入為效果
+	Apply as Filter	套用為濾鏡
+	Select objects to adjust their colors.	選取物件以調整其顏色。
+	Brightness/Contrast	亮度/對比
+	Hue/Saturation	色相/飽和度
+	Temperature/Tint	色溫/色調
+@msg	`{id}` is not a colour adjustment	`{id}` 不是顏色調整
+@msg	missing `effect`	未提供 `effect`
+@msg	`params` must be an object	`params` 必須是物件

@@ -5658,3 +5658,67 @@ axis	Y Axis	Y ekseni
 	Average & Join	Ortalama ve katıl
 anchor	Points:	Noktalar:
 @msg	select two open path ends, or two open paths, to average and join	ortalaması alınıp katılmak için iki açık yol ucu veya iki açık yol seçin
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Çizim Temizliği
+	Simplify Anchors (Keep Shape)…	Bağlantı Noktalarını Basitleştir (Şekli Koru)…
+	Health Check	Sağlık Denetimi
+	Show Issue	Sorunu Göster
+	Fix All Issues	Tüm Sorunları Düzelt
+	Fix Issues	Sorunları Düzelt
+	Deep Ungroup…	Tüm Düzeylerde Grubu Çöz…
+	Rejoin Path Pieces…	Yol Parçalarını Yeniden Birleştir…
+	Document Health Check	Belge Sağlık Denetimi
+	Check Selection	Seçimi Denetle
+	Check Document	Belgeyi Denetle
+	No issues found.	Sorun bulunamadı.
+	Changed since the last check.	Son denetimden bu yana değişti.
+	Fix Selected	Seçilenleri Düzelt
+	Fix All	Tümünü Düzelt
+	Issues fixed: {count}	Düzeltilen sorunlar: {count}
+	Open a document to check it for issues.	Sorunlar için denetlemek üzere bir belge açın.
+	Empty Text	Boş Metin
+	Unpainted Objects	Boyanmamış Nesneler
+	Zero-Opacity Objects	Sıfır Opaklıklı Nesneler
+	Duplicate Objects	Yinelenen Nesneler
+	Off-Artboard Art	Çalışma Yüzeyi Dışındaki Çizimler
+	Duplicate Anchors	Yinelenen Bağlantı Noktaları
+	Tiny Handles	Çok Kısa Kollar
+	Collinear Anchors	Doğrusal Bağlantı Noktaları
+	Nearly Coincident Anchors	Neredeyse Çakışan Bağlantı Noktaları
+	Nearly Closed Paths	Neredeyse Kapalı Yollar
+	Filled Open Paths	Dolgulu Açık Yollar
+	Needless Clipping Groups	Gereksiz Kırpma Grupları
+	Needless Compound Paths	Gereksiz Bileşik Yollar
+	Needless Groups	Gereksiz Gruplar
+	Empty Artboards	Boş Çalışma Yüzeyleri
+	Protect Corners	Köşeleri Koru
+	Gap	Boşluk
+	Include Clip Groups	Kırpma Gruplarını Dahil Et
+@msg	`tolerance` must be from 1 to 100	`tolerance` 1 ile 100 arasında olmalıdır
+@msg	`gap` must be from 0 to 6 pt	`gap` 0 ile 6 pt arasında olmalıdır
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Bağlantı Noktalarını Basitleştir: yollarda bir kerede basitleştirilemeyecek kadar çok bağlantı noktası var
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Yol Parçalarını Yeniden Birleştir: bir kerede birleştirilemeyecek kadar çok yol var
+@msg	None of these issues are left: check again	Bu sorunların hiçbiri kalmadı: yeniden denetleyin
+@msg	`kinds` must be a list of issue kinds	`kinds` bir sorun türleri listesi olmalıdır
+@msg	missing `kind`	`kind` eksik
+	Simplify Anchors (Keep Shape)	Bağlantı Noktalarını Basitleştir (Şekli Koru)
+	Deep Ungroup	Tüm Düzeylerde Grubu Çöz
+	Rejoin Path Pieces	Yol Parçalarını Yeniden Birleştir
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Renk Efektleri
+	Color Effects Panel	Renk Efektleri Paneli
+	Exposure	Pozlama
+	Exposure…	Pozlama…
+	Desaturate	Doygunluğu Kaldır
+	Adjustment	Ayar
+	Add as Effect	Efekt Olarak Ekle
+	Apply as Filter	Filtre Olarak Uygula
+	Select objects to adjust their colors.	Renklerini ayarlamak için nesneleri seçin.
+	Brightness/Contrast	Parlaklık/Kontrast
+	Hue/Saturation	Ton/Doygunluk
+	Temperature/Tint	Sıcaklık/Renk Tonu
+@msg	`{id}` is not a colour adjustment	`{id}` bir renk ayarı değil
+@msg	missing `effect`	"isim" eksik
+@msg	`params` must be an object	"gradyan" bir nesne olmalıdır

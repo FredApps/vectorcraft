@@ -5590,3 +5590,67 @@ axis	Y Axis	Y ос
 	Average & Join	Усредняване и свързване
 anchor	Points:	Точки:
 @msg	select two open path ends, or two open paths, to average and join	изберете два края на отворени пътища или два отворени пътя за усредняване и свързване
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Почистване на графиката
+	Simplify Anchors (Keep Shape)…	Опростяване на опорните точки (запазване на формата)…
+	Health Check	Проверка на състоянието
+	Show Issue	Показване на проблема
+	Fix All Issues	Отстраняване на всички проблеми
+	Fix Issues	Отстраняване на проблемите
+	Deep Ungroup…	Разгрупиране на всички нива…
+	Rejoin Path Pieces…	Повторно свързване на части от пътища…
+	Document Health Check	Проверка на състоянието на документа
+	Check Selection	Проверка на селекцията
+	Check Document	Проверка на документа
+	No issues found.	Не са открити проблеми.
+	Changed since the last check.	Променено след последната проверка.
+	Fix Selected	Отстраняване на избраните
+	Fix All	Отстраняване на всички
+	Issues fixed: {count}	Отстранени проблеми: {count}
+	Open a document to check it for issues.	Отворете документ, за да го проверите за проблеми.
+	Empty Text	Празен текст
+	Unpainted Objects	Обекти без цвят
+	Zero-Opacity Objects	Обекти с нулева непрозрачност
+	Duplicate Objects	Дублирани обекти
+	Off-Artboard Art	Графика извън работните области
+	Duplicate Anchors	Дублирани опорни точки
+	Tiny Handles	Миниатюрни дръжки
+	Collinear Anchors	Колинеарни опорни точки
+	Nearly Coincident Anchors	Почти съвпадащи опорни точки
+	Nearly Closed Paths	Почти затворени пътища
+	Filled Open Paths	Запълнени отворени пътища
+	Needless Clipping Groups	Излишни групи за изрязване
+	Needless Compound Paths	Излишни съставни пътища
+	Needless Groups	Излишни групи
+	Empty Artboards	Празни работни области
+	Protect Corners	Защита на ъглите
+	Gap	Разстояние
+	Include Clip Groups	Включване на групите за изрязване
+@msg	`tolerance` must be from 1 to 100	`tolerance` трябва да е от 1 до 100
+@msg	`gap` must be from 0 to 6 pt	`gap` трябва да е от 0 до 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Опростяване на опорните точки: пътищата имат твърде много опорни точки, за да се опростят наведнъж
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Повторно свързване на части от пътища: твърде много пътища за свързване наведнъж
+@msg	None of these issues are left: check again	Не е останал нито един от тези проблеми: проверете отново
+@msg	`kinds` must be a list of issue kinds	`kinds` трябва да е списък с видове проблеми
+@msg	missing `kind`	липсва `kind`
+	Simplify Anchors (Keep Shape)	Опростяване на опорните точки (запазване на формата)
+	Deep Ungroup	Разгрупиране на всички нива
+	Rejoin Path Pieces	Повторно свързване на части от пътища
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Цветови ефекти
+	Color Effects Panel	Панел „Цветови ефекти“
+	Exposure	Експонация
+	Exposure…	Експонация…
+	Desaturate	Обезцветяване
+	Adjustment	Корекция
+	Add as Effect	Добавяне като ефект
+	Apply as Filter	Прилагане като филтър
+	Select objects to adjust their colors.	Изберете обекти, за да коригирате цветовете им.
+	Brightness/Contrast	Яркост/Контраст
+	Hue/Saturation	Оттенък/Наситеност
+	Temperature/Tint	Температура/Нюанс
+@msg	`{id}` is not a colour adjustment	`{id}` не е цветова корекция
+@msg	missing `effect`	липсва `effect`
+@msg	`params` must be an object	`params` трябва да бъде обект

@@ -5605,3 +5605,67 @@ axis	Y Axis	Sumbu Y
 	Average & Join	Rata-rata dan sambungkan
 anchor	Points:	Titik:
 @msg	select two open path ends, or two open paths, to average and join	pilih dua ujung jalur terbuka, atau dua jalur terbuka, untuk dirata-ratakan dan disambungkan
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Pembersihan karya
+	Simplify Anchors (Keep Shape)…	Sederhanakan titik jangkar (pertahankan bentuk)…
+	Health Check	Pemeriksaan kesehatan
+	Show Issue	Tampilkan masalah
+	Fix All Issues	Perbaiki semua masalah
+	Fix Issues	Perbaiki masalah
+	Deep Ungroup…	Buka grup di semua tingkat…
+	Rejoin Path Pieces…	Sambungkan kembali potongan jalur…
+	Document Health Check	Pemeriksaan kesehatan dokumen
+	Check Selection	Periksa seleksi
+	Check Document	Periksa dokumen
+	No issues found.	Tidak ada masalah yang ditemukan.
+	Changed since the last check.	Berubah sejak pemeriksaan terakhir.
+	Fix Selected	Perbaiki yang dipilih
+	Fix All	Perbaiki semua
+	Issues fixed: {count}	Masalah diperbaiki: {count}
+	Open a document to check it for issues.	Buka dokumen untuk memeriksa masalahnya.
+	Empty Text	Teks kosong
+	Unpainted Objects	Objek tanpa warna
+	Zero-Opacity Objects	Objek dengan opasitas nol
+	Duplicate Objects	Objek duplikat
+	Off-Artboard Art	Karya di luar artboard
+	Duplicate Anchors	Titik jangkar duplikat
+	Tiny Handles	Pegangan sangat kecil
+	Collinear Anchors	Titik jangkar segaris
+	Nearly Coincident Anchors	Titik jangkar yang hampir berimpit
+	Nearly Closed Paths	Jalur yang hampir tertutup
+	Filled Open Paths	Jalur terbuka berisi
+	Needless Clipping Groups	Grup kliping yang tidak perlu
+	Needless Compound Paths	Jalur majemuk yang tidak perlu
+	Needless Groups	Grup yang tidak perlu
+	Empty Artboards	Artboard kosong
+	Protect Corners	Lindungi sudut
+	Gap	Celah
+	Include Clip Groups	Sertakan grup kliping
+@msg	`tolerance` must be from 1 to 100	`tolerance` harus antara 1 dan 100
+@msg	`gap` must be from 0 to 6 pt	`gap` harus antara 0 dan 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Sederhanakan titik jangkar: jalur memiliki terlalu banyak titik jangkar untuk disederhanakan sekaligus
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Sambungkan kembali potongan jalur: terlalu banyak jalur untuk disambungkan sekaligus
+@msg	None of these issues are left: check again	Tidak ada lagi masalah ini yang tersisa: periksa lagi
+@msg	`kinds` must be a list of issue kinds	`kinds` harus berupa daftar jenis masalah
+@msg	missing `kind`	`kind` tidak ada
+	Simplify Anchors (Keep Shape)	Sederhanakan titik jangkar (pertahankan bentuk)
+	Deep Ungroup	Buka grup di semua tingkat
+	Rejoin Path Pieces	Sambungkan kembali potongan jalur
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Efek Warna
+	Color Effects Panel	Panel Efek Warna
+	Exposure	Eksposur
+	Exposure…	Eksposur…
+	Desaturate	Hilangkan Saturasi
+	Adjustment	Penyesuaian
+	Add as Effect	Tambahkan sebagai Efek
+	Apply as Filter	Terapkan sebagai Filter
+	Select objects to adjust their colors.	Pilih objek untuk menyesuaikan warnanya.
+	Brightness/Contrast	Kecerahan/kontras
+	Hue/Saturation	Rona/saturasi
+	Temperature/Tint	Suhu/tint
+@msg	`{id}` is not a colour adjustment	`{id}` bukan penyesuaian warna
+@msg	missing `effect`	`effect` tidak ada
+@msg	`params` must be an object	`params` harus berupa objek

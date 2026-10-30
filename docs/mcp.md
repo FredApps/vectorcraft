@@ -5652,3 +5652,87 @@ the entry names and decodes the codes that VectorCraft's default shortcuts agree
 {"name":"run_command","arguments":{"command":"shortcutSet.read","params":{"path":"/Users/me/Studio.kys"}}}
 {"name":"run_command","arguments":{"command":"importMatches.set","params":{"matches":[{"kind":"name","name":"Group","target":"object.group"},{"kind":"key","name":"901","target":"G"}]}}}
 ```
+
+## Artwork Cleanup add-on
+
+Artwork Cleanup is a built-in add-on: its commands are `addon.cleanup.*`, and in the desktop app it lives in Object ›
+Plug-ins › Artwork Cleanup and in its panel (`window.panel {panel: "artworkCleanup"}`).
+
+`addon.cleanup.simplify {tolerance?, protectCorners?, ids?}` removes the anchors each selected path can do without and
+refits the handles beside each one, so the outline keeps its shape. `tolerance` runs from 1 to 100 (20 by default); the
+outline stays within tolerance × 0.02 pt of where it was, measured against the original outline, so removals don't add
+up. With `protectCorners`, anchors where the path turns by more than 30° stay. Open ends always stay. It reports the
+anchor counts `before` and `after`, as one undo step.
+
+The health check looks for issues in the selection, or in the whole document while nothing is selected (`scope:
+"selection"|"document"` picks one). Locked and hidden objects, and the insides of live or generated art (blends,
+envelopes, graphs, symbols), are left out.
+
+- `addon.cleanup.check {scope?, kinds?}` changes nothing and lists `findings`: for each kind found, its `count`, the
+  `ids` of the objects it is on (at most 1,000) and, for empty artboards, their indexes.
+- `addon.cleanup.show {kind, scope?}` selects the objects with that issue.
+- `addon.cleanup.fix {scope?, kinds?}` fixes the issues as one undo step and reports how many of each kind it fixed.
+  The kinds run in a fixed order, so art removed by one kind can leave a group that a later kind unwraps, and they
+  run again (three rounds at most) while a round still fixes something.
+
+| Kind | Finds | Fix |
+|---|---|---|
+| `emptyText` | Text with no characters, or only spaces | Removes it |
+| `strayPoints` | Paths of one anchor (not clipping paths) | Removes them |
+| `unpainted` | Paths and compound paths with no fill and no stroke | Removes them |
+| `zeroOpacity` | Objects at 0 % opacity | Removes them |
+| `duplicateObjects` | A path stacked directly on an identical one (geometry, paint, opacity) | Removes the upper one |
+| `offArtboard` | Top-level objects that touch no artboard | Removes them |
+| `duplicateAnchors` | Neighbouring anchors within 0.01 pt | Merges them |
+| `tinyHandles` | Handles shorter than 0.01 pt | Retracts them |
+| `collinearAnchors` | Corner anchors on a straight run (turning by a sine of 0.005 or less) | Removes them |
+| `nearPoints` | Anchors within 0.01 pt of anchors of other paths | Snaps them together |
+| `nearlyClosed` | Open paths whose ends lie within 0.01 pt | Closes them |
+| `filledOpenPaths` | Open paths with a fill and no stroke | Closes them |
+| `needlessClipGroups` | Clipping groups whose unpainted clip clips nothing, hides all their art, or is a rectangle round all of it | Removes the group (and the art it hides), or leaves the art |
+| `needlessCompounds` | Compound paths of one path or none | Leaves the path, painted as the compound was |
+| `needlessGroups` | Groups of one member or none, with no paint, effects or transparency of their own | Leaves the member |
+| `emptyArtboards` | Artboards with no art (document scope only; one artboard always stays) | Deletes them |
+
+`addon.cleanup.deepUngroup {includeClipGroups?, ids?}` takes apart every level of grouping in the selection. Clipping
+groups stay whole unless `includeClipGroups` is true; their clipping paths then become plain paths. Objects keep the
+opacity of the groups they were in.
+
+`addon.cleanup.rejoin {gap?, ids?}` welds the selected open paths whose ends lie within `gap` (0 to 6 pt, 0.1 by
+default) back into paths. Each end joins one other end: where several are in reach, the one the path turns least to go
+on into. Pieces may run either way, and a chain whose ends meet closes. Each new path takes the place and paint of its
+topmost piece.
+
+```json
+{"name":"run_command","arguments":{"command":"addon.cleanup.check","params":{"scope":"document"}}}
+{"name":"run_command","arguments":{"command":"addon.cleanup.fix","params":{"kinds":["strayPoints","needlessGroups"]}}}
+{"name":"run_command","arguments":{"command":"addon.cleanup.simplify","params":{"tolerance":40,"protectCorners":true}}}
+```
+
+## Color Effects add-on
+
+Color Effects is a built-in add-on: its effects are colour adjustments in Effect › Color Effects, its command is
+`addon.color.filter`, and in the desktop app it also lives in Object › Plug-ins › Color Effects and in its panel
+(`window.panel {panel: "colorEffects"}`).
+
+Its live effects go on through `effect.apply` like any other and recolour what the object paints, in stack order with
+the other colour adjustments (Effect › Color Adjustments); each colour keeps its colour model:
+
+| Effect | Parameters | Does |
+|---|---|---|
+| `addon.color.exposure` (Exposure…) | `exposure` stops −20…20 (0), `offset` −0.5…0.5 (0), `gamma` 0.1…10 (1) | Scales the light in linear light (each stop doubles or halves it, mostly in the highlights), adds the offset (shadows and midtones) and applies the gamma |
+| `addon.color.desaturate` (Desaturate) | none | Turns every colour to the grey of its lightness |
+| `addon.color.invert` (Invert Colors) | none | Turns every colour to its RGB inverse |
+
+`addon.color.filter {effect, params?, fill?, stroke?, includeImages?, includePatterns?, ids?}` applies any colour
+adjustment, the add-on's or one of Effect › Color Adjustments', to the colours themselves instead of as a live effect:
+fills, strokes, type, gradient meshes, embedded images and pattern tiles, as `edit.colors.invert` reaches them, as one
+undo step. Missing `params` take the effect's dialog defaults; the objects' own effects stay as they are.
+
+```json
+{"name":"run_command","arguments":{"command":"effect.apply","params":{"effect":"addon.color.exposure","params":{"exposure":1.5}}}}
+{"name":"run_command","arguments":{"command":"addon.color.filter","params":{"effect":"adjust.hueSaturation","params":{"hue":120}}}}
+```
+
+The panel picks an adjustment (Brightness/Contrast, Hue/Saturation, Levels, Temperature/Tint, Exposure, Desaturate or
+Invert Colors), sets its values, and then Add as Effect (`effect.apply`) or Apply as Filter (`addon.color.filter`).

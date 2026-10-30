@@ -5689,3 +5689,67 @@ swatch	Bright Violet	კაშკაშა იისფერი
 	Average & Join	საშუალო და შეერთება
 anchor	Points:	წერტილები:
 @msg	select two open path ends, or two open paths, to average and join	მონიშნეთ ღია ტრაექტორიების ორი ბოლო ან ორი ღია ტრაექტორია საშუალოსა და შეერთებისთვის
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	გრაფიკის გასუფთავება
+	Simplify Anchors (Keep Shape)…	საყრდენი წერტილების გამარტივება (ფორმის შენარჩუნებით)…
+	Health Check	მდგომარეობის შემოწმება
+	Show Issue	პრობლემის ჩვენება
+	Fix All Issues	ყველა პრობლემის გამოსწორება
+	Fix Issues	პრობლემების გამოსწორება
+	Deep Ungroup…	დაჯგუფების მოხსნა ყველა დონეზე…
+	Rejoin Path Pieces…	ტრაექტორიის ნაწილების ხელახლა შეერთება…
+	Document Health Check	დოკუმენტის მდგომარეობის შემოწმება
+	Check Selection	მონიშნულის შემოწმება
+	Check Document	დოკუმენტის შემოწმება
+	No issues found.	პრობლემები ვერ მოიძებნა.
+	Changed since the last check.	შეიცვალა ბოლო შემოწმების შემდეგ.
+	Fix Selected	მონიშნულის გამოსწორება
+	Fix All	ყველას გამოსწორება
+	Issues fixed: {count}	გამოსწორებული პრობლემები: {count}
+	Open a document to check it for issues.	გახსენით დოკუმენტი, რომ პრობლემებზე შეამოწმოთ.
+	Empty Text	ცარიელი ტექსტი
+	Unpainted Objects	შეუღებავი ობიექტები
+	Zero-Opacity Objects	ნულოვანი გაუმჭვირვალობის ობიექტები
+	Duplicate Objects	დუბლირებული ობიექტები
+	Off-Artboard Art	სამუშაო დაფებს გარეთ მყოფი გრაფიკა
+	Duplicate Anchors	დუბლირებული საყრდენი წერტილები
+	Tiny Handles	პაწაწინა სახელურები
+	Collinear Anchors	კოლინეარული საყრდენი წერტილები
+	Nearly Coincident Anchors	თითქმის დამთხვეული საყრდენი წერტილები
+	Nearly Closed Paths	თითქმის შეკრული ტრაექტორიები
+	Filled Open Paths	შევსებული ღია ტრაექტორიები
+	Needless Clipping Groups	ზედმეტი მომჭრელი ჯგუფები
+	Needless Compound Paths	ზედმეტი შედგენილი ტრაექტორიები
+	Needless Groups	ზედმეტი ჯგუფები
+	Empty Artboards	ცარიელი სამუშაო დაფები
+	Protect Corners	კუთხეების დაცვა
+	Gap	ღრეჩო
+	Include Clip Groups	მომჭრელი ჯგუფების ჩართვა
+@msg	`tolerance` must be from 1 to 100	`tolerance` უნდა იყოს 1-დან 100-მდე
+@msg	`gap` must be from 0 to 6 pt	`gap` უნდა იყოს 0-დან 6 pt-მდე
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	საყრდენი წერტილების გამარტივება: ტრაექტორიებს ძალიან ბევრი საყრდენი წერტილი აქვს ერთბაშად გასამარტივებლად
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	ტრაექტორიის ნაწილების ხელახლა შეერთება: ძალიან ბევრი ტრაექტორიაა ერთბაშად შესაერთებლად
+@msg	None of these issues are left: check again	ამ პრობლემებიდან აღარცერთი დარჩა: შეამოწმეთ ხელახლა
+@msg	`kinds` must be a list of issue kinds	`kinds` უნდა იყოს პრობლემის სახეების სია
+@msg	missing `kind`	`kind` აკლია
+	Simplify Anchors (Keep Shape)	საყრდენი წერტილების გამარტივება (ფორმის შენარჩუნებით)
+	Deep Ungroup	დაჯგუფების მოხსნა ყველა დონეზე
+	Rejoin Path Pieces	ტრაექტორიის ნაწილების ხელახლა შეერთება
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	ფერის ეფექტები
+	Color Effects Panel	ფერის ეფექტების პანელი
+	Exposure	ექსპოზიცია
+	Exposure…	ექსპოზიცია…
+	Desaturate	გაუფერულება
+	Adjustment	კორექცია
+	Add as Effect	ეფექტად დამატება
+	Apply as Filter	ფილტრად გამოყენება
+	Select objects to adjust their colors.	აირჩიეთ ობიექტები მათი ფერების დასარეგულირებლად.
+	Brightness/Contrast	სიკაშკაშე/კონტრასტი
+	Hue/Saturation	ფერის ტონი/გაჯერება
+	Temperature/Tint	ტემპერატურა/ტონირება
+@msg	`{id}` is not a colour adjustment	`{id}` ფერის კორექცია არ არის
+@msg	missing `effect`	აკლია `effect`
+@msg	`params` must be an object	`params` უნდა იყოს ობიექტი

@@ -5642,3 +5642,67 @@ axis	Y Axis	Eje Y
 	Average & Join	Promediar y unir
 anchor	Points:	Puntos:
 @msg	select two open path ends, or two open paths, to average and join	selecciona dos extremos de trazados abiertos, o dos trazados abiertos, para promediarlos y unirlos
+
+# Artwork Cleanup add-on (Object › Plug-ins › Artwork Cleanup): its panel, tools, issue kinds and messages.
+	Artwork Cleanup	Limpieza de ilustraciones
+	Simplify Anchors (Keep Shape)…	Simplificar puntos de ancla (mantener forma)…
+	Health Check	Revisión de estado
+	Show Issue	Mostrar problema
+	Fix All Issues	Corregir todos los problemas
+	Fix Issues	Corregir problemas
+	Deep Ungroup…	Desagrupar todos los niveles…
+	Rejoin Path Pieces…	Volver a unir fragmentos de trazado…
+	Document Health Check	Revisión de estado del documento
+	Check Selection	Revisar selección
+	Check Document	Revisar documento
+	No issues found.	No se encontraron problemas.
+	Changed since the last check.	Ha cambiado desde la última revisión.
+	Fix Selected	Corregir seleccionados
+	Fix All	Corregir todo
+	Issues fixed: {count}	Problemas corregidos: {count}
+	Open a document to check it for issues.	Abra un documento para buscar problemas en él.
+	Empty Text	Texto vacío
+	Unpainted Objects	Objetos sin pintar
+	Zero-Opacity Objects	Objetos con opacidad cero
+	Duplicate Objects	Objetos duplicados
+	Off-Artboard Art	Ilustración fuera de las mesas de trabajo
+	Duplicate Anchors	Puntos de ancla duplicados
+	Tiny Handles	Manejadores diminutos
+	Collinear Anchors	Puntos de ancla colineales
+	Nearly Coincident Anchors	Puntos de ancla casi coincidentes
+	Nearly Closed Paths	Trazados casi cerrados
+	Filled Open Paths	Trazados abiertos con relleno
+	Needless Clipping Groups	Grupos de recorte innecesarios
+	Needless Compound Paths	Trazados compuestos innecesarios
+	Needless Groups	Grupos innecesarios
+	Empty Artboards	Mesas de trabajo vacías
+	Protect Corners	Proteger esquinas
+	Gap	Separación
+	Include Clip Groups	Incluir grupos de recorte
+@msg	`tolerance` must be from 1 to 100	`tolerance` debe estar entre 1 y 100
+@msg	`gap` must be from 0 to 6 pt	`gap` debe estar entre 0 y 6 pt
+@msg	Simplify Anchors: the paths have too many anchors to simplify at once	Simplificar puntos de ancla: los trazados tienen demasiados puntos de ancla para simplificarlos de una vez
+@msg	Rejoin Path Pieces: too many paths to rejoin at once	Volver a unir fragmentos de trazado: demasiados trazados para unirlos de una vez
+@msg	None of these issues are left: check again	Ya no queda ninguno de estos problemas: vuelva a revisar
+@msg	`kinds` must be a list of issue kinds	`kinds` debe ser una lista de tipos de problema
+@msg	missing `kind`	falta `kind`
+	Simplify Anchors (Keep Shape)	Simplificar puntos de ancla (mantener forma)
+	Deep Ungroup	Desagrupar todos los niveles
+	Rejoin Path Pieces	Volver a unir fragmentos de trazado
+
+# Color Effects add-on (Object › Plug-ins › Color Effects, Effect › Color Effects): its effects, panel and messages.
+	Color Effects	Efectos de color
+	Color Effects Panel	Panel Efectos de color
+	Exposure	Exposición
+	Exposure…	Exposición…
+	Desaturate	Desaturar
+	Adjustment	Ajuste
+	Add as Effect	Añadir como efecto
+	Apply as Filter	Aplicar como filtro
+	Select objects to adjust their colors.	Seleccione objetos para ajustar sus colores.
+	Brightness/Contrast	Brillo/contraste
+	Hue/Saturation	Tono/saturación
+	Temperature/Tint	Temperatura/tinte
+@msg	`{id}` is not a colour adjustment	`{id}` no es un ajuste de color
+@msg	missing `effect`	falta `effect`
+@msg	`params` must be an object	`params` debe ser un objeto
