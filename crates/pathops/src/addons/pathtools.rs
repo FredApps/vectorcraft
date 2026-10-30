@@ -37,7 +37,7 @@ fn unit(v: Vec2) -> Option<Vec2> {
 }
 
 /// The indices of anchor `i`'s neighbours in `sp` (`None` past an open end).
-fn neighbours(sp: &SubPath, i: usize) -> (Option<usize>, Option<usize>) {
+pub(crate) fn neighbours(sp: &SubPath, i: usize) -> (Option<usize>, Option<usize>) {
     let n = sp.anchors.len();
     let prev = if i > 0 { Some(i - 1) } else { (sp.closed && n > 1).then(|| n - 1) };
     let next = if i + 1 < n { Some(i + 1) } else { (sp.closed && n > 1).then_some(0) };

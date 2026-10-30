@@ -5746,3 +5746,25 @@ anchor	Points:	Punten:
 @msg	select open paths to close	selecteer open paden om te sluiten
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	te veel of te verwarde paden om hun kruisingen te vinden (hoogstens 10000 segmenten)
 @msg	the paths have too many anchors to edit at once	de paden hebben te veel ankerpunten om in één keer te bewerken
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Slimme pen
+	Smart Pen Tool	Slimme pen-gereedschap
+	Smart Pen Panel	Slimme pen-paneel
+	Next Segment	Volgend segment
+	Curved	Gebogen
+	Retract Handles	Grepen intrekken
+	Close or Join	Sluiten of verbinden
+	Open a document to draw with the Smart Pen.	Open een document om met de slimme pen te tekenen.
+	Straight or Curved Segment	Recht of gebogen segment
+@msg	the path is locked or hidden	het pad is vergrendeld of verborgen
+@msg	`id` is not a path	`id` is geen pad
+@msg	the path has no open subpath	het pad heeft geen open subpad
+@msg	the subpath is closed	het subpad is gesloten
+@msg	the subpath is closed or too short to close	het subpad is gesloten of te kort om te sluiten
+@msg	the path is too short to remove a point from	het pad is te kort om er een punt uit te verwijderen
+@msg	the segment can't be bent that far	het segment kan niet zo ver worden gebogen
+@msg	give `{a}` and `{b}`	geef `{a}` en `{b}` op
+@msg	`t` must be from 0 to 1	`t` moet tussen 0 en 1 liggen
+@msg	`segment` must be "straight" or "curved"	`segment` moet "straight" of "curved" zijn
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` moet "free", "keepAngles" of "symmetric" zijn
+@msg	`{key}` must be [x, y]	`{key}` moet [x, y] zijn

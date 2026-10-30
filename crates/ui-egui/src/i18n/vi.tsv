@@ -5396,3 +5396,25 @@ anchor	Points:	Điểm:
 @msg	select open paths to close	chọn các đường dẫn mở để đóng
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	quá nhiều đường dẫn hoặc chúng quá rối để tìm chỗ giao nhau (tối đa 10000 đoạn)
 @msg	the paths have too many anchors to edit at once	các đường dẫn có quá nhiều điểm neo để sửa cùng lúc
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Bút thông minh
+	Smart Pen Tool	Công cụ Bút thông minh
+	Smart Pen Panel	Bảng Bút thông minh
+	Next Segment	Đoạn tiếp theo
+	Curved	Cong
+	Retract Handles	Thu tay nắm
+	Close or Join	Đóng hoặc nối
+	Open a document to draw with the Smart Pen.	Mở một tài liệu để vẽ bằng bút thông minh.
+	Straight or Curved Segment	Đoạn thẳng hoặc cong
+@msg	the path is locked or hidden	đường dẫn bị khóa hoặc bị ẩn
+@msg	`id` is not a path	`id` không phải là đường dẫn
+@msg	the path has no open subpath	đường dẫn không có nhánh con mở
+@msg	the subpath is closed	nhánh con đã đóng
+@msg	the subpath is closed or too short to close	nhánh con đã đóng hoặc quá ngắn để đóng
+@msg	the path is too short to remove a point from	đường dẫn quá ngắn để xóa một điểm
+@msg	the segment can't be bent that far	không thể uốn đoạn xa đến vậy
+@msg	give `{a}` and `{b}`	hãy cho `{a}` và `{b}`
+@msg	`t` must be from 0 to 1	`t` phải từ 0 đến 1
+@msg	`segment` must be "straight" or "curved"	`segment` phải là "straight" hoặc "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` phải là "free", "keepAngles" hoặc "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` phải là [x, y]

@@ -5377,3 +5377,25 @@ anchor	Points:	포인트:
 @msg	select open paths to close	닫을 열린 패스를 선택하세요
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	패스가 너무 많거나 너무 얽혀 교차점을 찾을 수 없습니다(최대 10000개 세그먼트)
 @msg	the paths have too many anchors to edit at once	패스의 앵커 포인트가 너무 많아 한 번에 편집할 수 없습니다
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	스마트 펜
+	Smart Pen Tool	스마트 펜 도구
+	Smart Pen Panel	스마트 펜 패널
+	Next Segment	다음 세그먼트
+	Curved	곡선
+	Retract Handles	핸들 접기
+	Close or Join	닫기 또는 결합
+	Open a document to draw with the Smart Pen.	스마트 펜으로 그리려면 문서를 여세요.
+	Straight or Curved Segment	직선 또는 곡선 세그먼트
+@msg	the path is locked or hidden	패스가 잠겨 있거나 숨겨져 있습니다
+@msg	`id` is not a path	`id`은(는) 패스가 아닙니다
+@msg	the path has no open subpath	패스에 열린 하위 패스가 없습니다
+@msg	the subpath is closed	하위 패스가 닫혀 있습니다
+@msg	the subpath is closed or too short to close	하위 패스가 닫혀 있거나 너무 짧아 닫을 수 없습니다
+@msg	the path is too short to remove a point from	패스가 너무 짧아 포인트를 제거할 수 없습니다
+@msg	the segment can't be bent that far	세그먼트를 그만큼 구부릴 수 없습니다
+@msg	give `{a}` and `{b}`	`{a}`와(과) `{b}`을(를) 지정하세요
+@msg	`t` must be from 0 to 1	`t`는 0에서 1 사이여야 합니다
+@msg	`segment` must be "straight" or "curved"	`segment`는 "straight" 또는 "curved"여야 합니다
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode`는 "free", "keepAngles" 또는 "symmetric"이어야 합니다
+@msg	`{key}` must be [x, y]	`{key}`은(는) [x, y]여야 합니다

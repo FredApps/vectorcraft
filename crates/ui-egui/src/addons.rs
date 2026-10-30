@@ -4,6 +4,7 @@
 pub mod cleanup;
 pub mod color;
 pub mod pathtools;
+pub mod pen;
 
 use crate::menus::Item;
 
@@ -13,6 +14,7 @@ pub fn plugin_menu() -> Vec<Item> {
         Item::Sub("Artwork Cleanup", cleanup::menu()),
         Item::Sub("Color Effects", color::menu()),
         Item::Sub("Path Precision Tools", pathtools::menu()),
+        Item::Sub("Smart Pen", pen::menu()),
         Item::Sep,
     ]
 }

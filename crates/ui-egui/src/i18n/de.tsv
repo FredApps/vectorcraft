@@ -5380,3 +5380,25 @@ anchor	Points:	Punkte:
 @msg	select open paths to close	offene Pfade zum Schließen auswählen
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	zu viele oder zu verschlungene Pfade, um ihre Kreuzungen zu finden (höchstens 10000 Segmente)
 @msg	the paths have too many anchors to edit at once	die Pfade haben zu viele Ankerpunkte, um sie auf einmal zu bearbeiten
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Intelligenter Zeichenstift
+	Smart Pen Tool	Intelligenter-Zeichenstift-Werkzeug
+	Smart Pen Panel	Bedienfeld „Intelligenter Zeichenstift“
+	Next Segment	Nächstes Segment
+	Curved	Gebogen
+	Retract Handles	Griffe einziehen
+	Close or Join	Schließen oder zusammenfügen
+	Open a document to draw with the Smart Pen.	Öffnen Sie ein Dokument, um mit dem intelligenten Zeichenstift zu zeichnen.
+	Straight or Curved Segment	Gerades oder gebogenes Segment
+@msg	the path is locked or hidden	der Pfad ist gesperrt oder ausgeblendet
+@msg	`id` is not a path	`id` ist kein Pfad
+@msg	the path has no open subpath	der Pfad hat keinen offenen Teilpfad
+@msg	the subpath is closed	der Teilpfad ist geschlossen
+@msg	the subpath is closed or too short to close	der Teilpfad ist geschlossen oder zu kurz zum Schließen
+@msg	the path is too short to remove a point from	der Pfad ist zu kurz, um einen Punkt zu entfernen
+@msg	the segment can't be bent that far	das Segment lässt sich nicht so weit biegen
+@msg	give `{a}` and `{b}`	geben Sie `{a}` und `{b}` an
+@msg	`t` must be from 0 to 1	`t` muss zwischen 0 und 1 liegen
+@msg	`segment` must be "straight" or "curved"	`segment` muss "straight" oder "curved" sein
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` muss "free", "keepAngles" oder "symmetric" sein
+@msg	`{key}` must be [x, y]	`{key}` muss [x, y] sein

@@ -6,12 +6,18 @@
 //!   handles, nearly closed paths) and Rejoin Path Pieces.
 //! - [`pathtools`]: Path Precision Tools' anchor edits, path readouts, extending open paths and
 //!   finding where paths cross.
+//! - [`segment_reshape`]: bending a segment by dragging a point on it (shared by the tools that
+//!   reshape segments directly).
+//! - [`pen`]: the Smart Pen's straight and curved segments and its point edits.
 
 pub mod cleanup;
 pub mod keep_shape;
 pub mod pathtools;
+pub mod pen;
+pub mod segment_reshape;
 
 pub use cleanup::{
     Rejoined, close_nearly_closed, merge_duplicate_anchors, near_point_groups, rejoin, remove_collinear_anchors, retract_tiny_handles,
 };
 pub use keep_shape::{SHARP_CORNER_DEG, remove_anchor_keep_shape, simplify_anchors_keep_shape, simplify_keep_shape};
+pub use segment_reshape::{ReshapeMode, reshape_segment};

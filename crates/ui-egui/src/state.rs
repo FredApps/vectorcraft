@@ -200,6 +200,7 @@ pub const ICON_PANELS: &[(&str, &str, &str)] = &[
     (crate::addons::cleanup::ID, "Artwork Cleanup", "sparkles"),
     (crate::addons::color::ID, "Color Effects", "sun"),
     (crate::addons::pathtools::ID, "Anchor Inspector", "dc-anchor-smooth"),
+    (crate::addons::pen::ID, "Smart Pen", "spline-pointer"),
 ];
 
 /// Groups of icon panels separated by dividers in the collapsed column.

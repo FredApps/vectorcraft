@@ -5715,3 +5715,25 @@ anchor	Points:	Pontos:
 @msg	select open paths to close	selecione caminhos abertos para fechar
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	caminhos demais, ou emaranhados demais, para encontrar seus cruzamentos (no máximo 10000 segmentos)
 @msg	the paths have too many anchors to edit at once	os caminhos têm pontos de ancoragem demais para editar de uma vez
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Caneta Inteligente
+	Smart Pen Tool	Ferramenta Caneta Inteligente
+	Smart Pen Panel	Painel Caneta Inteligente
+	Next Segment	Próximo Segmento
+	Curved	Curvo
+	Retract Handles	Recolher Alças
+	Close or Join	Fechar ou Unir
+	Open a document to draw with the Smart Pen.	Abra um documento para desenhar com a caneta inteligente.
+	Straight or Curved Segment	Segmento Reto ou Curvo
+@msg	the path is locked or hidden	o caminho está bloqueado ou oculto
+@msg	`id` is not a path	`id` não é um caminho
+@msg	the path has no open subpath	o caminho não tem subcaminho aberto
+@msg	the subpath is closed	o subcaminho está fechado
+@msg	the subpath is closed or too short to close	o subcaminho está fechado ou é curto demais para fechar
+@msg	the path is too short to remove a point from	o caminho é curto demais para remover um ponto
+@msg	the segment can't be bent that far	o segmento não pode ser curvado tanto
+@msg	give `{a}` and `{b}`	informe `{a}` e `{b}`
+@msg	`t` must be from 0 to 1	`t` deve estar entre 0 e 1
+@msg	`segment` must be "straight" or "curved"	`segment` deve ser "straight" ou "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` deve ser "free", "keepAngles" ou "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` deve ser [x, y]

@@ -5788,3 +5788,25 @@ anchor	Points:	Punts:
 @msg	select open paths to close	seleccioneu traçats oberts per tancar-los
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	massa traçats, o massa enredats, per trobar-ne els encreuaments (10000 segments com a màxim)
 @msg	the paths have too many anchors to edit at once	els traçats tenen massa punts d’ancoratge per editar-los alhora
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Ploma intel·ligent
+	Smart Pen Tool	Eina de ploma intel·ligent
+	Smart Pen Panel	Tauler de ploma intel·ligent
+	Next Segment	Segment següent
+	Curved	Corbat
+	Retract Handles	Retrau les nanses
+	Close or Join	Tanca o uneix
+	Open a document to draw with the Smart Pen.	Obriu un document per dibuixar amb la ploma intel·ligent.
+	Straight or Curved Segment	Segment recte o corbat
+@msg	the path is locked or hidden	el traçat està bloquejat o ocult
+@msg	`id` is not a path	`id` no és un traçat
+@msg	the path has no open subpath	el traçat no té cap subtraçat obert
+@msg	the subpath is closed	el subtraçat és tancat
+@msg	the subpath is closed or too short to close	el subtraçat és tancat o massa curt per tancar-lo
+@msg	the path is too short to remove a point from	el traçat és massa curt per treure’n un punt
+@msg	the segment can't be bent that far	el segment no es pot corbar tant
+@msg	give `{a}` and `{b}`	indiqueu `{a}` i `{b}`
+@msg	`t` must be from 0 to 1	`t` ha de ser de 0 a 1
+@msg	`segment` must be "straight" or "curved"	`segment` ha de ser "straight" o "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` ha de ser "free", "keepAngles" o "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` ha de ser [x, y]

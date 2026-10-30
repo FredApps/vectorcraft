@@ -5702,3 +5702,25 @@ anchor	Points:	Titik:
 @msg	select open paths to close	pilih jalur terbuka untuk ditutup
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	jalur terlalu banyak atau terlalu kusut untuk menemukan persilangannya (paling banyak 10000 segmen)
 @msg	the paths have too many anchors to edit at once	jalur memiliki terlalu banyak titik jangkar untuk disunting sekaligus
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	Pena pintar
+	Smart Pen Tool	Alat pena pintar
+	Smart Pen Panel	Panel pena pintar
+	Next Segment	Segmen berikutnya
+	Curved	Lengkung
+	Retract Handles	Tarik masuk pegangan
+	Close or Join	Tutup atau sambungkan
+	Open a document to draw with the Smart Pen.	Buka dokumen untuk menggambar dengan pena pintar.
+	Straight or Curved Segment	Segmen lurus atau lengkung
+@msg	the path is locked or hidden	jalur terkunci atau tersembunyi
+@msg	`id` is not a path	`id` bukan jalur
+@msg	the path has no open subpath	jalur tidak punya subjalur terbuka
+@msg	the subpath is closed	subjalur sudah tertutup
+@msg	the subpath is closed or too short to close	subjalur sudah tertutup atau terlalu pendek untuk ditutup
+@msg	the path is too short to remove a point from	jalur terlalu pendek untuk dihapus titiknya
+@msg	the segment can't be bent that far	segmen tidak dapat dibengkokkan sejauh itu
+@msg	give `{a}` and `{b}`	berikan `{a}` dan `{b}`
+@msg	`t` must be from 0 to 1	`t` harus antara 0 dan 1
+@msg	`segment` must be "straight" or "curved"	`segment` harus "straight" atau "curved"
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` harus "free", "keepAngles" atau "symmetric"
+@msg	`{key}` must be [x, y]	`{key}` harus [x, y]

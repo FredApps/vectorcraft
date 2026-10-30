@@ -667,6 +667,12 @@ shown_when = ["The Measure tool: drag to measure distance and angle."]
 hotspot = "Exact, because precision matters here (an open centre suits it)."
 
 [[cursor]]
+id = "SmartPen"
+group = "Drawing and editing tools"
+shown_when = ["The Smart Pen Tool (Smart Pen add-on) away from paths, where a click starts a new path. Over a path, or while a path is drawn, the tool shows the Pen's and Direct Selection's cursors for what a click there does."]
+hotspot = "The nib's tip."
+
+[[cursor]]
 id = "PrintTiling"
 group = "Drawing and editing tools"
 shown_when = ["The Print Tiling tool: a drag moves the printable page area over the artboard (it snaps to the artboard's edges)."]

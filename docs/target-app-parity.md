@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (Path Precision Tools, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Color Effects, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (Smart Pen, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Path Precision Tools, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Color Effects, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1230,7 +1230,23 @@ Kernels in `vectorcraft_pathops::addons::pathtools`. Tests: `addons::pathtools` 
 undo step, bad params refused, the brush's stroke one step) and `edit_toolbar::tests::addon_tools_are_in_the_drawer_not_the_toolbars`.
 Commands: `docs/mcp.md` › Path Precision Tools add-on.
 
+## Smart Pen add-on (2026-10-30)
+
+A VectorCraft addition, not an Illustrator feature, so no area score moves. Object › Plug-ins › Smart Pen selects the
+Smart Pen Tool (kept out of the shipped toolbars, listed in the All Tools drawer, no shortcut) and opens its panel. The
+tool draws with a straight or curved next segment (a curve after a straight segment leaves it tangent), smooth drags
+with Alt, Shift and Space, Tab to switch a segment, a rubber band, closing, joining and continuing open ends; and edits
+without switching tools: point select, move, Alt-click remove keeping shape, Shift+Alt-click plain delete, double-click
+smooth/corner, handle drags (Shift 45°, Alt keeps the angle), segment drags (free, keep angles, symmetric) and Alt-click
+insert. The panel sets the next segment and runs Remove Points Keep Shape, Make Smooth, Make Corner, Retract Handles and
+Close or Join. Kernels: `vectorcraft_pathops::addons::pen` and the shared `addons::segment_reshape`. Tests:
+`addons::pen` and `addons::segment_reshape` in `vectorcraft-pathops`, `addons::smart_pen` in `vectorcraft-tools`,
+`cmd::addons::pen::tests` in `vectorcraft-engine` (each command one undo step, bad params refused, the tool's gestures
+through the session) and `addons::pen::tests` in `vectorcraft-ui-egui` (the submenu, the panel). Commands: `docs/mcp.md`
+› Smart Pen add-on.
+
 ## Color Effects add-on (2026-10-30)
+
 A VectorCraft addition, not an Illustrator feature, so no area score moves. Effect › Color Effects adds live Exposure
 (stops of linear light, offset and gamma), Desaturate and Invert Colors as colour adjustments evaluated with those of
 Effect › Color Adjustments (`vectorcraft_effects::addons::color`), and `addon.color.filter` applies any colour adjustment
@@ -1243,6 +1259,7 @@ undo step, with any adjustment and its params; bad requests refused) and `addons
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-30 | minor | Smart Pen add-on (a VectorCraft addition): evidence added; scores unchanged. |
 | 2026-10-30 | minor | Path Precision Tools add-on (a VectorCraft addition): evidence added; scores unchanged. |
 | 2026-10-30 | minor | Color Effects, a built-in add-on beyond Illustrator; scores and estimates unchanged |
 | 2026-10-30 | minor | Artwork Cleanup add-on (a VectorCraft addition): evidence added; scores unchanged. |

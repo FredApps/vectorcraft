@@ -5483,3 +5483,25 @@ anchor	Points:	ポイント:
 @msg	select open paths to close	閉じるオープンパスを選択してください
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	パスが多すぎるか複雑すぎて交差点を見つけられません（最大 10000 セグメント）
 @msg	the paths have too many anchors to edit at once	パスのアンカーポイントが多すぎて一度に編集できません
+# Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
+	Smart Pen	スマートペン
+	Smart Pen Tool	スマートペンツール
+	Smart Pen Panel	スマートペンパネル
+	Next Segment	次のセグメント
+	Curved	曲線
+	Retract Handles	ハンドルを収める
+	Close or Join	閉じるまたは連結
+	Open a document to draw with the Smart Pen.	スマートペンで描くにはドキュメントを開いてください。
+	Straight or Curved Segment	直線または曲線セグメント
+@msg	the path is locked or hidden	パスがロックされているか非表示です
+@msg	`id` is not a path	`id` はパスではありません
+@msg	the path has no open subpath	パスに開いたサブパスがありません
+@msg	the subpath is closed	サブパスは閉じています
+@msg	the subpath is closed or too short to close	サブパスが閉じているか、短すぎて閉じられません
+@msg	the path is too short to remove a point from	パスが短すぎてポイントを削除できません
+@msg	the segment can't be bent that far	セグメントをそこまで曲げることはできません
+@msg	give `{a}` and `{b}`	`{a}` と `{b}` を指定してください
+@msg	`t` must be from 0 to 1	`t` には 0 から 1 を指定してください
+@msg	`segment` must be "straight" or "curved"	`segment` には "straight" または "curved" を指定してください
+@msg	`mode` must be "free", "keepAngles" or "symmetric"	`mode` には "free"、"keepAngles" または "symmetric" を指定してください
+@msg	`{key}` must be [x, y]	`{key}` には [x, y] を指定してください
