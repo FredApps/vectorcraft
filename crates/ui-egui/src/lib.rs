@@ -5,6 +5,15 @@
 //! shortcuts, the ⌘K palette and the control channel ([`control`]).
 #![forbid(unsafe_code)]
 
+/// VectorCraft as craft-update knows it, with its 128 px icon and accent colour: the update
+/// prompt shows both, and an AppImage's menu entry gets the icon.
+#[cfg(not(target_arch = "wasm32"))]
+pub const UPDATE_APP: craft_update::app::App = craft_update::app::App {
+    icon_png: Some(include_bytes!("../../../assets/app-icon/hicolor/128x128/apps/ai.storyteller.vectorcraft.png")),
+    accent: Some([0xe8, 0x57, 0x3f]),
+    ..craft_update::suite::VECTORCRAFT
+};
+
 /// Translate a UI string literal into the language the UI is drawn in (see [`i18n`]).
 #[macro_export]
 macro_rules! tl {
@@ -65,6 +74,7 @@ pub mod titlebar;
 pub mod toolbar;
 mod tools_float;
 pub mod touch;
+pub mod trace_runs;
 mod ui_fonts;
 pub mod unsaved;
 pub mod updates_ui;
@@ -125,6 +135,9 @@ pub struct VectorcraftApp {
     pub last_effect: Option<(String, serde_json::Value)>,
     /// Last confirmed Warp Options (bend, distortion, orientation) for the next new warp dialog.
     pub last_warp: Option<serde_json::Value>,
+    /// The Character panel field that takes the keyboard focus when the panel next draws it
+    /// ([`panels::character::highlight`]).
+    pub(crate) character_focus: Option<panels::character::Field>,
     /// Commands run through [`Self::run`] so far: the native menu bar reads its rows again when it
     /// moves ([`native_menu::sync`]).
     run_count: u64,
@@ -212,6 +225,8 @@ pub struct VectorcraftApp {
     pub plugin_runs: plugin_runs::PluginRuns,
     /// Files being read off the UI thread for Place ([`placing`]).
     pub placing: placing::Placing,
+    /// Image Traces running off the UI thread ([`trace_runs`]).
+    pub trace_runs: trace_runs::TraceRuns,
     /// Data Recovery's timer and startup question ([`recovery`]).
     pub recovery: recovery::Timer,
     /// Modifiers the keyboard holds (from the host's input), given back after synthetic input.

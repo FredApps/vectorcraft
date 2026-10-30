@@ -1,6 +1,8 @@
 use super::labels::{PreviousLabel, label_field, name_field, take_previous_label};
 use super::panel_chrome::chevron_cell;
-use super::text::{after_shift_enter, recessed_text, select_all, select_all_on_focus, shift_enter_keeps_focus, take_dialog_focus};
+use super::text::{
+    after_shift_enter, focus_field, recessed_text, select_all, select_all_on_focus, shift_enter_keeps_focus, take_armed_focus, take_dialog_focus,
+};
 use super::{CornerRadius, RangeInclusive, Rect, Response, Sense, Stroke, StrokeKind, Tokens, Ui, Unit, id_with, pos2, scrub, vec2};
 
 /// Preferences › Units › Numbers Without Units Are Points (#394; on until set): the app sets it
@@ -377,7 +379,8 @@ pub fn mixed_field_named(
 }
 
 /// [`mixed_field`] whose ↑/↓, wheel and scrub stop at `bounds`; ↑/↓ and the wheel take `step`'s steps
-/// when it is given (see [`SliderValue::step`]).
+/// when it is given (see [`SliderValue::step`]). Armed with id salt `id` ([`arm_field_focus`]), it
+/// takes the keyboard focus with its value selected.
 #[allow(clippy::too_many_arguments)]
 fn bounded_field(
     ui: &mut Ui,
@@ -392,6 +395,7 @@ fn bounded_field(
     step: Option<fn(f64, f64) -> f64>,
     corners: CornerRadius,
 ) -> Option<f64> {
+    let armed = take_armed_focus(ui, &id);
     let id = id_with(ui.scope_id(), id);
     let show = |value: f64| field_text(value, suffix, decimals);
     // The suffix (and %, °) may follow any operand: `45*2°`, `50% / 2`.
@@ -403,7 +407,14 @@ fn bounded_field(
     };
     let shown = value.map(show).unwrap_or_default();
     take_dialog_focus(ui, id, &shown);
+    if armed {
+        focus_field(ui, id, &shown);
+    }
     let (mut buf, commit, resp, rect) = recessed_text(ui, id, &shown, width, 1, corners, label, name);
+    if armed {
+        // A field armed while it has focus keeps the text typed into it: select all of that text.
+        select_all(ui, id, &buf);
+    }
     select_all_on_focus(ui, &resp, &buf);
     // ↑/↓ and the wheel step at the field's precision (a count ignores Ctrl/Cmd's tenth); a drag on
     // its label scrubs it.
@@ -631,8 +642,10 @@ fn spin_generic(
             ui.painter().line_segment([m + vec2(0.0, d), m + vec2(3.0, -d)], Stroke::new(1.2, c));
         }
         sresp.widget_info(|| egui::WidgetInfo::labeled(egui::Role::Button, enabled, tl!("Step up or down")));
-        // A blank field (values that differ) has nothing to step from.
-        if sresp.clicked()
+        // A blank field (values that differ) has nothing to step from. A click steps once; an
+        // arrow held down steps again and again after a pause, as a spin button does (#4267).
+        let repeat = held_repeat(ui, &sresp);
+        if (repeat == Some(true) || (sresp.clicked() && repeat.is_none()))
             && let Some(p) = sresp.interact_pointer_pos()
             && let Some(v) = value
         {
@@ -665,6 +678,29 @@ fn spin_generic(
         }
     });
     out
+}
+
+/// How long a spinner arrow is held before it repeats, and how often it repeats then, in seconds.
+const REPEAT_DELAY: f64 = 0.45;
+const REPEAT_EVERY: f64 = 0.06;
+
+/// A spinner arrow (`resp`) held down. `None` until it has been held for [`REPEAT_DELAY`]: a
+/// click then steps once, on release. After that, `Some(true)` on each frame it steps again
+/// (every [`REPEAT_EVERY`]) and `Some(false)` on the frames between and on the release, which
+/// must not step once more.
+fn held_repeat(ui: &Ui, resp: &egui::Response) -> Option<bool> {
+    let id = resp.id.with("repeat");
+    let now = ui.input(|i| i.time);
+    let state: Option<(f64, f64, bool)> = ui.data(|d| d.get_temp(id));
+    if !resp.is_pointer_button_down_on() {
+        ui.data_mut(|d| d.remove::<(f64, f64, bool)>(id));
+        return state.filter(|(_, _, repeated)| *repeated).map(|_| false);
+    }
+    let (start, last, repeated) = state.unwrap_or((now, now, false));
+    let due = now - start >= REPEAT_DELAY && now - last >= REPEAT_EVERY;
+    ui.data_mut(|d| d.insert_temp(id, (start, if due { now } else { last }, repeated || due)));
+    ui.ctx().request_repaint_after(std::time::Duration::from_millis(30));
+    (repeated || due).then_some(due)
 }
 
 /// Spinner buttons follow the same modifier sizes as ↑/↓ in a focused number field:
