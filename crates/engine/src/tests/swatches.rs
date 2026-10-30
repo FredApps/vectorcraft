@@ -444,6 +444,77 @@ fn color_mode_redo_of_a_group_restores_the_paints_the_group_left() {
     }
 }
 
+fn color_mode_restores_paints_when_conversion_changes_none(batch: bool, convert: bool) {
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"none": true}));
+    run(&mut s, "paint.setStroke", json!({"none": true}));
+    let before = s.paint.clone();
+    assert!(before.fill.is_none());
+    assert!(before.stroke.is_none());
+    if batch {
+        run(
+            &mut s,
+            "command.batch",
+            json!({"commands": [
+                {"command": "file.documentColorMode", "params": {"mode": "cmyk", "convert": convert}},
+                {"command": "paint.setFill", "params": {"color": "#0000ff"}}
+            ]}),
+        );
+    } else {
+        s.begin_undo_group();
+        run(&mut s, "file.documentColorMode", json!({"mode": "cmyk", "convert": convert}));
+        assert_eq!(s.paint, before, "the conversion leaves both paints unchanged");
+        run(&mut s, "paint.setFill", json!({"color": "#0000ff"}));
+        s.end_undo_group(false);
+    }
+    let after = s.paint.clone();
+    assert_ne!(after.fill, before.fill);
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Cmyk);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before, "batch {batch}: undo restores the group's starting paints");
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Cmyk);
+    assert_eq!(s.paint, after, "batch {batch}: redo restores the group's final paints");
+}
+
+#[test]
+fn color_mode_group_restores_paints_when_conversion_changes_none() {
+    color_mode_restores_paints_when_conversion_changes_none(false, true);
+}
+
+#[test]
+fn color_mode_batch_restores_paints_when_conversion_changes_none() {
+    color_mode_restores_paints_when_conversion_changes_none(true, true);
+}
+
+#[test]
+fn color_mode_group_without_conversion_restores_paints() {
+    color_mode_restores_paints_when_conversion_changes_none(false, false);
+}
+
+#[test]
+fn color_mode_batch_without_conversion_restores_paints() {
+    color_mode_restores_paints_when_conversion_changes_none(true, false);
+}
+
+#[test]
+fn color_mode_ungrouped_skips_unchanged_paint_snapshot() {
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"none": true}));
+    run(&mut s, "paint.setStroke", json!({"none": true}));
+    let before = s.paint.clone();
+    run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+    assert_eq!(s.paint, before);
+    assert!(s.doc().unwrap().history.undo.last().unwrap().color_mode_paints.is_none());
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Cmyk);
+    assert_eq!(s.paint, before);
+}
+
 /// A failing batch that settles a pending color-mode preview keeps the converted paints with the
 /// converted document.
 #[test]

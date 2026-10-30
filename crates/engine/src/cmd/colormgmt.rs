@@ -329,6 +329,9 @@ pub(crate) fn convert_mode(s: &mut Session, p: &Value) -> Result<Value> {
             convert_new_art_colors(s, mode, intent, grays)?;
             record_new_art_colors(s, before)?;
         }
+    } else if s.batch_stash.is_some() || s.doc()?.undo_group.is_some() {
+        let before = new_art_colors_before(s)?;
+        record_new_art_colors(s, before)?;
     }
     Ok(json!({ "changed": changed }))
 }
@@ -355,7 +358,7 @@ pub(crate) fn commit_new_art_colors(s: &mut Session) -> Result<()> {
 
 fn record_new_art_colors(s: &mut Session, before: vectorcraft_tools::PaintDefaults) -> Result<()> {
     let after = s.paint.clone();
-    if before != after || s.batch_stash.is_some() {
+    if before != after || s.batch_stash.is_some() || s.doc()?.undo_group.is_some() {
         let st = s.doc_mut()?;
         let slot = if let Some(it) = &mut st.interaction {
             Some(&mut it.color_mode_paints)
