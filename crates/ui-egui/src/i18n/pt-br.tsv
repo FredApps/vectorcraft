@@ -1224,6 +1224,7 @@
 	Delete Guides	Excluir Guias
 	Delete Slice	Excluir Fatia
 	Delete Style	Excluir Estilo
+	Delete Styles	Excluir Estilos
 	Delete Variables	Excluir Variáveis
 	Delete View	Excluir Exibição
 	Done Editing Pattern	Concluir Edição de Padrão
@@ -3733,6 +3734,7 @@ axis	Both	Ambos
 @msg	no document	nenhum documento
 @msg	no document open	nenhum documento aberto
 @msg	no effect applied yet	nenhum efeito aplicado ainda
+@msg	no Pathfinder operation applied yet	nenhuma operação do Localizador de Caminhos aplicada ainda
 @msg	no effect at index {k}	nenhum efeito no índice {k}
 @msg	no end record	sem registro final
 @msg	no file manager here	nenhum gerenciador de arquivos aqui
@@ -5715,6 +5717,32 @@ anchor	Points:	Pontos:
 @msg	select open paths to close	selecione caminhos abertos para fechar
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	caminhos demais, ou emaranhados demais, para encontrar seus cruzamentos (no máximo 10000 segmentos)
 @msg	the paths have too many anchors to edit at once	os caminhos têm pontos de ancoragem demais para editar de uma vez
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	Ferramenta Forma Paramétrica
+	Parametric Shape	Forma Paramétrica
+	Edit Parametric Shape	Editar Forma Paramétrica
+	Convert to Parametric Shape	Converter em Forma Paramétrica
+	Ring	Anel
+	Heart	Coração
+	Gear	Engrenagem
+	Speech Bubble	Balão de Fala
+	Count:	Quantidade:
+	Thickness:	Espessura:
+	Inner Radius:	Raio Interno:
+	Head:	Ponta:
+	Shaft:	Haste:
+	Point:	Bico:
+	Tooth Height:	Altura do Dente:
+	Tail:	Rabicho:
+	Tip:	Ponta:
+	Open a document to draw parametric shapes.	Abra um documento para desenhar formas paramétricas.
+	Select a parametric shape to edit it. With none selected, these set the next shape.	Selecione uma forma paramétrica para editá-la. Sem seleção, estes valores valem para a próxima forma.
+@msg	the object is not an editable parametric shape	o objeto não é uma forma paramétrica editável
+@msg	select plain rectangles, ellipses or regular polygons to convert	selecione retângulos, elipses ou polígonos regulares simples para converter
+@msg	the shape's numbers are out of range	os valores da forma estão fora do intervalo
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind` deve ser um destes: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count` deve ser um número inteiro de 3 a 1000
+@msg	`{key}` must be from {lo} to {hi}	`{key}` deve estar entre {lo} e {hi}
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	Caneta Inteligente
 	Smart Pen Tool	Ferramenta Caneta Inteligente
@@ -5746,3 +5774,29 @@ anchor	Points:	Pontos:
 	CMYK Images	Imagens CMYK
 	Grayscale Images	Imagens em escala de cinza
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	`kind` deve ser spotColors, colorEffects, rgbImages, cmykImages ou grayImages
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	Cor dos Pontos da Arte
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	Duotom…
+	Duotone	Duotom
+	Print Ink Fixes…	Correções de Tinta para Impressão…
+	Print Ink Fixes	Correções de Tinta para Impressão
+	Inks	Tintas
+	Tone 1	Tom 1
+	Tone 2	Tom 2
+	Tone 3	Tom 3
+	Tone 4	Tom 4
+	Curve	Curva
+	Reset to Linear	Redefinir para linear
+	Reset to Inverse	Redefinir para invertida
+	Skip Objects with Spot Colors	Ignorar objetos com cores spot
+	Ink Limit	Limite de tinta
+	Exclude Pure Black	Excluir preto puro
+	Remove White Overprint	Remover sobreimpressão do branco
+	Overprint Black	Sobreimpressão de Preto
+	Text Only	Somente texto
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	informe `inkLimit`, `removeWhiteOverprint` ou `overprintBlack`
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	As Correções de Tinta para Impressão funcionam em documentos CMYK: escolha antes Arquivo › Modo de Cor do Documento › Cor CMYK
+@msg	`{key}` must be 0..{max}	`{key}` deve ser 0..{max}

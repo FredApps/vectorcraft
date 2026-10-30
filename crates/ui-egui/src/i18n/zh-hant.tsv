@@ -1395,6 +1395,7 @@ file-filter	Templates	範本
 	Delete Guides	刪除參考線
 	Delete Slice	刪除切片
 	Delete Style	刪除樣式
+	Delete Styles	刪除樣式
 	Delete Variables	刪除變數
 	Delete View	刪除檢視
 	Done Editing Pattern	完成圖樣編輯
@@ -2197,6 +2198,7 @@ file-filter	Templates	範本
 @msg	no PNG encoder	沒有 PNG 編碼器
 @msg	no document open	沒有開啟的文件
 @msg	no effect applied yet	尚未套用任何效果
+@msg	no Pathfinder operation applied yet	尚未套用任何路徑管理員操作
 @msg	no such perspective grid preset	沒有這個透視格點預設集
 @msg	no such recent file	沒有這個最近使用的檔案
 @msg	no such recent font	沒有這個最近使用的字體
@@ -5433,6 +5435,34 @@ anchor	Points:	點：
 @msg	select open paths to close	請選取要封閉的開放路徑
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	路徑太多或太複雜，無法找到交叉處（最多 10000 段）
 @msg	the paths have too many anchors to edit at once	路徑的錨點太多，無法一次編輯
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	參數化形狀工具
+	Parametric Shape	參數化形狀
+	Edit Parametric Shape	編輯參數化形狀
+	Convert to Parametric Shape	轉換為參數化形狀
+	Ring	圓環
+	Arrow	箭頭
+	Cross	十字
+	Heart	心形
+	Gear	齒輪
+	Speech Bubble	對話氣泡
+	Count:	數量：
+	Thickness:	粗細：
+	Inner Radius:	內半徑：
+	Head:	箭頭頭部：
+	Shaft:	箭桿：
+	Point:	尖端：
+	Tooth Height:	齒高：
+	Tail:	尾巴：
+	Tip:	尖端：
+	Open a document to draw parametric shapes.	開啟文件以繪製參數化形狀。
+	Select a parametric shape to edit it. With none selected, these set the next shape.	選取一個參數化形狀以編輯它。未選取時，這些值用於下一個形狀。
+@msg	the object is not an editable parametric shape	該物件不是可編輯的參數化形狀
+@msg	select plain rectangles, ellipses or regular polygons to convert	請選取要轉換的一般矩形、橢圓或正多邊形
+@msg	the shape's numbers are out of range	形狀的數值超出範圍
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind` 必須是下列其中之一：rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count` 必須是介於 3 到 1000 的整數
+@msg	`{key}` must be from {lo} to {hi}	`{key}` 必須介於 {lo} 到 {hi}
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	智慧筆型
 	Smart Pen Tool	智慧筆型工具
@@ -5464,3 +5494,29 @@ anchor	Points:	點：
 	CMYK Images	CMYK 影像
 	Grayscale Images	灰階影像
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	`kind` 必須是 spotColors、colorEffects、rgbImages、cmykImages 或 grayImages
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	網點顏色取自圖稿
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	雙色調…
+	Duotone	雙色調
+	Print Ink Fixes…	印刷油墨修正…
+	Print Ink Fixes	印刷油墨修正
+	Inks	油墨
+	Tone 1	色調 1
+	Tone 2	色調 2
+	Tone 3	色調 3
+	Tone 4	色調 4
+	Curve	曲線
+	Reset to Linear	重設為線性
+	Reset to Inverse	重設為反轉
+	Skip Objects with Spot Colors	略過使用特別色的物件
+	Ink Limit	油墨限制
+	Exclude Pure Black	排除純黑
+	Remove White Overprint	移除白色疊印
+	Overprint Black	疊印黑色
+	Text Only	僅文字
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	請指定 `inkLimit`、`removeWhiteOverprint` 或 `overprintBlack`
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	印刷油墨修正適用於 CMYK 文件：請先選擇 檔案 › 文件色彩模式 › CMYK 色彩
+@msg	`{key}` must be 0..{max}	`{key}` 必須為 0..{max}

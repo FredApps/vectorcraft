@@ -1406,6 +1406,7 @@ file-filter	Templates	Vorlagen
 	Delete Guides	Hilfslinien löschen
 	Delete Slice	Slice löschen
 	Delete Style	Format löschen
+	Delete Styles	Formate löschen
 	Delete Variables	Variablen löschen
 	Delete View	Ansicht löschen
 	Done Editing Pattern	Musterbearbeitung beenden
@@ -4077,6 +4078,7 @@ theme	Appearance	Erscheinungsbild
 @msg	no document	kein Dokument
 @msg	no document open	kein Dokument geöffnet
 @msg	no effect applied yet	noch kein Effekt angewendet
+@msg	no Pathfinder operation applied yet	noch keine Pathfinder-Operation angewendet
 @msg	no effect at index {k}	kein Effekt bei Index {k}
 @msg	no end record	kein Endeintrag
 @msg	no file manager here	hier gibt es keinen Dateimanager
@@ -5380,6 +5382,34 @@ anchor	Points:	Punkte:
 @msg	select open paths to close	offene Pfade zum Schließen auswählen
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	zu viele oder zu verschlungene Pfade, um ihre Kreuzungen zu finden (höchstens 10000 Segmente)
 @msg	the paths have too many anchors to edit at once	die Pfade haben zu viele Ankerpunkte, um sie auf einmal zu bearbeiten
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	Parametrische-Form-Werkzeug
+	Parametric Shape	Parametrische Form
+	Edit Parametric Shape	Parametrische Form bearbeiten
+	Convert to Parametric Shape	In parametrische Form umwandeln
+	Ring	Ring
+	Arrow	Pfeil
+	Cross	Kreuz
+	Heart	Herz
+	Gear	Zahnrad
+	Speech Bubble	Sprechblase
+	Count:	Anzahl:
+	Thickness:	Stärke:
+	Inner Radius:	Innenradius:
+	Head:	Kopf:
+	Shaft:	Schaft:
+	Point:	Spitze:
+	Tooth Height:	Zahnhöhe:
+	Tail:	Zipfel:
+	Tip:	Spitze:
+	Open a document to draw parametric shapes.	Öffnen Sie ein Dokument, um parametrische Formen zu zeichnen.
+	Select a parametric shape to edit it. With none selected, these set the next shape.	Wählen Sie eine parametrische Form aus, um sie zu bearbeiten. Ohne Auswahl gelten diese Werte für die nächste Form.
+@msg	the object is not an editable parametric shape	das Objekt ist keine bearbeitbare parametrische Form
+@msg	select plain rectangles, ellipses or regular polygons to convert	einfache Rechtecke, Ellipsen oder regelmäßige Polygone zum Umwandeln auswählen
+@msg	the shape's numbers are out of range	die Werte der Form liegen außerhalb des zulässigen Bereichs
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind` muss eines der folgenden sein: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count` muss eine ganze Zahl von 3 bis 1000 sein
+@msg	`{key}` must be from {lo} to {hi}	`{key}` muss zwischen {lo} und {hi} liegen
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	Intelligenter Zeichenstift
 	Smart Pen Tool	Intelligenter-Zeichenstift-Werkzeug
@@ -5411,3 +5441,29 @@ anchor	Points:	Punkte:
 	CMYK Images	CMYK-Bilder
 	Grayscale Images	Graustufenbilder
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	`kind` muss spotColors, colorEffects, rgbImages, cmykImages oder grayImages sein
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	Punktfarbe aus Grafik
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	Duplex…
+	Duotone	Duplex
+	Print Ink Fixes…	Druckfarbkorrekturen…
+	Print Ink Fixes	Druckfarbkorrekturen
+	Inks	Druckfarben
+	Tone 1	Druckfarbe 1
+	Tone 2	Druckfarbe 2
+	Tone 3	Druckfarbe 3
+	Tone 4	Druckfarbe 4
+	Curve	Kurve
+	Reset to Linear	Auf linear zurücksetzen
+	Reset to Inverse	Auf umgekehrt zurücksetzen
+	Skip Objects with Spot Colors	Objekte mit Volltonfarben auslassen
+	Ink Limit	Farbauftragsgrenze
+	Exclude Pure Black	Reines Schwarz ausnehmen
+	Remove White Overprint	Überdrucken von Weiß entfernen
+	Overprint Black	Schwarz überdrucken
+	Text Only	Nur Text
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	geben Sie `inkLimit`, `removeWhiteOverprint` oder `overprintBlack` an
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Druckfarbkorrekturen wirken in CMYK-Dokumenten: Wählen Sie zuerst Datei › Dokumentfarbmodus › CMYK-Farbe
+@msg	`{key}` must be 0..{max}	`{key}` muss 0..{max} sein

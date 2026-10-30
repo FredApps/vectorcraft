@@ -1042,6 +1042,7 @@
 	Delete Spine Point	Suprimeix el punt de l’espina
 	Delete Stop	Suprimeix la parada
 	Delete Style	Suprimeix l’estil
+	Delete Styles	Suprimeix els estils
 	Delete Swatch	Suprimeix la mostra
 	Delete Symbol	Suprimeix el símbol
 	Delete Tab	Suprimeix la tabulació
@@ -5104,6 +5105,7 @@
 @msg	no document	no hi ha document
 @msg	no document open	no hi ha cap document obert
 @msg	no effect applied yet	encara no s’ha aplicat cap efecte
+@msg	no Pathfinder operation applied yet	encara no s’ha aplicat cap operació del Cercador de traçats
 @msg	no effect at index {k}	no hi ha cap efecte a l’índex {k}
 @msg	no empty artboards to delete	no hi ha taulers buits per suprimir
 @msg	no end record	no hi ha registre final
@@ -5788,6 +5790,32 @@ anchor	Points:	Punts:
 @msg	select open paths to close	seleccioneu traçats oberts per tancar-los
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	massa traçats, o massa enredats, per trobar-ne els encreuaments (10000 segments com a màxim)
 @msg	the paths have too many anchors to edit at once	els traçats tenen massa punts d’ancoratge per editar-los alhora
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	Eina de forma paramètrica
+	Parametric Shape	Forma paramètrica
+	Edit Parametric Shape	Edita la forma paramètrica
+	Convert to Parametric Shape	Converteix en forma paramètrica
+	Ring	Anell
+	Heart	Cor
+	Gear	Engranatge
+	Speech Bubble	Bafarada
+	Count:	Nombre:
+	Thickness:	Gruix:
+	Inner Radius:	Radi interior:
+	Head:	Cap:
+	Shaft:	Tija:
+	Point:	Punta:
+	Tooth Height:	Alçada de la dent:
+	Tail:	Cua:
+	Tip:	Punta:
+	Open a document to draw parametric shapes.	Obriu un document per dibuixar formes paramètriques.
+	Select a parametric shape to edit it. With none selected, these set the next shape.	Seleccioneu una forma paramètrica per editar-la. Sense cap selecció, aquests valors s’apliquen a la forma següent.
+@msg	the object is not an editable parametric shape	l’objecte no és una forma paramètrica editable
+@msg	select plain rectangles, ellipses or regular polygons to convert	seleccioneu rectangles, el·lipses o polígons regulars simples per convertir-los
+@msg	the shape's numbers are out of range	els valors de la forma són fora de l’interval
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind` ha de ser un de: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count` ha de ser un nombre enter de 3 a 1000
+@msg	`{key}` must be from {lo} to {hi}	`{key}` ha de ser de {lo} a {hi}
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	Ploma intel·ligent
 	Smart Pen Tool	Eina de ploma intel·ligent
@@ -5819,3 +5847,29 @@ anchor	Points:	Punts:
 	CMYK Images	Imatges CMYK
 	Grayscale Images	Imatges en escala de grisos
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	`kind` ha de ser spotColors, colorEffects, rgbImages, cmykImages o grayImages
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	Color dels punts de la il·lustració
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	Bitò…
+	Duotone	Bitò
+	Print Ink Fixes…	Correccions de tinta per a impressió…
+	Print Ink Fixes	Correccions de tinta per a impressió
+	Inks	Tintes
+	Tone 1	To 1
+	Tone 2	To 2
+	Tone 3	To 3
+	Tone 4	To 4
+	Curve	Corba
+	Reset to Linear	Restableix a lineal
+	Reset to Inverse	Restableix a invertida
+	Skip Objects with Spot Colors	Omet els objectes amb colors directes
+	Ink Limit	Límit de tinta
+	Exclude Pure Black	Exclou el negre pur
+	Remove White Overprint	Elimina la sobreimpressió del blanc
+	Overprint Black	Sobreimpressió del negre
+	Text Only	Només text
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	indiqueu `inkLimit`, `removeWhiteOverprint` o `overprintBlack`
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Les correccions de tinta per a impressió funcionen en documents CMYK: trieu primer Fitxer › Mode de color del document › Color CMYK
+@msg	`{key}` must be 0..{max}	`{key}` ha de ser 0..{max}

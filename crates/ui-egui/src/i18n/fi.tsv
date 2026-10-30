@@ -1567,6 +1567,7 @@ lighting	Light	Valo
 	Delete Guides	Poista apuviivat
 	Delete Slice	Poista siivu
 	Delete Style	Poista tyyli
+	Delete Styles	Poista tyylit
 	Delete Variables	Poista muuttujat
 	Delete View	Poista näkymä
 	Done Editing Pattern	Lopeta kuvion muokkaus
@@ -4372,6 +4373,7 @@ imageTrace	Outline	Ääriviiva
 @msg	no document	ei asiakirjaa
 @msg	no document open	asiakirjaa ei ole auki
 @msg	no effect applied yet	tehostetta ei ole vielä käytetty
+@msg	no Pathfinder operation applied yet	polunetsimen toimintoa ei ole vielä käytetty
 @msg	no effect at index {k}	ei tehostetta indeksissä {k}
 @msg	no end record	ei loppumerkintää
 @msg	no file manager here	täällä ei ole tiedostonhallintaa
@@ -5828,6 +5830,32 @@ anchor	Points:	Pisteet:
 @msg	select open paths to close	valitse suljettavat avoimet polut
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	liian monta tai liian sotkuista polkua niiden risteyskohtien löytämiseen (enintään 10000 osaa)
 @msg	the paths have too many anchors to edit at once	poluissa on liian monta ankkuripistettä muokattavaksi kerralla
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	Parametrinen muoto -työkalu
+	Parametric Shape	Parametrinen muoto
+	Edit Parametric Shape	Muokkaa parametrista muotoa
+	Convert to Parametric Shape	Muunna parametriseksi muodoksi
+	Ring	Rengas
+	Heart	Sydän
+	Gear	Hammaspyörä
+	Speech Bubble	Puhekupla
+	Count:	Määrä:
+	Thickness:	Paksuus:
+	Inner Radius:	Sisäsäde:
+	Head:	Kärki:
+	Shaft:	Varsi:
+	Point:	Kärki:
+	Tooth Height:	Hampaan korkeus:
+	Tail:	Häntä:
+	Tip:	Kärki:
+	Open a document to draw parametric shapes.	Avaa asiakirja piirtääksesi parametrisia muotoja.
+	Select a parametric shape to edit it. With none selected, these set the next shape.	Valitse parametrinen muoto muokataksesi sitä. Ilman valintaa nämä arvot koskevat seuraavaa muotoa.
+@msg	the object is not an editable parametric shape	objekti ei ole muokattava parametrinen muoto
+@msg	select plain rectangles, ellipses or regular polygons to convert	valitse muunnettavat tavalliset suorakulmiot, ellipsit tai säännölliset monikulmiot
+@msg	the shape's numbers are out of range	muodon arvot ovat sallitun alueen ulkopuolella
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind` on oltava jokin seuraavista: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count` on oltava kokonaisluku 3–1000
+@msg	`{key}` must be from {lo} to {hi}	`{key}` on oltava {lo}–{hi}
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	Älykynä
 	Smart Pen Tool	Älykynätyökalu
@@ -5859,3 +5887,29 @@ anchor	Points:	Pisteet:
 	CMYK Images	CMYK-kuvat
 	Grayscale Images	Harmaasävykuvat
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	`kind` on oltava spotColors, colorEffects, rgbImages, cmykImages tai grayImages
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	Pisteiden väri kuvituksesta
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	Duotone…
+	Duotone	Duotone
+	Print Ink Fixes…	Painovärien korjaukset…
+	Print Ink Fixes	Painovärien korjaukset
+	Inks	Painovärit
+	Tone 1	Sävy 1
+	Tone 2	Sävy 2
+	Tone 3	Sävy 3
+	Tone 4	Sävy 4
+	Curve	Käyrä
+	Reset to Linear	Palauta lineaariseksi
+	Reset to Inverse	Palauta käänteiseksi
+	Skip Objects with Spot Colors	Ohita objektit, joissa on spottivärejä
+	Ink Limit	Värirajoitus
+	Exclude Pure Black	Jätä puhdas musta pois
+	Remove White Overprint	Poista valkoisen päällepainatus
+	Overprint Black	Päällepainata musta
+	Text Only	Vain teksti
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	anna `inkLimit`, `removeWhiteOverprint` tai `overprintBlack`
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Painovärien korjaukset toimivat CMYK-asiakirjoissa: valitse ensin Tiedosto › Asiakirjan väritila › CMYK-väri
+@msg	`{key}` must be 0..{max}	`{key}` on oltava 0..{max}

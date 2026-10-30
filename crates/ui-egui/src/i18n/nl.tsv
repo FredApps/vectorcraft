@@ -4163,6 +4163,7 @@ imageTrace	Outline	Contour
 @msg	no document	geen document
 @msg	no document open	geen document geopend
 @msg	no effect applied yet	nog geen effect toegepast
+@msg	no Pathfinder operation applied yet	nog geen Pathfinder-bewerking toegepast
 @msg	no effect at index {k}	geen effect op index {k}
 @msg	no end record	geen eindrecord
 @msg	no file manager here	hier is geen bestandsbeheerder
@@ -5341,6 +5342,7 @@ swatch	Bright Violet	Felviolet
 	Delete Guides	Hulplijnen verwijderen
 	Delete Slice	Slice verwijderen
 	Delete Style	Stijl verwijderen
+	Delete Styles	Stijlen verwijderen
 	Delete Variables	Variabelen verwijderen
 	Delete View	Weergave verwijderen
 	Done Editing Pattern	Patroon bewerken voltooid
@@ -5746,6 +5748,32 @@ anchor	Points:	Punten:
 @msg	select open paths to close	selecteer open paden om te sluiten
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	te veel of te verwarde paden om hun kruisingen te vinden (hoogstens 10000 segmenten)
 @msg	the paths have too many anchors to edit at once	de paden hebben te veel ankerpunten om in één keer te bewerken
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	Parametrische vorm-gereedschap
+	Parametric Shape	Parametrische vorm
+	Edit Parametric Shape	Parametrische vorm bewerken
+	Convert to Parametric Shape	Omzetten in parametrische vorm
+	Ring	Ring
+	Heart	Hart
+	Gear	Tandwiel
+	Speech Bubble	Tekstballon
+	Count:	Aantal:
+	Thickness:	Dikte:
+	Inner Radius:	Binnenstraal:
+	Head:	Kop:
+	Shaft:	Schacht:
+	Point:	Punt:
+	Tooth Height:	Tandhoogte:
+	Tail:	Staart:
+	Tip:	Punt:
+	Open a document to draw parametric shapes.	Open een document om parametrische vormen te tekenen.
+	Select a parametric shape to edit it. With none selected, these set the next shape.	Selecteer een parametrische vorm om die te bewerken. Zonder selectie gelden deze waarden voor de volgende vorm.
+@msg	the object is not an editable parametric shape	het object is geen bewerkbare parametrische vorm
+@msg	select plain rectangles, ellipses or regular polygons to convert	selecteer gewone rechthoeken, ellipsen of regelmatige polygonen om om te zetten
+@msg	the shape's numbers are out of range	de waarden van de vorm liggen buiten het bereik
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind` moet een van deze zijn: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count` moet een geheel getal van 3 tot 1000 zijn
+@msg	`{key}` must be from {lo} to {hi}	`{key}` moet tussen {lo} en {hi} liggen
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	Slimme pen
 	Smart Pen Tool	Slimme pen-gereedschap
@@ -5777,3 +5805,29 @@ anchor	Points:	Punten:
 	CMYK Images	CMYK-afbeeldingen
 	Grayscale Images	Grijswaardenafbeeldingen
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	`kind` moet spotColors, colorEffects, rgbImages, cmykImages of grayImages zijn
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	Puntkleur uit artwork
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	Duotoon…
+	Duotone	Duotoon
+	Print Ink Fixes…	Drukinktcorrecties…
+	Print Ink Fixes	Drukinktcorrecties
+	Inks	Inkten
+	Tone 1	Toon 1
+	Tone 2	Toon 2
+	Tone 3	Toon 3
+	Tone 4	Toon 4
+	Curve	Curve
+	Reset to Linear	Herstellen naar lineair
+	Reset to Inverse	Herstellen naar omgekeerd
+	Skip Objects with Spot Colors	Objecten met steunkleuren overslaan
+	Ink Limit	Inktlimiet
+	Exclude Pure Black	Puur zwart uitsluiten
+	Remove White Overprint	Overprint van wit verwijderen
+	Overprint Black	Zwart overprinten
+	Text Only	Alleen tekst
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	geef `inkLimit`, `removeWhiteOverprint` of `overprintBlack` op
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Drukinktcorrecties werken in CMYK-documenten: kies eerst Bestand › Documentkleurmodus › CMYK-kleur
+@msg	`{key}` must be 0..{max}	`{key}` moet 0..{max} zijn

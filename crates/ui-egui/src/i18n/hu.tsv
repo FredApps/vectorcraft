@@ -1806,6 +1806,7 @@ file-filter	Templates	Sablonok
 	Delete Guides	Segédvonalak törlése
 	Delete Slice	Szelet törlése
 	Delete Style	Stílus törlése
+	Delete Styles	Stílusok törlése
 	Delete Variables	Változók törlése
 	Delete View	Nézet törlése
 	Done Editing Pattern	Mintázatszerkesztés befejezése
@@ -4813,6 +4814,7 @@ imageTrace	Outline	Körvonal
 @msg	no document	nincs dokumentum
 @msg	no document open	nincs megnyitott dokumentum
 @msg	no effect applied yet	még nincs alkalmazott effektus
+@msg	no Pathfinder operation applied yet	még nincs alkalmazott útvonalkezelő-művelet
 @msg	no effect at index {k}	ezen az indexen nincs effektus: {k}
 @msg	no end record	nincs záró rekord
 @msg	no file manager here	itt nincs fájlkezelő
@@ -5784,6 +5786,32 @@ anchor	Points:	Pontok:
 @msg	select open paths to close	jelöljön ki lezárandó nyitott útvonalakat
 @msg	the paths are too many or too tangled to find where they cross (at most 10000 segments)	túl sok vagy túl összegabalyodott útvonal a kereszteződések megtalálásához (legfeljebb 10000 szakasz)
 @msg	the paths have too many anchors to edit at once	az útvonalaknak túl sok horgonypontjuk van az egyszerre szerkesztéshez
+# Path Precision Tools add-on: the Parametric Shape Tool, its panel, commands and messages.
+	Parametric Shape Tool	Paraméteres alakzat eszköz
+	Parametric Shape	Paraméteres alakzat
+	Edit Parametric Shape	Paraméteres alakzat szerkesztése
+	Convert to Parametric Shape	Átalakítás paraméteres alakzattá
+	Ring	Gyűrű
+	Heart	Szív
+	Gear	Fogaskerék
+	Speech Bubble	Szövegbuborék
+	Count:	Darabszám:
+	Thickness:	Vastagság:
+	Inner Radius:	Belső sugár:
+	Head:	Fej:
+	Shaft:	Szár:
+	Point:	Csúcs:
+	Tooth Height:	Fogmagasság:
+	Tail:	Csóva:
+	Tip:	Csúcs:
+	Open a document to draw parametric shapes.	Nyisson meg egy dokumentumot paraméteres alakzatok rajzolásához.
+	Select a parametric shape to edit it. With none selected, these set the next shape.	A szerkesztéshez jelöljön ki egy paraméteres alakzatot. Kijelölés nélkül ezek az értékek a következő alakzatra vonatkoznak.
+@msg	the object is not an editable parametric shape	az objektum nem szerkeszthető paraméteres alakzat
+@msg	select plain rectangles, ellipses or regular polygons to convert	jelöljön ki átalakítandó egyszerű téglalapokat, ellipsziseket vagy szabályos sokszögeket
+@msg	the shape's numbers are out of range	az alakzat értékei a megengedett tartományon kívül esnek
+@msg	`kind` must be one of: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble	`kind`: ezek egyike kell: rectangle, ellipse, polygon, star, ring, arrow, cross, heart, gear, bubble
+@msg	`count` must be a whole number from 3 to 1000	`count`: 3 és 1000 közötti egész szám kell
+@msg	`{key}` must be from {lo} to {hi}	`{key}`: {lo} és {hi} között kell
 # Smart Pen add-on (Object › Plug-ins › Smart Pen): its tool, panel, commands and messages.
 	Smart Pen	Okostoll
 	Smart Pen Tool	Okostoll eszköz
@@ -5815,3 +5843,29 @@ anchor	Points:	Pontok:
 	CMYK Images	CMYK-képek
 	Grayscale Images	Szürkeárnyalatos képek
 @msg	`kind` must be spotColors, colorEffects, rgbImages, cmykImages or grayImages	A `kind` értéke spotColors, colorEffects, rgbImages, cmykImages vagy grayImages lehet
+
+# Color Effects add-on: Vector Halftone (Effect › Color Effects).
+	Dot Color from Art	Pontszín a grafikából
+
+# Color Effects add-on: Duotone (Effect › Color Effects) and Print Ink Fixes (Object › Plug-ins › Color Effects).
+	Duotone…	Duplex…
+	Duotone	Duplex
+	Print Ink Fixes…	Nyomdai festékjavítások…
+	Print Ink Fixes	Nyomdai festékjavítások
+	Inks	Festékek
+	Tone 1	1. tónus
+	Tone 2	2. tónus
+	Tone 3	3. tónus
+	Tone 4	4. tónus
+	Curve	Görbe
+	Reset to Linear	Visszaállítás lineárisra
+	Reset to Inverse	Visszaállítás fordítottra
+	Skip Objects with Spot Colors	Direkt színeket használó objektumok kihagyása
+	Ink Limit	Festékkorlát
+	Exclude Pure Black	Tiszta fekete kizárása
+	Remove White Overprint	Fehér felülnyomásának eltávolítása
+	Overprint Black	Fekete felülnyomása
+	Text Only	Csak szöveg
+@msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	adja meg: `inkLimit`, `removeWhiteOverprint` vagy `overprintBlack`
+@msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	A nyomdai festékjavítások CMYK-dokumentumokon működnek: előbb válassza a Fájl › Dokumentum színmódja › CMYK-szín parancsot
+@msg	`{key}` must be 0..{max}	`{key}` értéke 0..{max} lehet
