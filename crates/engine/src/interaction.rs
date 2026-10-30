@@ -8,6 +8,10 @@ pub struct Interaction {
     /// The selection the previews start from (shared, so a preview frame copies nothing).
     pub selection: Arc<Selection>,
     pub preview: Option<(String, Value)>,
+    /// A replaced or canceled preview restores these new-art paints from before the interaction.
+    pub(crate) paint: vectorcraft_tools::PaintDefaults,
+    /// An accepted batch preview uses these final paints after changing the document color mode.
+    pub(crate) preview_paint: Option<vectorcraft_tools::PaintDefaults>,
     /// Conversion of new-art paints waits until a color-mode preview is accepted.
     pub(crate) deferred_color_mode: Option<crate::cmd::colormgmt::DeferredColorMode>,
     pub(crate) color_mode_paints: Option<(vectorcraft_tools::PaintDefaults, vectorcraft_tools::PaintDefaults)>,

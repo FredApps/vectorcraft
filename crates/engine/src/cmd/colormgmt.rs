@@ -320,7 +320,7 @@ pub(crate) fn convert_mode(s: &mut Session, p: &Value) -> Result<Value> {
         Ok(())
     })?;
     if convert {
-        if s.in_interaction() && (s.batch_stash.is_none() || s.previewing) {
+        if s.in_interaction() && s.batch_stash.is_none() {
             if let Some(it) = &mut s.doc_mut()?.interaction {
                 it.deferred_color_mode = Some(DeferredColorMode { mode, intent, grays });
             }
@@ -355,7 +355,7 @@ pub(crate) fn commit_new_art_colors(s: &mut Session) -> Result<()> {
 
 fn record_new_art_colors(s: &mut Session, before: vectorcraft_tools::PaintDefaults) -> Result<()> {
     let after = s.paint.clone();
-    if before != after {
+    if before != after || s.batch_stash.is_some() {
         let st = s.doc_mut()?;
         let slot = if let Some(it) = &mut st.interaction {
             Some(&mut it.color_mode_paints)

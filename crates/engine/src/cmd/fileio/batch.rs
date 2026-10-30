@@ -113,6 +113,9 @@ fn run_steps(
         let held: Vec<(u64, Arc<Document>)> = s.docs.iter().filter(|st| st.undo_group.is_some()).map(|st| (st.uid, st.doc.clone())).collect();
         let (v, noted) =
             s.execute_step(&id, &params).map_err(|e| EngineError::Other(format!("batch step {} (`{id}`) failed: {e}", results.len())))?;
+        if s.previewing && s.active().map(|d| d.uid) != start {
+            return Err(bad("command.batch", "a batch preview cannot switch documents"));
+        }
         grouped.push(step_groups(s, start, &held));
         // The step's journal entry records what it took from the preferences or the clock (a
         // save's date, a new document's), as a command of its own would.

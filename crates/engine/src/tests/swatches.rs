@@ -465,6 +465,117 @@ fn accepting_a_batch_preview_restores_new_art_paints_on_undo_and_redo() {
 }
 
 #[test]
+fn batch_preview_with_later_paint_restores_or_keeps_the_final_paint() {
+    let commands = json!({"commands": [
+        {"command": "file.documentColorMode", "params": {"mode": "cmyk"}},
+        {"command": "paint.setFill", "params": {"color": "#123456"}}
+    ]});
+    let mut expected = color_mode_preview_session(false);
+    run(&mut expected, "command.batch", commands.clone());
+    let final_paint = expected.paint.clone();
+
+    let mut s = color_mode_preview_session(false);
+    let before = s.paint.clone();
+    let depth = s.doc().unwrap().history.undo.len();
+    let journal = s.journal.len();
+    s.begin_interaction("Batch Preview").unwrap();
+    s.preview("command.batch", &commands).unwrap();
+    s.cancel_interaction().unwrap();
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before);
+    assert_eq!(s.doc().unwrap().history.undo.len(), depth);
+    assert_eq!(s.journal.len(), journal);
+
+    s.begin_interaction("Batch Preview").unwrap();
+    s.preview("command.batch", &commands).unwrap();
+    s.commit_interaction().unwrap();
+    assert_eq!(s.paint, final_paint);
+    assert_eq!(s.doc().unwrap().history.undo.len(), depth + 1);
+    assert_eq!(s.journal.len(), journal + 1);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(s.paint, final_paint);
+}
+
+#[test]
+fn failed_batch_preview_leaves_no_document_paint_or_journal_change() {
+    let mut s = color_mode_preview_session(false);
+    let before = s.paint.clone();
+    let depth = s.doc().unwrap().history.undo.len();
+    let journal = s.journal.len();
+    s.begin_interaction("Batch Preview").unwrap();
+    s.preview(
+        "command.batch",
+        &json!({"commands": [
+            {"command": "file.documentColorMode", "params": {"mode": "cmyk"}},
+            {"command": "paint.setFill", "params": {"color": "#654321"}}
+        ]}),
+    )
+    .unwrap();
+    let result = s.preview(
+        "command.batch",
+        &json!({"commands": [
+            {"command": "file.documentColorMode", "params": {"mode": "cmyk"}},
+            {"command": "paint.setFill", "params": {"color": "#123456"}},
+            {"command": "no.such.command", "params": {}}
+        ]}),
+    );
+    assert!(result.is_err());
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before);
+    s.cancel_interaction().unwrap();
+    assert_eq!(s.doc().unwrap().history.undo.len(), depth);
+    assert_eq!(s.journal.len(), journal);
+}
+
+#[test]
+fn batch_preview_restores_paint_when_mode_conversion_does_not_change_it() {
+    let mut s = session();
+    s.paint.fill = Paint::None;
+    s.paint.stroke = Paint::None;
+    s.paint.appearance = None;
+    let before = s.paint.clone();
+    let commands = json!({"commands": [
+        {"command": "file.documentColorMode", "params": {"mode": "cmyk"}},
+        {"command": "paint.setFill", "params": {"color": "#123456"}}
+    ]});
+    s.begin_interaction("Batch Preview").unwrap();
+    s.preview("command.batch", &commands).unwrap();
+    s.commit_interaction().unwrap();
+    let after = s.paint.clone();
+    assert_ne!(after, before);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(s.paint, after);
+}
+
+#[test]
+fn batch_preview_that_switches_documents_rolls_back_every_step() {
+    let mut s = color_mode_preview_session(false);
+    let before = s.paint.clone();
+    let journal = s.journal.len();
+    let docs = s.docs.len();
+    let active = s.active;
+    s.begin_interaction("Batch Preview").unwrap();
+    let result = s.preview(
+        "command.batch",
+        &json!({"commands": [
+            {"command": "file.documentColorMode", "params": {"mode": "cmyk"}},
+            {"command": "file.new", "params": {"width": 100, "height": 100}}
+        ]}),
+    );
+    assert!(result.is_err());
+    assert_eq!(s.docs.len(), docs);
+    assert_eq!(s.active, active);
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before);
+    s.cancel_interaction().unwrap();
+    assert_eq!(s.journal.len(), journal);
+}
+
+#[test]
 fn color_mode_undo_restores_template_paints_and_effect_colors() {
     let mut s = session();
     run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
