@@ -2,20 +2,22 @@
 //! (`Services::system_clipboard`).
 //!
 //! - Windows: text, SVG, PDF, PNG and an opaque bitmap (for apps that don't read PNG) in one go;
-//!   Paste reads each of them, a bitmap as PNG, else as the device-independent bitmap that
+//!   Paste reads each of them and EPS, a bitmap as PNG, else as the device-independent bitmap that
 //!   screenshots and most apps copy (`CF_DIBV5`, `CF_DIB`; the system makes them of a `CF_BITMAP`).
 //! - macOS and Linux: one format at a time, the text (a type-only copy's text or the SVG markup),
-//!   else the PNG as a bitmap; Paste reads text and bitmaps (on macOS the pasteboard's PNG or TIFF
-//!   as they are, as screenshots copy them). On Wayland, arboard's data-control
+//!   else the PNG as a bitmap; Paste reads text and bitmaps, and on macOS the pasteboard's SVG, PDF
+//!   and EPS as vector art (#1499) and its PNG or TIFF as they are, as screenshots copy them (on
+//!   Linux arboard reads no other formats). On Wayland, arboard's data-control
 //!   backend reads the compositor's clipboard (X11 through XWayland only sees what X11 apps
-//!   copied), falling back to X11 where the compositor lacks the protocol.
-//! - Everywhere: files copied in a file manager paste as the first one that is art (SVG, PDF, a
-//!   metafile or a bitmap), before the clipboard's other formats (the files' paths as text).
+//!   copied), falling back to X11 where the compositor lacks the protocol. A clipboard that can't
+//!   be opened is tried again after a wait that grows to a minute, not each time Paste asks.
+//! - Everywhere: files copied in a file manager paste as the first one that is art (SVG, PDF, EPS,
+//!   a metafile or a bitmap), before the clipboard's other formats (the files' paths as text).
 
 use std::io::{Cursor, Read};
 use std::path::PathBuf;
 
-use vectorcraft_engine::cmd::clipboard::{BITMAP, FILE_HEAD, Flavour, PNG, TEXT, file_flavour};
+use vectorcraft_engine::cmd::clipboard::{BITMAP, EPS, FILE_HEAD, Flavour, PDF, PNG, SVG, TEXT, file_flavour};
 use vectorcraft_ui_egui::SystemClipboard;
 
 /// This platform's system clipboard.
@@ -25,6 +27,34 @@ pub fn system_clipboard() -> Box<dyn SystemClipboard> {
     #[cfg(not(windows))]
     let cb = Box::<portable::Clipboard>::default();
     cb
+}
+
+/// The registered Windows clipboard formats a flavour is written under (and read from, first held
+/// first).
+#[cfg_attr(not(windows), allow(dead_code))]
+fn windows_formats(mime: &str) -> &'static [&'static str] {
+    match mime {
+        SVG => &["image/svg+xml"],
+        PDF => &["Portable Document Format", "application/pdf"],
+        EPS => &["Encapsulated PostScript", "application/postscript"],
+        PNG => &["PNG"],
+        _ => &[],
+    }
+}
+
+/// The macOS pasteboard types Paste reads for `mime` (`image/*`: any bitmap), best first, each with
+/// the MIME type of its data. They are the system's uniform type identifiers (the values of
+/// `NSPasteboardTypePDF`, `NSPasteboardTypePNG` and `NSPasteboardTypeTIFF` among them) and the
+/// older name some apps still give PDF. Text is read through arboard.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn pasteboard_types(mime: &str) -> &'static [(&'static str, &'static str)] {
+    match mime {
+        SVG => &[("public.svg-image", SVG)],
+        PDF => &[("com.adobe.pdf", PDF), ("Apple PDF pasteboard type", PDF)], // brand-ok: the system's type identifier
+        EPS => &[("com.adobe.encapsulated-postscript", EPS)],                 // brand-ok: the system's type identifier
+        BITMAP => &[("public.png", PNG), ("public.tiff", "image/tiff")],
+        _ => &[],
+    }
 }
 
 /// The text flavour among `flavours`.
@@ -114,6 +144,13 @@ fn copied_file(paths: Vec<PathBuf>, mimes: &[&'static str]) -> Option<Flavour> {
             Some(p) if p.ends_with('\r') => PathBuf::from(p.trim_end_matches('\r')),
             _ => path,
         };
+        // A paste sent by automation reads only what its roots allow.
+        match path.to_str() {
+            Some(p) => vectorcraft_engine::file_access::check_read(p).ok()?,
+            // A lossy name would check another file than the one opened.
+            None if vectorcraft_engine::file_access::current().is_none() => {}
+            None => return None,
+        }
         let mut head = Vec::with_capacity(FILE_HEAD);
         std::fs::File::open(&path).ok()?.take(FILE_HEAD as u64).read_to_end(&mut head).ok()?;
         let mime = file_flavour(&path.to_string_lossy(), &head, mimes)?;
@@ -127,27 +164,17 @@ mod win {
     use std::num::NonZeroU32;
 
     use clipboard_win::{formats, options::NoClear, raw};
-    use vectorcraft_engine::cmd::clipboard::{PDF, SVG};
 
-    use super::*;
-
-    /// The registered clipboard formats a flavour is written under (and read from, first held
-    /// first).
-    fn names(mime: &str) -> &'static [&'static str] {
-        match mime {
-            SVG => &["image/svg+xml"],
-            PDF => &["Portable Document Format", "application/pdf"],
-            PNG => &["PNG"],
-            _ => &[],
-        }
-    }
+    use super::{
+        BITMAP, Cursor, Flavour, PNG, SVG, SystemClipboard, TEXT, copied_file, decode_png, dib_image, png_flavour, text_of, windows_formats,
+    };
 
     /// The device-independent bitmaps, the one that carries alpha first. Each is there whenever the
     /// other or a `CF_BITMAP` is: the system converts between them.
     const DIBS: [u32; 2] = [formats::CF_DIBV5, formats::CF_DIB];
 
     fn formats_of(mime: &str) -> impl Iterator<Item = u32> {
-        names(mime).iter().filter_map(|n| raw::register_format(n)).map(NonZeroU32::get)
+        windows_formats(mime).iter().filter_map(|n| raw::register_format(n)).map(NonZeroU32::get)
     }
 
     fn err(e: impl std::fmt::Display) -> String {
@@ -284,8 +311,10 @@ mod win {
 #[cfg_attr(windows, allow(dead_code))]
 mod portable {
     use std::borrow::Cow;
+    use std::sync::atomic::{AtomicBool, Ordering};
+    use std::time::{Duration, Instant};
 
-    use super::*;
+    use super::{BITMAP, Flavour, PNG, SystemClipboard, TEXT, copied_file, decode_png, png_flavour, text_of};
 
     /// What our last write put on the clipboard.
     enum Ours {
@@ -293,19 +322,113 @@ mod portable {
         Image(usize, usize),
     }
 
-    #[derive(Default)]
+    /// Who asks for the clipboard: the background paste check waits out the whole wait after a
+    /// failure, a Copy or Paste of the user's [`USER_RETRY`] at most.
+    #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+    pub(super) enum Asker {
+        Probe,
+        User,
+    }
+
+    /// The wait after the first failure to open the clipboard; it doubles with each failed retry.
+    const FIRST_WAIT: Duration = Duration::from_secs(1);
+    /// The longest wait between retries.
+    const MAX_WAIT: Duration = Duration::from_secs(60);
+    /// A Copy or Paste of the user's retries at most this often.
+    const USER_RETRY: Duration = Duration::from_secs(1);
+
+    /// Whether "unavailable" has been logged and not yet answered by "available again": the
+    /// clipboard and its background check hold a handle each, and their failures are one outage.
+    static UNAVAILABLE_LOGGED: AtomicBool = AtomicBool::new(false);
+
+    /// A failure to open, and when to try again.
+    struct Failed {
+        at: Instant,
+        wait: Duration,
+    }
+
+    /// A handle opened on first use and kept, or after a failure opened again only once its wait is
+    /// over: where the clipboard can't be opened, asking a few times a second must not reconnect each time.
+    pub(super) struct Reopen<B> {
+        handle: Option<B>,
+        failed: Option<Failed>,
+        /// The outage flag shared with the other handles ([`UNAVAILABLE_LOGGED`]).
+        logged: &'static AtomicBool,
+    }
+
+    impl<B> Reopen<B> {
+        pub(super) fn new(logged: &'static AtomicBool) -> Self {
+            Self { handle: None, failed: None, logged }
+        }
+
+        /// The open handle, opened with `open` when there is none and `asker` may try at `now`.
+        /// `name` names an opened handle in the log.
+        pub(super) fn get(
+            &mut self,
+            asker: Asker,
+            now: Instant,
+            open: impl FnOnce() -> Result<B, String>,
+            name: impl Fn(&B) -> &'static str,
+        ) -> Option<&mut B> {
+            if self.handle.is_none() {
+                if let Some(f) = &self.failed {
+                    let wait = match asker {
+                        Asker::Probe => f.wait,
+                        Asker::User => f.wait.min(USER_RETRY),
+                    };
+                    if now.saturating_duration_since(f.at) < wait {
+                        return None;
+                    }
+                }
+                match open() {
+                    Ok(handle) => {
+                        if self.logged.swap(false, Ordering::Relaxed) {
+                            log::info!("the system clipboard is available again, through {}", name(&handle));
+                        } else {
+                            log::debug!("system clipboard opened through {}", name(&handle));
+                        }
+                        self.failed = None;
+                        self.handle = Some(handle);
+                    }
+                    Err(why) => {
+                        let wait = match &self.failed {
+                            Some(f) => (f.wait * 2).min(MAX_WAIT),
+                            None => FIRST_WAIT,
+                        };
+                        if self.logged.swap(true, Ordering::Relaxed) {
+                            log::debug!("the system clipboard is still unavailable ({why}); next try in {wait:?}");
+                        } else {
+                            log::warn!("the system clipboard is unavailable ({why}): Copy and Paste stay inside VectorCraft");
+                        }
+                        self.failed = Some(Failed { at: now, wait });
+                    }
+                }
+            }
+            self.handle.as_mut()
+        }
+
+        /// The handle if one is open, without trying to open one.
+        pub(super) fn opened(&mut self) -> Option<&mut B> {
+            self.handle.as_mut()
+        }
+    }
+
     pub struct Clipboard {
         /// Kept open: on Linux the copied data lives as long as the handle does.
-        cb: Option<arboard::Clipboard>,
+        cb: Reopen<arboard::Clipboard>,
         ours: Option<Ours>,
     }
 
+    impl Default for Clipboard {
+        fn default() -> Self {
+            Self { cb: Reopen::new(&UNAVAILABLE_LOGGED), ours: None }
+        }
+    }
+
     impl Clipboard {
-        fn cb(&mut self) -> Result<&mut arboard::Clipboard, String> {
-            if self.cb.is_none() {
-                self.cb = Some(arboard::Clipboard::new().map_err(|e| e.to_string())?);
-            }
-            self.cb.as_mut().ok_or_else(|| "no system clipboard".to_string())
+        fn cb(&mut self, asker: Asker) -> Result<&mut arboard::Clipboard, String> {
+            let open = || arboard::Clipboard::new().map_err(|e| e.to_string());
+            self.cb.get(asker, Instant::now(), open, |_| "arboard").ok_or_else(|| "no system clipboard".to_string())
         }
     }
 
@@ -316,7 +439,7 @@ mod portable {
                 Some(_) => None,
                 None => flavours.iter().find(|f| f.mime == PNG).and_then(|f| decode_png(&f.data)),
             };
-            let cb = self.cb()?;
+            let cb = self.cb(Asker::User)?;
             let ours = match (text, image) {
                 (Some(t), _) => {
                     cb.set_text(t.as_str()).map_err(|e| e.to_string())?;
@@ -337,7 +460,7 @@ mod portable {
         }
 
         fn holds_ours(&mut self) -> bool {
-            let Some(cb) = self.cb.as_mut() else { return false };
+            let Some(cb) = self.cb.opened() else { return false };
             match &self.ours {
                 Some(Ours::Text(t)) => cb.get_text().is_ok_and(|now| now == *t),
                 Some(Ours::Image(w, h)) => cb.get_image().is_ok_and(|now| (now.width, now.height) == (*w, *h)),
@@ -346,65 +469,184 @@ mod portable {
         }
 
         fn read(&mut self, mimes: &[&'static str]) -> Option<Flavour> {
-            let cb = self.cb().ok()?;
+            let cb = self.cb(Asker::User).ok()?;
             if let Some(f) = cb.get().file_list().ok().and_then(|paths| copied_file(paths, mimes)) {
                 return Some(f);
             }
-            mimes.iter().find_map(|m| match *m {
-                TEXT => cb.get_text().ok().filter(|t| !t.is_empty()).map(|t| Flavour { mime: TEXT, data: t.into_bytes() }),
-                BITMAP => {
-                    #[cfg(target_os = "macos")]
-                    if let Some(f) = super::mac::bitmap() {
-                        return Some(f);
-                    }
-                    let img = cb.get_image().ok()?;
-                    let rgba = image::RgbaImage::from_raw(u32::try_from(img.width).ok()?, u32::try_from(img.height).ok()?, img.bytes.into_owned())?;
-                    png_flavour(&rgba)
+            mimes.iter().find_map(|m| {
+                #[cfg(target_os = "macos")]
+                if let Some(f) = super::mac::read(m) {
+                    return Some(f);
                 }
-                _ => None,
+                match *m {
+                    TEXT => cb.get_text().ok().filter(|t| !t.is_empty()).map(|t| Flavour { mime: TEXT, data: t.into_bytes() }),
+                    BITMAP => {
+                        let img = cb.get_image().ok()?;
+                        let rgba =
+                            image::RgbaImage::from_raw(u32::try_from(img.width).ok()?, u32::try_from(img.height).ok()?, img.bytes.into_owned())?;
+                        png_flavour(&rgba)
+                    }
+                    _ => None,
+                }
             })
         }
 
-        /// Text, and on macOS a bitmap (by the pasteboard's types). Linux has no cheap way to ask
-        /// for a bitmap (reading one costs as much as pasting it): the paste keys take it, the
-        /// menu item waits for text.
+        /// Text, and on macOS vector art or a bitmap (by the pasteboard's types). Linux has no
+        /// cheap way to ask for a bitmap (reading one costs as much as pasting it): the paste keys
+        /// take it, the menu item waits for text.
         fn has(&mut self, mimes: &[&'static str]) -> bool {
             #[cfg(target_os = "macos")]
-            if mimes.contains(&BITMAP) && super::mac::has_bitmap() {
+            if super::mac::has(mimes) {
                 return true;
             }
-            mimes.contains(&TEXT) && self.cb().is_ok_and(|cb| cb.get_text().is_ok_and(|t| !t.is_empty()))
+            mimes.contains(&TEXT) && self.cb(Asker::Probe).is_ok_and(|cb| cb.get_text().is_ok_and(|t| !t.is_empty()))
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use std::cell::Cell;
+
+        use super::*;
+
+        /// A clock that starts now and moves only when told.
+        struct Clock(Cell<Instant>);
+
+        impl Clock {
+            fn new() -> Self {
+                Self(Cell::new(Instant::now()))
+            }
+            fn now(&self) -> Instant {
+                self.0.get()
+            }
+            fn advance(&self, by: Duration) {
+                self.0.set(self.0.get() + by);
+            }
+        }
+
+        fn fail() -> Result<u8, String> {
+            Err("no compositor".into())
+        }
+
+        fn name(_: &u8) -> &'static str {
+            "fake"
+        }
+
+        #[test]
+        fn the_paste_check_retries_with_a_growing_wait() {
+            static LOGGED: AtomicBool = AtomicBool::new(false);
+            let (clock, attempts) = (Clock::new(), Cell::new(0));
+            let mut cb = Reopen::new(&LOGGED);
+            // Every 250 ms for a minute, as `clipboard_probe` asks.
+            for _ in 0..240 {
+                let open = || {
+                    attempts.set(attempts.get() + 1);
+                    fail()
+                };
+                assert!(cb.get(Asker::Probe, clock.now(), open, name).is_none());
+                clock.advance(Duration::from_millis(250));
+            }
+            // 0, 1, 3, 7, 15 and 31 s: not one connection a check.
+            assert_eq!(attempts.get(), 6);
+            assert!(LOGGED.load(Ordering::Relaxed), "the outage is logged");
+        }
+
+        #[test]
+        fn the_wait_stops_growing_at_a_minute() {
+            static LOGGED: AtomicBool = AtomicBool::new(false);
+            let (clock, attempts) = (Clock::new(), Cell::new(0));
+            let mut cb = Reopen::new(&LOGGED);
+            for _ in 0..(20 * 60) {
+                let open = || {
+                    attempts.set(attempts.get() + 1);
+                    fail()
+                };
+                let _ = cb.get(Asker::Probe, clock.now(), open, name);
+                clock.advance(Duration::from_secs(1));
+            }
+            // 0, 1, 3, 7, 15, 31, 63 s, then a minute apart until 20 minutes are up.
+            assert_eq!(attempts.get(), 7 + (20 * 60 - 63 - 1) / 60);
+        }
+
+        #[test]
+        fn a_copy_or_paste_retries_at_most_once_a_second() {
+            static LOGGED: AtomicBool = AtomicBool::new(false);
+            let (clock, attempts) = (Clock::new(), Cell::new(0));
+            let mut cb = Reopen::new(&LOGGED);
+            let mut ask = |asker| {
+                let open = || {
+                    attempts.set(attempts.get() + 1);
+                    fail()
+                };
+                let _ = cb.get(asker, clock.now(), open, name);
+            };
+            // Long after the paste check gave up for a minute, a held Ctrl+V for 3 s at 30 a second.
+            for _ in 0..8 {
+                ask(Asker::Probe);
+                clock.advance(Duration::from_secs(70));
+            }
+            let before = attempts.get();
+            for _ in 0..90 {
+                ask(Asker::User);
+                clock.advance(Duration::from_millis(33));
+            }
+            assert_eq!(attempts.get() - before, 3);
+        }
+
+        #[test]
+        fn a_success_is_kept_and_ends_the_outage() {
+            static LOGGED: AtomicBool = AtomicBool::new(false);
+            let clock = Clock::new();
+            let mut cb = Reopen::new(&LOGGED);
+            assert!(cb.get(Asker::Probe, clock.now(), fail, name).is_none());
+            assert!(LOGGED.load(Ordering::Relaxed));
+            clock.advance(FIRST_WAIT);
+            assert_eq!(cb.get(Asker::Probe, clock.now(), || Ok(7), name).copied(), Some(7));
+            assert!(!LOGGED.load(Ordering::Relaxed), "the recovery is logged");
+            // Kept: not opened again, even where opening would now fail.
+            assert_eq!(cb.get(Asker::Probe, clock.now(), fail, name).copied(), Some(7));
+            assert_eq!(cb.opened().copied(), Some(7));
+        }
+
+        #[test]
+        fn one_outage_is_logged_once_across_handles() {
+            static LOGGED: AtomicBool = AtomicBool::new(false);
+            let clock = Clock::new();
+            let (mut ui, mut probe) = (Reopen::new(&LOGGED), Reopen::new(&LOGGED));
+            assert!(probe.get(Asker::Probe, clock.now(), fail, name).is_none());
+            assert!(LOGGED.load(Ordering::Relaxed));
+            // The other handle's failure is the same outage: `swap` reports it already logged.
+            assert!(ui.get(Asker::User, clock.now(), fail, name).is_none());
+            assert!(LOGGED.load(Ordering::Relaxed));
+            assert!(probe.opened().is_none() && ui.opened().is_none());
         }
     }
 }
 
-/// The macOS pasteboard's bitmaps as they are (arboard reads TIFF only, and decodes it).
+/// The macOS pasteboard's vector art and bitmaps as they are (arboard reads text, and of the
+/// pictures TIFF only, decoded).
 #[cfg(target_os = "macos")]
 mod mac {
     use objc2::rc::autoreleasepool;
     use objc2_app_kit::NSPasteboard;
     use objc2_foundation::{NSArray, NSString};
 
-    use super::*;
+    use super::{Flavour, pasteboard_types};
 
-    /// The bitmap types Paste reads, best first (the values of `NSPasteboardTypePNG` and
-    /// `NSPasteboardTypeTIFF`), with their MIME types.
-    const TYPES: [(&str, &str); 2] = [("public.png", PNG), ("public.tiff", "image/tiff")];
-
-    /// Does the pasteboard hold a bitmap? Asks for its types only.
-    pub fn has_bitmap() -> bool {
+    /// Does the pasteboard hold one of `mimes` ([`pasteboard_types`])? Asks for its types only.
+    pub fn has(mimes: &[&'static str]) -> bool {
         autoreleasepool(|_| {
-            let types = TYPES.map(|(t, _)| NSString::from_str(t));
+            let types: Vec<_> = mimes.iter().flat_map(|m| pasteboard_types(m)).map(|(t, _)| NSString::from_str(t)).collect();
             let types: Vec<&NSString> = types.iter().map(|t| &**t).collect();
-            NSPasteboard::generalPasteboard().availableTypeFromArray(&NSArray::from_slice(&types)).is_some()
+            !types.is_empty() && NSPasteboard::generalPasteboard().availableTypeFromArray(&NSArray::from_slice(&types)).is_some()
         })
     }
 
-    /// The pasteboard's bitmap, PNG before TIFF.
-    pub fn bitmap() -> Option<Flavour> {
+    /// The pasteboard's data for `mime`, the first of its types held ([`pasteboard_types`]).
+    pub fn read(mime: &str) -> Option<Flavour> {
         autoreleasepool(|_| {
             let pasteboard = NSPasteboard::generalPasteboard();
-            TYPES.into_iter().find_map(|(t, mime)| {
+            pasteboard_types(mime).iter().find_map(|&(t, mime)| {
                 let data = pasteboard.dataForType(&NSString::from_str(t))?.to_vec();
                 (!data.is_empty()).then_some(Flavour { mime, data })
             })
@@ -414,7 +656,7 @@ mod mac {
 
 #[cfg(test)]
 mod tests {
-    use vectorcraft_engine::cmd::clipboard::{PASTE_ORDER, SVG};
+    use vectorcraft_engine::cmd::clipboard::{EMF, PASTE_ORDER};
 
     use super::*;
 
@@ -446,6 +688,36 @@ mod tests {
         assert!(copied_file(vec![red], &[TEXT]).is_none());
         assert!(copied_file(vec![notes], &PASTE_ORDER).is_none());
         assert!(copied_file(vec![], &PASTE_ORDER).is_none());
+    }
+
+    /// What another app copied as vector art is asked for under the names the platforms give it,
+    /// and read as the flavour the paste imports (#1499).
+    #[test]
+    fn vector_art_is_read_under_each_platforms_names() {
+        let mac = |m| pasteboard_types(m).iter().map(|t| t.0).collect::<Vec<_>>();
+        assert_eq!(mac(PDF), ["com.adobe.pdf", "Apple PDF pasteboard type"]);
+        assert_eq!(mac(EPS), ["com.adobe.encapsulated-postscript"]);
+        assert_eq!(mac(SVG), ["public.svg-image"]);
+        assert_eq!(pasteboard_types(BITMAP), [("public.png", PNG), ("public.tiff", "image/tiff")]);
+        assert!(windows_formats(EPS).contains(&"Encapsulated PostScript") && windows_formats(PDF).contains(&"Portable Document Format"));
+        for asked in PASTE_ORDER {
+            // Each type's data is the flavour asked for (a bitmap its own type): what
+            // `clipboard.import*` then reads. Text and metafiles come another way.
+            assert!(pasteboard_types(asked).iter().all(|(_, mime)| *mime == asked || asked == BITMAP), "{asked}");
+            assert_eq!(pasteboard_types(asked).is_empty(), [TEXT, EMF].contains(&asked), "{asked}");
+        }
+        // Vector art before text, text before bitmaps.
+        let at = |m| PASTE_ORDER.iter().position(|x| *x == m).unwrap();
+        assert!(at(PDF) < at(EPS) && at(EPS) < at(TEXT) && at(TEXT) < at(BITMAP));
+    }
+
+    /// An .eps file copied in a file manager pastes as EPS.
+    #[test]
+    fn a_copied_eps_file_pastes() {
+        let eps = dir("eps").join("equation.eps");
+        std::fs::write(&eps, "%!PS-Adobe-3.0 EPSF-3.0\n%%BoundingBox: 0 0 10 10\n0 0 10 10 rectfill\n").unwrap();
+        assert_eq!(copied_file(vec![eps.clone()], &PASTE_ORDER).map(|f| f.mime), Some(EPS));
+        assert!(copied_file(vec![eps], &[BITMAP, TEXT]).is_none());
     }
 
     #[test]

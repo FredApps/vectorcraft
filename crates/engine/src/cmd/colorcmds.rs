@@ -18,7 +18,10 @@ use vectorcraft_doc::recolor::{ColorVisitor, Reach, map_links, recolor_node};
 use vectorcraft_doc::{Document, ImageBlob, Node, NodeId, NodeKind};
 
 use super::edit::selected_roots;
-use super::*;
+use super::{
+    CommandSpec, EngineError, Result, Session, always, bad, bool_or, check_numbers, cmd, color_value, f64_or, f64_req, has_selection, ids_param,
+    str_param, unique_name,
+};
 
 pub fn specs() -> Vec<CommandSpec> {
     vec![
@@ -68,7 +71,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Saturate…",
             ["Edit", "Edit Colors"],
             None,
-            "{intensity: -100..100 (%), fill?, stroke?, includeImages?, includePatterns?, ids?} scale saturation by (1 + intensity/100), reaching what edit.colors.invert does → {changed}",
+            "{intensity: -100..100 (%; a number outside the range counts as its nearest end), fill?, stroke?, includeImages?, includePatterns?, ids?} scale saturation by (1 + intensity/100), reaching what edit.colors.invert does → {changed}",
             has_selection,
             saturate
         ),
@@ -113,7 +116,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Color Guide",
             [],
             None,
-            "{color, rule: complementary|complementary2|splitComplementary|leftComplement|rightComplement|analogous|analogous2|monochromatic|shades|triad|triad2|triad3|tetrad|tetrad2|tetrad3|compound|compound2|highContrast|highContrast2|highContrast3|pentagram (or its label), steps?: 1..20 (4), variation?: \"tintsShades\"|\"warmCool\"|\"vividMuted\", amount?: 0..100 (50; how far the outermost steps go), limitTo?: swatch library id or name, or \"document\" (the document's swatches): every colour snaps to its nearest colour there (ΔE 2000)} the Color Guide for a base colour → {rule, colors: [\"#rrggbb\", the base first], grid: [per colour, 2·steps+1 variations from shades/cool/muted to tints/warm/vivid with the colour itself in the centre]}",
+            "{color, rule: complementary|complementary2|splitComplementary|leftComplement|rightComplement|analogous|analogous2|monochromatic|shades|triad|triad2|triad3|tetrad|tetrad2|tetrad3|compound|compound2|highContrast|highContrast2|highContrast3|pentagram (or its label), steps?: 1..20 (4), variation?: \"tintsShades\"|\"warmCool\"|\"vividMuted\", amount?: 0..100 (50; how far the outermost steps go), limitTo?: swatch library id or name; or \"document\" (the document's swatches): every colour snaps to its nearest colour there (ΔE 2000)} the Color Guide for a base colour → {rule, colors: [\"#rrggbb\", the base first], grid: [per colour, 2·steps+1 variations from shades/cool/muted to tints/warm/vivid with the colour itself in the centre]}",
             always,
             harmony
         ),
@@ -202,6 +205,12 @@ impl<'a> Recolor<'a> {
     /// (`links`); meshes and images keep their colours.
     pub(crate) fn links(scope: Scope, links: &'a LinkMap<'a>) -> Self {
         Self { links: Some(links), ..Self::new(Scope { images: false, ..scope }, &same) }
+    }
+
+    /// A pass that maps solid colours and gradient stops with their swatch link and tint
+    /// (`links`), and meshes, images and patterns through `f`.
+    pub(crate) fn with_links(scope: Scope, f: &'a dyn Fn(Color) -> Color, links: &'a LinkMap<'a>) -> Self {
+        Self { links: Some(links), ..Self::new(scope, f) }
     }
 
     /// Recolour the objects `ids` and everything inside them (each once), add the new images and
@@ -337,18 +346,21 @@ fn run_pass(s: &mut Session, p: &Value, label: &str, pass: Recolor) -> Result<Va
 }
 
 fn saturate(s: &mut Session, p: &Value) -> Result<Value> {
-    let i = (f64_or(p, "intensity", 0.0).clamp(-100.0, 100.0) / 100.0) as f32;
+    let i = (f64_req(p, "intensity", "edit.colors.saturate")?.clamp(-100.0, 100.0) / 100.0) as f32;
     recolor(s, p, "Saturate", &move |c| {
         let [h, sat, v] = c.to_hsb();
-        if sat <= 0.0 {
+        let to = (sat * (1.0 + i)).clamp(0.0, 1.0);
+        // A color whose saturation stays the same is returned as it is, so it keeps its swatch link.
+        if sat <= 0.0 || to == sat {
             return c;
         }
-        keep_model(c, Color::from_hsb(h, (sat * (1.0 + i)).clamp(0.0, 1.0), v))
+        keep_model(c, Color::from_hsb(h, to, v))
     })
 }
 
 fn adjust_balance(s: &mut Session, p: &Value) -> Result<Value> {
     const C: &str = "edit.colors.adjustBalance";
+    check_numbers(p, &["r", "g", "b", "c", "m", "y", "k", "gray", "tint"], C)?;
     let given = |keys: &[&str]| keys.iter().any(|k| p.get(*k).is_some());
     let mode = match str_param(p, "mode") {
         Some(m) => m.to_ascii_lowercase(),
@@ -505,6 +517,7 @@ fn harmony(s: &mut Session, p: &Value) -> Result<Value> {
         let ids: Vec<String> = Harmony::ALL.iter().map(|h| h.id()).collect();
         bad(C, format!("unknown rule `{rule}` ({})", ids.join("|")))
     })?;
+    check_numbers(p, &["steps", "amount"], C)?;
     let mut opts = GuideOptions::default();
     if let Some(n) = p.get("steps").and_then(Value::as_u64) {
         opts.steps = n.min(u32::MAX as u64) as u32;
