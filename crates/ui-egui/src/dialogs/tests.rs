@@ -105,6 +105,7 @@ fn every_dialog_draws() {
     for (kind, fields) in [
         ("move", json!({"dx": "0 pt", "dy": "0 pt"})),
         ("average", json!({"axis": "both"})),
+        ("averageJoin", json!({"to": "corner"})),
         (crate::unsaved::KIND, json!({"index": 0, "name": "Untitled-1", "then": "close"})),
         ("newWorkspace", json!({"name": "Mine"})),
         ("shortcuts", json!({})),
@@ -393,6 +394,7 @@ fn dialogs_do_not_stretch_to_the_screen() {
         ("ui.swatchOptions", json!({"name": "White"})),
         ("ui.colorPicker", json!({})),
         ("ui.graphicStyleOptions", json!({})),
+        ("ui.newCharStyle", json!({})),
         ("ui.newArtboard", json!({})),
         ("ui.brushOptions", json!({"name": "3 pt. Round"})),
         ("ui.brushOptions", json!({"name": "Bristle Round"})),
@@ -1411,6 +1413,45 @@ fn zig_zag_has_sliders_and_radio_buttons() {
         assert!(lines.contains(&want), "no {want:?} in {lines:?}");
     }
     assert!(!lines.contains(&"Ridges:"), "{lines:?}");
+}
+
+/// #4488: Roughen's dialog has Size and Detail sliders laid out as Zig Zag's, Pucker & Bloat's its
+/// amount as a slider from Pucker to Bloat, and Tweak's Horizontal and Vertical sliders.
+#[test]
+fn roughen_pucker_bloat_and_tweak_have_sliders() {
+    use crate::widgets::accessibility_tests::{slider_value, tree};
+    let mut app = app();
+    app.run("shape.rectangle", json!({"x": 10, "y": 10, "width": 50, "height": 50})).unwrap();
+    app.run("effect.dialog", json!({"effect": "distort.roughen"})).unwrap();
+    let text = crate::tests_labels::painted_text(&mut app, |app, ui| show(app, ui.ctx()));
+    let lines: Vec<&str> = text.lines().map(str::trim).collect();
+    for want in ["Size:", "Relative", "Absolute", "Detail:", "Points", "Smooth", "Corner"] {
+        assert!(lines.contains(&want), "no {want:?} in {lines:?}");
+    }
+    let shown = tree(|ui| show(&mut app, ui.ctx()));
+    assert_eq!(slider_value(&shown, "Size:"), (Some(5.0), Some(0.0), Some(100.0), Some("5%".into())));
+    assert_eq!(slider_value(&shown, "Detail:"), (Some(10.0), Some(0.0), Some(100.0), None));
+    app.ui.dialog = None;
+    app.run("effect.dialog", json!({"effect": "distort.puckerBloat"})).unwrap();
+    app.ui.dialog.as_mut().unwrap().fields.insert("amount".into(), json!(-60));
+    let text = crate::tests_labels::painted_text(&mut app, |app, ui| show(app, ui.ctx()));
+    let lines: Vec<&str> = text.lines().map(str::trim).collect();
+    for want in ["Amount:", "Pucker", "Bloat"] {
+        assert!(lines.contains(&want), "no {want:?} in {lines:?}");
+    }
+    let shown = tree(|ui| show(&mut app, ui.ctx()));
+    let (value, min, max, _) = slider_value(&shown, "Amount:");
+    assert_eq!((value, min, max), (Some(-60.0), Some(-200.0), Some(200.0)));
+    // Tweak: Horizontal and Vertical sliders, Relative / Absolute, and the points it moves.
+    app.ui.dialog = None;
+    app.run("effect.dialog", json!({"effect": "distort.tweak"})).unwrap();
+    let text = crate::tests_labels::painted_text(&mut app, |app, ui| show(app, ui.ctx()));
+    let lines: Vec<&str> = text.lines().map(str::trim).collect();
+    for want in ["Horizontal:", "Vertical:", "Relative", "Absolute", "Anchor Points", "\"In\" Control Points", "\"Out\" Control Points"] {
+        assert!(lines.contains(&want), "no {want:?} in {lines:?}");
+    }
+    let shown = tree(|ui| show(&mut app, ui.ctx()));
+    assert_eq!(slider_value(&shown, "Horizontal:"), (Some(10.0), Some(0.0), Some(100.0), Some("10%".into())));
 }
 
 /// Screen readers get the number and text of the field beside each dialog slider, in the field's
@@ -2444,4 +2485,31 @@ fn artboard_options_selected_fit_spans_other_boards_and_off_board_art() {
     assert_eq!(app.session.doc().unwrap().doc, before);
     app.run("edit.redo", json!({})).unwrap();
     assert_eq!(app.session.doc().unwrap().doc, after);
+}
+
+/// An effect dialog keeps a distance typed outside the effect's range to the range, so the field
+/// shows what the effect applies: Color Halftone's Max Radius below 4 pt is 4 pt (#4637).
+#[test]
+fn an_effect_dialog_keeps_a_typed_distance_within_the_effects_range() {
+    let enter = || egui::Event::Key { key: egui::Key::Enter, physical_key: None, pressed: true, repeat: false, modifiers: Default::default() };
+    for (typed, applied) in [("1 pt", 4.0), ("0.5 px", 4.0), ("200 pt", 127.0), ("10 pt", 10.0)] {
+        let mut app = app();
+        let id = app.run("shape.rectangle", json!({"x": 10, "y": 10, "width": 50, "height": 50})).unwrap()["id"].as_u64().unwrap();
+        let ctx = egui::Context::default();
+        theme::install_fonts(&ctx);
+        theme::apply(&ctx, Default::default());
+        let frame = |app: &mut VectorcraftApp, events: Vec<egui::Event>| {
+            let mut out = ctx.run_ui(egui::RawInput { events, ..Default::default() }, |ui| show(app, ui.ctx()));
+            out.textures_delta.clear();
+        };
+        app.run("select.all", json!({})).unwrap();
+        app.run("effect.dialog", json!({"effect": "pixelate.colorHalftone"})).unwrap();
+        // Max Radius, the first field, is focused: type over it and press Enter.
+        frame(&mut app, vec![]);
+        frame(&mut app, vec![egui::Event::Text(typed.into())]);
+        frame(&mut app, vec![enter()]);
+        assert!(app.ui.dialog.is_none(), "{typed}");
+        let node = app.session.doc().unwrap().doc.node(vectorcraft_doc::NodeId(id)).unwrap().clone();
+        assert_eq!(node.appearance.effects.last().map(|e| e.params["maxRadius"].clone()), Some(json!(applied)), "{typed}");
+    }
 }
