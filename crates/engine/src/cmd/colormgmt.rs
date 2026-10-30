@@ -320,7 +320,7 @@ pub(crate) fn convert_mode(s: &mut Session, p: &Value) -> Result<Value> {
         Ok(())
     })?;
     if convert {
-        if s.in_interaction() && s.batch_stash.is_none() {
+        if s.in_interaction() && (s.batch_stash.is_none() || s.previewing) {
             if let Some(it) = &mut s.doc_mut()?.interaction {
                 it.deferred_color_mode = Some(DeferredColorMode { mode, intent, grays });
             }

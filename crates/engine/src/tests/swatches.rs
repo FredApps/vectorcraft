@@ -406,6 +406,64 @@ fn color_mode_redo_of_a_group_restores_the_paints_the_group_left() {
     }
 }
 
+/// A failing batch that settles a pending color-mode preview keeps the converted paints with the
+/// converted document.
+#[test]
+fn a_failed_batch_keeps_the_paints_of_a_settled_color_mode_preview() {
+    let converted = {
+        let mut s = session();
+        run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+        run(&mut s, "file.documentColorMode", json!({"mode": "cmyk"}));
+        s.paint.clone()
+    };
+    let mut s = session();
+    run(&mut s, "paint.setFill", json!({"color": "#ab6739"}));
+    s.begin_interaction("Document Color Mode").unwrap();
+    s.preview("file.documentColorMode", &json!({"mode": "cmyk"})).unwrap();
+    let r = s.execute("command.batch", &json!({"commands": [{"command": "no.such.command", "params": {}}]}));
+    assert!(r.is_err());
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Cmyk);
+    assert_eq!(s.paint, converted);
+}
+
+#[test]
+fn canceling_a_batch_preview_restores_the_document_and_paints() {
+    let mut s = color_mode_preview_session(false);
+    let before = s.paint.clone();
+    let depth = s.doc().unwrap().history.undo.len();
+    let journal = s.journal.len();
+    s.begin_interaction("Batch Preview").unwrap();
+    s.preview("command.batch", &json!({"commands": [{"command": "file.documentColorMode", "params": {"mode": "cmyk"}}]})).unwrap();
+    s.cancel_interaction().unwrap();
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before);
+    assert_eq!(s.doc().unwrap().history.undo.len(), depth);
+    assert_eq!(s.journal.len(), journal);
+}
+
+#[test]
+fn accepting_a_batch_preview_restores_new_art_paints_on_undo_and_redo() {
+    let mut s = color_mode_preview_session(false);
+    let before = s.paint.clone();
+    let depth = s.doc().unwrap().history.undo.len();
+    let journal = s.journal.len();
+    s.begin_interaction("Batch Preview").unwrap();
+    s.preview("command.batch", &json!({"commands": [{"command": "file.documentColorMode", "params": {"mode": "cmyk"}}]})).unwrap();
+    assert_eq!(s.paint, before);
+    s.commit_interaction().unwrap();
+    let after = s.paint.clone();
+    assert_ne!(after.fill, before.fill);
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Cmyk);
+    assert_eq!(s.doc().unwrap().history.undo.len(), depth + 1);
+    assert_eq!(s.journal.len(), journal + 1);
+    run(&mut s, "edit.undo", json!({}));
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Rgb);
+    assert_eq!(s.paint, before);
+    run(&mut s, "edit.redo", json!({}));
+    assert_eq!(doc(&s).color_mode, vectorcraft_doc::ColorMode::Cmyk);
+    assert_eq!(s.paint, after);
+}
+
 #[test]
 fn color_mode_undo_restores_template_paints_and_effect_colors() {
     let mut s = session();

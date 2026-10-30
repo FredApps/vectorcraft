@@ -15,12 +15,12 @@ pub(super) fn batch(s: &mut Session, p: &Value) -> Result<Value> {
     let artboard = p.get("artboard").and_then(Value::as_u64);
     // What an error rolls back besides the documents: session-level state a step may change
     // (paint defaults, drawing mode, clipboard, the Untitled-N count, a begun undo group).
-    let saved = (s.paint.clone(), s.fill_active, s.draw_mode, s.draw_inside, s.clipboard.clone(), s.untitled_counter, s.explicit_undo_group.clone());
     // A drag or typing still in progress is a step of its own, as before Undo: the batch's steps
     // would otherwise run inside it and take its baseline as theirs (#1697).
-    if s.active().is_some() {
+    if s.active().is_some() && !s.previewing {
         super::super::edit::settle_interaction(s)?;
     }
+    let saved = (s.paint.clone(), s.fill_active, s.draw_mode, s.draw_inside, s.clipboard.clone(), s.untitled_counter, s.explicit_undo_group.clone());
     // The documents as they are now, whole: what a failed step brings back. Their art, history,
     // file, format and saved state share their data with the open ones until a step changes them.
     let start = s.docs.clone();
@@ -47,15 +47,17 @@ pub(super) fn batch(s: &mut Session, p: &Value) -> Result<Value> {
         }
     };
     // Each document the steps edited keeps them as one undo step.
-    s.remember_pending_paint();
-    for st in &mut s.docs {
-        if let Some(mut it) = st.interaction.take() {
-            // Redo restores the new-art colors the whole batch left, not the ones right after a
-            // color-mode step.
-            if let Some((_, after)) = &mut it.color_mode_paints {
-                after.clone_from(&s.paint);
+    if !s.previewing {
+        s.remember_pending_paint();
+        for st in &mut s.docs {
+            if let Some(mut it) = st.interaction.take() {
+                // Redo restores the new-art colors the whole batch left, not the ones right after a
+                // color-mode step.
+                if let Some((_, after)) = &mut it.color_mode_paints {
+                    after.clone_from(&s.paint);
+                }
+                st.keep_interaction(it);
             }
-            st.keep_interaction(it);
         }
     }
     // The batch journals itself, whichever document it ends in.
@@ -63,7 +65,9 @@ pub(super) fn batch(s: &mut Session, p: &Value) -> Result<Value> {
     if let Some(o) = entry.as_object_mut() {
         o.insert("commands".into(), Value::Array(cmds));
     }
-    s.journal.push(("command.batch".into(), entry));
+    if !s.previewing {
+        s.journal.push(("command.batch".into(), entry));
+    }
     Ok(json!({ "results": results }))
 }
 
