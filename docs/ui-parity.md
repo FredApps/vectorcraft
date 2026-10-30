@@ -19,6 +19,7 @@ Artboard Options forwards the active Artboard tool's Scale Artwork with Artboard
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-30 | minor | Home screen: welcome, New / Open and Community are centred and the large Discord button uses the theme accent, part of #4684; scores and estimates unchanged (estimated) |
 | 2026-10-26 | minor | Pencil Fidelity goes down to 0.01 pt (dialog, tool and engine; Smooth keeps 0.05) on a logarithmic slider across the Tool Options row, with hundredths in the field and key steps that fit the range (#3328); scores and estimates unchanged (estimated) |
 | 2026-10-22 | minor | Reconcile upstream documentation after review F-3; preserve every dated revision and the original scaleArt runtime evidence without repeating completed jobs. |
 | 2026-10-22 | minor | Reconcile upstream documentation after review F-2; preserve every dated revision and the original scaleArt runtime evidence without repeating completed jobs. |
@@ -316,6 +317,8 @@ empty), without opening the dialog.
 | Outline view keeps template layers in Preview, dimmed | done | #1486; a picture placed to be traced stays visible under the outlines |
 
 ## Look and feel
+
+- [x] Home screen (part of #4684, shared UI with PhotoCraft): the welcome, New / Open buttons and Community block are centred, and the large Discord button takes the theme's accent instead of Discord's colour; the layout and wording of the preset cards and Recent Files are unchanged. Still open from #4684: shortcut hints on the buttons, PhotoCraft's PRO and STUDIO themes, the Preferences layout (search box, theme swatches, Apply) and the title bar.
 
 - [x] Recolor Artwork › Assign: double-click a row's new color to pick it in the Color Picker, in the model it was picked in (part of #4028); a Lab new color is kept but can't be typed yet (the picker's Lab fields work in RGB); Lab entry, swatch libraries and the row menu remain.
 
