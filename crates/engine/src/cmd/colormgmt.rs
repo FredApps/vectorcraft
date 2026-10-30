@@ -17,7 +17,9 @@ use vectorcraft_color::{Color, Paint};
 use vectorcraft_doc::ColorMode;
 use vectorcraft_render::proof;
 
-use super::*;
+#[cfg(not(target_arch = "wasm32"))]
+use super::EngineError;
+use super::{CommandSpec, Result, Session, always, bad, bool_or, cmd, color_value, has_doc, str_param, targets};
 
 /// `Document.unknown` key under which files before format v3 kept the assigned profiles (migrated
 /// to `Document::color_profiles` on load).
@@ -800,6 +802,7 @@ fn set_spot(s: &mut Session, p: &Value) -> Result<Value> {
     }
     if sw.spot != spot {
         let n = name.clone();
+        let colorized_ok = super::paint::check_colorized(&s.doc()?.doc).is_ok();
         s.edit("Swatch Options", |d, _| {
             if let Some(w) = d.swatch_mut(&n) {
                 w.spot = spot;
@@ -807,7 +810,7 @@ fn set_spot(s: &mut Session, p: &Value) -> Result<Value> {
                     w.global = true;
                 }
             }
-            Ok(())
+            super::paint::check_colorized_kept(colorized_ok, d).map_err(|e| bad(C, e))
         })?;
     }
     Ok(json!({"name": name, "spot": spot}))

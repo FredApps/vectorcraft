@@ -1,4 +1,4 @@
-use super::*;
+use super::{Affine, Arc, Document, NodeId, Selection, Value};
 
 /// An in-progress drag: the snapshot the previews are applied to.
 #[derive(Clone, Debug)]
@@ -9,7 +9,7 @@ pub struct Interaction {
     pub selection: Arc<Selection>,
     pub preview: Option<(String, Value)>,
     /// Conversion of new-art paints waits until a color-mode preview is accepted.
-    pub(crate) deferred_color_mode: Option<cmd::colormgmt::DeferredColorMode>,
+    pub(crate) deferred_color_mode: Option<crate::cmd::colormgmt::DeferredColorMode>,
     pub(crate) color_mode_paints: Option<(vectorcraft_tools::PaintDefaults, vectorcraft_tools::PaintDefaults)>,
     /// Per-document state restored on cancel (current layer, highlighted Layers panel rows,
     /// isolation).
