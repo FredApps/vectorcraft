@@ -4195,6 +4195,83 @@ fn two_fingers_dragged_together_pan_the_canvas() {
     }
 }
 
+/// #4198: egui-winit presses with the first finger as the pointer, in the frame the second lands
+/// or a frame or more before (the Pencil has begun drawing, the Selection tool moving the art
+/// under it). The second finger cancels that press, as it does the press of a finger lifted and
+/// landed again mid-pinch: the pinch zooms, nothing is drawn or moved, nothing enters the undo
+/// history, and lifting the fingers commits nothing. One finger still draws afterwards.
+#[test]
+fn a_second_finger_cancels_the_tool_gesture_the_first_began() {
+    for (tool, together) in [("pencil", false), ("selection", false), ("pencil", true), ("selection", true)] {
+        let mut app = VectorcraftApp::new(Session::new(), Default::default());
+        app.session.execute("file.new", &json!({"width": 400, "height": 300})).unwrap();
+        app.session.execute("shape.rectangle", &json!({"x": 50, "y": 50, "width": 100, "height": 100})).unwrap();
+        app.select_tool(tool);
+        let ctx = egui::Context::default();
+        frame(&mut app, &ctx, vec![]);
+        let xf = Xf::new(app.canvas_rect.unwrap(), app.view().unwrap());
+        let (doc, undo, zoom) = {
+            let st = app.session.active().unwrap();
+            (st.doc.clone(), st.history.undo.len(), app.view().unwrap().zoom)
+        };
+        let touch = |n: u64, phase, pos| egui::Event::Touch { device_id: egui::TouchDeviceId(1), id: egui::TouchId(n), phase, pos, force: None };
+        let button = |pos, pressed| egui::Event::PointerButton { pos, button: egui::PointerButton::Primary, pressed, modifiers: Default::default() };
+        let press = |n: u64, pos| vec![touch(n, egui::TouchPhase::Start, pos), egui::Event::PointerMoved(pos), button(pos, true)];
+        let lift = |n: u64, pos| vec![touch(n, egui::TouchPhase::End, pos), button(pos, false), egui::Event::PointerGone];
+        let apart = |p: Pos2, q: Pos2| vec![touch(1, egui::TouchPhase::Move, p), egui::Event::PointerMoved(p), touch(2, egui::TouchPhase::Move, q)];
+        // The first finger presses on the rectangle, and drags a little on its own unless the
+        // second lands in the same frame.
+        let mut p = xf.to_screen(Point::new(100.0, 100.0));
+        let mut q = p + vec2(80.0, 0.0);
+        if together {
+            frame(&mut app, &ctx, [press(1, p), vec![touch(2, egui::TouchPhase::Start, q)]].concat());
+        } else {
+            frame(&mut app, &ctx, press(1, p));
+            for _ in 0..2 {
+                p += vec2(12.0, 6.0);
+                frame(&mut app, &ctx, vec![touch(1, egui::TouchPhase::Move, p), egui::Event::PointerMoved(p)]);
+            }
+            assert!(matches!(ctx.data(|d| d.get_temp::<Drag>(drag_id())), Some(Drag::Tool | Drag::Art)), "{tool}: the tool's drag began");
+            q = p + vec2(80.0, 0.0);
+            frame(&mut app, &ctx, vec![touch(2, egui::TouchPhase::Start, q)]);
+        }
+        // The two pinch apart; the first lifts, the second moves alone (egui-winit's pointer
+        // now), and the first lands again and pinches on.
+        for _ in 0..3 {
+            (p, q) = (p - vec2(15.0, 0.0), q + vec2(15.0, 0.0));
+            frame(&mut app, &ctx, apart(p, q));
+        }
+        frame(&mut app, &ctx, lift(1, p));
+        q += vec2(10.0, 0.0);
+        frame(&mut app, &ctx, vec![touch(2, egui::TouchPhase::Move, q), egui::Event::PointerMoved(q)]);
+        frame(&mut app, &ctx, press(1, p));
+        for _ in 0..3 {
+            (p, q) = (p - vec2(10.0, 5.0), q + vec2(10.0, 5.0));
+            frame(&mut app, &ctx, apart(p, q));
+        }
+        frame(&mut app, &ctx, lift(1, p));
+        frame(&mut app, &ctx, lift(2, q));
+        frame(&mut app, &ctx, vec![]);
+        let st = app.session.active().unwrap();
+        assert!(st.interaction.is_none(), "{tool}: no tool interaction is left");
+        assert_eq!(*st.doc, *doc, "{tool}: nothing drawn or moved");
+        assert_eq!(st.history.undo.len(), undo, "{tool}: no undo entry");
+        assert!(app.view().unwrap().zoom > zoom * 1.2, "{tool}: the pinch zoomed in");
+        if tool == "pencil" {
+            // One finger alone still draws.
+            let mut p = app.canvas_rect.unwrap().center() - vec2(30.0, 20.0);
+            frame(&mut app, &ctx, press(3, p));
+            for _ in 0..4 {
+                p += vec2(15.0, 10.0);
+                frame(&mut app, &ctx, vec![touch(3, egui::TouchPhase::Move, p), egui::Event::PointerMoved(p)]);
+            }
+            frame(&mut app, &ctx, lift(3, p));
+            let children = app.session.active().unwrap().doc.layers[0].children().unwrap().len();
+            assert_eq!(children, 2, "one finger draws with the Pencil");
+        }
+    }
+}
+
 /// A canvas frame at input time `t` (seconds) with `events`, for the trackpad rotation tests.
 fn timed_frame(app: &mut VectorcraftApp, ctx: &egui::Context, t: f64, events: Vec<egui::Event>) {
     let raw =
