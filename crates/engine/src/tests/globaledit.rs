@@ -295,8 +295,10 @@ fn global_edit_needs_one_supported_object() {
     };
     let (g, _) = (group(&mut s, 600.0), group(&mut s, 700.0));
     sel(&mut s, &[g]);
+    // The menu only checks that it is a group; starting refuses its contents.
     let e = s.execute("select.globalEdit", &json!({})).unwrap_err();
-    assert!(matches!(e, EngineError::Disabled(..)) && e.to_string().contains("symbol instances and groups of them"), "{e}");
+    assert!(e.to_string().contains("symbol instances and groups of them"), "{e}");
+    assert!(s.doc().unwrap().global_edit.is_none());
 }
 
 #[test]

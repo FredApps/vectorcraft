@@ -357,7 +357,10 @@ fn can_toggle(s: &Session) -> std::result::Result<(), String> {
     let [id] = st.selection.objects.as_slice() else {
         return Err(if st.selection.is_empty() { "nothing selected" } else { "select one object" }.into());
     };
+    // A group's contents are checked when Global Edit starts: building its shape here would walk
+    // every object in it each time the menu or the Properties panel asks.
     match st.doc.node(*id) {
+        Some(n) if n.extras().mask.is_none() && plain_group(n) => Ok(()),
         Some(n) if supported(n) => Ok(()),
         _ => Err(UNSUPPORTED.into()),
     }
