@@ -547,7 +547,14 @@ impl Word97 {
                     c => u8::try_from(u32::from(c)).unwrap(),
                 }));
             } else {
-                wd.extend(text.encode_utf16().flat_map(u16::to_le_bytes));
+                // U+FFFF and U+FFFE stand for the high surrogate 0xD800 and the low surrogate 0xDE00
+                // on their own.
+                let unit = |u| match u {
+                    0xFFFF => 0xD800,
+                    0xFFFE => 0xDE00,
+                    u => u,
+                };
+                wd.extend(text.encode_utf16().map(unit).flat_map(u16::to_le_bytes));
             }
         }
         // Each character's file position and size, in character order.
@@ -814,9 +821,23 @@ fn malformed_doc_fails_cleanly() {
     assert!(e.contains("piece table is damaged"), "{e}");
     let e = place(&mut s, "a.doc", &Word97 { pieces: vec![("\r\r", true)], ..Word97::default() }.build()).unwrap_err();
     assert!(e.contains("no text to place"), "{e}");
+    // 16-bit text with half of a surrogate pair is refused rather than placed with a stand-in.
+    let e = place(&mut s, "a.doc", &Word97 { pieces: vec![("bad \u{FFFF} text\r", false)], ..Word97::default() }.build()).unwrap_err();
+    assert!(e.contains("half of a UTF-16 surrogate pair"), "{e}");
+    // A surrogate pair split between two pieces is one character.
+    let r = place(&mut s, "a.doc", &Word97 { pieces: vec![("x\u{FFFF}", false), ("\u{FFFE}y\r", false)], ..Word97::default() }.build()).unwrap();
+    assert_eq!(placed(&s, &r).0, "x\u{10200}y");
+    // A field that ends without a result is left out, with its own warning.
+    let r = place(&mut s, "a.doc", &Word97 { pieces: vec![("a\u{13} PAGE \u{15}b\r", true)], ..Word97::default() }.build()).unwrap();
+    assert_eq!(placed(&s, &r).0, "ab");
+    assert_eq!(r["warnings"], json!(["the Word document's fields without a result that could be read were left out"]));
+    // So is a field that never ends, with the text after it.
+    let r = place(&mut s, "a.doc", &Word97 { pieces: vec![("a\rb\u{13} PAGE c\r", true)], ..Word97::default() }.build()).unwrap();
+    assert_eq!(placed(&s, &r).0, "a\nb");
+    assert_eq!(r["warnings"], json!(["the Word document's fields without a result that could be read were left out"]));
     let r = place(&mut s, "a.doc", &words().build()).unwrap();
     assert_eq!(placed(&s, &r).0, "words");
-    assert_eq!(s.doc().unwrap().history.undo.len(), 2, "failed places leave no undo step");
+    assert_eq!(s.doc().unwrap().history.undo.len(), 5, "failed places leave no undo step");
 }
 
 #[test]

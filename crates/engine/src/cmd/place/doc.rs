@@ -10,8 +10,9 @@
 //!   and ones last saved with fast save (`fComplex`) are refused.
 //! - Text: the main document's `ccpText` characters, from the pieces the Clx's PlcPcd lists
 //!   (§2.9.38, §2.8.35) in their order, each in 16-bit Unicode or in compressed 8-bit text with the
-//!   mapping §2.9.73 gives. A paragraph mark (U+000D) ends a paragraph, and so does a page or
-//!   section break (U+000C) at the end of a paragraph's properties (PapxFkp); a line break
+//!   mapping §2.9.73 gives; 16-bit text with half of a surrogate pair is refused. A paragraph mark
+//!   (U+000D) ends a paragraph, and so does a page or section break (U+000C) at the end of a
+//!   paragraph's properties (PapxFkp); a line break
 //!   (U+000B) starts a new paragraph in the same formatting. A table's cells (cell marks, U+0007)
 //!   are separated by tabs and each row (a table terminating mark) is a paragraph. Tabs are tabs,
 //!   and U+001E and U+001F are the nonbreaking and optional hyphens. Of a field (U+0013, U+0014 and
@@ -34,11 +35,11 @@
 //! Hidden text, deleted revisions, field instructions, pictures and embedded objects, note and
 //! comment references and the other stories (footnotes, endnotes, headers, footers, comments and
 //! text boxes) are left out. The reply's warnings name each kind of content that was left out or
-//! changed, once: pictures and objects, fields, the other stories, tracked changes and tables. A
-//! stream larger than [`MAX_STREAM`] bytes, a main text longer than [`text::MAX_TEXT`] characters,
-//! more than [`MAX_PIECES`] pieces or [`MAX_PAGES`] property pages, and placed type of more than
-//! [`MAX_PARAGRAPHS`] paragraphs or [`MAX_RUNS`] runs are refused, and so is a structure that lies
-//! outside its stream.
+//! changed, once: pictures and objects, fields, fields left out (no result, or nested too deep), the
+//! other stories, tracked changes and tables. A stream larger than [`MAX_STREAM`] bytes, a main
+//! text longer than [`text::MAX_TEXT`] characters, more than [`MAX_PIECES`] pieces or
+//! [`MAX_PAGES`] property pages, and placed type of more than [`MAX_PARAGRAPHS`] paragraphs or
+//! [`MAX_RUNS`] runs are refused, and so is a structure that lies outside its stream.
 
 use std::io::{Cursor, Read};
 
@@ -287,27 +288,31 @@ fn main_text(wd: &[u8], pieces: &[Piece], ccp: u32, cmd: &str) -> Result<Vec<Cha
         return Err(damaged(cmd, "its piece table doesn't cover its text"));
     }
     let outside = || damaged(cmd, "a piece of its text lies outside its WordDocument stream");
-    let mut out = Vec::with_capacity(ccp as usize);
+    // Each character position's UTF-16 code unit, file position and byte count, in character
+    // order; a surrogate pair may be split between two pieces.
+    let mut units: Vec<(u16, u32, u8)> = Vec::with_capacity(ccp as usize);
     for p in pieces.iter().take_while(|p| p.cp < ccp) {
         let n = (p.end.min(ccp) - p.cp) as usize;
         if p.compressed {
             let b = bytes_at(wd, p.fc as usize, n).ok_or_else(outside)?;
-            out.extend(b.iter().zip(p.fc..).map(|(&c, fc)| (compressed(c), fc, 1)));
+            // Every character compressed text maps to is in the Basic Multilingual Plane.
+            units.extend(b.iter().zip(p.fc..).map(|(&c, fc)| (u16::try_from(u32::from(compressed(c))).unwrap_or(0xFFFD), fc, 1)));
             continue;
         }
         let b = bytes_at(wd, p.fc as usize, n.checked_mul(2).ok_or_else(outside)?).ok_or_else(outside)?;
-        let units: Vec<(u16, u32)> = b.as_chunks::<2>().0.iter().zip((p.fc..).step_by(2)).map(|(&u, fc)| (u16::from_le_bytes(u), fc)).collect();
-        let mut i = 0;
-        while let Some(&(u, fc)) = units.get(i) {
-            let pair = units.get(i + 1).map(|&(low, _)| low).filter(|low| (0xD800..0xDC00).contains(&u) && (0xDC00..0xE000).contains(low));
-            let c = match pair {
-                Some(low) => char::decode_utf16([u, low]).next().and_then(|c| c.ok()),
-                None => char::from_u32(u32::from(u)),
-            };
-            let width = if pair.is_some() { 4 } else { 2 };
-            out.push((c.unwrap_or(char::REPLACEMENT_CHARACTER), fc, width));
-            i += usize::from(width / 2);
-        }
+        units.extend(b.as_chunks::<2>().0.iter().zip((p.fc..).step_by(2)).map(|(&u, fc)| (u16::from_le_bytes(u), fc, 2)));
+    }
+    let mut out = Vec::with_capacity(units.len());
+    let mut i = 0;
+    while let Some(&(u, fc, width)) = units.get(i) {
+        let low = units.get(i + 1).map(|&(low, _, w)| (low, w)).filter(|(low, _)| (0xD800..0xDC00).contains(&u) && (0xDC00..0xE000).contains(low));
+        let c = match low {
+            Some((low, _)) => char::decode_utf16([u, low]).next().and_then(|c| c.ok()),
+            None => char::from_u32(u32::from(u)),
+        };
+        let c = c.ok_or_else(|| damaged(cmd, "its text holds half of a UTF-16 surrogate pair"))?;
+        out.push((c, fc, low.map_or(width, |(_, w)| width + w)));
+        i += if low.is_some() { 2 } else { 1 };
     }
     Ok(out)
 }
@@ -802,7 +807,10 @@ impl Para {
 #[derive(Clone, Copy, Default)]
 struct Seen {
     pictures: bool,
+    /// Fields with a result.
     fields: bool,
+    /// Fields with no result, or nested past [`MAX_FIELDS`].
+    unread_fields: bool,
     revisions: bool,
     tables: bool,
 }
@@ -931,10 +939,10 @@ impl<'a> Reader<'a> {
         }
         match c {
             '\u{13}' => {
-                self.seen.fields = true;
                 if self.fields.len() < MAX_FIELDS && self.field_overflow == 0 {
                     self.fields.push(true);
                 } else {
+                    self.seen.unread_fields = true;
                     self.field_overflow += 1;
                 }
                 return;
@@ -942,14 +950,16 @@ impl<'a> Reader<'a> {
             '\u{14}' if self.field_overflow == 0 => {
                 if let Some(instructions) = self.fields.last_mut() {
                     *instructions = false;
+                    self.seen.fields = true;
                 }
                 return;
             }
             '\u{15}' => {
                 if self.field_overflow > 0 {
                     self.field_overflow -= 1;
-                } else {
-                    self.fields.pop();
+                } else if self.fields.pop() == Some(true) {
+                    // A field that ends without a separator has no result.
+                    self.seen.unread_fields = true;
                 }
                 return;
             }
@@ -1051,6 +1061,10 @@ impl<'a> Reader<'a> {
         }
         if self.seen.fields {
             out.push("the Word document's fields were placed as the text of their results".to_string());
+        }
+        // A field still in its instructions when the text ends has no result either.
+        if self.seen.unread_fields || self.fields.contains(&true) {
+            out.push("the Word document's fields without a result that could be read were left out".to_string());
         }
         if self.seen.revisions {
             out.push("the Word document's tracked changes were accepted: deleted text was left out and inserted text kept".to_string());
