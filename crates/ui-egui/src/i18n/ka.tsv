@@ -6032,6 +6032,9 @@ breakText	Glyphs	გლიფები
 	Set Size of Each	თითოეულის ზომის დაყენება
 @msg	select exactly two objects	მონიშნეთ ზუსტად ორი ობიექტი
 @msg	give `width` or `height`	მიუთითეთ `width` ან `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	გადაფარვადი ობიექტების დაჯგუფება
+@msg	too many objects selected (at most 20000)	არჩეულია ძალიან ბევრი ობიექტი (მაქსიმუმ 20000)
 	Marathi	მარათჰი
 	Gujarati	გუჯარათი
 	Bengali	ბენგალური

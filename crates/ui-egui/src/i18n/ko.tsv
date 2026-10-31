@@ -5625,6 +5625,9 @@ breakText	Glyphs	글리프
 	Set Size of Each	각각 크기 설정
 @msg	select exactly two objects	개체를 정확히 두 개 선택하세요
 @msg	give `width` or `height`	`width` 또는 `height`를 지정하세요
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	겹치는 개체 그룹화
+@msg	too many objects selected (at most 20000)	선택한 개체가 너무 많습니다(최대 20000개)
 	Marathi	마라티어
 	Gujarati	구자라트어
 	Bengali	벵골어

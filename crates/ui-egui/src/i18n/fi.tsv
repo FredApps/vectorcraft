@@ -6073,6 +6073,9 @@ breakText	Glyphs	Merkit
 	Set Size of Each	Aseta kunkin koko
 @msg	select exactly two objects	valitse täsmälleen kaksi objektia
 @msg	give `width` or `height`	anna `width` tai `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Ryhmitä päällekkäiset objektit
+@msg	too many objects selected (at most 20000)	liian monta objektia valittu (enintään 20000)
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengali

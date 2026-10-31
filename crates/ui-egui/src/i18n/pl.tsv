@@ -5898,6 +5898,9 @@ breakText	Glyphs	Glify
 	Set Size of Each	Ustaw rozmiar każdego
 @msg	select exactly two objects	zaznacz dokładnie dwa obiekty
 @msg	give `width` or `height`	podaj `width` lub `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Grupuj nakładające się obiekty
+@msg	too many objects selected (at most 20000)	zaznaczono za dużo obiektów (najwyżej 20000)
 	Marathi	Marathi
 	Gujarati	Gudżarati
 	Bengali	Bengalski

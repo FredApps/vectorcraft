@@ -5940,6 +5940,9 @@ breakText	Glyphs	Glyffer
 	Set Size of Each	Angiv størrelse for hver
 @msg	select exactly two objects	markér præcis to objekter
 @msg	give `width` or `height`	angiv `width` eller `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Gruppér overlappende objekter
+@msg	too many objects selected (at most 20000)	for mange objekter markeret (højst 20000)
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengali

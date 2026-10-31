@@ -5960,6 +5960,9 @@ shape	Open	Otvoren
 	Set Size of Each	Postavi veličinu svakog
 @msg	select exactly two objects	odaberite tačno dva objekta
 @msg	give `width` or `height`	zadajte `width` ili `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Grupiši preklapajuće objekte
+@msg	too many objects selected (at most 20000)	odabrano je previše objekata (najviše 20000)
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengalski

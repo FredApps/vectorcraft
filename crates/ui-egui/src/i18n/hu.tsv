@@ -6029,6 +6029,9 @@ breakText	Glyphs	Glifák
 	Set Size of Each	Egyenkénti méret beállítása
 @msg	select exactly two objects	jelölj ki pontosan két objektumot
 @msg	give `width` or `height`	add meg a `width` vagy a `height` értéket
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Átfedő objektumok csoportosítása
+@msg	too many objects selected (at most 20000)	túl sok objektum van kijelölve (legfeljebb 20000)
 	Marathi	Maráthi
 	Gujarati	Gudzsaráti
 	Bengali	Bengáli

@@ -5729,6 +5729,9 @@ breakText	Glyphs	字形
 	Set Size of Each	個別にサイズを設定
 @msg	select exactly two objects	オブジェクトをちょうど 2 つ選択してください
 @msg	give `width` or `height`	`width` または `height` を指定してください
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	重なり合うオブジェクトをグループ化
+@msg	too many objects selected (at most 20000)	選択されたオブジェクトが多すぎます（最大 20000）
 	Marathi	マラーティー語
 	Gujarati	グジャラート語
 	Bengali	ベンガル語

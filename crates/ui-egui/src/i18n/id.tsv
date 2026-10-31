@@ -5940,6 +5940,9 @@ breakText	Glyphs	Glif
 	Set Size of Each	Atur ukuran masing-masing
 @msg	select exactly two objects	pilih tepat dua objek
 @msg	give `width` or `height`	berikan `width` atau `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Grupkan objek yang tumpang tindih
+@msg	too many objects selected (at most 20000)	terlalu banyak objek dipilih (paling banyak 20000)
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengali

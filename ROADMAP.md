@@ -9,7 +9,7 @@
 
 **Stage: alpha** · next: beta, ~13 points (ready for real work ~62% → ~75%, and reliable `.ai` exchange) and ~170–270 h away
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-31 · **Change:** minor (Progress log rows for the Arrange Tools add-on, Export for Screens as the reference app's dialog and the 2026-10-31 community landings; headline numbers unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Progress log row for Group Overlapping Objects in the Arrange Tools add-on; headline numbers unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
 
 VectorCraft is a clean-room, open-source, pure-Rust reimplementation of the Adobe Illustrator workflow. It runs
 on macOS, Windows, Linux, FreeBSD and the web (WASM), and agents can drive all of it over MCP, the CLI and a JSON
@@ -129,6 +129,7 @@ Ranked; detail in [docs/roadmap.md](docs/roadmap.md) and [docs/gaps.md](docs/gap
 
 ## Progress log
 
+- 2026-11-01: Group Overlapping Objects joins the Arrange Tools add-on (Object › Plug-ins › Arrange Tools): the selected objects whose visual bounds overlap or touch, chains included, go into one group each, within their own layer or group, at the stacking place of their frontmost member; objects that overlap nothing stay as they are. One undo step, a sweep along x so thousands of loose pieces group quickly (at most 20000 objects). A VectorCraft addition: headline numbers unchanged.
 - 2026-10-31: Export for Screens works as the reference app's dialog: Artboards and Assets tabs with a grid or list of thumbnails, Clear Selection and Prefix, Create Sub-folders by Scale or Format (on by default), Export PDFs As Single File (the chosen artboards as one PDF's pages, `pdfs: "single"`) or Multiple Files, iOS and Android rows, format presets in a ☰ menu, and a count of the files the export writes (#4895). About 55 community PRs and fixes landed the same day: Find Font, Replace Font, Outline Stroke and Expand leave hidden and locked art alone (with a warning); DXF export writes LINE and ELLIPSE entities and outlines only the strokes a CAD line can't draw; Blob Brush Angle and Roundness; Shift-constrained Perspective Selection; Grid Repeat Options Preview; a gradient mesh from a file budgeted at about a million quads; width-profile strokes keep their shape zoomed out; `.ai`/EPS import fidelity (area type, envelopes, transparency in dictionaries, character styles); PDF import finds hyphenated and CMap-suffixed font names; Windows renders follow the process's core affinity; Enter or Escape in a floating panel's field no longer reaches the canvas (#4803); Properties shows Blend Options for any selected blend (#4817); Artwork Cleanup finds doubled type (#4835) and joins stacked lines into one object (Join Point Text, #4826). Headline numbers unchanged.
 - 2026-10-31: Arrange Tools, a built-in add-on (Object › Plug-ins › Arrange Tools): Arrange in Grid lays the selected objects out in rows and columns, a row or a column with gaps, from the selection's top-left or centred on the artboard; Swap Objects swaps two objects' places (and, with Swap Objects and Sizes, their sizes); Replace with Top Object puts a copy of the topmost selected object in place of each of the others, kept, stretched or fitted in proportion; Set Size of Each gives every selected object an exact width and/or height about a reference point; Zoom to Selection fits the view to the selection. Each is one undo step with a previewed dialog where it has options. A VectorCraft addition: headline numbers unchanged.
 - 2026-10-30: Gradient panel presets: a Presets menu applies one of the built-in gradient libraries' presets (grouped by theme) or a saved one to the gradient behind the active proxy, keeping its placement, as one undo step; the panel menu saves the current gradient as a preset, kept with the preferences, and deletes saved ones (`gradient.presets.list/apply/save/delete`).
@@ -204,6 +205,7 @@ The full earlier record of what landed is kept in [docs/roadmap.md](docs/roadmap
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Progress log row for Group Overlapping Objects (Arrange Tools add-on, #4928); headline numbers unchanged. |
 | 2026-10-31 | minor | Progress log row for Export for Screens laid out as the reference app's (#4895) and the 2026-10-31 community landings; headline numbers unchanged. |
 | 2026-10-31 | minor | Progress log row for the Arrange Tools add-on; headline numbers unchanged. |
 | 2026-10-29 | minor | Progress log row for the Linux Flatpak clipboard's core Wayland protocol text fallback; headline numbers unchanged. |

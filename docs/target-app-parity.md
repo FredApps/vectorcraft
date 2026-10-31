@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Type core: text shaped in its language, a Language per character, Indian languages, #4940 #4946 #4943; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Arrange Tools add-on: Group Overlapping Objects, #4928; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1399,10 +1399,15 @@ scaling, replace with each fit and kept originals in stacking order, size with p
 undo step, off states, bad params refused), `addons::arrange::tests` in `vectorcraft-ui-egui` (the submenu, the
 dialogs, Preview and Cancel, Zoom to Selection) and `command_sweep`. Commands: `docs/mcp.md` › Arrange Tools add-on.
 
+## Arrange Tools add-on: Group Overlapping Objects (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Arrange Tools › Group Overlapping Objects groups the top-level selected objects wherever their visual bounds overlap or touch, chains included (A overlapping B and B overlapping C makes one group of three), only among objects of the same layer or group; objects that overlap nothing stay as they are, each new group takes its frontmost member's place in the stacking order, and the groups and the loose objects stay selected. One undo step; at most 20000 objects, compared by a sweep along x with union-find. Tests: `group_overlapping_*` in `cmd::addons::arrange::tests` in `vectorcraft-engine` (chains, loners, stacking order, layers kept apart, visual bounds, no step when nothing overlaps, many objects), `group_overlapping_objects_runs_directly` in `vectorcraft-ui-egui` and `command_sweep`. Commands: `docs/mcp.md` › Arrange Tools add-on.
+
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Arrange Tools add-on (a VectorCraft addition): Group Overlapping Objects (#4928); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Type core: a Language per character (Character panel › Language, `text.setFormat` / `text.setRangeStyle {language}`, character styles), new type in the document's language; text is shaped in its language so fonts use their language forms (OpenType `locl`: Turkish `fi`, #4940, #4946); Hindi, Marathi, Gujarati, Bengali, Punjabi, Tamil, Telugu, Kannada, Malayalam, Odia and Urdu in the language list (#4943); scores unchanged |
 | 2026-10-31 | minor | Selection tools: with Alt held at the press, a Direct Selection marquee selects every path it touches whole and keeps the Group Selection pointer (#4890); a press on a selected object's centre point selects the object whole and a drag from it moves it (#4891); regression tests in `direct/tests.rs`; scores and estimates unchanged. |
 | 2026-10-31 | minor | Arrange Tools add-on (a VectorCraft addition): evidence added; scores unchanged. |

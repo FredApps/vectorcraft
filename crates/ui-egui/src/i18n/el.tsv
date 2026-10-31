@@ -5995,6 +5995,9 @@ breakText	Glyphs	Γλύφοι
 	Set Size of Each	Ορισμός μεγέθους καθενός
 @msg	select exactly two objects	επιλέξτε ακριβώς δύο αντικείμενα
 @msg	give `width` or `height`	δώστε `width` ή `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Ομαδοποίηση επικαλυπτόμενων αντικειμένων
+@msg	too many objects selected (at most 20000)	επιλέχθηκαν πάρα πολλά αντικείμενα (το πολύ 20000)
 	Marathi	Μαραθικά
 	Gujarati	Γκουγιαράτι
 	Bengali	Βεγγαλικά

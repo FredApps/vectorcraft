@@ -6020,6 +6020,9 @@ breakText	Glyphs	Глифы
 	Set Size of Each	Задать размер каждого
 @msg	select exactly two objects	выделите ровно два объекта
 @msg	give `width` or `height`	укажите `width` или `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Сгруппировать перекрывающиеся объекты
+@msg	too many objects selected (at most 20000)	выделено слишком много объектов (не более 20000)
 	Marathi	Маратхи
 	Gujarati	Гуджарати
 	Bengali	Бенгальский

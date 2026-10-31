@@ -6000,6 +6000,9 @@ breakText	Glyphs	Glifler
 	Set Size of Each	Her Birinin Boyutunu Ayarla
 @msg	select exactly two objects	tam olarak iki nesne seç
 @msg	give `width` or `height`	`width` veya `height` belirt
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Çakışan Nesneleri Grupla
+@msg	too many objects selected (at most 20000)	çok fazla nesne seçili (en fazla 20000)
 	Marathi	Marathi dili
 	Gujarati	Gücerat dili
 	Bengali	Bengalce

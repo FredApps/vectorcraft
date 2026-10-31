@@ -5885,6 +5885,9 @@ breakText	Glyphs	字形
 	Set Size of Each	分别设置大小
 @msg	select exactly two objects	请恰好选择两个对象
 @msg	give `width` or `height`	请提供 `width` 或 `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	编组重叠对象
+@msg	too many objects selected (at most 20000)	选择的对象过多（最多 20000 个）
 	Marathi	马拉地语
 	Gujarati	古吉拉特语
 	Bengali	孟加拉语

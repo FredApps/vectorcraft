@@ -5962,6 +5962,9 @@ breakText	Glyphs	Glifos
 	Set Size of Each	Definir Tamanho de Cada Um
 @msg	select exactly two objects	selecione exatamente dois objetos
 @msg	give `width` or `height`	informe `width` ou `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Agrupar objetos sobrepostos
+@msg	too many objects selected (at most 20000)	objetos demais selecionados (no máximo 20000)
 	Marathi	Marati
 	Gujarati	Guzerate
 	Bengali	Bengali

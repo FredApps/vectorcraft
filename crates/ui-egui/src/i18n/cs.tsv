@@ -6043,6 +6043,9 @@ breakText	Glyphs	Glyfy
 	Set Size of Each	Nastavit velikost jednotlivě
 @msg	select exactly two objects	vyberte právě dva objekty
 @msg	give `width` or `height`	zadejte `width` nebo `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Seskupit překrývající se objekty
+@msg	too many objects selected (at most 20000)	vybráno příliš mnoho objektů (nejvýše 20000)
 	Marathi	Maráthština
 	Gujarati	Gudžarátština
 	Bengali	Bengálština
