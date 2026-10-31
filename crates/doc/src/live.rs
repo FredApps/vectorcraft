@@ -262,7 +262,7 @@ mod tests {
         let made = GradientMesh::for_path(&e, 1, 1, Color::BLACK, MeshAppearance::Flat, 0.0).unwrap();
         let mut m = made.clone();
         // Off centre, so each line splits its edges unevenly.
-        let i = m.add_lines_at(Point::new(200.0, 330.0)).unwrap();
+        let i = m.add_lines_at(Point::new(200.0, 330.0), 0.0).unwrap();
         let off = mesh_border_off_ellipse(&m, r);
         assert!(off < OFF, "after a Mesh tool click: {off} pt");
         // Deleting the lines again (Alt-click) gives the border back as it was.
@@ -275,7 +275,7 @@ mod tests {
         // With a handle at the new border point shortened since, the two edges no longer make one
         // curve: the merged edge is straight rather than grown past its ends.
         let mut m = made.clone();
-        let i = m.add_lines_at(Point::new(200.0, 330.0)).unwrap();
+        let i = m.add_lines_at(Point::new(200.0, 330.0), 0.0).unwrap();
         let top = m.idx(0, 1);
         m.points[top].handles[H_LEFT] *= 1e-4;
         assert!(m.remove_point_lines(i));
