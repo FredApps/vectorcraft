@@ -6023,6 +6023,181 @@ breakText	Glyphs	Glifos
 @msg	no object at path {shown} in the symbol's art	nenhum objeto no caminho {shown} na arte do símbolo
 @msg	give fill, stroke, opacity and/or blend	informe fill, stroke, opacity e/ou blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	informe newName, registration, exportType, nineSlice e/ou type
+# Strings the sibling catalogs translate that pt-BR did not yet cover (translated 2026-10-31).
+	 on the canvas to create one	 na tela para criar um
+	1 Layer	1 camada
+	[1P-High View]	[1P-Vista alta]
+	[1P-Low View]	[1P-Vista baixa]
+	[1P-Normal View]	[1P-Vista normal]
+	[2P-High View]	[2P-Vista alta]
+	[2P-Low View]	[2P-Vista baixa]
+	[2P-Normal View]	[2P-Vista normal]
+	[3P-Low View]	[3P-Vista baixa]
+	[3P-Normal View]	[3P-Vista normal]
+	[High Quality Print]	[Impressão de alta qualidade]
+	[High Resolution]	[Alta resolução]
+	[Low Resolution]	[Baixa resolução]
+	[Medium Resolution]	[Resolução média]
+swatch	[None]	[Nenhum]
+	[PDF/X-1a:2001]	[PDF/X-1a:2001]
+	[PDF/X-3:2002]	[PDF/X-3:2002]
+	[PDF/X-4:2010]	[PDF/X-4:2010]
+	[Press Quality]	[Qualidade para gráfica]
+swatch	[Registration]	[Registro]
+	[Smallest File Size]	[Menor tamanho de arquivo]
+	[VectorCraft Default]	[Padrão do VectorCraft]
+swatch	Amber	Âmbar
+	Angular	Angular
+swatch	Aqua	Água
+	Arrow Scale:	Escala da seta:
+	Arrow Style:	Estilo da seta:
+	Art and Bright Colors	Arte e cores vivas
+	Artboard Options: edit with the Artboard tool	Opções de Mesa de Trabalho: editar com a ferramenta Mesa de Trabalho
+	Automation	Automação
+	Away from the Line	Longe da linha
+swatch	Azure	Azul-celeste
+	Between Line and Object	Entre a linha e o objeto
+swatch	Black	Preto
+swatch	Blue	Azul
+	Blur Mode	Modo de desfoque
+swatch	Bright Blue	Azul-vivo
+swatch	Bright Green	Verde-vivo
+swatch	Bright Red	Vermelho-vivo
+swatch	Bright Violet	Violeta-vivo
+swatch	Bright Yellow	Amarelo-vivo
+swatch	Brights	Cores vivas
+swatch	Brown	Marrom
+	Check for Updates…	Verificar atualizações…
+swatch	Chocolate	Marrom-chocolate
+swatch	Coffee	Café
+	Color Table (4 colors)	Tabela de cores (4 cores)
+swatch	Copper	Cobre
+	Create PDF layers from top-level layers	Criar camadas de PDF a partir das camadas de nível superior
+	Current Colors (0)	Cores atuais (0)
+swatch	Cyan	Ciano
+swatch	Cyan Green	Verde-ciano
+	Differences from [Default]:	Diferenças em relação a [Padrão]:
+	Differences from VectorCraft Default:	Diferenças em relação ao padrão do VectorCraft:
+	Dimension Lines	Linhas de cota
+	Dimension Text	Texto da cota
+	Display	Exibição
+	Dot Gain 15%	Ganho de ponto 15%
+	Drag art, colors and text styles here to reuse them across documents. Libraries are stored on this machine — no account required.	Arraste arte, cores e estilos de texto para cá para reutilizá-los em outros documentos. As bibliotecas ficam armazenadas nesta máquina — não é necessária uma conta.
+	Drag out from a circle or arc for its radius, inwards for its diameter.	Arraste para fora de um círculo ou arco para obter o raio, e para dentro para obter o diâmetro.
+	Drag out from a corner, or click two straight lines, then click to place.	Arraste a partir de um canto, ou clique em duas linhas retas e depois clique para posicionar.
+	Drag out from a segment, or click two points, then click to place.	Arraste a partir de um segmento, ou clique em dois pontos e depois clique para posicionar.
+	Edge Only	Somente bordas
+swatch	Emerald	Esmeralda
+	English	Inglês
+swatch	Espresso	Expresso
+	Essentials	Essenciais
+	Essentials Classic	Essenciais clássico
+	Expand 1 Selected	Expandir 1 selecionado
+	Expand Object	Expandir objeto
+	Extension Lines	Linhas de extensão
+	Extension:	Extensão:
+	Font Size:	Tamanho da fonte:
+	Graphic Styles (4)	Estilos gráficos (4)
+	Gray Gamma 2.2	Gama de cinza 2.2
+swatch	Grays	Cinzas
+swatch	Green	Verde
+	Gutter	Medianiz
+	Gutter:	Medianiz:
+	Hide Extension Lines	Ocultar linhas de extensão
+	Hide Units	Ocultar unidades
+	High Quality Print	Impressão de alta qualidade
+digits	Hindi	Híndi
+@msg	image '{key}' has no pixels and was left out	a imagem '{key}' não tem pixels e foi deixada de fora
+swatch	Indigo	Índigo
+	Invalid panel layout; restored the default dock	Layout de painéis inválido; o dock padrão foi restaurado
+font-script	Japanese	Japonês
+	Japanese Double Postcard	Cartão-postal japonês duplo
+	Japanese Envelope #3	Envelope japonês nº 3
+	Japanese Envelope #4	Envelope japonês nº 4
+	Japanese Postcard	Cartão-postal japonês
+	Kaku #2	Kaku #2
+	Kaku #3	Kaku #3
+	Layout	Layout
+swatch	Lime	Lima
+	Line Type:	Tipo de linha:
+	Line Weight:	Espessura da linha:
+	Load Variable Library	Carregar biblioteca de variáveis
+swatch	Magenta	Magenta
+@msg	not an RTF file: it doesn't start with {\\rtf	não é um arquivo RTF: ele não começa com {\\rtf
+swatch	Ocean	Oceano
+shape	Open	Aberta
+	OpenType	OpenType
+swatch	Orange	Laranja
+swatch	Orange Red	Vermelho-alaranjado
+	Overlay Edge	Sobreposição de bordas
+	Painting	Pintura
+	Part of ArtCraft. MIT OR Apache-2.0. Fonts: Source Sans 3, Inter, JetBrains Mono, Noto Sans SC (OFL). Icons: Lucide (ISC) + VectorCraft.	Parte do ArtCraft. MIT OR Apache-2.0. Fontes: Source Sans 3, Inter, JetBrains Mono, Noto Sans SC (OFL). Ícones: Lucide (ISC) + VectorCraft.
+	Path Length	Comprimento do caminho
+	PDF/X-1a:2001	PDF/X-1a:2001
+	PDF/X-3:2002	PDF/X-3:2002
+	PDF/X-4:2010	PDF/X-4:2010
+	Phone 375×812	Celular 375×812
+	Photo Low Fidelity	Foto com baixa fidelidade
+swatch	Pink	Rosa
+	Position:	Posição:
+	Preparing the image…	Preparando a imagem…
+	Press Quality	Qualidade para gráfica
+	Print & Proof	Impressão e prova
+	Printing & Proofing	Impressão e prova
+	Printing and Proofing	Impressão e prova
+swatch	Purple	Púrpura
+swatch	Radial White, Black	Branco e preto (radial)
+	RECENT (1)	RECENTES (1)
+swatch	Red	Vermelho
+	Reset Automation	Redefinir automação
+	Reset Essentials Classic	Redefinir Essenciais clássico
+	Reset Layout	Redefinir layout
+	Reset Painting	Redefinir pintura
+	Reset Printing and Proofing	Redefinir impressão e prova
+	Reset Tracing	Redefinir vetorização
+	Reset Typography	Redefinir tipografia
+	Reset Web	Redefinir Web
+	Restricted Colors	Cores restritas
+	Right-click an item to move it into this group.	Clique com o botão direito em um item para movê-lo para este grupo.
+swatch	Rose	Rosado
+swatch	Rust	Ferrugem
+swatch	Sand	Areia
+	Scale X	Escala X
+	Scale X:	Escala X:
+	Scale Y	Escala Y
+	Scale Y:	Escala Y:
+	Selected Styles Only (0)	Somente estilos selecionados (0)
+	Selected Swatches Only (0)	Somente amostras selecionadas (0)
+	Simplified Chinese	Chinês simplificado
+	Smallest File Size	Menor tamanho de arquivo
+	Spot Colors (0)	Cores Spot (0)
+swatch	Sunset	Pôr do sol
+	Tablet 1024×768	Tablet 1024×768
+swatch	Tan	Castanho-claro
+swatch	Teal	Verde-azulado
+@msg	this is a PostScript file (an .ai saved in an older format or without PDF compatibility, or an EPS file), which can't be opened yet: save it as PDF, PDF-compatible .ai or SVG	este é um arquivo PostScript (um .ai salvo em formato antigo ou sem compatibilidade com PDF, ou um arquivo EPS), que ainda não pode ser aberto: salve-o como PDF, .ai compatível com PDF ou SVG
+@msg	this kind of brush has no options dialog yet	este tipo de pincel ainda não tem caixa de diálogo de opções
+	Touch	Toque
+	Tracing	Vetorização
+	Tracing the colors…	Vetorizando as cores…
+	Typography	Tipografia
+	Units & Scale	Unidades e escala
+@msg	Unknown dimension style	Estilo de cota desconhecido
+@msg	Unknown unit	Unidade desconhecida
+	VectorCraft	VectorCraft
+	VectorCraft Updates	Atualizações do VectorCraft
+	Video 1920×1080	Vídeo 1920×1080
+	Video 3840×2160	Vídeo 3840×2160
+swatch	Violet	Violeta
+swatch	Walnut	Nogueira
+	Web	Web
+	Web 1280×720	Web 1280×720
+swatch	White	Branco
+swatch	White, Black	Branco e preto
+swatch	Yellow	Amarelo
+swatch	Yellow Green	Verde-amarelado
+	Yonroku-ban	Yonroku-ban
+	▾ Default Actions	▾ Ações padrão
 	Text Flow	Fluxo do texto
 	By Rows	Por linhas
 	By Columns	Por colunas
