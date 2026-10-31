@@ -55,6 +55,29 @@ fn doc_with_rects() -> (Document, NodeId, NodeId) {
     (d, a, b)
 }
 
+/// Output draws the background colors of the artboards asked for, and only theirs, as rectangles
+/// of those artboards on a layer below the art; without a color there is nothing to draw.
+#[test]
+fn artboard_fills_go_below_the_art() {
+    let (mut d, a, _) = doc_with_rects();
+    assert!(d.with_artboard_fills([0]).is_none(), "no color, no fill");
+    let second = Rect::new(700.0, 0.0, 800.0, 100.0);
+    d.artboards.push(Artboard { id: 2, rect: second, ..d.artboards[0].clone() });
+    let blue = vectorcraft_color::Color::cmyk(1.0, 0.5, 0.0, 0.0);
+    d.artboards[1].color = Some(blue);
+    assert!(d.with_artboard_fills([0]).is_none(), "only the artboards asked for");
+    let out = d.with_artboard_fills([0, 1]).unwrap();
+    assert_eq!(out.layers.len(), d.layers.len() + 1);
+    assert_eq!(out.layers[1..], d.layers[..], "the art stays as it was, above the fills");
+    let fills = out.layers[0].children().unwrap();
+    assert_eq!(out.layers[0].display_name(), "Artboard Fill");
+    assert_eq!(fills.len(), 1);
+    assert_eq!(fills[0].geometric_bounds(), Some(second));
+    assert_eq!(fills[0].appearance.fill_paint(), vectorcraft_color::Paint::solid(blue), "in the color's own model");
+    assert!(out.node(a).is_some() && out.node(fills[0].id).is_some() && fills[0].id != a);
+    assert_eq!(d.artboards, out.artboards);
+}
+
 #[test]
 fn new_document_has_layer_and_artboard() {
     let d = Document::new(612.0, 792.0);

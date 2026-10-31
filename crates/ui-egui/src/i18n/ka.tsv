@@ -1952,6 +1952,7 @@ digits	Malayalam	მალაიალამური
 	Compatible Gradient and Gradient Mesh Printing	თავსებადი გრადიენტისა და გრადიენტული ბადის ბეჭდვა
 	Embed Fonts (for other applications)	შრიფტების ჩაშენება (სხვა აპლიკაციებისთვის)
 	EPS Options	EPS-ის პარამეტრები
+	Include Artboard Fill	სამუშაო დაფის შევსების ჩართვა
 	Include CMYK PostScript in RGB Files	CMYK PostScript-ის ჩართვა RGB ფაილებში
 	Include Document Thumbnails	დოკუმენტის ესკიზების ჩართვა
 	Include Linked Files	დაკავშირებული ფაილების ჩართვა
