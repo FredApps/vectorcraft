@@ -21,6 +21,7 @@ pub mod confirm;
 pub mod corners;
 pub mod dimension;
 mod document_setup;
+mod duotone;
 pub mod dxf_import;
 pub mod dxf_options;
 pub mod edit_selection;
@@ -656,7 +657,8 @@ pub fn show(app: &mut VectorcraftApp, ctx: &egui::Context) {
             }
         });
     });
-    if spec.ok.is_some() && ok_enabled && !after_panel && ctx.input(|i| i.key_pressed(egui::Key::Enter)) {
+    let rejected = ctx.data_mut(|d| d.remove_temp::<bool>(widgets::dialog_reject_commit_flag())).unwrap_or(false);
+    if spec.ok.is_some() && ok_enabled && !after_panel && !rejected && ctx.input(|i| i.key_pressed(egui::Key::Enter)) {
         ok = true;
     }
     if discard {
