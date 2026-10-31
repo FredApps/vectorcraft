@@ -26,9 +26,13 @@ jobs:
         with:
           toolchain: stable
           components: clippy
+      # Pull requests restore but never save: a PR's cache (about 1.3 GB) is visible only to that
+      # PR, and with the repository at its 10 GB limit each one evicted caches main's gate uses.
+      # A manual run on main seeds the cache every PR can restore.
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: desktop-print
+          save-if: ${{ github.ref == 'refs/heads/main' }}
       - run: cargo clippy --locked -p vectorcraft --all-targets -- -D warnings
       - run: cargo test --locked -p vectorcraft
       - name: Check pending submission and queue refusal feedback
