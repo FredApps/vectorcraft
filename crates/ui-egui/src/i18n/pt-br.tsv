@@ -6026,14 +6026,6 @@ breakText	Glyphs	Glifos
 # Strings the sibling catalogs translate that pt-BR did not yet cover (translated 2026-10-31).
 	 on the canvas to create one	 na tela para criar um
 	1 Layer	1 camada
-	[1P-High View]	[1P-Vista alta]
-	[1P-Low View]	[1P-Vista baixa]
-	[1P-Normal View]	[1P-Vista normal]
-	[2P-High View]	[2P-Vista alta]
-	[2P-Low View]	[2P-Vista baixa]
-	[2P-Normal View]	[2P-Vista normal]
-	[3P-Low View]	[3P-Vista baixa]
-	[3P-Normal View]	[3P-Vista normal]
 	[High Quality Print]	[Impressão de alta qualidade]
 	[High Resolution]	[Alta resolução]
 	[Low Resolution]	[Baixa resolução]
@@ -6053,7 +6045,6 @@ swatch	Aqua	Água
 	Arrow Style:	Estilo da seta:
 	Art and Bright Colors	Arte e cores vivas
 	Artboard Options: edit with the Artboard tool	Opções de Mesa de Trabalho: editar com a ferramenta Mesa de Trabalho
-	Automation	Automação
 	Away from the Line	Longe da linha
 swatch	Azure	Azul-celeste
 	Between Line and Object	Entre a linha e o objeto
@@ -6090,8 +6081,6 @@ swatch	Cyan Green	Verde-ciano
 swatch	Emerald	Esmeralda
 	English	Inglês
 swatch	Espresso	Expresso
-	Essentials	Essenciais
-	Essentials Classic	Essenciais clássico
 	Expand 1 Selected	Expandir 1 selecionado
 	Expand Object	Expandir objeto
 	Extension Lines	Linhas de extensão
@@ -6117,7 +6106,6 @@ font-script	Japanese	Japonês
 	Japanese Postcard	Cartão-postal japonês
 	Kaku #2	Kaku #2
 	Kaku #3	Kaku #3
-	Layout	Layout
 swatch	Lime	Lima
 	Line Type:	Tipo de linha:
 	Line Weight:	Espessura da linha:
@@ -6126,11 +6114,9 @@ swatch	Magenta	Magenta
 @msg	not an RTF file: it doesn't start with {\\rtf	não é um arquivo RTF: ele não começa com {\\rtf
 swatch	Ocean	Oceano
 shape	Open	Aberta
-	OpenType	OpenType
 swatch	Orange	Laranja
 swatch	Orange Red	Vermelho-alaranjado
 	Overlay Edge	Sobreposição de bordas
-	Painting	Pintura
 	Part of ArtCraft. MIT OR Apache-2.0. Fonts: Source Sans 3, Inter, JetBrains Mono, Noto Sans SC (OFL). Icons: Lucide (ISC) + VectorCraft.	Parte do ArtCraft. MIT OR Apache-2.0. Fontes: Source Sans 3, Inter, JetBrains Mono, Noto Sans SC (OFL). Ícones: Lucide (ISC) + VectorCraft.
 	Path Length	Comprimento do caminho
 	PDF/X-1a:2001	PDF/X-1a:2001
@@ -6144,7 +6130,6 @@ swatch	Pink	Rosa
 	Press Quality	Qualidade para gráfica
 	Print & Proof	Impressão e prova
 	Printing & Proofing	Impressão e prova
-	Printing and Proofing	Impressão e prova
 swatch	Purple	Púrpura
 swatch	Radial White, Black	Branco e preto (radial)
 	RECENT (1)	RECENTES (1)
@@ -6177,20 +6162,15 @@ swatch	Tan	Castanho-claro
 swatch	Teal	Verde-azulado
 @msg	this is a PostScript file (an .ai saved in an older format or without PDF compatibility, or an EPS file), which can't be opened yet: save it as PDF, PDF-compatible .ai or SVG	este é um arquivo PostScript (um .ai salvo em formato antigo ou sem compatibilidade com PDF, ou um arquivo EPS), que ainda não pode ser aberto: salve-o como PDF, .ai compatível com PDF ou SVG
 @msg	this kind of brush has no options dialog yet	este tipo de pincel ainda não tem caixa de diálogo de opções
-	Touch	Toque
-	Tracing	Vetorização
 	Tracing the colors…	Vetorizando as cores…
-	Typography	Tipografia
 	Units & Scale	Unidades e escala
 @msg	Unknown dimension style	Estilo de cota desconhecido
 @msg	Unknown unit	Unidade desconhecida
-	VectorCraft	VectorCraft
 	VectorCraft Updates	Atualizações do VectorCraft
 	Video 1920×1080	Vídeo 1920×1080
 	Video 3840×2160	Vídeo 3840×2160
 swatch	Violet	Violeta
 swatch	Walnut	Nogueira
-	Web	Web
 	Web 1280×720	Web 1280×720
 swatch	White	Branco
 swatch	White, Black	Branco e preto
