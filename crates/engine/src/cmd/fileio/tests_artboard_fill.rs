@@ -100,8 +100,20 @@ fn pdf_and_svg_show_the_color_and_their_editing_data_keeps_it_as_the_artboards()
 #[test]
 fn eps_and_postscript_print_draw_the_color() {
     let mut s = session();
-    // The only red the document has, the first artboard's color: RGB, or CMYK PostScript's.
-    let red = |t: &str| t.contains("1 0 0 rg\n") || t.contains("0 0.9725 1 0 k\n");
+    // The only red the document has, the first artboard's color: RGB, or CMYK PostScript's (its
+    // values depend on the color conversion the platform offers, so only its hue is checked).
+    let red = |t: &str| {
+        t.lines().any(|l| {
+            let mut w: Vec<&str> = l.split_whitespace().collect();
+            let Some(op) = w.pop() else { return false };
+            let v: Vec<f64> = w.iter().filter_map(|n| n.parse().ok()).collect();
+            match (op, v.as_slice()) {
+                ("rg" | "setrgbcolor", [r, g, b]) => *r > 0.9 && *g < 0.1 && *b < 0.1,
+                ("k" | "setcmykcolor", [c, m, y, k]) => *c < 0.1 && *m > 0.8 && *y > 0.8 && *k < 0.1,
+                _ => false,
+            }
+        })
+    };
     let eps = |s: &mut Session, more: Value| {
         String::from_utf8_lossy(&file(s, with(json!({"format": "eps", "useArtboards": true, "artboard": 0}), &more))).into_owned()
     };
