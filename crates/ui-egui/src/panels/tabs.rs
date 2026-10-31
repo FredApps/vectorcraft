@@ -515,6 +515,7 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
             set_marker(app, marker, place(pos.x), &para, span, &targets, both);
         }
     } else if resp.drag_stopped()
+        && !cancel_drag
         && let (Some(i), Some(pos)) = (drag, resp.interact_pointer_pos())
     {
         set_pstate::<Option<usize>>(ui.ctx(), "tabs-drag", None);
