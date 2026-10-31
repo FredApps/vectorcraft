@@ -5648,6 +5648,15 @@ breakText	Glyphs	Glyph
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Nhóm các đối tượng chồng lên nhau
 @msg	too many objects selected (at most 20000)	chọn quá nhiều đối tượng (tối đa 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Chia thành nét đứt…
+	Divide into Dashes	Chia thành nét đứt
+	Dash:	Gạch ngang:
+	Gap:	Khoảng hở:
+	Fit to Corners and Ends	Khớp với góc và đầu mút
+	Remove Gaps	Gỡ các khoảng hở
+@msg	that makes too many pieces (at most 100000): make the dashes longer	như vậy tạo ra quá nhiều mảnh (tối đa 100000): hãy kéo dài nét
+@msg	select paths, or segments, to divide	chọn các đường dẫn hoặc đoạn để chia
 	Marathi	Tiếng Marathi
 	Gujarati	Tiếng Gujarati
 	Bengali	Tiếng Bengali

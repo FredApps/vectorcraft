@@ -6036,6 +6036,15 @@ breakText	Glyphs	Glifs
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Agrupa els objectes superposats
 @msg	too many objects selected (at most 20000)	s’han seleccionat massa objectes (com a màxim 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Divideix en guions…
+	Divide into Dashes	Divideix en guions
+	Dash:	Guió:
+	Gap:	Separació:
+	Fit to Corners and Ends	Ajusta a les cantonades i els extrems
+	Remove Gaps	Elimina les separacions
+@msg	that makes too many pieces (at most 100000): make the dashes longer	això fa massa trossos (com a màxim 100000): allargueu els guions
+@msg	select paths, or segments, to divide	seleccioneu camins o segments per dividir
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengalí

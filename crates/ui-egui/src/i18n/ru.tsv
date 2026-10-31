@@ -6023,6 +6023,15 @@ breakText	Glyphs	Глифы
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Сгруппировать перекрывающиеся объекты
 @msg	too many objects selected (at most 20000)	выделено слишком много объектов (не более 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Разделить на штрихи…
+	Divide into Dashes	Разделить на штрихи
+	Dash:	Тире:
+	Gap:	Зазор:
+	Fit to Corners and Ends	Подогнать к углам и концам
+	Remove Gaps	Убрать зазоры
+@msg	that makes too many pieces (at most 100000): make the dashes longer	так получится слишком много частей (не более 100000): удлините штрихи
+@msg	select paths, or segments, to divide	выделите контуры или сегменты для разделения
 	Marathi	Маратхи
 	Gujarati	Гуджарати
 	Bengali	Бенгальский

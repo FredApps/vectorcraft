@@ -6035,6 +6035,15 @@ breakText	Glyphs	გლიფები
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	გადაფარვადი ობიექტების დაჯგუფება
 @msg	too many objects selected (at most 20000)	არჩეულია ძალიან ბევრი ობიექტი (მაქსიმუმ 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	ტირეებად დაყოფა…
+	Divide into Dashes	ტირეებად დაყოფა
+	Dash:	ტირე:
+	Gap:	ღრეჩო:
+	Fit to Corners and Ends	კუთხეებსა და ბოლოებზე მორგება
+	Remove Gaps	ღრეჩოების მოცილება
+@msg	that makes too many pieces (at most 100000): make the dashes longer	ეს ძალიან ბევრ ნაწილს იძლევა (მაქსიმუმ 100000): გაზარდეთ ტირეების სიგრძე
+@msg	select paths, or segments, to divide	აირჩიეთ დასაყოფი კონტურები ან სეგმენტები
 	Marathi	მარათჰი
 	Gujarati	გუჯარათი
 	Bengali	ბენგალური

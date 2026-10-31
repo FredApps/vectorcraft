@@ -6043,6 +6043,15 @@ breakText	Glyphs	Glyphes
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Grouper les objets qui se chevauchent
 @msg	too many objects selected (at most 20000)	trop d’objets sélectionnés (20000 au plus)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Diviser en tirets…
+	Divide into Dashes	Diviser en tirets
+	Dash:	Tiret :
+	Gap:	Écart :
+	Fit to Corners and Ends	Ajuster aux angles et aux extrémités
+	Remove Gaps	Supprimer les écarts
+@msg	that makes too many pieces (at most 100000): make the dashes longer	cela donne trop de morceaux (100000 au plus) : allongez les tirets
+@msg	select paths, or segments, to divide	sélectionnez des tracés ou des segments à diviser
 	Marathi	Marathi
 	Gujarati	Goudjarati
 	Bengali	Bengali

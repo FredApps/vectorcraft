@@ -5732,6 +5732,15 @@ breakText	Glyphs	字形
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	重なり合うオブジェクトをグループ化
 @msg	too many objects selected (at most 20000)	選択されたオブジェクトが多すぎます（最大 20000）
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	ダッシュに分割…
+	Divide into Dashes	ダッシュに分割
+	Dash:	ダッシュ:
+	Gap:	間隔:
+	Fit to Corners and Ends	コーナーと端に合わせる
+	Remove Gaps	間隔を削除
+@msg	that makes too many pieces (at most 100000): make the dashes longer	分割数が多すぎます（最大 100000）：ダッシュを長くしてください
+@msg	select paths, or segments, to divide	分割するパスまたはセグメントを選択してください
 	Marathi	マラーティー語
 	Gujarati	グジャラート語
 	Bengali	ベンガル語

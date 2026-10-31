@@ -6046,6 +6046,15 @@ breakText	Glyphs	Glyfy
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Seskupit překrývající se objekty
 @msg	too many objects selected (at most 20000)	vybráno příliš mnoho objektů (nejvýše 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Rozdělit na čárky…
+	Divide into Dashes	Rozdělit na čárky
+	Dash:	Pomlčka:
+	Gap:	Mezera:
+	Fit to Corners and Ends	Přizpůsobit rohům a koncům
+	Remove Gaps	Odstranit mezery
+@msg	that makes too many pieces (at most 100000): make the dashes longer	tím vznikne příliš mnoho dílů (nejvýše 100000): prodlužte čárky
+@msg	select paths, or segments, to divide	vyberte cesty nebo segmenty k rozdělení
 	Marathi	Maráthština
 	Gujarati	Gudžarátština
 	Bengali	Bengálština

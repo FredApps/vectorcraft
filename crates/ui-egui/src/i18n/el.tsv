@@ -5998,6 +5998,15 @@ breakText	Glyphs	Γλύφοι
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Ομαδοποίηση επικαλυπτόμενων αντικειμένων
 @msg	too many objects selected (at most 20000)	επιλέχθηκαν πάρα πολλά αντικείμενα (το πολύ 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Διαίρεση σε παύλες…
+	Divide into Dashes	Διαίρεση σε παύλες
+	Dash:	Παύλα:
+	Gap:	Απόσταση:
+	Fit to Corners and Ends	Προσαρμογή σε γωνίες και άκρα
+	Remove Gaps	Αφαίρεση κενών
+@msg	that makes too many pieces (at most 100000): make the dashes longer	αυτό δίνει πάρα πολλά κομμάτια (το πολύ 100000): κάντε τις παύλες μεγαλύτερες
+@msg	select paths, or segments, to divide	επιλέξτε διαδρομές ή τμήματα για διαίρεση
 	Marathi	Μαραθικά
 	Gujarati	Γκουγιαράτι
 	Bengali	Βεγγαλικά

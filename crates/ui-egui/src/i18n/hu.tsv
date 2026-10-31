@@ -6032,6 +6032,15 @@ breakText	Glyphs	Glifák
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Átfedő objektumok csoportosítása
 @msg	too many objects selected (at most 20000)	túl sok objektum van kijelölve (legfeljebb 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Felosztás szaggatásokra…
+	Divide into Dashes	Felosztás szaggatásokra
+	Dash:	Gondolatjel:
+	Gap:	Hézag:
+	Fit to Corners and Ends	Illesztés a sarkokhoz és végekhez
+	Remove Gaps	Hézagok eltávolítása
+@msg	that makes too many pieces (at most 100000): make the dashes longer	ez túl sok darabot adna (legfeljebb 100000): hosszabbítsa meg a szaggatásokat
+@msg	select paths, or segments, to divide	jelöljön ki felosztandó útvonalakat vagy szakaszokat
 	Marathi	Maráthi
 	Gujarati	Gudzsaráti
 	Bengali	Bengáli

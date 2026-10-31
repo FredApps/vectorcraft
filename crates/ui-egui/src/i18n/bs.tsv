@@ -5963,6 +5963,15 @@ shape	Open	Otvoren
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Grupiši preklapajuće objekte
 @msg	too many objects selected (at most 20000)	odabrano je previše objekata (najviše 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Podijeli na crtice…
+	Divide into Dashes	Podijeli na crtice
+	Dash:	Crtica:
+	Gap:	Razmak:
+	Fit to Corners and Ends	Uklopi u uglove i krajeve
+	Remove Gaps	Ukloni razmake
+@msg	that makes too many pieces (at most 100000): make the dashes longer	to daje previše dijelova (najviše 100000): produžite crtice
+@msg	select paths, or segments, to divide	odaberite putanje ili segmente za dijeljenje
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengalski

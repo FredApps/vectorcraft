@@ -5888,6 +5888,15 @@ breakText	Glyphs	字形
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	编组重叠对象
 @msg	too many objects selected (at most 20000)	选择的对象过多（最多 20000 个）
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	分割为短划线…
+	Divide into Dashes	分割为短划线
+	Dash:	短划线：
+	Gap:	间隙：
+	Fit to Corners and Ends	适合转角和端点
+	Remove Gaps	移除间隙
+@msg	that makes too many pieces (at most 100000): make the dashes longer	这会产生过多片段（最多 100000 个）：请加长短划线
+@msg	select paths, or segments, to divide	请选择要分割的路径或线段
 	Marathi	马拉地语
 	Gujarati	古吉拉特语
 	Bengali	孟加拉语

@@ -6076,6 +6076,15 @@ breakText	Glyphs	Merkit
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Ryhmitä päällekkäiset objektit
 @msg	too many objects selected (at most 20000)	liian monta objektia valittu (enintään 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Jaa viivoiksi…
+	Divide into Dashes	Jaa viivoiksi
+	Dash:	Ajatusviiva:
+	Gap:	Väli:
+	Fit to Corners and Ends	Sovita kulmiin ja päihin
+	Remove Gaps	Poista välit
+@msg	that makes too many pieces (at most 100000): make the dashes longer	siitä tulee liian monta osaa (enintään 100000): pidennä viivoja
+@msg	select paths, or segments, to divide	valitse jaettavat polut tai segmentit
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengali

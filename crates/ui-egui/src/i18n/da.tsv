@@ -5943,6 +5943,15 @@ breakText	Glyphs	Glyffer
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Gruppér overlappende objekter
 @msg	too many objects selected (at most 20000)	for mange objekter markeret (højst 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Opdel i streger…
+	Divide into Dashes	Opdel i streger
+	Dash:	Tankestreg:
+	Gap:	Afstand:
+	Fit to Corners and Ends	Tilpas til hjørner og ender
+	Remove Gaps	Fjern mellemrum
+@msg	that makes too many pieces (at most 100000): make the dashes longer	det giver for mange stykker (højst 100000): gør stregerne længere
+@msg	select paths, or segments, to divide	vælg stier eller segmenter, der skal opdeles
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengali

@@ -5929,6 +5929,15 @@ breakText	Glyphs	Глифи
 # Arrange Tools add-on: Group Overlapping Objects.
 	Group Overlapping Objects	Групиране на припокриващи се обекти
 @msg	too many objects selected (at most 20000)	избрани са твърде много обекти (най-много 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Разделяне на тирета…
+	Divide into Dashes	Разделяне на тирета
+	Dash:	Тире:
+	Gap:	Разстояние:
+	Fit to Corners and Ends	Напасване към ъгли и краища
+	Remove Gaps	Премахване на разстоянията
+@msg	that makes too many pieces (at most 100000): make the dashes longer	така се получават твърде много части (най-много 100000): удължете тиретата
+@msg	select paths, or segments, to divide	изберете пътища или сегменти за разделяне
 	Marathi	Маратхи
 	Gujarati	Гуджарати
 	Bengali	Бенгалски
