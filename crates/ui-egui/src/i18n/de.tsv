@@ -5672,3 +5672,15 @@ breakText	Glyphs	Glyphen
 	Odia	Oriya
 	Urdu	Urdu
 	VectorCraft {release} and later (version {n})	VectorCraft {release} und neuer (Version {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Symboltyp:
+	Dynamic Symbol	Dynamisches Symbol
+	Static Symbol	Statisches Symbol
+	Symbol Instance Appearance	Aussehen der Symbolinstanz
+	Reset Symbol Instance	Symbolinstanz zurücksetzen
+@msg	type must be static or dynamic, not {v}	type muss static oder dynamic sein, nicht {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` ist ein statisches Symbol: Stellen Sie zuerst den Symboltyp auf „Dynamisch“ ein
+@msg	path must be a list of child indices	path muss eine Liste von Kindindizes sein
+@msg	no object at path {shown} in the symbol's art	kein Objekt am Pfad {shown} in der Grafik des Symbols
+@msg	give fill, stroke, opacity and/or blend	geben Sie fill, stroke, opacity und/oder blend an
+@msg	pass newName, registration, exportType, nineSlice and/or type	geben Sie newName, registration, exportType, nineSlice und/oder type an

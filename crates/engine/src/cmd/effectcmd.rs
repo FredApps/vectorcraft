@@ -682,10 +682,12 @@ fn expanded_node(d: &mut Document, mut n: Node, brushes: &[vectorcraft_brush::Br
                 // Type, images, symbol instances, live objects (and paths whose Transform effect copies
                 // them with a gradient or changes their fills and strokes): through their outlines.
                 let symbol = match &n.kind {
-                    NodeKind::SymbolInstance { symbol, .. } => d.symbols.iter().find(|s| s.name == *symbol).map(|s| s.art.clone()),
+                    NodeKind::SymbolInstance { symbol, .. } => {
+                        d.symbols.iter().find(|s| s.name == *symbol).map(|s| vectorcraft_doc::symbol_overrides::dynamic_art(&s.art, &n))
+                    }
                     _ => None,
                 };
-                effects::expand_outlined(Some(&*d), &v, symbol.as_deref()).map(|mut m| {
+                effects::expand_outlined(Some(&*d), &v, symbol.as_ref()).map(|mut m| {
                     expand_pieces(d, &mut m, true, brushes, &mut stroke_art);
                     m
                 })

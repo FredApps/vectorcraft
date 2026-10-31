@@ -675,6 +675,7 @@ mod tests {
         assert_eq!(sampled_hex(&a), "#0000ff");
         // A symbol of a green square, placed at (300, 300) and doubled.
         d.symbols.push(vectorcraft_doc::Symbol {
+            dynamic: false,
             name: "Green".into(),
             art: filled_rect(Rect::new(0.0, 0.0, 10.0, 10.0), Paint::solid(Color::rgb(0.0, 1.0, 0.0))),
         });
@@ -693,8 +694,9 @@ mod tests {
         use vectorcraft_geom::{Affine, Rect};
         let (mut d, _) = doc_with_halves();
         let red = Paint::solid(Color::rgb(1.0, 0.0, 0.0));
-        d.symbols.push(vectorcraft_doc::Symbol { name: "Red".into(), art: filled_rect(Rect::new(0.0, 0.0, 20.0, 10.0), red) });
+        d.symbols.push(vectorcraft_doc::Symbol { dynamic: false, name: "Red".into(), art: filled_rect(Rect::new(0.0, 0.0, 20.0, 10.0), red) });
         d.symbols.push(vectorcraft_doc::Symbol {
+            dynamic: false,
             name: "Tiled".into(),
             art: filled_rect(Rect::new(0.0, 0.0, 20.0, 10.0), vectorcraft_doc::pattern::pattern_paint("Halves")),
         });
@@ -730,7 +732,7 @@ mod tests {
         let red = || Paint::solid(Color::rgb(1.0, 0.0, 0.0));
         let pair =
             Node::group(NodeId(0), vec![filled_rect(Rect::new(0.0, 0.0, 10.0, 10.0), red()), filled_rect(Rect::new(20.0, 0.0, 30.0, 10.0), red())]);
-        d.symbols.push(vectorcraft_doc::Symbol { name: "Pair".into(), art: Arc::new(pair) });
+        d.symbols.push(vectorcraft_doc::Symbol { dynamic: false, name: "Pair".into(), art: Arc::new(pair) });
         let (l, inst) = (d.layers[0].id, d.alloc_id());
         let mut n = Node::new(inst, NodeKind::SymbolInstance { symbol: "Pair".into(), xf: Affine::translate((100.0, 140.0)) });
         n.appearance.set_fill(Paint::solid(Color::rgb(0.0, 0.0, 1.0)));
@@ -744,7 +746,7 @@ mod tests {
         // A 200 pt tile holding an instance of a 180 pt green bar, which reaches far past the
         // square an instance is measured by without its symbol.
         let green = Paint::solid(Color::rgb(0.0, 1.0, 0.0));
-        d.symbols.push(vectorcraft_doc::Symbol { name: "Bar".into(), art: filled_rect(Rect::new(0.0, 0.0, 180.0, 10.0), green) });
+        d.symbols.push(vectorcraft_doc::Symbol { dynamic: false, name: "Bar".into(), art: filled_rect(Rect::new(0.0, 0.0, 180.0, 10.0), green) });
         let bar = Arc::new(Node::new(NodeId(0), NodeKind::SymbolInstance { symbol: "Bar".into(), xf: Affine::IDENTITY }));
         let mut bars = vectorcraft_doc::PatternDef::new("Bars", vec![bar]);
         bars.tile = Rect::new(0.0, 0.0, 200.0, 10.0);
@@ -779,15 +781,19 @@ mod tests {
         let instance = |name: String| Arc::new(Node::new(NodeId(0), NodeKind::SymbolInstance { symbol: name, xf: Affine::IDENTITY }));
         for i in 0..12 {
             let art = Node::group(NodeId(0), (0..4).map(|_| instance(format!("Fan{}", i + 1))).collect());
-            d.symbols.push(Symbol { name: format!("Fan{i}"), art: Arc::new(art) });
+            d.symbols.push(Symbol { dynamic: false, name: format!("Fan{i}"), art: Arc::new(art) });
         }
-        d.symbols.push(Symbol { name: "Fan12".into(), art: filled_rect(Rect::new(300.0, 300.0, 400.0, 400.0), pattern_paint("Nest8")) });
+        d.symbols.push(Symbol {
+            dynamic: false,
+            name: "Fan12".into(),
+            art: filled_rect(Rect::new(300.0, 300.0, 400.0, 400.0), pattern_paint("Nest8")),
+        });
         // "Deep0" to "Deep99": one instance of the next; "Deep100" a green square.
         for i in 0..100 {
-            d.symbols.push(Symbol { name: format!("Deep{i}"), art: instance(format!("Deep{}", i + 1)) });
+            d.symbols.push(Symbol { dynamic: false, name: format!("Deep{i}"), art: instance(format!("Deep{}", i + 1)) });
         }
         let green = Paint::solid(Color::rgb(0.0, 1.0, 0.0));
-        d.symbols.push(Symbol { name: "Deep100".into(), art: filled_rect(Rect::new(300.0, 0.0, 400.0, 100.0), green) });
+        d.symbols.push(Symbol { dynamic: false, name: "Deep100".into(), art: filled_rect(Rect::new(300.0, 0.0, 400.0, 100.0), green) });
         let l = d.layers[0].id;
         for name in ["Fan0", "Deep0"] {
             let inst = d.alloc_id();

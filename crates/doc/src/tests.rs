@@ -225,7 +225,7 @@ fn art_on_a_locked_artboard_cannot_be_selected_or_edited() {
 fn art_on_artboard_measures_a_symbol_instance_by_its_art() {
     let mut d = Document::new(612.0, 792.0);
     let art = Node::path(d.alloc_id(), shapes::rectangle(Rect::new(0.0, 0.0, 10.0, 10.0)), Appearance::default_art());
-    d.symbols.push(Symbol { name: "Box".into(), art: Arc::new(art) });
+    d.symbols.push(Symbol { dynamic: false, name: "Box".into(), art: Arc::new(art) });
     let (layer, id) = (d.layers[0].id, d.alloc_id());
     d.insert(Some(layer), 0, Node::new(id, NodeKind::SymbolInstance { symbol: "Box".into(), xf: Affine::translate((2.0, 2.0)) })).unwrap();
     // The art, (2, 2) to (12, 12), lies inside; the 20 × 20 square, (-8, -8) to (12, 12), doesn't.

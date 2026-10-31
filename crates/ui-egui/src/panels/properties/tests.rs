@@ -1666,3 +1666,21 @@ fn offset_path_and_simplify_are_not_quick_actions_for_type_alone() {
     let texts = tall(&mut app, &ctx, vec![]);
     assert!(shows(&texts, "Offset Path") && shows(&texts, "Simplify"), "type and a path: {texts:?}");
 }
+
+/// A dynamic symbol instance with appearance changes of its own has Reset in Quick Actions, which
+/// drops them (#4938); without changes there is no Reset.
+#[test]
+fn reset_is_a_quick_action_for_a_changed_dynamic_instance() {
+    let mut app = new_app();
+    let (a, b) = (rect(&mut app, 20.0, 20.0, 40.0, 40.0), rect(&mut app, 80.0, 20.0, 40.0, 40.0));
+    let inst = app.run("symbol.new", json!({"ids": [a, b], "type": "dynamic"})).unwrap()["id"].clone();
+    app.run("select.set", json!({"ids": [inst]})).unwrap();
+    let ctx = egui::Context::default();
+    assert!(!shows(&tall(&mut app, &ctx, vec![]), "Reset"), "nothing to reset");
+    app.run("symbol.instance.setAppearance", json!({"path": [0], "fill": "#ff0000"})).unwrap();
+    let texts = tall(&mut app, &ctx, vec![]);
+    press(&mut app, &ctx, text_at(&texts, "Reset").center());
+    let id = vectorcraft_doc::NodeId(inst.as_u64().unwrap());
+    assert!(app.session.doc().unwrap().doc.node(id).unwrap().extras().symbol_overrides.is_empty());
+    assert!(!shows(&tall(&mut app, &ctx, vec![]), "Reset"));
+}

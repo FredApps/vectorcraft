@@ -6073,3 +6073,15 @@ breakText	Glyphs	Glifák
 	Odia	Odia
 	Urdu	Urdu
 	VectorCraft {release} and later (version {n})	VectorCraft {release} és újabb (verzió: {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Szimbólum típusa:
+	Dynamic Symbol	Dinamikus szimbólum
+	Static Symbol	Statikus szimbólum
+	Symbol Instance Appearance	Szimbólumpéldány megjelenése
+	Reset Symbol Instance	Szimbólumpéldány visszaállítása
+@msg	type must be static or dynamic, not {v}	a type értéke static vagy dynamic lehet, nem {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` statikus szimbólum: előbb állítsa a szimbólum típusát Dinamikusra
+@msg	path must be a list of child indices	a path gyermekindexek listája kell legyen
+@msg	no object at path {shown} in the symbol's art	a szimbólum grafikájában nincs objektum a(z) {shown} útvonalon
+@msg	give fill, stroke, opacity and/or blend	adja meg a fill, stroke, opacity és/vagy blend értékét
+@msg	pass newName, registration, exportType, nineSlice and/or type	adja meg a newName, registration, exportType, nineSlice és/vagy type értékét

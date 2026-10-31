@@ -5971,3 +5971,15 @@ breakText	Glyphs	Глифи
 	Odia	Ория
 	Urdu	Урду
 	VectorCraft {release} and later (version {n})	VectorCraft {release} и по-нови (версия {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Тип на символа:
+	Dynamic Symbol	Динамичен символ
+	Static Symbol	Статичен символ
+	Symbol Instance Appearance	Външен вид на екземпляра на символ
+	Reset Symbol Instance	Нулиране на екземпляра на символ
+@msg	type must be static or dynamic, not {v}	type трябва да е static или dynamic, а не {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` е статичен символ: първо задайте типа на символа на „Динамичен“
+@msg	path must be a list of child indices	path трябва да е списък с индекси на дъщерни обекти
+@msg	no object at path {shown} in the symbol's art	в графиката на символа няма обект на пътя {shown}
+@msg	give fill, stroke, opacity and/or blend	задайте fill, stroke, opacity и/или blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	задайте newName, registration, exportType, nineSlice и/или type

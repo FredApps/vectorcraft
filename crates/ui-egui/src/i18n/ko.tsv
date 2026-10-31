@@ -5669,3 +5669,15 @@ breakText	Glyphs	글리프
 	Odia	오리야어
 	Urdu	우르두어
 	VectorCraft {release} and later (version {n})	VectorCraft {release} 이상 (버전 {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	심볼 유형:
+	Dynamic Symbol	동적 심볼
+	Static Symbol	정적 심볼
+	Symbol Instance Appearance	심볼 인스턴스 모양새
+	Reset Symbol Instance	심볼 인스턴스 재설정
+@msg	type must be static or dynamic, not {v}	type은 static 또는 dynamic이어야 합니다({v}는 안 됨)
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}`은(는) 정적 심볼입니다. 먼저 심볼 유형을 동적으로 설정하세요
+@msg	path must be a list of child indices	path는 자식 인덱스 목록이어야 합니다
+@msg	no object at path {shown} in the symbol's art	심볼 아트의 경로 {shown}에 개체가 없습니다
+@msg	give fill, stroke, opacity and/or blend	fill, stroke, opacity 및/또는 blend를 지정하세요
+@msg	pass newName, registration, exportType, nineSlice and/or type	newName, registration, exportType, nineSlice 및/또는 type을 지정하세요
