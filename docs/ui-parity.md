@@ -1,6 +1,6 @@
 # UI and interaction parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Start Global Edit on groups, #4939) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Export for Screens: Include Artboard Fill, #4937) · **Target:** Adobe Illustrator 2026 (30.x)
 
 ## Feature submission evidence
 
@@ -385,6 +385,7 @@ separate. Scores and hours unchanged. [Behavior and command details](development
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Export for Screens has Include Artboard Fill beside Include Bleed (on by default, remembered; `includeArtboardFill`): the files draw each artboard's background color behind its art, as exports and print now do, and the Print dialog's preview shows it (#4937); scores and estimates unchanged |
 | 2026-11-01 | minor | Select › Start Global Edit on a group takes the groups like it (the same objects at the same places, moved or scaled; Appearance, Size and the artboard options apply) and gives an edit made to an object inside one to the object at its place in each of the others, in proportion, as one undo step (#4939). Scores and estimates unchanged |
 | 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): New Symbols from Layers and Convert Layers to Symbols (#4927); scores and estimates unchanged |
 | 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): Save a Timestamped Copy (#4926); scores and estimates unchanged |

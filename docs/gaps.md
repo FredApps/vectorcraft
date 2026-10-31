@@ -1,6 +1,6 @@
 # Gaps
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (G5: Start Global Edit on groups, #4939; estimate unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (G13: artboard background colors in exports and print, #4937; estimate unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
 
 ## Feature submission evidence
 
@@ -435,7 +435,9 @@ from G14 and the budget run of G15: **~170–270 h** one agent, ~50–80 h wall 
 
 - **Done:** TIFF choices and format settings in Export for Screens and Asset Export (30.2), using the existing encoder; UI-to-file regressions cover selection, scaling, options and persistence.
 - **Done:** artboard background colors on the canvas (30.0): Properties › Artboards › Fill and Artboard Options set
-  each artboard's color, and the canvas draws its paper in it. Exports and print do not draw the color yet.
+  each artboard's color, and the canvas draws its paper in it. Exports (raster, PDF, SVG, EPS, `.ai` PDF pages,
+  Export for Screens with Include Artboard Fill) and print draw it behind the art (#4937). Left: the color isn't read
+  from or written to the reference app's own `.ai` data.
 
 - **Done:** Object › Intertwine (#1763): Make, Edit and Release; the Intertwine tool highlights the overlap area under
   the pointer, a click swaps which object is on top there, and a path (Shift: a rectangle) drawn around overlaps
@@ -677,6 +679,7 @@ trap, and the defaults (0.25 pt, 100%, 40%) are VectorCraft's own, the pages giv
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | G13: Artboard background colors in output (#4937): raster exports (a transparent background too), PDF, SVG and EPS pages, `.ai` files' PDF pages, Export for Screens and print (and its preview) draw each artboard's color behind its art, inside the artboard and in the color's own model; Export for Screens has Include Artboard Fill beside Include Bleed (on by default, remembered; `includeArtboardFill`, also on `document.export` and `file.print`); editing data keeps the color as the artboard's, and Export for Screens' document rows keep it too; estimate unchanged. |
 | 2026-11-01 | minor | G5: Select › Start Global Edit on a group takes the groups like it (the same objects at the same places, moved or scaled; Appearance, Size and the artboard options apply) and gives an edit made to an object inside one to the object at its place in each of the others, in proportion, as one undo step (#4939); rotated copies and Shift-click exclusion remain. Estimate unchanged. |
 | 2026-10-31 | minor | G4: PDF import finds an installed font whose PDF name holds hyphens (`Noto-Sans-Bold` is Noto Sans, Bold: the longest part before a hyphen that names an installed family) and a composite font by its CIDFont's name rather than its base name, which ends in the CMap's (`Name-Identity-H`, [ISO 32000-1 §9.7.6.1](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf)); a missing font is split only before a style part (`Helvetica-BoldOblique`), so it is reported as `MS PGothic`, not `MS`. Estimate unchanged. |
 | 2026-10-31 | minor | G13: Direct Selection snaps the end of an existing straight line, dragged by its end anchor, square to straight paths and grazing curves (Smart Guides › Geometric Guides: Snap to Perpendicular and Snap to Tangent), the case the public Snap to Perpendicular and Snap to Tangent pages add to drawing with the Line Segment and Pen tools (#2530). Scores and estimates unchanged. |

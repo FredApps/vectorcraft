@@ -3586,7 +3586,12 @@ An artboard's background color (Properties › Artboards › Fill, Artboard Opti
 with one. The canvas draws that artboard's paper in
 the color. With Simulate Colored Paper on, it multiplies the color with the paper color, each sRGB channel as
 artboard × paper / 255; artboards without a color show the paper color. The transparency grid still covers it while
-it shows. Copies, duplicates and the native format keep the color; exports and print do not draw it. `inspect_document`
+it shows. Copies, duplicates and the native format keep the color. Exports draw it behind the art of each artboard
+they write (raster formats, a transparent background too; PDF, SVG and EPS pages; `.ai` files' PDF pages; Export for
+Screens; `file.print` and its preview), as a rectangle of the artboard filled with the color in its own model, on a
+layer of its own below the others; files that carry the editing data (Preserve Editing, `.ai`, EPS, native rows of
+Export for Screens) keep it as the artboard's color, not as art. `includeArtboardFill: false` on `document.export`,
+`document.serialize`, `document.exportForScreens` (Include Artboard Fill) or `file.print` leaves it out. `inspect_document`
 lists it as the artboard's `color` (`#rrggbb`), and `ui.colorPicker {artboard: index}` opens the Color Picker for it.
 
 Artboard Options' Show Center Mark and Show Cross Hairs: `artboard.setProps {index, showCenterMark?: bool,
@@ -4028,7 +4033,8 @@ each file deflated, or stored when deflating does not make it smaller.
 A row is `{format, scale?}` where `scale` is a factor (`2`, `"2x"`), a pixel width (`"100w"` or `width: 100`), a
 height (`"100h"`) or a resolution (`"72ppi"`); raster rows name their files `@2x`, `@100w`… unless `suffix` says
 otherwise. `fullDocument` writes one file per row instead (a PDF of every artboard, other formats the bounds of all
-art), `includeBleed` grows each artboard by the document's bleed, `pdfs: "single"` (Export PDFs As › Single file)
+art), `includeBleed` grows each artboard by the document's bleed, `includeArtboardFill: false` (Include Artboard
+Fill unchecked) leaves the artboards' background colors out of the files, `pdfs: "single"` (Export PDFs As › Single file)
 writes the artboards a PDF row exports as the pages of one PDF named after the document, `subfolders` puts each
 row's files in a sub-folder (its size or format, or its own `folder`; `folders: "format"` sorts by format instead), `preset: "mobile"` or `"density"` (Android-style ldpi…xxxhdpi
 sub-folders) replaces the rows, and `settings: {png: {…}, jpg: {…}, svg: {…}, pdf: {preset}}` gives every row of a
