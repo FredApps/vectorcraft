@@ -1,6 +1,6 @@
 # UI and interaction parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Document Tools add-on: New Symbols from Layers, #4927) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Start Global Edit on groups, #4939) · **Target:** Adobe Illustrator 2026 (30.x)
 
 ## Feature submission evidence
 
@@ -296,7 +296,7 @@ next unit in the order a right-click on a ruler lists them, from Feet back to Po
 | Actions panel: a clicked action stays selected for Play Current Selection and Delete Selection | partial | #1853 (part of #1629); editing actions and action shortcuts remain |
 | Actions panel: Create New Set (bottom bar, ≡ › New Set…) names a new set and Set Options… renames the current one; a click on a set's name makes it current and a recording goes into the current set ([helpx: Automation with actions](https://helpx.adobe.com/illustrator/using/automation-actions.html)) | partial | #3712; the New Action dialog (name, set menu, shortcut, colour), dragging actions between sets and deleting a set remain |
 | Properties panel per context (every selection type's Quick Actions) | partial | one clip group: Edit Clipping Path and Edit Contents, at the top of the panel rather than in Quick Actions (G1); the overview's additional controls ([Properties panel overview](https://helpx.adobe.com/illustrator/desktop/get-started/learn-the-basics/properties-panel-overview.html)): Blend Options (one blend selected, with any tool, #4817) and Merge Live Paint (a Live Paint group with more) in Quick Actions, the Width Profile list (Width tool or a variable-width stroke) and an applied effect's Delete icon in Appearance, Corner and Corner Radius for corners selected with Direct Selection; Variable Font was already there |
-| Select › Start Global Edit / Stop Global Edit; Properties › Quick Actions with the Global Edit Options popover (Match: Appearance, Size; On Artboards: All Artboards or a range, Include Objects On Canvas; Result(s)); Escape stops it; the matched objects are highlighted in their layer colour while it runs | partial | #3521, `select.globalEdit` / `select.globalEditOptions`, `crates/engine/src/tests/globaledit.rs`; paths, compound paths and symbol instances; the Control panel's copy of the options, Shift-click to leave a match out, highlighting matches before the start and similar groups remain ([public source](https://helpx.adobe.com/illustrator/desktop/manage-objects/edit-objects/edit-similar-objects.html)) |
+| Select › Start Global Edit / Stop Global Edit; Properties › Quick Actions with the Global Edit Options popover (Match: Appearance, Size; On Artboards: All Artboards or a range, Include Objects On Canvas; Result(s)); Escape stops it; the matched objects are highlighted in their layer colour while it runs | partial | #3521, `select.globalEdit` / `select.globalEditOptions`, `crates/engine/src/tests/globaledit.rs`; paths, compound paths, symbol instances and groups of them (similar groups, #4939: edits inside one group reach the same object in the others; [public source](https://helpx.adobe.com/illustrator/desktop/manage-objects/edit-objects/edit-groups-with-similar-objects.html)); the Control panel's copy of the options, Shift-click to leave a match out, rotated copies and highlighting matches before the start remain ([public source](https://helpx.adobe.com/illustrator/desktop/manage-objects/edit-objects/edit-similar-objects.html)) |
 | Contextual task bar | done | |
 | Control bar with Transform and Stroke popovers | done | |
 | Pathfinder shape results keep their source names and SVG IDs | done | #1293; Minus Front keeps the back name, Minus Back the front name; Unite/Intersect/Exclude use the backmost named input; compound output carries it once; geometry and paint unchanged |
@@ -385,6 +385,7 @@ separate. Scores and hours unchanged. [Behavior and command details](development
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Select › Start Global Edit on a group takes the groups like it (the same objects at the same places, moved or scaled; Appearance, Size and the artboard options apply) and gives an edit made to an object inside one to the object at its place in each of the others, in proportion, as one undo step (#4939). Scores and estimates unchanged |
 | 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): New Symbols from Layers and Convert Layers to Symbols (#4927); scores and estimates unchanged |
 | 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): Save a Timestamped Copy (#4926); scores and estimates unchanged |
 | 2026-11-01 | minor | Path Precision Tools add-on (a VectorCraft addition): Divide into Dashes (#4950); scores and estimates unchanged |
