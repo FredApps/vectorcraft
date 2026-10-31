@@ -1,6 +1,6 @@
 # UI and interaction parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (dynamic symbols, #4938) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Pen: Cmd/Ctrl drags with the lent selection tool, not hidden box handles, #4980) · **Target:** Adobe Illustrator 2026 (30.x)
 
 ## Feature submission evidence
 
@@ -78,7 +78,7 @@ tools, never checked side by side) isn't captured row by row.
 | Click the first anchor to close; the drag shapes the closing curve | done | |
 | Click the last anchor to retract its outgoing handle; drag from it to pull a new one | done | |
 | Alt over a handle, anchor or segment acts as the Anchor Point tool | done | |
-| Cmd/Ctrl lends the last-used selection tool | done | the path being drawn continues afterwards |
+| Cmd/Ctrl lends the last-used selection tool | done | the path being drawn continues afterwards; with Direct Selection (the default until a selection tool is chosen) a Cmd drag moves an anchor of the path being drawn, moves a straight segment or bends a curved one, one undo step each, and a Cmd-click away from art ends the path; with Selection the hidden bounding box of the path being drawn takes no press, so the drag moves the path (#4980) |
 | Click an open path's end to continue it; click another path's end to join | done | #776 |
 | Rubber Band preview | done | Preferences option |
 | Auto Add/Delete on a selected path; Shift or the preference disables it | done | |
@@ -387,6 +387,7 @@ separate. Scores and hours unchanged. [Behavior and command details](development
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Pen with Cmd/Ctrl held: the lent Selection tool no longer scales the path being drawn by bounding-box handles the canvas hides while its end anchor is selected (a flat path did nothing under a resize pointer); a Cmd drag moves the path instead, and with Direct Selection moves anchors and segments, one undo step each (#4980); scores and estimates unchanged |
 | 2026-11-01 | minor | Dynamic symbols (#4938): Symbol Options › Symbol Type; per-instance appearance for objects of a dynamic symbol's art; Reset in the Properties panel and the Symbols panel menu; on-canvas Direct Selection of the parts remains |
 | 2026-11-01 | minor | Export for Screens has Include Artboard Fill beside Include Bleed (on by default, remembered; `includeArtboardFill`): the files draw each artboard's background color behind its art, as exports and print now do, and the Print dialog's preview shows it (#4937); scores and estimates unchanged |
 | 2026-11-01 | minor | Select › Start Global Edit on a group takes the groups like it (the same objects at the same places, moved or scaled; Appearance, Size and the artboard options apply) and gives an edit made to an object inside one to the object at its place in each of the others, in proportion, as one undo step (#4939). Scores and estimates unchanged |
