@@ -1954,6 +1954,7 @@ font-technology	Variable	Μεταβλητές
 	Subtract	Αφαίρεση
 	Superscript	Εκθέτης
 	Superscript:	Εκθέτης:
+	Stylistic Alternates	Εναλλακτικοί χαρακτήρες στυλ
 	Swash	Διακοσμητικά τελειώματα
 	Swatches	Δείγματα χρωμάτων
 	New Group	Νέα ομάδα
@@ -3074,6 +3075,7 @@ digits	Tamil	Ταμιλικά
 digits	Telugu	Τελούγκου
 digits	Kannada	Κανάντα
 digits	Malayalam	Μαλαγιάλαμ
+	Proportional Lining	Ισοϋψείς αναλογικοί αριθμοί
 	Proportional Oldstyle	Αναλογικοί παλαιοτυπικοί αριθμοί
 	Pucker & Bloat…	Συρρίκνωση και διόγκωση…
 	Pucker Tool	Συρρίκνωση (Pucker Tool)
@@ -3694,6 +3696,7 @@ digits	Malayalam	Μαλαγιάλαμ
 	Tabs	Στηλοθέτες
 	Tabular Lining	Ισοϋψείς αριθμοί σταθερού πλάτους
 	Tabular Oldstyle	Παλαιοτυπικοί αριθμοί σταθερού πλάτους
+	Titling Alternates	Εναλλακτικοί χαρακτήρες τίτλων
 	Target	Στόχος
 	Target Contents	Περιεχόμενα στόχου
 	Tate-chu-yoko	Tate-chu-yoko

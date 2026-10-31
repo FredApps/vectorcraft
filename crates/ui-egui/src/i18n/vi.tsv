@@ -2783,6 +2783,7 @@ mark-style	Japanese	Kiểu Nhật
 	Proof Setup	Thiết lập thử nghiệm
 	Properties	Thuộc tính
 	Proportional Metrics	Số liệu theo tỷ lệ
+	Proportional Lining	Số tỷ lệ đứng
 	Proportional Oldstyle	Kiểu cũ theo tỷ lệ
 	Pucker & Bloat…	Nhíu & Phồng…
 	Pucker Tool	Công cụ Nhíu
@@ -3661,6 +3662,7 @@ mark-style	Japanese	Kiểu Nhật
 	Swap Fill and Stroke (Shift+X)	Đổi màu tô và nét (Shift+X)
 	Swap start and end arrowheads	Đổi đầu mũi tên bắt đầu và kết thúc
 	Swap the selected object for the file, keeping its place and transform	Thay đối tượng đã chọn bằng tệp, giữ nguyên vị trí và biến đổi
+	Stylistic Alternates	Ký tự thay thế theo phong cách
 	Swash	Swash
 	Swatch Conflict	Xung đột mẫu màu
 	Swatch Conflicts	Xung đột mẫu màu
@@ -3699,6 +3701,7 @@ mark-style	Japanese	Kiểu Nhật
 	Tabs	Tab
 	Tabular Lining	Số bảng đứng
 	Tabular Oldstyle	Số bảng kiểu cũ
+	Titling Alternates	Ký tự thay thế cho tiêu đề
 	Taper	Thu dần
 	Target	Mục tiêu
 	Target Contents	Nội dung mục tiêu

@@ -3041,6 +3041,7 @@ mark-style	Japanese	日本式
 	Superscript:	上付き文字:
 	Swap Fill and Stroke	塗りと線を入れ替え
 	Swap start and end arrowheads	始点と終点の矢印を入れ替え
+	Stylistic Alternates	スタイル代替字
 	Swash	スワッシュ
 	Swatch Conflict	スウォッチの競合
 	Swatch Conflicts	スウォッチの競合
@@ -3615,6 +3616,7 @@ file-filter	Templates	テンプレート
 	Preset {}	プリセット {}
 	Preview in Browser needs the desktop app (the web downloads files instead)	ブラウザーでプレビューにはデスクトップアプリが必要です (Web アプリではファイルがダウンロードされます)
 	Print presets	プリントプリセット
+	Proportional Lining	プロポーショナルライニング
 	Proportional Oldstyle	プロポーショナルオールドスタイル
 	Punctuation	句読点
 	Radius 1	半径 1
@@ -3696,6 +3698,7 @@ file-filter	Templates	テンプレート
 	System Layout	システムレイアウト
 	Tabular Lining	等幅ライニング
 	Tabular Oldstyle	等幅オールドスタイル
+	Titling Alternates	タイトル代替字
 	Tate-chu-yoko	縦中横
 	Temperature	色温度
 	Template	テンプレート

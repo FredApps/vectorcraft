@@ -3317,6 +3317,7 @@ digits	Tamil	坦米爾數字
 digits	Telugu	泰盧固數字
 digits	Kannada	坎那達數字
 digits	Malayalam	馬來亞拉姆數字
+	Proportional Lining	比例齊線數字
 	Proportional Oldstyle	比例舊式數字
 	Pucker & Bloat…	縮攏與膨脹…
 	Pucker Tool	縮攏工具
@@ -4120,6 +4121,7 @@ digits	Malayalam	馬來亞拉姆數字
 	Swap Fill and Stroke (Shift+X)	對調填色與筆畫 (Shift+X)
 	Swap start and end arrowheads	對調起點與終點箭頭
 	Swap the selected object for the file, keeping its place and transform	以檔案取代選取的物件，並保留其位置與變形
+	Stylistic Alternates	風格替代字
 	Swash	花體字
 	Swatch Conflict	色票衝突
 	Swatch Conflicts	色票衝突
@@ -4189,6 +4191,7 @@ digits	Malayalam	馬來亞拉姆數字
 	Tabs	定位點
 	Tabular Lining	等寬齊線數字
 	Tabular Oldstyle	等寬舊式數字
+	Titling Alternates	標題替代字
 	Target	目標
 	Target Contents	目標內容
 	Target:	目標：

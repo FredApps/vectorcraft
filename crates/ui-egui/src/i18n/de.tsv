@@ -2435,6 +2435,7 @@ digits	Tamil	Tamil
 digits	Telugu	Telugu
 digits	Kannada	Kannada
 digits	Malayalam	Malayalam
+	Proportional Lining	Proportionale Versalziffern
 	Proportional Oldstyle	Proportionale Mediävalziffern
 	Pucker & Bloat…	Zusammenziehen und aufblasen…
 	Pucker Tool	Zusammenziehen-Werkzeug
@@ -3241,6 +3242,7 @@ effect	Points	Punkte
 	Swap Fill and Stroke (Shift+X)	Fläche und Kontur vertauschen (Shift+X)
 	Swap start and end arrowheads	Pfeilspitzen an Anfang und Ende vertauschen
 	Swap the selected object for the file, keeping its place and transform	Das ausgewählte Objekt durch die Datei ersetzen; Position und Transformation bleiben erhalten
+	Stylistic Alternates	Stilistische Varianten
 	Swash	Schwungschrift
 	Swatch Conflict	Farbfeldkonflikt
 	Swatch Conflicts	Farbfeldkonflikte
@@ -3293,6 +3295,7 @@ effect	Points	Punkte
 	Tabs	Tabulatoren
 	Tabular Lining	Tabellarische Versalziffern
 	Tabular Oldstyle	Tabellarische Mediävalziffern
+	Titling Alternates	Titelschriftvarianten
 	Target	Ziel
 	Target Contents	Inhalt als Ziel auswählen
 	Target:	Ziel:

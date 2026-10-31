@@ -3098,6 +3098,7 @@ digits	Malayalam	Malaiàlam
 	Proof Setup	Configuració de prova
 	Properties	Propietats
 	Proportional Metrics	Mètriques proporcionals
+	Proportional Lining	Xifres proporcionals alineades
 	Proportional Oldstyle	Oldstyle proporcional
 	PRs	PRs
 	Public Domain	Domini públic
@@ -4118,6 +4119,7 @@ digits	Malayalam	Malaiàlam
 	Swap Fill and Stroke (Shift+X)	Intercanvia el farciment i el traç (Maj+X)
 	Swap start and end arrowheads	Intercanvia les puntes de fletxa inicial i final
 	Swap the selected object for the file, keeping its place and transform	Substitueix l’objecte seleccionat pel fitxer, mantenint-ne la posició i la transformació
+	Stylistic Alternates	Alternatives estilístiques
 	Swash	Volada
 	Swatch Conflict	Conflicte de mostres
 	Swatch Conflicts	Conflictes de mostres
@@ -4175,6 +4177,7 @@ digits	Malayalam	Malaiàlam
 	Tabs	Tabulacions
 	Tabular Lining	Xifres tabulars alineades
 	Tabular Oldstyle	Xifres tabulars antigues
+	Titling Alternates	Alternatives de titulars
 	Tag	Etiqueta
 	Tag (open)	Etiqueta (oberta)
 	Taper	Afusament

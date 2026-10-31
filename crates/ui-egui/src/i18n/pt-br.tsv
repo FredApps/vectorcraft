@@ -2702,6 +2702,7 @@ digits	Malayalam	Malaiala
 	Superscript:	Sobrescrito:
 	Swap Fill and Stroke	Trocar Preenchimento e Traçado
 	Swap start and end arrowheads	Trocar pontas de seta inicial e final
+	Stylistic Alternates	Variantes Estilísticas
 	Swash	Ornamento
 	Swatch Conflict	Conflito de Amostra
 	Swatch Conflicts	Conflitos de Amostra
@@ -4619,6 +4620,7 @@ axis	Both	Ambos
 	Preset {}	Predefinido {}
 	Preview in Browser needs the desktop app (the web downloads files instead)	A visualização no navegador exige o aplicativo para desktop (na web, os arquivos são baixados)
 	Print presets	Predefinidos de impressão
+	Proportional Lining	Alinhado Proporcional
 	Proportional Oldstyle	Antigo Proporcional
 	Punctuation	Pontuação
 	Radius 1	Raio 1
@@ -4722,6 +4724,7 @@ axis	Both	Ambos
 	System Layout	Layout do Sistema
 	Tabular Lining	Alinhado Tabular
 	Tabular Oldstyle	Antigo Tabular
+	Titling Alternates	Variantes de Titulação
 	Tate-chu-yoko	Tate-chu-yoko
 	Temperature	Temperatura
 	Templates	Modelos
