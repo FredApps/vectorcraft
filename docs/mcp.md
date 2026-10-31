@@ -1561,7 +1561,8 @@ already walks Image Trace. Short agent entry points:
   of `symbol.list` carry `nineSlice`: the guides or `null`; `type` is Symbol Type, `static` by default for the command
   and `dynamic` by default in the Symbol Options dialog),
   `symbol.place {name?, x?, y?}`, `symbol.breakLink {ids?}`, `symbol.replace`, `symbol.edit`, `symbol.duplicate`,
-  `symbol.selectInstances {name}`. `symbol.new` and `symbol.duplicate {name, newName?}` trim the white space around the
+  `symbol.selectInstances {name}`, `symbol.delete {name | names, expandInstances?}` (`names` deletes several in one
+  undo step). `symbol.new` and `symbol.duplicate {name, newName?}` trim the white space around the
   name they are given, as `symbol.options` trims `newName`; a blank one gives "New Symbol" or "<name> copy".
 - Dynamic symbols: an instance of a symbol whose `type` is `dynamic` changes the appearance of objects in the symbol's
   art for itself only and stays linked. `symbol.instance.setAppearance {id?, path, fill?, stroke?, opacity?, blend?}`
@@ -1577,6 +1578,11 @@ already walks Image Trace. Short agent entry points:
 ```json
 {"name":"run_command","arguments":{"command":"symbol.instance.setAppearance","params":{"id":42,"path":[1],"fill":"#d0021b","opacity":80}}}
 ```
+- The Symbols panel menu's Select All Unused: `symbol.unused` (a query) lists the symbols nothing places, in panel
+  order, and the panel shows them selected; its Delete Symbol then deletes them all, asked once, in one undo step.
+  Instances in the art (opacity masks included), graph designs, pattern tiles (with the tiles that pattern editing's
+  Cancel puts back) and the art of the document's brushes count, and so do the instances in the art of a symbol that
+  is used; a symbol placed only inside an unused symbol is unused too.
 - The Brushes panel menu's Select All Unused: `brush.unused` (a query) lists the brushes no stroke paints with, in
   library order, and the panel selects them. Strokes in the art (opacity masks included), symbols, graph designs,
   pattern tiles (with the tiles that pattern editing's Cancel puts back) and graphic styles count, and so do the
