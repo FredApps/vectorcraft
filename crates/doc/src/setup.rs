@@ -381,7 +381,7 @@ mod tests {
             (char_language_name(None), char_language_name(Some("gu")), char_language_name(Some("x-unknown"))),
             (Some("English: USA"), Some("Gujarati"), None)
         );
-        // Serbian in either script, and Croatian (which Illustrator also lists).
+        // Serbian in either script, and Croatian.
         assert_eq!(char_language("Serbian: Cyrillic"), Ok(Some("sr-Cyrl")));
         assert_eq!(char_language("sr-latn"), Ok(Some("sr-Latn")));
         assert_eq!(char_language("Croatian"), Ok(Some("hr")));
