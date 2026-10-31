@@ -5897,6 +5897,13 @@ breakText	Glyphs	字形
 	Remove Gaps	移除间隙
 @msg	that makes too many pieces (at most 100000): make the dashes longer	这会产生过多片段（最多 100000 个）：请加长短划线
 @msg	select paths, or segments, to divide	请选择要分割的路径或线段
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	文档工具
+	Save a Timestamped Copy	保存带时间戳的副本
+@msg	there is no clock here	此处没有时钟
+@msg	there is no clock here: give `time` (Unix seconds)	此处没有时钟：请提供 `time`（Unix 秒）
+@msg	the document has never been saved: give `folder`	文档从未保存过：请提供 `folder`
+@msg	every numbered name for the copy is taken	副本的所有编号名称均已被占用
 	Marathi	马拉地语
 	Gujarati	古吉拉特语
 	Bengali	孟加拉语

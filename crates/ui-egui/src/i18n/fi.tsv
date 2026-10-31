@@ -6085,6 +6085,13 @@ breakText	Glyphs	Merkit
 	Remove Gaps	Poista välit
 @msg	that makes too many pieces (at most 100000): make the dashes longer	siitä tulee liian monta osaa (enintään 100000): pidennä viivoja
 @msg	select paths, or segments, to divide	valitse jaettavat polut tai segmentit
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Asiakirjatyökalut
+	Save a Timestamped Copy	Tallenna kopio aikaleimalla
+@msg	there is no clock here	täällä ei ole kelloa
+@msg	there is no clock here: give `time` (Unix seconds)	täällä ei ole kelloa: anna `time` (Unix-sekunteina)
+@msg	the document has never been saved: give `folder`	asiakirjaa ei ole koskaan tallennettu: anna `folder`
+@msg	every numbered name for the copy is taken	kaikki kopion numeroidut nimet ovat varattuja
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengali

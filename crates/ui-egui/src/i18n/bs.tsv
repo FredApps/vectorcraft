@@ -5972,6 +5972,13 @@ shape	Open	Otvoren
 	Remove Gaps	Ukloni razmake
 @msg	that makes too many pieces (at most 100000): make the dashes longer	to daje previše dijelova (najviše 100000): produžite crtice
 @msg	select paths, or segments, to divide	odaberite putanje ili segmente za dijeljenje
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Alati za dokument
+	Save a Timestamped Copy	Sačuvaj kopiju s datumom i vremenom
+@msg	there is no clock here	ovdje nema sata
+@msg	there is no clock here: give `time` (Unix seconds)	ovdje nema sata: navedite `time` (Unix sekunde)
+@msg	the document has never been saved: give `folder`	dokument nikad nije sačuvan: navedite `folder`
+@msg	every numbered name for the copy is taken	sva numerisana imena za kopiju su zauzeta
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengalski

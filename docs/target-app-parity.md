@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Path Precision Tools add-on: Divide into Dashes, #4950; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Document Tools add-on: Save a Timestamped Copy, #4926; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1407,10 +1407,15 @@ A VectorCraft addition, not a feature of the reference app, so no area score mov
 
 A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Path Precision Tools › Divide into Dashes… cuts the selected paths into separate open paths along the curve (arc length, not straight distance): each `dash` long (0.01 to 1000000 pt, 10 by default) with `gap` between them (0 by default: the pieces touch); the gap pieces are left out unless Remove Gaps is off. With direct-selected segments (or anchors) only those runs are divided, the pattern running on across segments that follow one another, and the rest of such a path stays as pieces of its own. Fit to Corners and Ends gives every run between corners and ends a whole number of dashes, all stretched or squeezed alike so it starts and ends on a dash (a closed path without corners holds whole periods); otherwise the lengths are exact and each run's last piece is what is left. Every piece keeps the path's appearance and is selected; one undo step; at most 100000 pieces (more is refused). The dialog takes lengths in any unit and previews on the canvas. Tests: `dashes::tests` in `vectorcraft-pathops` (exact and fitted lengths, curves measured along them, picked segments on open and closed paths, the piece cap and bad patterns), `divide_into_dashes_*` in `cmd::addons::pathtools::tests` in `vectorcraft-engine` (gaps removed or kept, fitted lengths, the stroke kept, one undo step, selected segments only, bad params and too many pieces refused), `divide_into_dashes_opens_its_dialog_previews_and_runs_on_ok` in `vectorcraft-ui-egui` and `command_sweep`. Commands: `docs/mcp.md` › Path Precision Tools add-on.
 
+## Document Tools add-on: Save a Timestamped Copy (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Document Tools › Save a Timestamped Copy writes a copy of the document named `<name>_YYYY-MM-DD_HH-MM.<ext>` (the date and time in UTC, through chrono; `-2`, `-3`… added when that name is taken) next to the document, or into a folder picked (the folder picker) when it was never saved, in the document's own format or another save format. It writes through File › Save a Copy's save, so the document keeps its path, title and modified state, no undo step is made, and the write stays inside the automation roots in force. It is off on the web, which has no clock. Tests: `cmd::addons::document::tests` in `vectorcraft-engine` (the name and place, numbered names, the document unchanged and its content in the copy, an unsaved document needing a folder, other formats, bad params refused, automation roots), `addons::document::tests` in `vectorcraft-ui-egui` (the submenu, beside the document, the folder picked or cancelled) and `command_sweep`. Commands: `docs/mcp.md` › Document Tools add-on.
+
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): Save a Timestamped Copy (#4926); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Path Precision Tools add-on (a VectorCraft addition): Divide into Dashes (#4950); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Arrange Tools add-on (a VectorCraft addition): Group Overlapping Objects (#4928); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Type core: a Language per character (Character panel › Language, `text.setFormat` / `text.setRangeStyle {language}`, character styles), new type in the document's language; text is shaped in its language so fonts use their language forms (OpenType `locl`: Turkish `fi`, #4940, #4946); Hindi, Marathi, Gujarati, Bengali, Punjabi, Tamil, Telugu, Kannada, Malayalam, Odia and Urdu in the language list (#4943); scores unchanged |
