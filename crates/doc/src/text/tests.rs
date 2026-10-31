@@ -293,6 +293,19 @@ fn paragraph_styles_split_merge_and_normalize() {
     assert_eq!(back.para_at(3).space_before, 4.0);
 }
 
+/// Text Flow is saved only when by rows: area type by columns (the default) saves as it did before
+/// the option, and files from before it read by columns; other values don't read.
+#[test]
+fn text_flow_is_saved_only_when_by_rows() {
+    let by_columns = serde_json::to_value(AreaOptions::default()).unwrap();
+    assert!(by_columns.get("flow").is_none());
+    assert_eq!(serde_json::from_value::<AreaOptions>(by_columns).unwrap().flow, TextFlow::Columns);
+    let by_rows = serde_json::to_value(AreaOptions { flow: TextFlow::Rows, ..AreaOptions::default() }).unwrap();
+    assert_eq!(by_rows["flow"], "rows");
+    assert_eq!(serde_json::from_value::<AreaOptions>(by_rows).unwrap().flow, TextFlow::Rows);
+    assert!(serde_json::from_value::<AreaOptions>(serde_json::json!({"flow": "diagonal"})).is_err());
+}
+
 /// 120 × 40 area type at (40, 40), its text drawn at twice its size.
 fn area_type() -> TextObject {
     let mut t = TextObject::point(Point::ZERO, "Some text", CharStyle::default());

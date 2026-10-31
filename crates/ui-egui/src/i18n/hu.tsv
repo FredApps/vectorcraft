@@ -6090,3 +6090,6 @@ breakText	Glyphs	Glifák
 @msg	no object at path {shown} in the symbol's art	a szimbólum grafikájában nincs objektum a(z) {shown} útvonalon
 @msg	give fill, stroke, opacity and/or blend	adja meg a fill, stroke, opacity és/vagy blend értékét
 @msg	pass newName, registration, exportType, nineSlice and/or type	adja meg a newName, registration, exportType, nineSlice és/vagy type értékét
+	Text Flow	Szövegfolyás
+	By Rows	Soronként
+	By Columns	Oszloponként

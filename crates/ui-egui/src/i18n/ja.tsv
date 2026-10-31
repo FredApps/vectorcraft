@@ -5790,3 +5790,6 @@ breakText	Glyphs	字形
 @msg	no object at path {shown} in the symbol's art	シンボルのアートのパス {shown} にオブジェクトがありません
 @msg	give fill, stroke, opacity and/or blend	fill、stroke、opacity、blend のいずれかを指定してください
 @msg	pass newName, registration, exportType, nineSlice and/or type	newName、registration、exportType、nineSlice、type のいずれかを指定してください
+	Text Flow	テキストの流れ
+	By Rows	行方向
+	By Columns	列方向

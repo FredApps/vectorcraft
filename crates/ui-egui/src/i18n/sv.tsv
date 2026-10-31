@@ -6156,3 +6156,6 @@ breakText	Glyphs	Glyfer
 @msg	no object at path {shown} in the symbol's art	inget objekt vid sökvägen {shown} i symbolens bild
 @msg	give fill, stroke, opacity and/or blend	ange fill, stroke, opacity och/eller blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	ange newName, registration, exportType, nineSlice och/eller type
+	Text Flow	Textflöde
+	By Rows	Radvis
+	By Columns	Kolumnvis

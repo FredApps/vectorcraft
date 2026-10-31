@@ -4593,6 +4593,17 @@ again, so SVG, PDF and EPS show the aligned text.
 {"name":"run_command","arguments":{"command":"text.areaOptions","params":{"verticalAlign":"center"}}}
 ```
 
+### Text flow
+
+`text.areaOptions {flow: columns|rows}` (Area Type Options › Text Flow) sets the order area type with several rows
+and columns fills its cells: `columns` (the default) runs down each column's rows, then on to the next column;
+`rows` runs across each row's columns, then on to the next row. The reply reports `flow`; other values are refused.
+Native files save it only when it is `rows`, so files from before it open by columns.
+
+```json
+{"name":"run_command","arguments":{"command":"text.areaOptions","params":{"rows":2,"columns":3,"flow":"rows"}}}
+```
+
 ## Fitting area type: Auto Size, Shrink Text to Fit, overflow
 
 `text.areaOptions` (and `text.create`'s `area`, `text.createInPath` in area mode) take a `fit`:

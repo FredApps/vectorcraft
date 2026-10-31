@@ -6021,3 +6021,6 @@ shape	Open	Otvoren
 @msg	no object at path {shown} in the symbol's art	nema objekta na putanji {shown} u grafici simbola
 @msg	give fill, stroke, opacity and/or blend	navedite fill, stroke, opacity i/ili blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	navedite newName, registration, exportType, nineSlice i/ili type
+	Text Flow	Tok teksta
+	By Rows	Po redovima
+	By Columns	Po kolonama

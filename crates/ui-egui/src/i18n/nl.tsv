@@ -6046,3 +6046,6 @@ breakText	Glyphs	Glyphs
 @msg	no object at path {shown} in the symbol's art	geen object op pad {shown} in de illustratie van het symbool
 @msg	give fill, stroke, opacity and/or blend	geef fill, stroke, opacity en/of blend op
 @msg	pass newName, registration, exportType, nineSlice and/or type	geef newName, registration, exportType, nineSlice en/of type op
+	Text Flow	Tekstdoorloop
+	By Rows	Per rij
+	By Columns	Per kolom

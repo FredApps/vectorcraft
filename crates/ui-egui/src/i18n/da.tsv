@@ -6002,3 +6002,6 @@ breakText	Glyphs	Glyffer
 @msg	no object at path {shown} in the symbol's art	intet objekt ved stien {shown} i symbolets grafik
 @msg	give fill, stroke, opacity and/or blend	angiv fill, stroke, opacity og/eller blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	angiv newName, registration, exportType, nineSlice og/eller type
+	Text Flow	Tekstflow
+	By Rows	Efter rækker
+	By Columns	Efter kolonner

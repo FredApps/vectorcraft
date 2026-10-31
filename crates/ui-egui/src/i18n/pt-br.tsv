@@ -6023,3 +6023,6 @@ breakText	Glyphs	Glifos
 @msg	no object at path {shown} in the symbol's art	nenhum objeto no caminho {shown} na arte do símbolo
 @msg	give fill, stroke, opacity and/or blend	informe fill, stroke, opacity e/ou blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	informe newName, registration, exportType, nineSlice e/ou type
+	Text Flow	Fluxo do texto
+	By Rows	Por linhas
+	By Columns	Por colunas

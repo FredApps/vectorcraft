@@ -5689,3 +5689,6 @@ breakText	Glyphs	Glyphen
 @msg	no object at path {shown} in the symbol's art	kein Objekt am Pfad {shown} in der Grafik des Symbols
 @msg	give fill, stroke, opacity and/or blend	geben Sie fill, stroke, opacity und/oder blend an
 @msg	pass newName, registration, exportType, nineSlice and/or type	geben Sie newName, registration, exportType, nineSlice und/oder type an
+	Text Flow	Textfluss
+	By Rows	Nach Zeilen
+	By Columns	Nach Spalten

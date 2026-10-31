@@ -6056,3 +6056,6 @@ breakText	Glyphs	Γλύφοι
 @msg	no object at path {shown} in the symbol's art	δεν υπάρχει αντικείμενο στη διαδρομή {shown} στο γραφικό του συμβόλου
 @msg	give fill, stroke, opacity and/or blend	δώστε fill, stroke, opacity ή/και blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	δώστε newName, registration, exportType, nineSlice ή/και type
+	Text Flow	Ροή κειμένου
+	By Rows	Κατά γραμμές
+	By Columns	Κατά στήλες
