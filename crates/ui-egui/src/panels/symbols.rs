@@ -137,16 +137,27 @@ fn current(app: &mut VectorcraftApp) -> Option<String> {
     app.run("symbol.list", json!({})).ok().and_then(|v| v["current"].as_str().map(str::to_string))
 }
 
-fn has_instances_selected(app: &VectorcraftApp) -> bool {
+/// Does the selection hold (in it or in its groups) a symbol instance that `wanted` takes?
+fn instance_selected(app: &VectorcraftApp, wanted: impl Fn(&Node) -> bool) -> bool {
     app.session.active().is_some_and(|st| {
         st.selection.objects.iter().any(|id| {
             let mut any = false;
             if let Some(n) = st.doc.node(*id) {
-                n.walk(&mut |c| any |= matches!(c.kind, NodeKind::SymbolInstance { .. }));
+                n.walk(&mut |c| any |= matches!(c.kind, NodeKind::SymbolInstance { .. }) && wanted(c));
             }
             any
         })
     })
+}
+
+fn has_instances_selected(app: &VectorcraftApp) -> bool {
+    instance_selected(app, |_| true)
+}
+
+/// Does the selection hold a symbol instance with appearance changes of its own (a dynamic
+/// symbol's), which Reset drops?
+pub(crate) fn changed_instances_selected(app: &VectorcraftApp) -> bool {
+    instance_selected(app, |c| !c.extras().symbol_overrides.is_empty())
 }
 
 /// The symbols of the selected objects when every one is a symbol instance; `None` otherwise.
@@ -242,7 +253,7 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
     });
     let zone = ui.interact(list_rect, ui.scope_id().with("symbols-drop"), Sense::hover());
     if let Some(ids) = widgets::art_drop(ui, &zone)
-        && let Err(e) = app.run("symbol.new", json!({ "ids": ids }))
+        && let Err(e) = app.run("symbol.new", json!({ "ids": ids, "type": "dynamic" }))
     {
         app.status(e);
     }
@@ -269,9 +280,10 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
         }
         ui.add_space((ui.available_width() - 2.0 * 28.0).max(0.0));
         if widgets::icon_button_enabled(ui, "dc-new-item", tl!("New Symbol"), false, has_sel, 24.0).clicked() {
-            // Alt skips Symbol Options: the symbol is made under the default name.
-            let cmd = if ui.input(|i| i.modifiers.alt) { "symbol.new" } else { "ui.symbolOptions" };
-            app.run(cmd, json!({})).ok();
+            // Alt skips Symbol Options: the symbol is made under the default name, dynamic as the
+            // dialog's default.
+            let (cmd, p) = if ui.input(|i| i.modifiers.alt) { ("symbol.new", json!({"type": "dynamic"})) } else { ("ui.symbolOptions", json!({})) };
+            app.run(cmd, p).ok();
         }
         // Alt deletes an unused symbol without asking; a symbol with instances still asks.
         if widgets::icon_button_enabled(ui, "trash-2", tl!("Delete Symbol"), false, sel.is_some(), 24.0).clicked()
@@ -303,12 +315,13 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
     {
         crate::dialogs::symbol_delete::ask(app, n, false);
     }
-    let items: [(&str, bool, &str, Value); 6] = [
+    let items: [(&str, bool, &str, Value); 7] = [
         (tl!("Symbol Options…"), sel.is_some(), "ui.symbolOptions", json!({"edit": true, "name": sel})),
         (tl!("Edit Symbol"), inst, "symbol.edit", json!({})),
         (tl!("Place Symbol Instance"), sel.is_some(), "symbol.place", name.clone()),
         (tl!("Replace Symbol"), inst && sel.is_some(), "symbol.replace", name.clone()),
         (tl!("Break Link to Symbol"), inst, "symbol.breakLink", json!({})),
+        (tl!("Reset Symbol Instance"), changed_instances_selected(app), "symbol.instance.reset", json!({})),
         (tl!("Select All Instances"), sel.is_some(), "symbol.selectInstances", name),
     ];
     for (label, enabled, cmd, params) in items {
@@ -600,10 +613,12 @@ mod tests {
         assert!(symbols(&mut app).is_empty(), "no symbol before OK");
         assert_eq!(app.ui.dialog.as_ref().unwrap().str("name"), "New Symbol");
         assert_eq!(app.ui.dialog.as_ref().unwrap().str("exportType"), "movieClip");
+        assert_eq!(app.ui.dialog.as_ref().unwrap().str("type"), "dynamic", "Symbol Type: a new symbol is dynamic");
         crate::dialogs::confirm(&mut app).unwrap();
         assert!(app.ui.dialog.is_none());
         let list = app.run("symbol.list", json!({})).unwrap();
         assert_eq!(list["symbols"][0]["exportType"], "movieClip");
+        assert_eq!(list["symbols"][0]["type"], "dynamic");
         // The next one is offered a name no symbol has, and OK keeps the name typed and Export Type.
         app.run("shape.rectangle", json!({"x": 60, "y": 10, "width": 30, "height": 20})).unwrap();
         app.run("ui.symbolOptions", json!({})).unwrap();
@@ -614,13 +629,18 @@ mod tests {
         assert_eq!(symbols(&mut app), ["New Symbol", "Badge"]);
         let list = app.run("symbol.list", json!({})).unwrap();
         assert_eq!(list["symbols"][1]["exportType"], "graphic");
-        // Symbol Options on the current symbol renames and keeps Export Type.
+        // Symbol Options on the current symbol renames, keeps Export Type and sets Symbol Type.
         app.run("ui.symbolOptions", json!({"edit": true, "name": "Badge"})).unwrap();
         assert_eq!(app.ui.dialog.as_ref().unwrap().str("exportType"), "graphic");
         app.ui.dialog.as_mut().unwrap().fields.insert("name".into(), json!("Mark"));
+        app.ui.dialog.as_mut().unwrap().fields.insert("type".into(), json!("static"));
         crate::dialogs::confirm(&mut app).unwrap();
         assert_eq!(symbols(&mut app), ["New Symbol", "Mark"]);
         assert_eq!(app.run("symbol.list", json!({})).unwrap()["symbols"][1]["exportType"], "graphic");
+        assert_eq!(app.run("symbol.list", json!({})).unwrap()["symbols"][1]["type"], "static");
+        app.run("ui.symbolOptions", json!({"edit": true, "name": "Mark"})).unwrap();
+        assert_eq!(app.ui.dialog.as_ref().unwrap().str("type"), "static");
+        app.ui.dialog = None;
         // Enable Guides for 9-Slice Scaling stores the guides (percent in the dialog) and reopens as set.
         assert!(app.run("symbol.list", json!({})).unwrap()["symbols"][1]["nineSlice"].is_null());
         app.run("ui.symbolOptions", json!({"edit": true, "name": "Mark"})).unwrap();

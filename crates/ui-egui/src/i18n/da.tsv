@@ -5985,3 +5985,15 @@ breakText	Glyphs	Glyffer
 	Odia	Oriya
 	Urdu	Urdu
 	VectorCraft {release} and later (version {n})	VectorCraft {release} og nyere (version {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Symboltype:
+	Dynamic Symbol	Dynamisk symbol
+	Static Symbol	Statisk symbol
+	Symbol Instance Appearance	Symbolforekomstens udseende
+	Reset Symbol Instance	Nulstil symbolforekomst
+@msg	type must be static or dynamic, not {v}	type skal være static eller dynamic, ikke {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` er et statisk symbol: indstil først symboltypen til Dynamisk
+@msg	path must be a list of child indices	path skal være en liste over underordnede indekser
+@msg	no object at path {shown} in the symbol's art	intet objekt ved stien {shown} i symbolets grafik
+@msg	give fill, stroke, opacity and/or blend	angiv fill, stroke, opacity og/eller blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	angiv newName, registration, exportType, nineSlice og/eller type

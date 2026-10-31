@@ -6076,3 +6076,15 @@ breakText	Glyphs	გლიფები
 	Odia	ორია
 	Urdu	ურდუ
 	VectorCraft {release} and later (version {n})	VectorCraft {release} და უფრო ახალი (ვერსია {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	სიმბოლოს ტიპი:
+	Dynamic Symbol	დინამიკური სიმბოლო
+	Static Symbol	სტატიკური სიმბოლო
+	Symbol Instance Appearance	სიმბოლოს ეგზემპლარის იერსახე
+	Reset Symbol Instance	სიმბოლოს ეგზემპლარის ჩამოყრა
+@msg	type must be static or dynamic, not {v}	type უნდა იყოს static ან dynamic და არა {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` სტატიკური სიმბოლოა: ჯერ სიმბოლოს ტიპად დააყენეთ „დინამიკური“
+@msg	path must be a list of child indices	path უნდა იყოს შვილობილი ინდექსების სია
+@msg	no object at path {shown} in the symbol's art	სიმბოლოს გრაფიკაში გზაზე {shown} ობიექტი არ არის
+@msg	give fill, stroke, opacity and/or blend	მიუთითეთ fill, stroke, opacity და/ან blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	მიუთითეთ newName, registration, exportType, nineSlice და/ან type

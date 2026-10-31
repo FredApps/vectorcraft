@@ -6087,3 +6087,15 @@ breakText	Glyphs	Glyfy
 	Odia	Urijština
 	Urdu	Urdština
 	VectorCraft {release} and later (version {n})	VectorCraft {release} a novější (verze {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Typ symbolu:
+	Dynamic Symbol	Dynamický symbol
+	Static Symbol	Statický symbol
+	Symbol Instance Appearance	Vzhled instance symbolu
+	Reset Symbol Instance	Obnovit instanci symbolu
+@msg	type must be static or dynamic, not {v}	type musí být static nebo dynamic, ne {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` je statický symbol: nejprve nastavte jeho typ symbolu na Dynamický
+@msg	path must be a list of child indices	path musí být seznam indexů potomků
+@msg	no object at path {shown} in the symbol's art	v kresbě symbolu není na cestě {shown} žádný objekt
+@msg	give fill, stroke, opacity and/or blend	zadejte fill, stroke, opacity a/nebo blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	zadejte newName, registration, exportType, nineSlice a/nebo type

@@ -5985,3 +5985,15 @@ breakText	Glyphs	Glif
 	Odia	Oriya
 	Urdu	Urdu
 	VectorCraft {release} and later (version {n})	VectorCraft {release} dan yang lebih baru (versi {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Jenis simbol:
+	Dynamic Symbol	Simbol dinamis
+	Static Symbol	Simbol statis
+	Symbol Instance Appearance	Tampilan instans simbol
+	Reset Symbol Instance	Atur ulang instans simbol
+@msg	type must be static or dynamic, not {v}	type harus static atau dynamic, bukan {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` adalah simbol statis: setel dulu jenis simbolnya ke Dinamis
+@msg	path must be a list of child indices	path harus berupa daftar indeks anak
+@msg	no object at path {shown} in the symbol's art	tidak ada objek di jalur {shown} dalam karya seni simbol
+@msg	give fill, stroke, opacity and/or blend	berikan fill, stroke, opacity dan/atau blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	berikan newName, registration, exportType, nineSlice dan/atau type

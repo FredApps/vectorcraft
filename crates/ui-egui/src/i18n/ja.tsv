@@ -5773,3 +5773,15 @@ breakText	Glyphs	字形
 	Odia	オディア語
 	Urdu	ウルドゥー語
 	VectorCraft {release} and later (version {n})	VectorCraft {release} 以降 (バージョン {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	シンボルの種類:
+	Dynamic Symbol	ダイナミックシンボル
+	Static Symbol	スタティックシンボル
+	Symbol Instance Appearance	シンボルインスタンスのアピアランス
+	Reset Symbol Instance	シンボルインスタンスをリセット
+@msg	type must be static or dynamic, not {v}	type は static または dynamic にしてください({v} は無効です)
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` はスタティックシンボルです。先にシンボルの種類をダイナミックに設定してください
+@msg	path must be a list of child indices	path は子のインデックスのリストにしてください
+@msg	no object at path {shown} in the symbol's art	シンボルのアートのパス {shown} にオブジェクトがありません
+@msg	give fill, stroke, opacity and/or blend	fill、stroke、opacity、blend のいずれかを指定してください
+@msg	pass newName, registration, exportType, nineSlice and/or type	newName、registration、exportType、nineSlice、type のいずれかを指定してください

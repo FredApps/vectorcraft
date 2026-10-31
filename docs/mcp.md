@@ -1553,14 +1553,30 @@ Guides) can't be picked. An artboard guide is picked, drawn and snapped to acros
 These families are in the live catalog (`command_list` / `vectorcraft://commands`); the prompt `trace-and-style`
 already walks Image Trace. Short agent entry points:
 
-- Symbols: `symbol.list` (each row includes `registration` 0..8 and `exportType`: `movieClip`|`graphic`),
-  `symbol.new {name?, registration?, exportType?, nineSlice?, nineSliceGuides?, ids?}`,
-  `symbol.options {name?, newName?, registration?, exportType?, nineSlice?, nineSliceGuides?}` (`nineSlice` bool turns
+- Symbols: `symbol.list` (each row includes `registration` 0..8, `exportType`: `movieClip`|`graphic` and `type`:
+  `static`|`dynamic`),
+  `symbol.new {name?, registration?, exportType?, nineSlice?, nineSliceGuides?, type?, ids?}`,
+  `symbol.options {name?, newName?, registration?, exportType?, nineSlice?, nineSliceGuides?, type?}` (`nineSlice` bool turns
   9-slice guides on or off; `nineSliceGuides` is `[left, top, right, bottom]`, fractions 0..1 of the symbol size; rows
-  of `symbol.list` carry `nineSlice`: the guides or `null`),
+  of `symbol.list` carry `nineSlice`: the guides or `null`; `type` is Symbol Type, `static` by default for the command
+  and `dynamic` by default in the Symbol Options dialog),
   `symbol.place {name?, x?, y?}`, `symbol.breakLink {ids?}`, `symbol.replace`, `symbol.edit`, `symbol.duplicate`,
   `symbol.selectInstances {name}`. `symbol.new` and `symbol.duplicate {name, newName?}` trim the white space around the
   name they are given, as `symbol.options` trims `newName`; a blank one gives "New Symbol" or "<name> copy".
+- Dynamic symbols: an instance of a symbol whose `type` is `dynamic` changes the appearance of objects in the symbol's
+  art for itself only and stays linked. `symbol.instance.setAppearance {id?, path, fill?, stroke?, opacity?, blend?}`
+  names the object by `path`, child indices in paint order from the art's root down through its groups (`[]` is the
+  root; `[1, 0]` is the first object of the art's second member when that member is a group). `fill` and `stroke` take
+  a colour string or the paint params of `paint.setFill` (`color`, `none`, `swatch`, `tint`, `gradient`), `opacity` is
+  0..100 and `blend` a blend mode name; `null` gives one back to the symbol. It is refused for a static symbol and for
+  a path that names no object. `symbol.instance.reset {ids?}` drops the selected instances' changes (the Properties
+  panel's Reset). Redefining the symbol (`symbol.update`) reshapes every instance and keeps each change whose path the
+  new art still has; `symbol.breakLink` bakes the changes into the expanded art; `symbol.edit` expands the symbol's own
+  art; making the symbol static drops them.
+
+```json
+{"name":"run_command","arguments":{"command":"symbol.instance.setAppearance","params":{"id":42,"path":[1],"fill":"#d0021b","opacity":80}}}
+```
 - The Brushes panel menu's Select All Unused: `brush.unused` (a query) lists the brushes no stroke paints with, in
   library order, and the panel selects them. Strokes in the art (opacity masks included), symbols, graph designs,
   pattern tiles (with the tiles that pattern editing's Cancel puts back) and graphic styles count, and so do the

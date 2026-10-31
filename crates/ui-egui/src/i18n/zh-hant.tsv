@@ -5726,3 +5726,15 @@ breakText	Glyphs	字符
 	Odia	歐利亞文
 	Urdu	烏都文
 	VectorCraft {release} and later (version {n})	VectorCraft {release} 及更新版本 (版本 {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	符號類型:
+	Dynamic Symbol	動態符號
+	Static Symbol	靜態符號
+	Symbol Instance Appearance	符號實體外觀
+	Reset Symbol Instance	重設符號實體
+@msg	type must be static or dynamic, not {v}	type 必須是 static 或 dynamic,而不是 {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` 是靜態符號:請先將其符號類型設為動態
+@msg	path must be a list of child indices	path 必須是子項索引清單
+@msg	no object at path {shown} in the symbol's art	符號圖稿中路徑 {shown} 處沒有物件
+@msg	give fill, stroke, opacity and/or blend	請提供 fill、stroke、opacity 和/或 blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	請提供 newName、registration、exportType、nineSlice 和/或 type

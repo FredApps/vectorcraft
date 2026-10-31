@@ -6004,3 +6004,15 @@ shape	Open	Otvoren
 	Odia	Odija
 	Urdu	Urdu
 	VectorCraft {release} and later (version {n})	VectorCraft {release} i novije (verzija {n})
+# Symbol Options › Symbol Type (dynamic symbols)
+	Symbol Type:	Vrsta simbola:
+	Dynamic Symbol	Dinamički simbol
+	Static Symbol	Statički simbol
+	Symbol Instance Appearance	Izgled instance simbola
+	Reset Symbol Instance	Vrati instancu simbola na početno
+@msg	type must be static or dynamic, not {v}	type mora biti static ili dynamic, a ne {v}
+@msg	`{name}` is a static symbol: set its Symbol Type to Dynamic first	`{name}` je statički simbol: prvo postavite vrstu simbola na Dinamički
+@msg	path must be a list of child indices	path mora biti lista indeksa podređenih objekata
+@msg	no object at path {shown} in the symbol's art	nema objekta na putanji {shown} u grafici simbola
+@msg	give fill, stroke, opacity and/or blend	navedite fill, stroke, opacity i/ili blend
+@msg	pass newName, registration, exportType, nineSlice and/or type	navedite newName, registration, exportType, nineSlice i/ili type

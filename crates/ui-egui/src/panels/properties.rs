@@ -136,6 +136,10 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
     if is_live {
         actions.push((tl!("Expand Shape"), "object.expandShape"));
     }
+    // A dynamic symbol instance with appearance changes of its own: Reset shows the symbol's again.
+    if super::symbols::changed_instances_selected(app) {
+        actions.push((tl!("Reset"), "symbol.instance.reset"));
+    }
     if multi_color(app, ui.ctx()) {
         actions.push((tl!("Recolor"), "ui.recolorDialog"));
     }
