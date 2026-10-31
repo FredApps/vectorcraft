@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Type core: text shaped in its language, a Language per character, Indian languages, #4940 #4946 #4943; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Document Tools add-on: New Symbols from Layers, #4927; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1399,10 +1399,30 @@ scaling, replace with each fit and kept originals in stacking order, size with p
 undo step, off states, bad params refused), `addons::arrange::tests` in `vectorcraft-ui-egui` (the submenu, the
 dialogs, Preview and Cancel, Zoom to Selection) and `command_sweep`. Commands: `docs/mcp.md` › Arrange Tools add-on.
 
+## Arrange Tools add-on: Group Overlapping Objects (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Arrange Tools › Group Overlapping Objects groups the top-level selected objects wherever their visual bounds overlap or touch, chains included (A overlapping B and B overlapping C makes one group of three), only among objects of the same layer or group; objects that overlap nothing stay as they are, each new group takes its frontmost member's place in the stacking order, and the groups and the loose objects stay selected. One undo step; at most 20000 objects, compared by a sweep along x with union-find. Tests: `group_overlapping_*` in `cmd::addons::arrange::tests` in `vectorcraft-engine` (chains, loners, stacking order, layers kept apart, visual bounds, no step when nothing overlaps, many objects), `group_overlapping_objects_runs_directly` in `vectorcraft-ui-egui` and `command_sweep`. Commands: `docs/mcp.md` › Arrange Tools add-on.
+
+## Path Precision Tools add-on: Divide into Dashes (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Path Precision Tools › Divide into Dashes… cuts the selected paths into separate open paths along the curve (arc length, not straight distance): each `dash` long (0.01 to 1000000 pt, 10 by default) with `gap` between them (0 by default: the pieces touch); the gap pieces are left out unless Remove Gaps is off. With direct-selected segments (or anchors) only those runs are divided, the pattern running on across segments that follow one another, and the rest of such a path stays as pieces of its own. Fit to Corners and Ends gives every run between corners and ends a whole number of dashes, all stretched or squeezed alike so it starts and ends on a dash (a closed path without corners holds whole periods); otherwise the lengths are exact and each run's last piece is what is left. Every piece keeps the path's appearance and is selected; one undo step; at most 100000 pieces (more is refused). The dialog takes lengths in any unit and previews on the canvas. Tests: `dashes::tests` in `vectorcraft-pathops` (exact and fitted lengths, curves measured along them, picked segments on open and closed paths, the piece cap and bad patterns), `divide_into_dashes_*` in `cmd::addons::pathtools::tests` in `vectorcraft-engine` (gaps removed or kept, fitted lengths, the stroke kept, one undo step, selected segments only, bad params and too many pieces refused), `divide_into_dashes_opens_its_dialog_previews_and_runs_on_ok` in `vectorcraft-ui-egui` and `command_sweep`. Commands: `docs/mcp.md` › Path Precision Tools add-on.
+
+## Document Tools add-on: Save a Timestamped Copy (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Document Tools › Save a Timestamped Copy writes a copy of the document named `<name>_YYYY-MM-DD_HH-MM.<ext>` (the date and time in UTC, through chrono; `-2`, `-3`… added when that name is taken) next to the document, or into a folder picked (the folder picker) when it was never saved, in the document's own format or another save format. It writes through File › Save a Copy's save, so the document keeps its path, title and modified state, no undo step is made, and the write stays inside the automation roots in force. It is off on the web, which has no clock. Tests: `cmd::addons::document::tests` in `vectorcraft-engine` (the name and place, numbered names, the document unchanged and its content in the copy, an unsaved document needing a folder, other formats, bad params refused, automation roots), `addons::document::tests` in `vectorcraft-ui-egui` (the submenu, beside the document, the folder picked or cancelled) and `command_sweep`. Commands: `docs/mcp.md` › Document Tools add-on.
+
+## Document Tools add-on: New Symbols from Layers (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Document Tools › New Symbols from Layers makes one symbol of each top-level layer's art (the layers given, else those highlighted in the Layers panel when two or more are, else every layer), named after the layer (a number added when a symbol has that name), with New Symbol's own steps: the art normalized to its natural size, registration in the centre, threaded text keeping the text it shows, and sublayers held as groups. Convert Layers to Symbols does the same and puts an instance of each symbol in place of its layer's art, at the same place and size, selecting the instances; locked layers are skipped then. Empty layers are skipped and reported, all in one undo step (none when nothing is made). Tests: `cmd::addons::document::tests` in `vectorcraft-engine` (a symbol per layer, unique names, empty and locked layers reported, replacement in place, the highlighted layers as the default, bad layer ids refused, one undo step), `new_symbols_from_layers_and_convert_layers_to_symbols` in `vectorcraft-ui-egui` and `command_sweep`. Commands: `docs/mcp.md` › Document Tools add-on.
+
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): New Symbols from Layers (#4927); evidence added; scores unchanged. |
+| 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): Save a Timestamped Copy (#4926); evidence added; scores unchanged. |
+| 2026-11-01 | minor | Path Precision Tools add-on (a VectorCraft addition): Divide into Dashes (#4950); evidence added; scores unchanged. |
+| 2026-11-01 | minor | Arrange Tools add-on (a VectorCraft addition): Group Overlapping Objects (#4928); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Type core: a Language per character (Character panel › Language, `text.setFormat` / `text.setRangeStyle {language}`, character styles), new type in the document's language; text is shaped in its language so fonts use their language forms (OpenType `locl`: Turkish `fi`, #4940, #4946); Hindi, Marathi, Gujarati, Bengali, Punjabi, Tamil, Telugu, Kannada, Malayalam, Odia and Urdu in the language list (#4943); scores unchanged |
 | 2026-10-31 | minor | Selection tools: with Alt held at the press, a Direct Selection marquee selects every path it touches whole and keeps the Group Selection pointer (#4890); a press on a selected object's centre point selects the object whole and a drag from it moves it (#4891); regression tests in `direct/tests.rs`; scores and estimates unchanged. |
 | 2026-10-31 | minor | Arrange Tools add-on (a VectorCraft addition): evidence added; scores unchanged. |

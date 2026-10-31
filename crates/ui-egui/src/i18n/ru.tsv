@@ -6020,6 +6020,29 @@ breakText	Glyphs	Глифы
 	Set Size of Each	Задать размер каждого
 @msg	select exactly two objects	выделите ровно два объекта
 @msg	give `width` or `height`	укажите `width` или `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Сгруппировать перекрывающиеся объекты
+@msg	too many objects selected (at most 20000)	выделено слишком много объектов (не более 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Разделить на штрихи…
+	Divide into Dashes	Разделить на штрихи
+	Dash:	Тире:
+	Gap:	Зазор:
+	Fit to Corners and Ends	Подогнать к углам и концам
+	Remove Gaps	Убрать зазоры
+@msg	that makes too many pieces (at most 100000): make the dashes longer	так получится слишком много частей (не более 100000): удлините штрихи
+@msg	select paths, or segments, to divide	выделите контуры или сегменты для разделения
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Инструменты документа
+	Save a Timestamped Copy	Сохранить копию с датой и временем
+@msg	there is no clock here	здесь нет часов
+@msg	there is no clock here: give `time` (Unix seconds)	здесь нет часов: укажите `time` (секунды Unix)
+@msg	the document has never been saved: give `folder`	документ ни разу не сохранялся: укажите `folder`
+@msg	every numbered name for the copy is taken	все нумерованные имена для копии заняты
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Новые символы из слоёв
+	Convert Layers to Symbols	Преобразовать слои в символы
+@msg	{id} is no top-level layer	{id} — не слой верхнего уровня
 	Marathi	Маратхи
 	Gujarati	Гуджарати
 	Bengali	Бенгальский

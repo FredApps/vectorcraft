@@ -6000,6 +6000,29 @@ breakText	Glyphs	Glifler
 	Set Size of Each	Her Birinin Boyutunu Ayarla
 @msg	select exactly two objects	tam olarak iki nesne seç
 @msg	give `width` or `height`	`width` veya `height` belirt
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Çakışan Nesneleri Grupla
+@msg	too many objects selected (at most 20000)	çok fazla nesne seçili (en fazla 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Tirelere Böl…
+	Divide into Dashes	Tirelere Böl
+	Dash:	Tire:
+	Gap:	Boşluk:
+	Fit to Corners and Ends	Köşelere ve Uçlara Uydur
+	Remove Gaps	Boşlukları Kaldır
+@msg	that makes too many pieces (at most 100000): make the dashes longer	bu çok fazla parça oluşturur (en fazla 100000): tireleri uzatın
+@msg	select paths, or segments, to divide	bölünecek yolları veya bölümleri seçin
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Belge Araçları
+	Save a Timestamped Copy	Zaman Damgalı Bir Kopya Kaydet
+@msg	there is no clock here	burada saat yok
+@msg	there is no clock here: give `time` (Unix seconds)	burada saat yok: `time` verin (Unix saniyesi)
+@msg	the document has never been saved: give `folder`	belge hiç kaydedilmedi: `folder` verin
+@msg	every numbered name for the copy is taken	kopya için tüm numaralı adlar kullanılıyor
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Katmanlardan Yeni Semboller
+	Convert Layers to Symbols	Katmanları Sembollere Dönüştür
+@msg	{id} is no top-level layer	{id} üst düzey bir katman değil
 	Marathi	Marathi dili
 	Gujarati	Gücerat dili
 	Bengali	Bengalce

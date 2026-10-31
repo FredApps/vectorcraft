@@ -5885,6 +5885,29 @@ breakText	Glyphs	字形
 	Set Size of Each	分别设置大小
 @msg	select exactly two objects	请恰好选择两个对象
 @msg	give `width` or `height`	请提供 `width` 或 `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	编组重叠对象
+@msg	too many objects selected (at most 20000)	选择的对象过多（最多 20000 个）
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	分割为短划线…
+	Divide into Dashes	分割为短划线
+	Dash:	短划线：
+	Gap:	间隙：
+	Fit to Corners and Ends	适合转角和端点
+	Remove Gaps	移除间隙
+@msg	that makes too many pieces (at most 100000): make the dashes longer	这会产生过多片段（最多 100000 个）：请加长短划线
+@msg	select paths, or segments, to divide	请选择要分割的路径或线段
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	文档工具
+	Save a Timestamped Copy	保存带时间戳的副本
+@msg	there is no clock here	此处没有时钟
+@msg	there is no clock here: give `time` (Unix seconds)	此处没有时钟：请提供 `time`（Unix 秒）
+@msg	the document has never been saved: give `folder`	文档从未保存过：请提供 `folder`
+@msg	every numbered name for the copy is taken	副本的所有编号名称均已被占用
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	从图层新建符号
+	Convert Layers to Symbols	将图层转换为符号
+@msg	{id} is no top-level layer	{id} 不是顶层图层
 	Marathi	马拉地语
 	Gujarati	古吉拉特语
 	Bengali	孟加拉语

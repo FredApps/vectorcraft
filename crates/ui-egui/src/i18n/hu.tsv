@@ -6029,6 +6029,29 @@ breakText	Glyphs	Glifák
 	Set Size of Each	Egyenkénti méret beállítása
 @msg	select exactly two objects	jelölj ki pontosan két objektumot
 @msg	give `width` or `height`	add meg a `width` vagy a `height` értéket
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Átfedő objektumok csoportosítása
+@msg	too many objects selected (at most 20000)	túl sok objektum van kijelölve (legfeljebb 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Felosztás szaggatásokra…
+	Divide into Dashes	Felosztás szaggatásokra
+	Dash:	Gondolatjel:
+	Gap:	Hézag:
+	Fit to Corners and Ends	Illesztés a sarkokhoz és végekhez
+	Remove Gaps	Hézagok eltávolítása
+@msg	that makes too many pieces (at most 100000): make the dashes longer	ez túl sok darabot adna (legfeljebb 100000): hosszabbítsa meg a szaggatásokat
+@msg	select paths, or segments, to divide	jelöljön ki felosztandó útvonalakat vagy szakaszokat
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Dokumentumeszközök
+	Save a Timestamped Copy	Másolat mentése időbélyeggel
+@msg	there is no clock here	itt nincs óra
+@msg	there is no clock here: give `time` (Unix seconds)	itt nincs óra: adja meg a `time` értéket (Unix-másodperc)
+@msg	the document has never been saved: give `folder`	a dokumentum még nem volt mentve: adja meg a `folder` értéket
+@msg	every numbered name for the copy is taken	a másolat összes számozott neve foglalt
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Új szimbólumok rétegekből
+	Convert Layers to Symbols	Rétegek átalakítása szimbólumokká
+@msg	{id} is no top-level layer	a(z) {id} nem legfelső szintű réteg
 	Marathi	Maráthi
 	Gujarati	Gudzsaráti
 	Bengali	Bengáli

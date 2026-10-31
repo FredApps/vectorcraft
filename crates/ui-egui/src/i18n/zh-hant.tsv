@@ -5682,6 +5682,29 @@ breakText	Glyphs	字符
 	Set Size of Each	個別設定大小
 @msg	select exactly two objects	請選取正好兩個物件
 @msg	give `width` or `height`	請提供 `width` 或 `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	群組重疊物件
+@msg	too many objects selected (at most 20000)	選取的物件過多（最多 20000 個）
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	分割為短破折號…
+	Divide into Dashes	分割為短破折號
+	Dash:	短破折號：
+	Gap:	間隙：
+	Fit to Corners and Ends	符合轉角和端點
+	Remove Gaps	移除間隙
+@msg	that makes too many pieces (at most 100000): make the dashes longer	這會產生過多片段（最多 100000 個）：請加長短破折號
+@msg	select paths, or segments, to divide	請選取要分割的路徑或線段
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	文件工具
+	Save a Timestamped Copy	儲存附時間戳記的拷貝
+@msg	there is no clock here	此處沒有時鐘
+@msg	there is no clock here: give `time` (Unix seconds)	此處沒有時鐘：請提供 `time`（Unix 秒）
+@msg	the document has never been saved: give `folder`	文件從未儲存過：請提供 `folder`
+@msg	every numbered name for the copy is taken	拷貝的所有編號名稱均已被佔用
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	從圖層新增符號
+	Convert Layers to Symbols	將圖層轉換為符號
+@msg	{id} is no top-level layer	{id} 不是最上層圖層
 	Marathi	馬拉地文
 	Gujarati	古吉拉特文
 	Bengali	孟加拉文

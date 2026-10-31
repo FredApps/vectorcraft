@@ -5645,6 +5645,29 @@ breakText	Glyphs	Glyph
 	Set Size of Each	Đặt kích thước từng cái
 @msg	select exactly two objects	hãy chọn đúng hai đối tượng
 @msg	give `width` or `height`	hãy cho `width` hoặc `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Nhóm các đối tượng chồng lên nhau
+@msg	too many objects selected (at most 20000)	chọn quá nhiều đối tượng (tối đa 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Chia thành nét đứt…
+	Divide into Dashes	Chia thành nét đứt
+	Dash:	Gạch ngang:
+	Gap:	Khoảng hở:
+	Fit to Corners and Ends	Khớp với góc và đầu mút
+	Remove Gaps	Gỡ các khoảng hở
+@msg	that makes too many pieces (at most 100000): make the dashes longer	như vậy tạo ra quá nhiều mảnh (tối đa 100000): hãy kéo dài nét
+@msg	select paths, or segments, to divide	chọn các đường dẫn hoặc đoạn để chia
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Công cụ tài liệu
+	Save a Timestamped Copy	Lưu bản sao có ngày giờ
+@msg	there is no clock here	ở đây không có đồng hồ
+@msg	there is no clock here: give `time` (Unix seconds)	ở đây không có đồng hồ: hãy cho `time` (giây Unix)
+@msg	the document has never been saved: give `folder`	tài liệu chưa từng được lưu: hãy cho `folder`
+@msg	every numbered name for the copy is taken	mọi tên đánh số cho bản sao đều đã dùng
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Ký hiệu mới từ các lớp
+	Convert Layers to Symbols	Chuyển các lớp thành ký hiệu
+@msg	{id} is no top-level layer	{id} không phải là lớp cấp cao nhất
 	Marathi	Tiếng Marathi
 	Gujarati	Tiếng Gujarati
 	Bengali	Tiếng Bengali

@@ -6095,6 +6095,29 @@ breakText	Glyphs	Glyfer
 	Set Size of Each	Ange storlek för vart och ett
 @msg	select exactly two objects	markera exakt två objekt
 @msg	give `width` or `height`	ange `width` eller `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Gruppera överlappande objekt
+@msg	too many objects selected (at most 20000)	för många objekt markerade (högst 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Dela upp i streck…
+	Divide into Dashes	Dela upp i streck
+	Dash:	Tankstreck:
+	Gap:	Mellanrum:
+	Fit to Corners and Ends	Anpassa till hörn och ändar
+	Remove Gaps	Ta bort mellanrum
+@msg	that makes too many pieces (at most 100000): make the dashes longer	det blir för många delar (högst 100000): gör strecken längre
+@msg	select paths, or segments, to divide	markera banor eller segment att dela upp
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Dokumentverktyg
+	Save a Timestamped Copy	Spara en kopia med tidsstämpel
+@msg	there is no clock here	det finns ingen klocka här
+@msg	there is no clock here: give `time` (Unix seconds)	det finns ingen klocka här: ange `time` (Unix-sekunder)
+@msg	the document has never been saved: give `folder`	dokumentet har aldrig sparats: ange `folder`
+@msg	every numbered name for the copy is taken	alla numrerade namn för kopian är upptagna
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Nya symboler från lager
+	Convert Layers to Symbols	Konvertera lager till symboler
+@msg	{id} is no top-level layer	{id} är inget lager på översta nivån
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengali

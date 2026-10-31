@@ -6073,6 +6073,29 @@ breakText	Glyphs	Merkit
 	Set Size of Each	Aseta kunkin koko
 @msg	select exactly two objects	valitse täsmälleen kaksi objektia
 @msg	give `width` or `height`	anna `width` tai `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Ryhmitä päällekkäiset objektit
+@msg	too many objects selected (at most 20000)	liian monta objektia valittu (enintään 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Jaa viivoiksi…
+	Divide into Dashes	Jaa viivoiksi
+	Dash:	Ajatusviiva:
+	Gap:	Väli:
+	Fit to Corners and Ends	Sovita kulmiin ja päihin
+	Remove Gaps	Poista välit
+@msg	that makes too many pieces (at most 100000): make the dashes longer	siitä tulee liian monta osaa (enintään 100000): pidennä viivoja
+@msg	select paths, or segments, to divide	valitse jaettavat polut tai segmentit
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Asiakirjatyökalut
+	Save a Timestamped Copy	Tallenna kopio aikaleimalla
+@msg	there is no clock here	täällä ei ole kelloa
+@msg	there is no clock here: give `time` (Unix seconds)	täällä ei ole kelloa: anna `time` (Unix-sekunteina)
+@msg	the document has never been saved: give `folder`	asiakirjaa ei ole koskaan tallennettu: anna `folder`
+@msg	every numbered name for the copy is taken	kaikki kopion numeroidut nimet ovat varattuja
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Uudet symbolit tasoista
+	Convert Layers to Symbols	Muunna tasot symboleiksi
+@msg	{id} is no top-level layer	{id} ei ole ylimmän tason taso
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengali

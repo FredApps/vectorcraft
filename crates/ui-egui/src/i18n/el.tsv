@@ -5995,6 +5995,29 @@ breakText	Glyphs	Γλύφοι
 	Set Size of Each	Ορισμός μεγέθους καθενός
 @msg	select exactly two objects	επιλέξτε ακριβώς δύο αντικείμενα
 @msg	give `width` or `height`	δώστε `width` ή `height`
+# Arrange Tools add-on: Group Overlapping Objects.
+	Group Overlapping Objects	Ομαδοποίηση επικαλυπτόμενων αντικειμένων
+@msg	too many objects selected (at most 20000)	επιλέχθηκαν πάρα πολλά αντικείμενα (το πολύ 20000)
+# Path Precision Tools add-on: Divide into Dashes.
+	Divide into Dashes…	Διαίρεση σε παύλες…
+	Divide into Dashes	Διαίρεση σε παύλες
+	Dash:	Παύλα:
+	Gap:	Απόσταση:
+	Fit to Corners and Ends	Προσαρμογή σε γωνίες και άκρα
+	Remove Gaps	Αφαίρεση κενών
+@msg	that makes too many pieces (at most 100000): make the dashes longer	αυτό δίνει πάρα πολλά κομμάτια (το πολύ 100000): κάντε τις παύλες μεγαλύτερες
+@msg	select paths, or segments, to divide	επιλέξτε διαδρομές ή τμήματα για διαίρεση
+# Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
+	Document Tools	Εργαλεία εγγράφου
+	Save a Timestamped Copy	Αποθήκευση αντιγράφου με ημερομηνία και ώρα
+@msg	there is no clock here	δεν υπάρχει ρολόι εδώ
+@msg	there is no clock here: give `time` (Unix seconds)	δεν υπάρχει ρολόι εδώ: δώστε `time` (δευτερόλεπτα Unix)
+@msg	the document has never been saved: give `folder`	το έγγραφο δεν έχει αποθηκευτεί ποτέ: δώστε `folder`
+@msg	every numbered name for the copy is taken	όλα τα αριθμημένα ονόματα για το αντίγραφο είναι πιασμένα
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Νέα σύμβολα από επίπεδα
+	Convert Layers to Symbols	Μετατροπή επιπέδων σε σύμβολα
+@msg	{id} is no top-level layer	το {id} δεν είναι επίπεδο ανώτατου επιπέδου
 	Marathi	Μαραθικά
 	Gujarati	Γκουγιαράτι
 	Bengali	Βεγγαλικά

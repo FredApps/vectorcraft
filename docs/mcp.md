@@ -5966,6 +5966,16 @@ Commands:
 - `addon.pathtools.crossings {cut?, selfCrossings?, ids?}` adds anchors where the selected paths cross one another (and
   where each crosses itself, with `selfCrossings`), or with `cut` also cuts them there: a path of one subpath becomes a
   path per piece. Paths that meet at a shared anchor don't cross there; at most 10,000 segments at once.
+- `addon.pathtools.divideDashes {dash?, gap?, fit?, removeGaps?}` cuts the selected paths into separate open paths
+  along the curve, each `dash` long (0.01 to 1,000,000 pt, 10 by default) with `gap` between them (0 to 1,000,000 pt,
+  0 by default: the pieces touch), every piece keeping the path's appearance, as one undo step. The gap pieces are left
+  out unless `removeGaps` is false. With direct-selected segments (or anchors) only those runs are divided, the
+  pattern running on across segments that follow one another; the rest of such a path stays as pieces of its own.
+  With `fit`, every run between corners and ends holds a whole number of dashes, all stretched or squeezed alike so it
+  starts and ends on a dash (a closed path with no corner holds whole periods); otherwise the lengths are exact and the
+  last piece of each run is what is left. The pieces are selected; more than 100,000 is refused. → `{ids, dashes}`.
+  Divide into Dashes… opens a dialog (`ui.menuDialog {command}`, kind `divideDashes`) whose fields are these
+  parameters, with Preview.
 - `addon.pathtools.cornerSet {ids?, anchors?, items?, radius, kind?}` cuts live corners, the ones Direct Selection's
   corner widgets and the Corners dialog edit, as one undo step. `ids` (default: the selection) are the paths and
   `anchors` the anchor indices of each path's outline with no corners cut; without `anchors`, a path's direct-selected
@@ -6251,6 +6261,7 @@ as `object.setBounds` measures them (Use Preview Bounds), except Arrange in Grid
 | `addon.arrange.swap` | `size` (false); `scaleStrokes` (the Scale Strokes & Effects preference) | Swaps the bounds centres of exactly two selected objects (off otherwise); with `size`, each also takes the other's width and height. |
 | `addon.arrange.replace` | `fit`: `keep`, `bounds` (the replaced object's width and height), `proportional` (fits inside them) (`keep`); `scaleStrokes`; `keep` (false) | Puts a copy of the topmost selected object centred on each of the other selected objects, in that object's place in the stacking order; the replaced objects are deleted unless `keep` (the copy then goes right above each). Needs two objects or more; the copies are selected. → `{ids}` |
 | `addon.arrange.size` | `width`, `height` pt, 0.001…1000000 (at least one); `proportional` (false: a side not given stays; true: it follows the given one in proportion); `reference` 0…8 (4, the centre); `scaleStrokes` | Gives every selected object that width and height, keeping its reference point in place (the 9-point grid row by row from the top-left). |
+| `addon.arrange.groupOverlapping` | none | Groups the selected objects (at most 20000) wherever their visual bounds overlap or touch, chains included: when A overlaps B and B overlaps C, all three go in one group. Only objects in the same layer or group are grouped together; objects that overlap nothing stay as they are. Each new group goes where its frontmost member was in the stacking order, and the groups and the objects left alone stay selected; with nothing overlapping it makes no step. Needs two objects or more. → `{groups: [id…], grouped}` (how many objects went into groups) |
 
 Zoom to Selection is the UI command `addon.arrange.zoomSelection {}` (remote mode only): it zooms and centres the
 active view so the selection's visual bounds fill the window with a margin, as `view.fitArtboard` fits the artboard,
@@ -6262,4 +6273,34 @@ command's parameters, with Preview; Set Size of Each's `__width` and `__height` 
 {"name":"run_command","arguments":{"command":"addon.arrange.grid","params":{"columns":4,"gapX":12,"gapY":12}}}
 {"name":"run_command","arguments":{"command":"addon.arrange.replace","params":{"fit":"proportional"}}}
 {"name":"run_command","arguments":{"command":"addon.arrange.size","params":{"width":72,"proportional":true}}}
+```
+
+## Document Tools add-on
+
+Document Tools is a built-in add-on for whole-document chores: its commands are `addon.document.*`, and in the desktop
+app it lives in Object › Plug-ins › Document Tools.
+
+`addon.document.saveTimestampedCopy {folder?, format?, time?}` writes a copy of the document named
+`<name>_YYYY-MM-DD_HH-MM.<ext>`, with `-2`, `-3`… added when that name is taken. The date and time are `time` (Unix
+seconds; now by default) in UTC. The copy goes in the document's own folder, or in `folder`, which a document never
+saved needs (the desktop app asks for one with the folder picker); `format` is a save format (`vectorcraft`, `pdf`,
+`svg`, `svgz`, `ai`, `eps`; the document's own by default). It is written as `file.saveCopy` writes, inside the
+automation roots in force: the document keeps its path, title and modified state, and no undo step is made. The
+command is off where there is no clock (the web). → `{path, format, bytes, warnings}`
+
+```json
+{"name":"run_command","arguments":{"command":"addon.document.saveTimestampedCopy","params":{}}}
+{"name":"run_command","arguments":{"command":"addon.document.saveTimestampedCopy","params":{"folder":"/Users/me/Versions","format":"pdf"}}}
+```
+
+`addon.document.symbolsFromLayers {layers?, replace?}` makes one symbol of each top-level layer's art, as `symbol.new`
+makes one (registration in the centre), named after the layer with a number added when a symbol has that name, as
+one undo step. `layers` lists layer ids (top-level layers only; anything else is refused); by default it takes the
+layers highlighted in the Layers panel when two or more are, else every layer. With `replace` (Convert Layers to
+Symbols in the menu) each layer's art is replaced by an instance of its symbol at the same place and size, the
+instances are selected, and locked layers are skipped. Layers with no art are skipped too; with nothing to make
+there is no step. → `{symbols: [name…], ids: [instance id…], skipped: [{layer, name, reason: "empty" | "locked"}…]}`
+
+```json
+{"name":"run_command","arguments":{"command":"addon.document.symbolsFromLayers","params":{"replace":true}}}
 ```
