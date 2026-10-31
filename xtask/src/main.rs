@@ -350,11 +350,12 @@ fn cmd_i18n_report() -> Result<(), String> {
     run(c, "cargo test -p vectorcraft-ui-egui --lib -- i18n::tests::untranslated_report --exact --nocapture")
 }
 
-/// [`cmd_i18n_report`] in `ci`, selecting the whole workspace as the test stage did: with
-/// `-p vectorcraft-ui-egui` alone cargo resolves features differently and recompiled for about
-/// 3.5 minutes. Every other lib test binary runs with no test matching the filter.
+/// [`cmd_i18n_report`] in `ci`, selecting the packages and targets the test stage did so it
+/// reuses that build: with `-p vectorcraft-ui-egui --lib` alone cargo resolves features
+/// differently and recompiled for about 3.5 minutes. Every other test binary runs with no test
+/// matching the filter.
 fn cmd_ci_i18n_report() -> Result<(), String> {
     let mut c = cargo();
-    c.args(["test", "--workspace", "--lib", "--quiet", "--", "i18n::tests::untranslated_report", "--exact", "--nocapture"]);
-    run(c, "cargo test --workspace --lib --quiet -- i18n::tests::untranslated_report --exact --nocapture")
+    c.args(["test", "--workspace", "--lib", "--bins", "--tests", "--", "i18n::tests::untranslated_report", "--exact", "--nocapture"]);
+    run(c, "cargo test --workspace --lib --bins --tests -- i18n::tests::untranslated_report --exact --nocapture")
 }
