@@ -5706,3 +5706,6 @@ breakText	Glyphs	Glyph
 @msg	no object at path {shown} in the symbol's art	không có đối tượng tại đường dẫn {shown} trong hình của ký hiệu
 @msg	give fill, stroke, opacity and/or blend	hãy cung cấp fill, stroke, opacity và/hoặc blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	hãy cung cấp newName, registration, exportType, nineSlice và/hoặc type
+	Text Flow	Luồng văn bản
+	By Rows	Theo hàng
+	By Columns	Theo cột

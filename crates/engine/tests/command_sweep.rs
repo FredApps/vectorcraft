@@ -720,7 +720,7 @@ fn shape_builder_options_junk() {
     assert!(failures.is_empty(), "{} failures:\n{}", failures.len(), failures.join("\n"));
 }
 
-/// Area Type Options with junk fit values, on selected area type (the fixtures have none), with
+/// Area Type Options with junk fit and flow values, on selected area type (the fixtures have none), with
 /// text that overflows: never a panic, the document stays sound, and editing still works.
 #[test]
 fn area_options_fit_junk() {
@@ -741,6 +741,11 @@ fn area_options_fit_junk() {
         json!({"fit": "shrinkText", "columns": 100, "gutter": 0, "inset": 10000}),
         json!({"fitMinPercent": 50}),
         json!({"fit": "none", "fitMinPercent": 1e-308}),
+        json!({"flow": "rows", "rows": u64::MAX, "columns": u64::MAX, "gutter": 1e308}),
+        json!({"flow": "rows", "fit": "shrinkText", "rows": 3, "columns": 3}),
+        json!({"flow": "rows", "fit": "autoHeight", "columns": 4}),
+        json!({"flow": {"rows": 1}}),
+        json!({"flow": [1]}),
     ];
     let story = "Words that overflow a small frame. ".repeat(40);
     let mut failures = vec![];

@@ -5946,3 +5946,6 @@ breakText	Glyphs	字形
 @msg	no object at path {shown} in the symbol's art	符号图稿中路径 {shown} 处没有对象
 @msg	give fill, stroke, opacity and/or blend	请提供 fill、stroke、opacity 和/或 blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	请提供 newName、registration、exportType、nineSlice 和/或 type
+	Text Flow	文本流向
+	By Rows	按行
+	By Columns	按列

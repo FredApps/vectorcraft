@@ -6134,3 +6134,6 @@ breakText	Glyphs	Merkit
 @msg	no object at path {shown} in the symbol's art	symbolin kuvituksessa ei ole objektia polussa {shown}
 @msg	give fill, stroke, opacity and/or blend	anna fill, stroke, opacity ja/tai blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	anna newName, registration, exportType, nineSlice ja/tai type
+	Text Flow	Tekstin kulku
+	By Rows	Riveittäin
+	By Columns	Sarakkeittain

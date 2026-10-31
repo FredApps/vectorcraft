@@ -6104,3 +6104,6 @@ breakText	Glyphs	Glyfy
 @msg	no object at path {shown} in the symbol's art	v kresbě symbolu není na cestě {shown} žádný objekt
 @msg	give fill, stroke, opacity and/or blend	zadejte fill, stroke, opacity a/nebo blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	zadejte newName, registration, exportType, nineSlice a/nebo type
+	Text Flow	Tok textu
+	By Rows	Po řádcích
+	By Columns	Po sloupcích

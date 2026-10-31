@@ -109,7 +109,8 @@ pub use style_libs::StyleLibrary;
 pub use text::{
     AreaFit, AreaOptions, Burasagari, CharAlign, CharPosition, CharStyle, Composer, Digits, FirstBaseline, HyphenationOptions, InlineArt,
     JustificationOptions, Justify, Kinsoku, LeadingModel, Mojikumi, ParaDirection, ParaStyle, PathAlign, PathEffect, RubyAlign, RubyPosition,
-    RubySpan, ScriptMetrics, SingleWordJustify, TabAlign, TabStop, TextKind, TextObject, TextRun, TextStyleDef, TextWrap, VerticalAlign, WrapShape,
+    RubySpan, ScriptMetrics, SingleWordJustify, TabAlign, TabStop, TextFlow, TextKind, TextObject, TextRun, TextStyleDef, TextWrap, VerticalAlign,
+    WrapShape,
 };
 pub use trace::TraceView;
 pub use variables::{DataSet, DataValue, Variable, VariableKind, Variables};

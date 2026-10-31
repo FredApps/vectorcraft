@@ -5686,3 +5686,6 @@ breakText	Glyphs	글리프
 @msg	no object at path {shown} in the symbol's art	심볼 아트의 경로 {shown}에 개체가 없습니다
 @msg	give fill, stroke, opacity and/or blend	fill, stroke, opacity 및/또는 blend를 지정하세요
 @msg	pass newName, registration, exportType, nineSlice and/or type	newName, registration, exportType, nineSlice 및/또는 type을 지정하세요
+	Text Flow	텍스트 흐름
+	By Rows	행 방향
+	By Columns	열 방향

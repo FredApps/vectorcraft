@@ -6081,3 +6081,6 @@ breakText	Glyphs	Глифы
 @msg	no object at path {shown} in the symbol's art	в графике символа нет объекта по пути {shown}
 @msg	give fill, stroke, opacity and/or blend	укажите fill, stroke, opacity и/или blend
 @msg	pass newName, registration, exportType, nineSlice and/or type	укажите newName, registration, exportType, nineSlice и/или type
+	Text Flow	Поток текста
+	By Rows	По строкам
+	By Columns	По столбцам
