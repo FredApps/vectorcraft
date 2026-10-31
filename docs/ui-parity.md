@@ -240,7 +240,7 @@ tools, never checked side by side) isn't captured row by row.
 | Polygon/Star exact-size placement remembers the chosen sides/points for later drags and dialog openings; Cancel preserves the previous count | done | Session tool options; existing dialog-opening gestures retained; regression in `toolbar.rs` |
 | Tool double-click opens its options | done | |
 | Per-platform mapping (Cmd ↔ Ctrl, Option ↔ Alt) | done | |
-| Eyedropper cursor; Use Precise Cursors | partial | original pipette at the sampling tip, distinct from the precise crosshair at five DPI scales (#1269); OS cursor display and Caps Lock unverified; a Precise Cursors command toggles the preference and can take a shortcut (#1663); cursors are painted into the window on Wayland (#1652, not run on Linux) |
+| Eyedropper cursor; Use Precise Cursors | partial | original pipette at the sampling tip, distinct from the precise crosshair at five DPI scales (#1269); OS cursor display unverified; while Caps Lock is on, the tools that Use Precise Cursors changes show the crosshair, and the saved preference does not change (the desktop app reads the lock state on macOS, Windows and Linux X11, not on native Wayland; `view.capsLock` reads or sets it); a Use Precise Cursors command toggles the preference and can take a shortcut (#1663); cursors are painted into the window on Wayland (#1652, not run on Linux) |
 | Every tool's modifiers checked against the shortcut reference | missing | this is the fidelity pass |
 
 ## Keyboard shortcuts
