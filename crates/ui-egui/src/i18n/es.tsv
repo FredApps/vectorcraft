@@ -2458,6 +2458,15 @@ font-technology	Variable	Variables
 	Arabic	Árabes
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengalí
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Guyaratí
+digits	Odia	Oriya
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Canarés
+digits	Malayalam	Malayálam
 	Proportional Oldstyle	Estilo antiguo proporcional
 	Pucker & Bloat…	Fruncir y engordar…
 	Pucker Tool	Herramienta Fruncir

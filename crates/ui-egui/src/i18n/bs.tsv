@@ -1421,6 +1421,15 @@ lighting	Light	Svjetlo
 	Arabic	Arapski
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengalski
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gudžarati
+digits	Odia	Odija
+digits	Tamil	Tamilski
+digits	Telugu	Telugu
+digits	Kannada	Kanada
+digits	Malayalam	Malajalam
 	Reset Panel	Vrati panel na početno
 	Roman Baseline	Latinična osnovna linija
 	Select a text object to edit its character attributes.	Odaberite tekstualni objekat da uredite njegove atribute znakova.

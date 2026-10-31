@@ -2489,6 +2489,15 @@ mark-style	Japanese	Giapponese
 	Arabic	Arabe
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengalese
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gujarati
+digits	Odia	Odia
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Proportional Oldstyle	Proporzionali stile antico
 	Pucker & Bloat…	Contrai e gonfia…
 	Pucker Tool	Strumento Contrai

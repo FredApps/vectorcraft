@@ -3302,6 +3302,15 @@ font-script	Japanese	漢字
 	Hindi	印地文
 digits	Hindi	印地數字
 	Farsi	波斯數字
+digits	Devanagari	天城數字
+digits	Bengali	孟加拉數字
+digits	Gurmukhi	古木基數字
+digits	Gujarati	古吉拉特數字
+digits	Odia	歐利亞數字
+digits	Tamil	坦米爾數字
+digits	Telugu	泰盧固數字
+digits	Kannada	坎那達數字
+digits	Malayalam	馬來亞拉姆數字
 	Proportional Oldstyle	比例舊式數字
 	Pucker & Bloat…	縮攏與膨脹…
 	Pucker Tool	縮攏工具

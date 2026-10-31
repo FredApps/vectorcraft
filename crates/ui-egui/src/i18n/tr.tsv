@@ -2280,6 +2280,15 @@ shape	Open	Açık
 	Arabic	Arapça
 	Hindi	Hintçe
 	Farsi	Farsça
+digits	Devanagari	Devanagari
+digits	Bengali	Bengalce
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gücerat
+digits	Odia	Oriya
+digits	Tamil	Tamilce
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Proportional Oldstyle	Orantılı Eski Stil
 	Pucker & Bloat…	Büzüşme ve Şişkinlik…
 	Pucker Tool	Büzme Aracı

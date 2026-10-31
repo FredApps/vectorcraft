@@ -2485,6 +2485,15 @@ mark-style	Japanese	Японский
 	Arabic	Арабские
 	Hindi	Хинди
 	Farsi	Фарси
+digits	Devanagari	Деванагари
+digits	Bengali	Бенгальские
+digits	Gurmukhi	Гурмукхи
+digits	Gujarati	Гуджарати
+digits	Odia	Ория
+digits	Tamil	Тамильские
+digits	Telugu	Телугу
+digits	Kannada	Каннада
+digits	Malayalam	Малаялам
 	Proportional Oldstyle	Пропорциональные старого стиля
 	Pucker & Bloat…	Сморщивание и раздувание…
 	Pucker Tool	Инструмент «Сморщивание»

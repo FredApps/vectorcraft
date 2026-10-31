@@ -540,6 +540,19 @@ fn digits_show_with_the_indic_options() {
     assert!(shown(&mut app));
 }
 
+/// The Digits submenu lists Default, the Arabic-script numeral systems and the Indic scripts'
+/// digits (#4942), and checks the selected characters' system.
+#[test]
+fn digits_submenu_lists_the_indic_scripts_and_checks_the_selection() {
+    let mut app = VectorcraftApp::new(Session::new(), Default::default());
+    let text = crate::tests_labels::painted_text(&mut app, |app, ui| digits_items(app, ui, Some(vectorcraft_doc::Digits::Tamil)));
+    let items: Vec<_> = text.lines().map(|l| l.trim().trim_start_matches("✓ ")).collect();
+    let want =
+        ["Default", "Arabic", "Hindi", "Farsi", "Devanagari", "Bengali", "Gurmukhi", "Gujarati", "Odia", "Tamil", "Telugu", "Kannada", "Malayalam"];
+    assert!(want.iter().all(|w| items.contains(w)), "{items:?}");
+    assert_eq!(text.lines().filter_map(|l| l.strip_prefix("✓ ")).collect::<Vec<_>>(), ["Tamil"]);
+}
+
 /// Character Direction is in the panel menu with the Middle Eastern (Indic) options, beside
 /// Digits. Its submenu checks the direction the characters the panel acts on share: the
 /// selected type's, or the range the Type tool has selected. It checks no item when they differ.

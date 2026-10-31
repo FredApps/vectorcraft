@@ -1359,6 +1359,15 @@ lighting	Light	Lys
 	Arabic	Arabisk
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengali
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gujarati
+digits	Odia	Oriya
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Reset Panel	Nulstil panel
 	Roman Baseline	Romersk grundlinje
 	Select a text object to edit its character attributes.	Markér et tekstobjekt for at redigere dets tegnattributter.

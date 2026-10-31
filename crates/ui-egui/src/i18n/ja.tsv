@@ -49,6 +49,15 @@ font-technology	Variable	バリアブル
 	Hindi	ヒンディー語
 digits	Hindi	ヒンディー数字
 	Farsi	ペルシャ数字
+digits	Devanagari	デーヴァナーガリー数字
+digits	Bengali	ベンガル数字
+digits	Gurmukhi	グルムキー数字
+digits	Gujarati	グジャラート数字
+digits	Odia	オディア数字
+digits	Tamil	タミル数字
+digits	Telugu	テルグ数字
+digits	Kannada	カンナダ数字
+digits	Malayalam	マラヤーラム数字
 	Favorites	お気に入り
 	Flip	反転
 	Japanese	日本語

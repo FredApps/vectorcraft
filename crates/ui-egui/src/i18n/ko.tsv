@@ -42,6 +42,15 @@ font-technology	Variable	가변
 	Arabic	아라비아어
 	Hindi	힌디어
 	Farsi	페르시아어
+digits	Devanagari	데바나가리
+digits	Bengali	벵골어
+digits	Gurmukhi	구르무키
+digits	Gujarati	구자라트어
+digits	Odia	오리야어
+digits	Tamil	타밀어
+digits	Telugu	텔루구어
+digits	Kannada	칸나다어
+digits	Malayalam	말라얄람어
 	Favorites	즐겨찾기
 	Flip	뒤집기
 	Japanese	일본어

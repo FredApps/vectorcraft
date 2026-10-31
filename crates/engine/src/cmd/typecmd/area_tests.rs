@@ -1268,6 +1268,53 @@ fn digits_are_a_character_attribute_saved_only_when_set() {
     assert_eq!(set, [("صفحة ".to_string(), Digits::Default), ("12".to_string(), Digits::Farsi)]);
 }
 
+/// The Indic digits (#4942): each set by its id through text.setFormat and text.setRangeStyle,
+/// saved under it, kept by save and reopen and by character styles; the text stays as typed.
+#[test]
+fn indic_digits_round_trip_through_the_commands_and_the_file() {
+    use vectorcraft_doc::Digits;
+    let mut s = Session::new();
+    s.execute("file.new", &json!({"width": 400, "height": 400})).unwrap();
+    let id = s.execute("text.create", &json!({"x": 10, "y": 50, "text": "page 12"})).unwrap()["id"].as_u64().unwrap();
+    let runs = |s: &Session| match &s.doc().unwrap().doc.node(NodeId(id)).unwrap().kind {
+        NodeKind::Text(t) => t.runs.clone(),
+        _ => panic!("text"),
+    };
+    s.execute("select.set", &json!({"ids": [id]})).unwrap();
+    let indic = [
+        Digits::Devanagari,
+        Digits::Bengali,
+        Digits::Gurmukhi,
+        Digits::Gujarati,
+        Digits::Odia,
+        Digits::Tamil,
+        Digits::Telugu,
+        Digits::Kannada,
+        Digits::Malayalam,
+    ];
+    for d in indic {
+        s.execute("text.setFormat", &json!({"digits": d.id()})).unwrap();
+        assert!(runs(&s).iter().all(|r| r.style.digits == d), "{d:?}");
+        assert_eq!(serde_json::to_value(&runs(&s)[0].style).unwrap()["digits"], d.id());
+        assert_eq!(runs(&s).iter().map(|r| r.text.as_str()).collect::<String>(), "page 12");
+        let back = vectorcraft_format::load(&vectorcraft_format::save(&s.doc().unwrap().doc, false)).unwrap();
+        let NodeKind::Text(t) = &back.node(NodeId(id)).unwrap().kind else { panic!("text") };
+        assert!(t.runs.iter().all(|r| r.style.digits == d), "{d:?} after reopening");
+    }
+    s.execute("text.setRangeStyle", &json!({"id": id, "start": 5, "end": 7, "digits": "gujarati"})).unwrap();
+    let set: Vec<_> = runs(&s).iter().map(|r| (r.text.clone(), r.style.digits)).collect();
+    assert_eq!(set, [("page ".to_string(), Digits::Malayalam), ("12".to_string(), Digits::Gujarati)]);
+    assert_eq!(super::super::textstyles::char_attrs(&runs(&s)[1].style)["digits"], "gujarati");
+    s.execute("charStyle.new", &json!({"name": "Tamil digits", "attrs": {"digits": "tamil"}})).unwrap();
+    let listed = s.execute("charStyle.list", &json!({})).unwrap();
+    let tamil = listed["styles"].as_array().unwrap().iter().find(|st| st["name"] == "Tamil digits").unwrap();
+    assert_eq!(tamil["attrs"]["digits"], "tamil");
+    for wrong in [json!("oriya"), json!("Devanagari"), json!(3)] {
+        let err = s.execute("text.setFormat", &json!({ "digits": wrong })).unwrap_err().to_string();
+        assert!(err.contains("`digits` must be one of") && err.contains("\"malayalam\""), "{err}");
+    }
+}
+
 /// Language (Character panel, #4946): a character attribute set by name or tag, saved as the tag
 /// only when set, kept by save and reopen and by character styles; new type takes the document's.
 #[test]

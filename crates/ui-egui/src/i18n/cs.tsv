@@ -1445,6 +1445,15 @@ lighting	Light	Světlo
 	Hindi	Hindština
 digits	Hindi	Hindské
 	Farsi	Perské
+digits	Devanagari	Dévanágarské
+digits	Bengali	Bengálské
+digits	Gurmukhi	Gurmukhské
+digits	Gujarati	Gudžarátské
+digits	Odia	Urijské
+digits	Tamil	Tamilské
+digits	Telugu	Telugské
+digits	Kannada	Kannadské
+digits	Malayalam	Malajálamské
 	Reset Panel	Obnovit panel
 	Roman Baseline	Latinková účaří
 	Select a text object to edit its character attributes.	Vyberte textový objekt, abyste mohli upravit atributy jeho znaků.

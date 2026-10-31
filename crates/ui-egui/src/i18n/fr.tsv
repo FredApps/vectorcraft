@@ -2456,6 +2456,15 @@ font-technology	Variable	Variables
 	Arabic	Arabes
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Dévanagari
+digits	Bengali	Bengali
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Goudjarati
+digits	Odia	Odia
+digits	Tamil	Tamoul
+digits	Telugu	Télougou
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Proportional Oldstyle	Elzévirien proportionnel
 	Pucker & Bloat…	Contraction et dilatation…
 	Pucker Tool	Outil Contraction

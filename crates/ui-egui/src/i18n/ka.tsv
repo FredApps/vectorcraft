@@ -1276,6 +1276,15 @@ lighting	Light	სინათლე
 	Arabic	არაბული
 	Hindi	ჰინდი
 	Farsi	სპარსული
+digits	Devanagari	დევანაგარი
+digits	Bengali	ბენგალური
+digits	Gurmukhi	გურმუხი
+digits	Gujarati	გუჯარათი
+digits	Odia	ორია
+digits	Tamil	ტამილური
+digits	Telugu	ტელუგუ
+digits	Kannada	კანადა
+digits	Malayalam	მალაიალამური
 	Reset Panel	პანელის ჩამოყრა
 	Roman Baseline	ლათინური საბაზისო ხაზი
 	Select a text object to edit its character attributes.	სიმბოლოების ატრიბუტების რედაქტირებისთვის მონიშნეთ ტექსტური ობიექტი.

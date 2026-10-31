@@ -2420,6 +2420,15 @@ mark-style	Japanese	Japanisch
 	Arabic	Arabisch
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengalisch
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gujarati
+digits	Odia	Oriya
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Proportional Oldstyle	Proportionale Mediävalziffern
 	Pucker & Bloat…	Zusammenziehen und aufblasen…
 	Pucker Tool	Zusammenziehen-Werkzeug
