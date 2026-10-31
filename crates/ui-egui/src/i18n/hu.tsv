@@ -1375,6 +1375,15 @@ font-technology	Variable	Változó
 	Eyedropper: click the art to sample the stop's colour	Pipetta: kattints a grafikára a pont színének mintavételéhez
 	Eyedropper: click the art to sample the key color	Pipetta: kattints a grafikára a kulcsszín mintavételéhez
 	Farsi	Perzsa
+digits	Devanagari	Dévanágari
+digits	Bengali	Bengáli
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gudzsaráti
+digits	Odia	Odia
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malajálam
 	Favorites	Kedvencek
 	Feather	Tollazat
 	Feather…	Elmosott szél…

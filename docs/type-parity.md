@@ -1,6 +1,6 @@
 # Type parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Language per character: text is shaped in its language, Character panel › Language, Indian languages; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Digits: the native digits of the Indic scripts, #4942; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
 
 Type is Illustrator's largest single area by use (weight 13 of 105 across "Type core" and "Type advanced" in
 [target-app-parity.md](target-app-parity.md)). This checklist lists the features one by one. Status is from the
@@ -53,7 +53,7 @@ against Illustrator's public documentation; **estimated** unless noted.
 | Snap to Glyph | done | View › Snap to Glyph (`view.snapToGlyph`): with Smart Guides on, new point type and drawing tools snap to live-text baselines and glyph bounds (`Targets::for_drawing`, `tools::text_tests::snap_to_glyph_lines_up_new_point_type_with_a_baseline`). Character panel menu › Show Snap to Glyph Options: Baseline, x-height, Glyph Bounds, Proximity Guides, Angular Guides and Anchor Point each turn their guides on or off (`view.snapToGlyph.options`, all on by default; #4232) |
 | Thai, Lao, Khmer, Myanmar: shaping (marks, reordering), lines broken between words, word-by-word caret and double-click | done | words found by ICU4X's line segmenter: dictionaries on the desktop, LSTM models on the web |
 | Middle Eastern: bidirectional layout, Paragraph Direction | done | |
-| Middle Eastern: digit types (Character panel menu › Digits: Default, Arabic, Hindi, Farsi) | done | `text.setFormat` / `text.setRangeStyle {digits}`; the text keeps the typed digits, the glyphs and SVG export follow the style |
+| Middle Eastern and Indic: digit types (Character panel menu › Digits: Default, Arabic, Hindi, Farsi; Devanagari, Bengali, Gurmukhi, Gujarati, Odia, Tamil, Telugu, Kannada, Malayalam) | done | `text.setFormat` / `text.setRangeStyle {digits}` (`"devanagari"`, `"bengali"`, `"gurmukhi"`, `"gujarati"`, `"odia"`, `"tamil"`, `"telugu"`, `"kannada"`, `"malayalam"` added, #4942); the text keeps the typed digits, the glyphs and SVG export follow the style; carried by character styles. Not yet: `.ai` export of the setting; Indic digits typed as such stay as typed under another system. Evidence: `text::tests::indic_digits_map_to_their_scripts_block`, `tests::bidi::indic_digits_draw_the_scripts_own_digits`, `typecmd::area_tests::indic_digits_round_trip_through_the_commands_and_the_file` |
 | Middle Eastern: Character Direction, kashidas, Middle Eastern composers, split caret | missing | |
 | CJK: input methods (marked text, candidate window) | done | |
 | CJK: kinsoku (Hard, Soft, None), Line-end Punctuation Half Width, tate-chu-yoko (auto) | done / partial | custom kinsoku sets, the Mojikumi Settings dialog and the other mojikumi sets missing |
@@ -72,6 +72,7 @@ Character Styles menu New/Redefine and footer New capture the first selected cha
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Digits (#4942): the native digits of Devanagari, Bengali, Gurmukhi, Gujarati, Odia, Tamil, Telugu, Kannada and Malayalam in the Character panel menu › Digits and `{digits}`; scores unchanged |
 | 2026-11-01 | minor | Language per character (#4946): Character panel › Language, `text.setFormat` / `text.setRangeStyle {language}`, character styles; text is shaped in its language (`locl`, #4940); new type takes the document's; Indian languages in the list (#4943); scores unchanged |
 | 2026-10-31 | minor | PDF import finds an installed font whose PDF name holds hyphens (`Noto-Sans-Bold` is Noto Sans, Bold: the longest part before a hyphen that names an installed family) and a composite font by its CIDFont's name rather than its base name, which ends in the CMap's (`Name-Identity-H`, [ISO 32000-1 §9.7.6.1](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf)); a missing font is split only before a style part (`Helvetica-BoldOblique`), so it is reported as `MS PGothic`, not `MS`; scores unchanged |
 | 2026-10-31 | minor | Highlight Alternate Glyphs: an optional feature (such as `salt`) that changes a lam-alef ligature is highlighted again, only the required ligature staying clear, and a lam-alef with any combining mark (Arabic Extended-A/B/C included) counts as the ligature (#394); scores unchanged |

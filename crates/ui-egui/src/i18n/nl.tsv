@@ -1373,6 +1373,15 @@ lighting	Light	Licht
 	Arabic	Arabisch
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengaals
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gujarati
+digits	Odia	Odia
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Reset Panel	Paneel herstellen
 	Roman Baseline	Romeinse basislijn
 	Select a text object to edit its character attributes.	Selecteer een tekstobject om de tekenkenmerken ervan te bewerken.

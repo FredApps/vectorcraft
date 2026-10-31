@@ -3059,6 +3059,15 @@ theme	Appearance	Εμφάνιση
 	Arabic	Αραβικά
 	Hindi	Χίντι
 	Farsi	Περσικά
+digits	Devanagari	Ντεβαναγκάρι
+digits	Bengali	Βεγγαλικά
+digits	Gurmukhi	Γκουρμούκι
+digits	Gujarati	Γκουγιαράτι
+digits	Odia	Όντια
+digits	Tamil	Ταμιλικά
+digits	Telugu	Τελούγκου
+digits	Kannada	Κανάντα
+digits	Malayalam	Μαλαγιάλαμ
 	Proportional Oldstyle	Αναλογικοί παλαιοτυπικοί αριθμοί
 	Pucker & Bloat…	Συρρίκνωση και διόγκωση…
 	Pucker Tool	Συρρίκνωση (Pucker Tool)

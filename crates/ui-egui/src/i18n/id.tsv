@@ -1359,6 +1359,15 @@ lighting	Light	Cahaya
 	Arabic	Arab
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Dewanagari
+digits	Bengali	Bengali
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gujarati
+digits	Odia	Oriya
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Reset Panel	Setel ulang panel
 	Roman Baseline	Baseline Romawi
 	Select a text object to edit its character attributes.	Pilih objek teks untuk mengedit atribut karakternya.

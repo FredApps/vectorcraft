@@ -1358,6 +1358,15 @@ lighting	Light	Światło
 	Arabic	Arabskie
 	Hindi	Hindi
 	Farsi	Perskie
+digits	Devanagari	Dewanagari
+digits	Bengali	Bengalskie
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gudżarati
+digits	Odia	Orija
+digits	Tamil	Tamilskie
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malajalam
 	Reset Panel	Resetuj panel
 	Roman Baseline	Linia bazowa łacińska
 	Select a text object to edit its character attributes.	Zaznacz obiekt tekstowy, aby edytować atrybuty znaków.

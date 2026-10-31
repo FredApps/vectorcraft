@@ -2361,6 +2361,15 @@ font-script	Japanese	汉字
 	Hindi	印地语
 digits	Hindi	印地数字
 	Farsi	波斯数字
+digits	Devanagari	天城数字
+digits	Bengali	孟加拉数字
+digits	Gurmukhi	古木基数字
+digits	Gujarati	古吉拉特数字
+digits	Odia	奥里亚数字
+digits	Tamil	泰米尔数字
+digits	Telugu	泰卢固数字
+digits	Kannada	卡纳达数字
+digits	Malayalam	马拉雅拉姆数字
 	Proportional Oldstyle	比例旧式数字
 	Pucker & Bloat…	缩拢与膨胀…
 	Pucker Tool	收缩工具

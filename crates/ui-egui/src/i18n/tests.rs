@@ -1985,3 +1985,19 @@ fn polish_plurals_have_three_forms() {
     }
     assert!(count >= 13, "Polish plural rows missing");
 }
+
+/// Every catalog names each numeral system of Character panel menu › Digits, in the `digits`
+/// context (where the language's name would read wrong) or with its plain row (#4942).
+#[test]
+fn every_catalog_names_the_digits_menus_numeral_systems() {
+    let mut missing = Vec::new();
+    for l in LANGUAGES.iter().filter(|l| !l.source.is_empty()) {
+        let cat = l.catalog();
+        for (label, _) in crate::panels::character::DIGITS {
+            if cat.contextual("digits", label).is_none() && cat.plain(label).is_none() {
+                missing.push(format!("{}: {label}", l.code));
+            }
+        }
+    }
+    assert!(missing.is_empty(), "Digits menu labels without a row:\n{}", missing.join("\n"));
+}

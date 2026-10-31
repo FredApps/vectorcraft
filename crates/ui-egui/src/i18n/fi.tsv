@@ -1419,6 +1419,15 @@ lighting	Light	Valo
 	Arabic	Arabia
 	Hindi	Hindi
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengali
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gudžarati
+digits	Odia	Orija
+digits	Tamil	Tamili
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malajalam
 	Reset Panel	Palauta paneeli
 	Roman Baseline	Latinalainen perusviiva
 	Select a text object to edit its character attributes.	Valitse tekstiobjekti, jonka merkkimääritteitä haluat muokata.

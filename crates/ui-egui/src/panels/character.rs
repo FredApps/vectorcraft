@@ -1016,6 +1016,44 @@ fn char_direction_items(app: &mut VectorcraftApp, ui: &mut Ui) {
     }
 }
 
+/// The numeral systems Character panel menu › Digits lists after Default, with their English
+/// labels, translated in the `digits` context (Hindi, Bengali, Tamil… are also languages): the
+/// Arabic-script ones, then the Indic scripts' own digits from Devanagari on.
+pub(crate) const DIGITS: [(&str, vectorcraft_doc::Digits); 12] = {
+    use vectorcraft_doc::Digits;
+    [
+        ("Arabic", Digits::Arabic),
+        ("Hindi", Digits::Hindi),
+        ("Farsi", Digits::Farsi),
+        ("Devanagari", Digits::Devanagari),
+        ("Bengali", Digits::Bengali),
+        ("Gurmukhi", Digits::Gurmukhi),
+        ("Gujarati", Digits::Gujarati),
+        ("Odia", Digits::Odia),
+        ("Tamil", Digits::Tamil),
+        ("Telugu", Digits::Telugu),
+        ("Kannada", Digits::Kannada),
+        ("Malayalam", Digits::Malayalam),
+    ]
+};
+
+/// Character panel menu › Digits; `digits`: the selected characters' (`None` when they differ).
+fn digits_items(app: &mut VectorcraftApp, ui: &mut Ui, digits: Option<vectorcraft_doc::Digits>) {
+    use vectorcraft_doc::Digits;
+    let mut item = |ui: &mut Ui, label: &str, d: Digits| {
+        if menu_item(ui, label, true, digits == Some(d)) {
+            format(app, json!({"digits": d.id()}));
+        }
+    };
+    item(ui, tl!("Default"), Digits::Default);
+    for (label, d) in DIGITS {
+        if d == Digits::Devanagari {
+            ui.separator();
+        }
+        item(ui, crate::i18n::tr_ctx(crate::i18n::current(), "digits", label), d);
+    }
+}
+
 pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
     let st = text_style(app);
     let has = st.is_some();
@@ -1089,21 +1127,7 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
     if app.session.prefs.show_indic_options {
         let digits = s.as_ref().map(|s| s.digits);
         ui.add_enabled_ui(has, |ui| {
-            ui.menu_button(format!("   {}", tl!("Digits")), |ui| {
-                use vectorcraft_doc::Digits;
-                // The numeral systems, in the digits context: Hindi is also a language.
-                let digits_label = |s| crate::i18n::tr_ctx(crate::i18n::current(), "digits", s);
-                for (label, d, key) in [
-                    (tl!("Default"), Digits::Default, "default"),
-                    (digits_label("Arabic"), Digits::Arabic, "arabic"),
-                    (digits_label("Hindi"), Digits::Hindi, "hindi"),
-                    (digits_label("Farsi"), Digits::Farsi, "farsi"),
-                ] {
-                    if menu_item(ui, label, true, digits == Some(d)) {
-                        format(app, json!({"digits": key}));
-                    }
-                }
-            });
+            ui.menu_button(format!("   {}", tl!("Digits")), |ui| digits_items(app, ui, digits));
         });
         ui.add_enabled_ui(has, |ui| {
             ui.menu_button(format!("   {}", tl!("Character Direction")), |ui| char_direction_items(app, ui));

@@ -5022,11 +5022,14 @@ command is one undo step.
 
 ## Digits
 
-`text.setFormat {digits: "default"|"arabic"|"hindi"|"farsi"}` (the selected type, or `ids`) and `text.setRangeStyle {id,
-start, end, digits}` (a range) set the numeral system the characters' digits are drawn in, as the Character panel menu's
-Digits does with the Middle Eastern (Indic) options shown: `arabic` draws every digit as the Western 0–9, `hindi` as the
-Arabic-Indic ٠–٩ (U+0660–U+0669) and `farsi` as the Eastern Arabic-Indic ۰–۹ (U+06F0–U+06F9), whichever of the three sets
-was typed; `default` leaves each digit as typed. The text keeps the digits that were typed (`text.getRange`, search,
+`text.setFormat {digits: "default"|"arabic"|"hindi"|"farsi"|"devanagari"|"bengali"|"gurmukhi"|"gujarati"|"odia"|"tamil"|"telugu"|"kannada"|"malayalam"}`
+(the selected type, or `ids`) and `text.setRangeStyle {id, start, end, digits}` (a range) set the numeral system the
+characters' digits are drawn in, as the Character panel menu's Digits does with the Middle Eastern (Indic) options shown:
+`arabic` draws every digit as the Western 0–9, `hindi` as the Arabic-Indic ٠–٩ (U+0660–U+0669) and `farsi` as the Eastern
+Arabic-Indic ۰–۹ (U+06F0–U+06F9), whichever of the three sets was typed; the Indic ones draw them as their script's own
+digits (#4942): `devanagari` ०–९ (U+0966–U+096F), `bengali` ০–৯ (U+09E6), `gurmukhi` ੦–੯ (U+0A66), `gujarati` ૦–૯
+(U+0AE6), `odia` ୦–୯ (U+0B66), `tamil` ௦–௯ (U+0BE6), `telugu` ౦–౯ (U+0C66), `kannada` ೦–೯ (U+0CE6) and `malayalam` ൦–൯
+(U+0D66); `default` leaves each digit as typed. Any other value is refused. The text keeps the digits that were typed (`text.getRange`, search,
 the caret and selection are unchanged); only the glyphs change, as with All Caps, and SVG export writes the digits as drawn.
 A digit the font lacks comes from a fallback font. Default and saved only when set. One undo step.
 

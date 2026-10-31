@@ -1252,6 +1252,15 @@ font-technology	Variable	Biến thiên
 	Eyedropper: click the art to sample the stop's colour	Ống hút màu: bấm vào tác phẩm để lấy mẫu màu điểm dừng
 	Eyedropper: click the art to sample the key color	Ống hút màu: bấm vào tác phẩm để lấy mẫu màu chủ
 	Farsi	Farsi
+digits	Devanagari	Devanagari
+digits	Bengali	Bengali
+digits	Gurmukhi	Gurmukhi
+digits	Gujarati	Gujarati
+digits	Odia	Odia
+digits	Tamil	Tamil
+digits	Telugu	Telugu
+digits	Kannada	Kannada
+digits	Malayalam	Malayalam
 	Favorites	Yêu thích
 	Feather…	Làm mờ dần…
 	Feet	Feet
