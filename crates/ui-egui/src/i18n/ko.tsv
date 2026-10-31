@@ -5644,6 +5644,10 @@ breakText	Glyphs	글리프
 @msg	there is no clock here: give `time` (Unix seconds)	여기에는 시계가 없습니다. `time`(Unix 초)을 지정하십시오
 @msg	the document has never been saved: give `folder`	문서를 저장한 적이 없습니다. `folder`를 지정하십시오
 @msg	every numbered name for the copy is taken	사본에 쓸 번호 붙은 이름이 모두 사용 중입니다
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	레이어에서 새 심볼 만들기
+	Convert Layers to Symbols	레이어를 심볼로 변환
+@msg	{id} is no top-level layer	{id}은(는) 최상위 레이어가 아닙니다
 	Marathi	마라티어
 	Gujarati	구자라트어
 	Bengali	벵골어

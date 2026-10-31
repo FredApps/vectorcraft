@@ -5681,6 +5681,10 @@ breakText	Glyphs	Glifi
 @msg	there is no clock here: give `time` (Unix seconds)	qui non c’è un orologio: indica `time` (secondi Unix)
 @msg	the document has never been saved: give `folder`	il documento non è mai stato salvato: indica `folder`
 @msg	every numbered name for the copy is taken	tutti i nomi numerati per la copia sono già usati
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Nuovi simboli dai livelli
+	Convert Layers to Symbols	Converti livelli in simboli
+@msg	{id} is no top-level layer	{id} non è un livello di primo livello
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengalese

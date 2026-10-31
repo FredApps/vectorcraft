@@ -5664,6 +5664,10 @@ breakText	Glyphs	Glyph
 @msg	there is no clock here: give `time` (Unix seconds)	ở đây không có đồng hồ: hãy cho `time` (giây Unix)
 @msg	the document has never been saved: give `folder`	tài liệu chưa từng được lưu: hãy cho `folder`
 @msg	every numbered name for the copy is taken	mọi tên đánh số cho bản sao đều đã dùng
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Ký hiệu mới từ các lớp
+	Convert Layers to Symbols	Chuyển các lớp thành ký hiệu
+@msg	{id} is no top-level layer	{id} không phải là lớp cấp cao nhất
 	Marathi	Tiếng Marathi
 	Gujarati	Tiếng Gujarati
 	Bengali	Tiếng Bengali

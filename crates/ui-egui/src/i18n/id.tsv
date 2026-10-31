@@ -5959,6 +5959,10 @@ breakText	Glyphs	Glif
 @msg	there is no clock here: give `time` (Unix seconds)	tidak ada jam di sini: berikan `time` (detik Unix)
 @msg	the document has never been saved: give `folder`	dokumen belum pernah disimpan: berikan `folder`
 @msg	every numbered name for the copy is taken	semua nama bernomor untuk salinan sudah dipakai
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Simbol baru dari lapisan
+	Convert Layers to Symbols	Ubah lapisan menjadi simbol
+@msg	{id} is no top-level layer	{id} bukan lapisan tingkat atas
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengali

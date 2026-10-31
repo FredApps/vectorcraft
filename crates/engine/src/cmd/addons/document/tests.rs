@@ -1,9 +1,10 @@
-//! Document Tools' commands: the copy's name and place, the document left as it was, and bad
-//! params refused.
+//! Document Tools' commands: the timestamped copy's name and place with the document left as it
+//! was, symbols made of layers, and bad params refused.
 
 use std::path::{Path, PathBuf};
 
 use serde_json::{Value, json};
+use vectorcraft_doc::{NodeId, NodeKind};
 
 use crate::Session;
 
@@ -95,4 +96,101 @@ fn bad_params_are_refused_and_writes_stay_inside_the_automation_roots() {
 
 fn enabled_without_document() -> bool {
     Session::new().commands().into_iter().find(|c| c.id == "addon.document.saveTimestampedCopy").unwrap().enabled
+}
+
+fn layer_ids(s: &Session) -> Vec<u64> {
+    s.doc().unwrap().doc.layers.iter().map(|l| l.id.0).collect()
+}
+
+fn symbol_names(s: &Session) -> Vec<String> {
+    s.doc().unwrap().doc.symbols.iter().map(|x| x.name.clone()).collect()
+}
+
+/// A document of three layers: `Layer 1` with two rectangles, an empty one, and `Icons` with one
+/// ellipse.
+fn layered() -> Session {
+    let mut s = session();
+    s.execute("shape.rectangle", &json!({"x": 200, "y": 10, "width": 50, "height": 50})).unwrap();
+    s.execute("layer.new", &json!({})).unwrap();
+    s.execute("layer.new", &json!({"name": "Icons"})).unwrap();
+    s.execute("shape.ellipse", &json!({"x": 0, "y": 100, "width": 40, "height": 20})).unwrap();
+    s
+}
+
+#[test]
+fn a_symbol_is_made_of_each_layer_and_empty_layers_are_reported() {
+    let mut s = layered();
+    let before = symbol_names(&s).len();
+    let n = s.doc().unwrap().history.undo.len();
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({})).unwrap();
+    assert_eq!(s.doc().unwrap().history.undo.len(), n + 1, "one undo step");
+    let names: Vec<String> = serde_json::from_value(r["symbols"].clone()).unwrap();
+    assert_eq!(names.len(), 2, "{r}");
+    assert!(names.contains(&"Icons".to_string()));
+    assert_eq!(symbol_names(&s).len(), before + 2);
+    assert_eq!(r["skipped"].as_array().unwrap().len(), 1, "the empty layer: {r}");
+    assert_eq!(r["skipped"][0]["reason"], json!("empty"));
+    assert_eq!(r["ids"], json!([]), "without replace the art stays");
+    assert_eq!(s.doc().unwrap().doc.layers[0].children().unwrap().len(), 2);
+    // Again: the names are taken, so they get numbers.
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({})).unwrap();
+    assert!(r["symbols"].as_array().unwrap().contains(&json!("Icons 2")), "{r}");
+    s.execute("edit.undo", &json!({})).unwrap();
+    s.execute("edit.undo", &json!({})).unwrap();
+    assert_eq!(symbol_names(&s).len(), before);
+}
+
+#[test]
+fn replace_puts_an_instance_where_the_layers_art_was() {
+    let mut s = layered();
+    let first = layer_ids(&s)[0];
+    let bounds = |s: &Session, id: NodeId| s.doc().unwrap().doc.bounds_of(&[id], false).unwrap();
+    let layer = NodeId(first);
+    let art = bounds(&s, layer);
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({"layers": [first], "replace": true})).unwrap();
+    let ids = r["ids"].as_array().unwrap();
+    assert_eq!(ids.len(), 1);
+    let inst = NodeId(ids[0].as_u64().unwrap());
+    let st = s.doc().unwrap();
+    let kids = st.doc.layers[0].children().unwrap();
+    assert_eq!(kids.len(), 1);
+    assert!(matches!(&kids[0].kind, NodeKind::SymbolInstance { .. }));
+    assert_eq!(st.selection.objects, [inst]);
+    let now = bounds(&s, layer);
+    assert!((now.x0 - art.x0).abs() < 1e-6 && (now.y1 - art.y1).abs() < 1e-6 && (now.width() - art.width()).abs() < 1e-6, "{art:?} {now:?}");
+    assert_eq!(s.doc().unwrap().doc.layers.len(), 3, "the other layers untouched");
+}
+
+#[test]
+fn locked_layers_keep_their_art_and_bad_layers_are_refused() {
+    let mut s = layered();
+    let ids = layer_ids(&s);
+    s.execute("layer.setProps", &json!({"id": ids[2], "locked": true})).unwrap();
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({"replace": true})).unwrap();
+    let skipped: Vec<&str> = r["skipped"].as_array().unwrap().iter().map(|k| k["reason"].as_str().unwrap()).collect();
+    assert_eq!(skipped, ["empty", "locked"]);
+    let before = (s.doc().unwrap().doc.clone(), s.doc().unwrap().history.undo.len());
+    let rect = s.doc().unwrap().doc.layers[0].children().unwrap()[0].id.0;
+    for p in [json!({"layers": [rect]}), json!({"layers": [u64::MAX]}), json!({"layers": "all"}), json!({"layers": [-1]}), json!({"replace": "yes"})]
+    {
+        assert!(s.execute("addon.document.symbolsFromLayers", &p).is_err(), "{p}");
+    }
+    assert!(*s.doc().unwrap().doc == *before.0 && s.doc().unwrap().history.undo.len() == before.1);
+    // Only an empty layer: nothing made, no step.
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({"layers": [ids[1]]})).unwrap();
+    assert_eq!((r["symbols"].clone(), s.doc().unwrap().history.undo.len()), (json!([]), before.1));
+}
+
+#[test]
+fn the_layers_highlighted_in_the_layers_panel_are_the_default() {
+    let mut s = layered();
+    let ids = layer_ids(&s);
+    // One highlighted row is just the current layer: every layer.
+    s.execute("layer.setCurrent", &json!({"id": ids[0]})).unwrap();
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({})).unwrap();
+    assert_eq!(r["symbols"].as_array().unwrap().len(), 2);
+    s.execute("edit.undo", &json!({})).unwrap();
+    s.execute("layer.highlight", &json!({"ids": [ids[1], ids[2]]})).unwrap();
+    let r = s.execute("addon.document.symbolsFromLayers", &json!({})).unwrap();
+    assert_eq!((r["symbols"].clone(), r["skipped"].as_array().unwrap().len()), (json!(["Icons"]), 1));
 }

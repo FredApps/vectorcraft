@@ -61,3 +61,24 @@ fn an_unsaved_document_asks_for_a_folder() {
     assert_eq!(files(&dir).len(), 1);
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn new_symbols_from_layers_and_convert_layers_to_symbols() {
+    let mut app = app();
+    app.run("shape.rectangle", json!({"x": 10, "y": 10, "width": 50, "height": 30})).unwrap();
+    app.run("layer.new", json!({"name": "Badges"})).unwrap();
+    app.run("shape.ellipse", json!({"x": 100, "y": 10, "width": 40, "height": 40})).unwrap();
+    let symbols = |app: &VectorcraftApp| app.session.doc().unwrap().doc.symbols.iter().map(|s| s.name.clone()).collect::<Vec<_>>();
+    let before = symbols(&app).len();
+    click(&mut app, "New Symbols from Layers");
+    assert_eq!(symbols(&app).len(), before + 2);
+    assert!(symbols(&app).contains(&"Badges".to_string()));
+    app.run("edit.undo", json!({})).unwrap();
+    click(&mut app, "Convert Layers to Symbols");
+    let doc = &app.session.doc().unwrap().doc;
+    assert!(
+        doc.layers
+            .iter()
+            .all(|l| matches!(l.children().unwrap()[..], [ref one] if matches!(one.kind, vectorcraft_doc::NodeKind::SymbolInstance { .. })))
+    );
+}

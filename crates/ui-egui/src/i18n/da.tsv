@@ -5959,6 +5959,10 @@ breakText	Glyphs	Glyffer
 @msg	there is no clock here: give `time` (Unix seconds)	der er intet ur her: angiv `time` (Unix-sekunder)
 @msg	the document has never been saved: give `folder`	dokumentet er aldrig blevet gemt: angiv `folder`
 @msg	every numbered name for the copy is taken	alle nummererede navne til kopien er optaget
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Nye symboler fra lag
+	Convert Layers to Symbols	Konvertér lag til symboler
+@msg	{id} is no top-level layer	{id} er ikke et lag på øverste niveau
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengali

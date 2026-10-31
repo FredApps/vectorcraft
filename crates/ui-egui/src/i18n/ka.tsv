@@ -6051,6 +6051,10 @@ breakText	Glyphs	გლიფები
 @msg	there is no clock here: give `time` (Unix seconds)	აქ საათი არ არის: მიუთითეთ `time` (Unix წამები)
 @msg	the document has never been saved: give `folder`	დოკუმენტი არასოდეს შენახულა: მიუთითეთ `folder`
 @msg	every numbered name for the copy is taken	ასლის ყველა დანომრილი სახელი დაკავებულია
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	ახალი სიმბოლოები შრეებიდან
+	Convert Layers to Symbols	შრეების სიმბოლოებად გარდაქმნა
+@msg	{id} is no top-level layer	{id} არ არის ზედა დონის შრე
 	Marathi	მარათჰი
 	Gujarati	გუჯარათი
 	Bengali	ბენგალური

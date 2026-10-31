@@ -5748,6 +5748,10 @@ breakText	Glyphs	字形
 @msg	there is no clock here: give `time` (Unix seconds)	ここには時計がありません：`time`（Unix 秒）を指定してください
 @msg	the document has never been saved: give `folder`	ドキュメントは一度も保存されていません：`folder` を指定してください
 @msg	every numbered name for the copy is taken	コピー用の番号付きの名前はすべて使用されています
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	レイヤーから新規シンボル
+	Convert Layers to Symbols	レイヤーをシンボルに変換
+@msg	{id} is no top-level layer	{id} は最上位のレイヤーではありません
 	Marathi	マラーティー語
 	Gujarati	グジャラート語
 	Bengali	ベンガル語

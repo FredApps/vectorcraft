@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Document Tools add-on: Save a Timestamped Copy, #4926; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Document Tools add-on: New Symbols from Layers, #4927; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1411,10 +1411,15 @@ A VectorCraft addition, not a feature of the reference app, so no area score mov
 
 A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Document Tools › Save a Timestamped Copy writes a copy of the document named `<name>_YYYY-MM-DD_HH-MM.<ext>` (the date and time in UTC, through chrono; `-2`, `-3`… added when that name is taken) next to the document, or into a folder picked (the folder picker) when it was never saved, in the document's own format or another save format. It writes through File › Save a Copy's save, so the document keeps its path, title and modified state, no undo step is made, and the write stays inside the automation roots in force. It is off on the web, which has no clock. Tests: `cmd::addons::document::tests` in `vectorcraft-engine` (the name and place, numbered names, the document unchanged and its content in the copy, an unsaved document needing a folder, other formats, bad params refused, automation roots), `addons::document::tests` in `vectorcraft-ui-egui` (the submenu, beside the document, the folder picked or cancelled) and `command_sweep`. Commands: `docs/mcp.md` › Document Tools add-on.
 
+## Document Tools add-on: New Symbols from Layers (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Document Tools › New Symbols from Layers makes one symbol of each top-level layer's art (the layers given, else those highlighted in the Layers panel when two or more are, else every layer), named after the layer (a number added when a symbol has that name), with New Symbol's own steps: the art normalized to its natural size, registration in the centre, threaded text keeping the text it shows, and sublayers held as groups. Convert Layers to Symbols does the same and puts an instance of each symbol in place of its layer's art, at the same place and size, selecting the instances; locked layers are skipped then. Empty layers are skipped and reported, all in one undo step (none when nothing is made). Tests: `cmd::addons::document::tests` in `vectorcraft-engine` (a symbol per layer, unique names, empty and locked layers reported, replacement in place, the highlighted layers as the default, bad layer ids refused, one undo step), `new_symbols_from_layers_and_convert_layers_to_symbols` in `vectorcraft-ui-egui` and `command_sweep`. Commands: `docs/mcp.md` › Document Tools add-on.
+
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): New Symbols from Layers (#4927); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): Save a Timestamped Copy (#4926); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Path Precision Tools add-on (a VectorCraft addition): Divide into Dashes (#4950); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Arrange Tools add-on (a VectorCraft addition): Group Overlapping Objects (#4928); evidence added; scores unchanged. |

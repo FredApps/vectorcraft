@@ -6003,6 +6003,10 @@ breakText	Glyphs	Glyphs
 @msg	there is no clock here: give `time` (Unix seconds)	er is hier geen klok: geef `time` op (Unix-seconden)
 @msg	the document has never been saved: give `folder`	het document is nooit opgeslagen: geef `folder` op
 @msg	every numbered name for the copy is taken	alle genummerde namen voor de kopie zijn bezet
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Nieuwe symbolen van lagen
+	Convert Layers to Symbols	Lagen omzetten in symbolen
+@msg	{id} is no top-level layer	{id} is geen laag op het hoogste niveau
 	Marathi	Marathi
 	Gujarati	Gujarati
 	Bengali	Bengaals

@@ -6048,6 +6048,10 @@ breakText	Glyphs	Glifák
 @msg	there is no clock here: give `time` (Unix seconds)	itt nincs óra: adja meg a `time` értéket (Unix-másodperc)
 @msg	the document has never been saved: give `folder`	a dokumentum még nem volt mentve: adja meg a `folder` értéket
 @msg	every numbered name for the copy is taken	a másolat összes számozott neve foglalt
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Új szimbólumok rétegekből
+	Convert Layers to Symbols	Rétegek átalakítása szimbólumokká
+@msg	{id} is no top-level layer	a(z) {id} nem legfelső szintű réteg
 	Marathi	Maráthi
 	Gujarati	Gudzsaráti
 	Bengali	Bengáli

@@ -6092,6 +6092,10 @@ breakText	Glyphs	Merkit
 @msg	there is no clock here: give `time` (Unix seconds)	täällä ei ole kelloa: anna `time` (Unix-sekunteina)
 @msg	the document has never been saved: give `folder`	asiakirjaa ei ole koskaan tallennettu: anna `folder`
 @msg	every numbered name for the copy is taken	kaikki kopion numeroidut nimet ovat varattuja
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Uudet symbolit tasoista
+	Convert Layers to Symbols	Muunna tasot symboleiksi
+@msg	{id} is no top-level layer	{id} ei ole ylimmän tason taso
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengali

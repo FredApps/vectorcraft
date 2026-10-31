@@ -5945,6 +5945,10 @@ breakText	Glyphs	Глифи
 @msg	there is no clock here: give `time` (Unix seconds)	тук няма часовник: задайте `time` (Unix секунди)
 @msg	the document has never been saved: give `folder`	документът никога не е запазван: задайте `folder`
 @msg	every numbered name for the copy is taken	всички номерирани имена за копието са заети
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Нови символи от слоевете
+	Convert Layers to Symbols	Превръщане на слоевете в символи
+@msg	{id} is no top-level layer	{id} не е слой от най-горно ниво
 	Marathi	Маратхи
 	Gujarati	Гуджарати
 	Bengali	Бенгалски

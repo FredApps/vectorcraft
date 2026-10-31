@@ -1,29 +1,45 @@
 //! Document Tools (`addon.document.*`), a built-in add-on: Save a Timestamped Copy writes a copy of
-//! the document named with the date and time through File › Save a Copy's save. Its submenu
-//! (Object › Plug-ins › Document Tools) is the UI's.
+//! the document named with the date and time through File › Save a Copy's save; New Symbols from
+//! Layers makes a symbol of each layer's art as New Symbol does. Its submenu (Object › Plug-ins ›
+//! Document Tools) is the UI's.
 
 #[cfg(test)]
 mod tests;
 
-use serde_json::{Value, json};
+use std::sync::Arc;
 
+use serde_json::{Value, json};
+use vectorcraft_doc::{Node, NodeId, NodeKind, SymbolRegistration};
+
+use super::super::brushsym::{instance_in_place, normalize, place_xf, store_symbol};
 use super::super::fileio::{self, SaveMode};
-use super::super::{CommandSpec, bad, clock_date, cmd, date_param, has_doc, str_param};
+use super::super::{CommandSpec, bad, checked_ids_param, clock_date, cmd, date_param, has_doc, str_param, switch_or};
 use crate::{Result, Session};
 
 /// The most numbers (`-2`, `-3`…) tried after a timestamped name that is taken.
 const MAX_NUMBER: u32 = 999;
 
 pub fn specs() -> Vec<CommandSpec> {
-    vec![cmd!(
-        "addon.document.saveTimestampedCopy",
-        "Save a Timestamped Copy",
-        ["Object", "Plug-ins", "Document Tools"],
-        None,
-        "{folder? (default: the document's own folder; needed for a document never saved), format?: vectorcraft|pdf|svg|svgz|ai|eps (default: the document's own, else vectorcraft), time?: Unix seconds (default: now)} write a copy of the document named <name>_YYYY-MM-DD_HH-MM.<ext> (the date and time in UTC; -2, -3… added when that name is taken) as File › Save a Copy writes it: the document keeps its path, title and modified state, and no undo step is made. Off where there is no clock (the web) → {path, format, bytes, warnings}",
-        has_clock,
-        save_timestamped_copy
-    )]
+    vec![
+        cmd!(
+            "addon.document.saveTimestampedCopy",
+            "Save a Timestamped Copy",
+            ["Object", "Plug-ins", "Document Tools"],
+            None,
+            "{folder? (default: the document's own folder; needed for a document never saved), format?: vectorcraft|pdf|svg|svgz|ai|eps (default: the document's own, else vectorcraft), time?: Unix seconds (default: now)} write a copy of the document named <name>_YYYY-MM-DD_HH-MM.<ext> (the date and time in UTC; -2, -3… added when that name is taken) as File › Save a Copy writes it: the document keeps its path, title and modified state, and no undo step is made. Off where there is no clock (the web) → {path, format, bytes, warnings}",
+            has_clock,
+            save_timestamped_copy
+        ),
+        cmd!(
+            "addon.document.symbolsFromLayers",
+            "New Symbols from Layers",
+            ["Object", "Plug-ins", "Document Tools"],
+            None,
+            "{layers?: [layer id…] (top-level layers; default: those highlighted in the Layers panel when two or more are, else every one), replace?: bool (false: the art stays; true: each layer's art is replaced by an instance of its symbol in the same place)} make one symbol of each layer's art as symbol.new makes one (registration in the centre), named after the layer (with a number added when a symbol has that name), as one undo step. Layers with no art are skipped, and with replace so are locked layers; with replace the instances are selected → {symbols: [name…], ids: [instance id…] (with replace), skipped: [{layer, name, reason: \"empty\"|\"locked\"}…]}",
+            has_doc,
+            symbols_from_layers
+        ),
+    ]
 }
 
 /// A document is open and the time can be told.
@@ -70,4 +86,81 @@ fn save_timestamped_copy(s: &mut Session, p: &Value) -> Result<Value> {
     let path = free_name(&folder, &base, format.extensions[0], |p| std::path::Path::new(p).exists())
         .ok_or_else(|| bad(C, "every numbered name for the copy is taken"))?;
     fileio::save_document(s, SaveMode::Copy, &json!({ "path": path, "format": format.id }))
+}
+
+/// `n` with each layer in it, and itself, made a group of the same art and clipping (a symbol holds
+/// no layers).
+fn without_layers(n: &Node) -> Node {
+    let mut n = n.clone();
+    if let NodeKind::Layer { children, clip, .. } = &n.kind {
+        n.kind = NodeKind::Group { children: children.clone(), clip: *clip };
+    }
+    if let Some(children) = n.children_mut() {
+        for c in children.iter_mut().filter(|c| matches!(c.kind, NodeKind::Layer { .. })) {
+            *c = Arc::new(without_layers(c));
+        }
+    }
+    n
+}
+
+fn symbols_from_layers(s: &mut Session, p: &Value) -> Result<Value> {
+    const C: &str = "addon.document.symbolsFromLayers";
+    let replace = switch_or(p, "replace", false, C)?;
+    let st = s.doc()?;
+    let d = &st.doc;
+    let layers: Vec<NodeId> = match p.get("layers").filter(|v| !v.is_null()) {
+        // The layers highlighted in the Layers panel when two or more are (one is mostly just the
+        // current layer), else every one.
+        None => {
+            let rows = st.highlighted_rows();
+            let picked: Vec<NodeId> = d.layers.iter().map(|l| l.id).filter(|id| rows.contains(id)).collect();
+            if picked.len() > 1 { picked } else { d.layers.iter().map(|l| l.id).collect() }
+        }
+        Some(_) => {
+            let ids = checked_ids_param(s, p, "layers", C)?;
+            if let Some(NodeId(id)) = ids.iter().find(|id| !d.layers.iter().any(|l| l.id == **id)) {
+                return Err(bad(C, format!("{id} is no top-level layer")));
+            }
+            d.layers.iter().map(|l| l.id).filter(|id| ids.contains(id)).collect()
+        }
+    };
+    // Each layer with art: its id and name, the art's roots, and the art ready for a symbol.
+    let (mut made, mut skipped) = (vec![], vec![]);
+    for layer in layers.iter().filter_map(|id| d.layers.iter().find(|l| l.id == *id)) {
+        let name = layer.display_name();
+        let roots: Vec<NodeId> = layer.children().map(|c| c.iter().map(|n| n.id).collect()).unwrap_or_default();
+        let art = match layer.children().map(Vec::as_slice).unwrap_or_default() {
+            [] => None,
+            [one] => Some(without_layers(one)),
+            many => Some(without_layers(&Node::group(NodeId(0), many.to_vec()))),
+        };
+        let reason = if replace && layer.locked { Some("locked") } else { None };
+        let ready = art.and_then(|mut art| {
+            crate::cmd::threads::keep_shown_text(d, &mut art);
+            normalize(art).ok()
+        });
+        match (reason, ready) {
+            (None, Some(ready)) => made.push((name, roots, ready)),
+            (reason, _) => skipped.push(json!({ "layer": layer.id.0, "name": name, "reason": reason.unwrap_or("empty") })),
+        }
+    }
+    if made.is_empty() {
+        return Ok(json!({ "symbols": [], "ids": [], "skipped": skipped }));
+    }
+    let (names, ids) = s.edit("New Symbols from Layers", |d, sel| {
+        let (mut names, mut ids) = (vec![], vec![]);
+        for (name, roots, (art, size, center)) in &made {
+            let name = d.unique_symbol_name(name);
+            store_symbol(d, art, &name, *size);
+            if replace {
+                ids.push(instance_in_place(d, roots, &name, place_xf(*center, *size, SymbolRegistration::CENTER))?);
+            }
+            names.push(name);
+        }
+        if replace {
+            sel.set(ids.iter().copied());
+        }
+        Ok((names, ids))
+    })?;
+    Ok(json!({ "symbols": names, "ids": ids.iter().map(|i| i.0).collect::<Vec<_>>(), "skipped": skipped }))
 }

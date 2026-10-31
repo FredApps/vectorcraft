@@ -6292,3 +6292,15 @@ command is off where there is no clock (the web). → `{path, format, bytes, war
 {"name":"run_command","arguments":{"command":"addon.document.saveTimestampedCopy","params":{}}}
 {"name":"run_command","arguments":{"command":"addon.document.saveTimestampedCopy","params":{"folder":"/Users/me/Versions","format":"pdf"}}}
 ```
+
+`addon.document.symbolsFromLayers {layers?, replace?}` makes one symbol of each top-level layer's art, as `symbol.new`
+makes one (registration in the centre), named after the layer with a number added when a symbol has that name, as
+one undo step. `layers` lists layer ids (top-level layers only; anything else is refused); by default it takes the
+layers highlighted in the Layers panel when two or more are, else every layer. With `replace` (Convert Layers to
+Symbols in the menu) each layer's art is replaced by an instance of its symbol at the same place and size, the
+instances are selected, and locked layers are skipped. Layers with no art are skipped too; with nothing to make
+there is no step. → `{symbols: [name…], ids: [instance id…], skipped: [{layer, name, reason: "empty" | "locked"}…]}`
+
+```json
+{"name":"run_command","arguments":{"command":"addon.document.symbolsFromLayers","params":{"replace":true}}}
+```

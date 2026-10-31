@@ -6019,6 +6019,10 @@ breakText	Glyphs	Glifler
 @msg	there is no clock here: give `time` (Unix seconds)	burada saat yok: `time` verin (Unix saniyesi)
 @msg	the document has never been saved: give `folder`	belge hiç kaydedilmedi: `folder` verin
 @msg	every numbered name for the copy is taken	kopya için tüm numaralı adlar kullanılıyor
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Katmanlardan Yeni Semboller
+	Convert Layers to Symbols	Katmanları Sembollere Dönüştür
+@msg	{id} is no top-level layer	{id} üst düzey bir katman değil
 	Marathi	Marathi dili
 	Gujarati	Gücerat dili
 	Bengali	Bengalce

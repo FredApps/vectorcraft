@@ -5979,6 +5979,10 @@ shape	Open	Otvoren
 @msg	there is no clock here: give `time` (Unix seconds)	ovdje nema sata: navedite `time` (Unix sekunde)
 @msg	the document has never been saved: give `folder`	dokument nikad nije sačuvan: navedite `folder`
 @msg	every numbered name for the copy is taken	sva numerisana imena za kopiju su zauzeta
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Novi simboli iz slojeva
+	Convert Layers to Symbols	Pretvori slojeve u simbole
+@msg	{id} is no top-level layer	{id} nije sloj najvišeg nivoa
 	Marathi	Marathi
 	Gujarati	Gudžarati
 	Bengali	Bengalski

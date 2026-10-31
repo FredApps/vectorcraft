@@ -5904,6 +5904,10 @@ breakText	Glyphs	字形
 @msg	there is no clock here: give `time` (Unix seconds)	此处没有时钟：请提供 `time`（Unix 秒）
 @msg	the document has never been saved: give `folder`	文档从未保存过：请提供 `folder`
 @msg	every numbered name for the copy is taken	副本的所有编号名称均已被占用
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	从图层新建符号
+	Convert Layers to Symbols	将图层转换为符号
+@msg	{id} is no top-level layer	{id} 不是顶层图层
 	Marathi	马拉地语
 	Gujarati	古吉拉特语
 	Bengali	孟加拉语

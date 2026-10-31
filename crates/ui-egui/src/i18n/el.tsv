@@ -6014,6 +6014,10 @@ breakText	Glyphs	Γλύφοι
 @msg	there is no clock here: give `time` (Unix seconds)	δεν υπάρχει ρολόι εδώ: δώστε `time` (δευτερόλεπτα Unix)
 @msg	the document has never been saved: give `folder`	το έγγραφο δεν έχει αποθηκευτεί ποτέ: δώστε `folder`
 @msg	every numbered name for the copy is taken	όλα τα αριθμημένα ονόματα για το αντίγραφο είναι πιασμένα
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Νέα σύμβολα από επίπεδα
+	Convert Layers to Symbols	Μετατροπή επιπέδων σε σύμβολα
+@msg	{id} is no top-level layer	το {id} δεν είναι επίπεδο ανώτατου επιπέδου
 	Marathi	Μαραθικά
 	Gujarati	Γκουγιαράτι
 	Bengali	Βεγγαλικά

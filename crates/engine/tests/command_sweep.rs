@@ -595,6 +595,9 @@ fn structured_junk() {
         // Refused before anything is written: no format of that name, a time that is no time.
         ("addon.document.saveTimestampedCopy", json!({"format": "png", "folder": 7})),
         ("addon.document.saveTimestampedCopy", json!({"format": "svg", "time": [1e308], "folder": null})),
+        ("addon.document.symbolsFromLayers", json!({"layers": "x", "replace": 3})),
+        ("addon.document.symbolsFromLayers", json!({"layers": [1e308, -1, null, u64::MAX], "replace": true})),
+        ("addon.document.symbolsFromLayers", json!({"layers": [], "replace": true})),
         // Smart Pen add-on.
         ("addon.pen.append", json!({"id": 2, "x": 1e308, "y": 0, "in": [1e308, -1e308]})),
         ("addon.pen.append", json!({"id": 2, "subpath": u64::MAX, "x": 0, "y": 0, "segment": "curved"})),

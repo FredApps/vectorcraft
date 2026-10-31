@@ -6062,6 +6062,10 @@ breakText	Glyphs	Glyfy
 @msg	there is no clock here: give `time` (Unix seconds)	nejsou k dispozici hodiny: zadejte `time` (sekundy Unix)
 @msg	the document has never been saved: give `folder`	dokument nebyl nikdy uložen: zadejte `folder`
 @msg	every numbered name for the copy is taken	všechny číslované názvy kopie jsou obsazené
+# Document Tools add-on: New Symbols from Layers and Convert Layers to Symbols.
+	New Symbols from Layers	Nové symboly z vrstev
+	Convert Layers to Symbols	Převést vrstvy na symboly
+@msg	{id} is no top-level layer	{id} není vrstva nejvyšší úrovně
 	Marathi	Maráthština
 	Gujarati	Gudžarátština
 	Bengali	Bengálština
