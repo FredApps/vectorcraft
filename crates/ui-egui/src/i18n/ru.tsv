@@ -1481,9 +1481,9 @@ file-filter	Templates	Шаблоны
 	Objects on Path	Объекты на контуре
 	Attach	Прикрепить
 	Objects on Path Options	Параметры объектов на контуре
-	Objects on Path Tool	Инструмент «Объекты на контуре»
-	Pivot:	Опорная точка:
+	Pivot:	Точка опоры:
 	Rotate:	Поворот:
+	Objects on Path Tool	Инструмент «Объекты на контуре»
 	Attach Objects on Path	Прикрепить объекты к контуру
 	Expand Objects on Path	Разобрать объекты на контуре
 	Release Live Paint	Освободить быструю заливку
