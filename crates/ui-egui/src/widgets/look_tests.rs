@@ -456,6 +456,7 @@ fn a_spinner_field_has_square_joints_and_the_schemes_outer_corners() {
             }
         }
     }
+}
 
 /// #4267: a click on a spinner arrow steps once; an arrow held down steps again and again after a
 /// pause, and letting go of it doesn't step once more.
