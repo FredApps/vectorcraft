@@ -1265,6 +1265,8 @@ applies to fills). Tests: `color::gradient::tests` (perceptual midpoint, expansi
 `pdf::tests::dithered_perceptual_gradients_export_as_images_with_noise_on_the_fill` and the Gradient panel's
 `the_method_menu_makes_the_gradient_perceptual`. Scores and hours unchanged.
 
+PDF export writes a Perceptual linear or radial gradient whose stops are tints of one spot color (and paper white) as a Separation shading in that ink instead of an image, so the ink keeps its plate ([swatches](https://helpx.adobe.com/illustrator/using/using-creating-swatches.html): "Gradient colors can be assigned as CMYK process colors, RGB colors, or a Spot color."; [separations](https://helpx.adobe.com/illustrator/using/printing-color-separations.html): "a separate plate is created for each spot color"). Its tints follow the curve's stops, each the tint with the OKLab lightness of the color there (VectorCraft's own rule). Dithered fills, freeform gradients and Perceptual gradients that mix a spot color with other colors are still images, and the export warns that their spot colors are written in process colors. Tests: `color::gradient::tests::ink_tints_follow_the_perceptual_curve`, `engine::tests::linked_stops::perceptual_spot_gradients_export_as_separation_shadings` and `spot_gradients_drawn_as_images_warn`.
+
 ## Artwork Cleanup add-on (2026-10-30)
 
 A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Artwork Cleanup and its
