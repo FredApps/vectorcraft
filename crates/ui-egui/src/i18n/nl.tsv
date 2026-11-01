@@ -6052,6 +6052,11 @@ breakText	Glyphs	Glyphs
 	Odia	Odia
 	Urdu	Urdu
 	VectorCraft {release} and later (version {n})	VectorCraft {release} en nieuwer (versie {n})
+# Document Tools add-on: Export All Open Documents (#4920).
+	Export All Open Documents as PDF	Alle geopende documenten exporteren als PDF
+	Export All Open Documents as SVG	Alle geopende documenten exporteren als SVG
+@msgplural	Exported {n} document|Exported {n} documents	{n} document geëxporteerd|{n} documenten geëxporteerd
+@msgplural	Exported {n} document; {title} wasn't written: {error}|Exported {n} documents; {title} wasn't written: {error}	{n} document geëxporteerd; {title} is niet geschreven: {error}|{n} documenten geëxporteerd; {title} is niet geschreven: {error}
 # Symbol Options › Symbol Type (dynamic symbols)
 	Symbol Type:	Symbooltype:
 	Dynamic Symbol	Dynamisch symbool

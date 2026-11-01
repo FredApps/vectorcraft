@@ -6098,6 +6098,11 @@ breakText	Glyphs	გლიფები
 	Odia	ორია
 	Urdu	ურდუ
 	VectorCraft {release} and later (version {n})	VectorCraft {release} და უფრო ახალი (ვერსია {n})
+# Document Tools add-on: Export All Open Documents (#4920).
+	Export All Open Documents as PDF	ყველა ღია დოკუმენტის ექსპორტი PDF-ად
+	Export All Open Documents as SVG	ყველა ღია დოკუმენტის ექსპორტი SVG-ად
+@msgplural	Exported {n} document|Exported {n} documents	ექსპორტირებულია დოკუმენტი ({n})
+@msgplural	Exported {n} document; {title} wasn't written: {error}|Exported {n} documents; {title} wasn't written: {error}	ექსპორტირებულია დოკუმენტი ({n}); {title} არ ჩაიწერა: {error}
 # Symbol Options › Symbol Type (dynamic symbols)
 	Symbol Type:	სიმბოლოს ტიპი:
 	Dynamic Symbol	დინამიკური სიმბოლო

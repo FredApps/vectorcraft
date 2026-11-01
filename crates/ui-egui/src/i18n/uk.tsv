@@ -5708,6 +5708,11 @@ breakText	Glyphs	Гліфи
 	Odia	Одія
 	Urdu	Урду
 	VectorCraft {release} and later (version {n})	VectorCraft {release} і новіші (версія {n})
+# Document Tools add-on: Export All Open Documents (#4920).
+	Export All Open Documents as PDF	Експортувати всі відкриті документи як PDF
+	Export All Open Documents as SVG	Експортувати всі відкриті документи як SVG
+@msgplural	Exported {n} document|Exported {n} documents	Експортовано {n} документ|Експортовано {n} документи|Експортовано {n} документів
+@msgplural	Exported {n} document; {title} wasn't written: {error}|Exported {n} documents; {title} wasn't written: {error}	Експортовано {n} документ; {title} не записано: {error}|Експортовано {n} документи; {title} не записано: {error}|Експортовано {n} документів; {title} не записано: {error}
 # Symbol Options › Symbol Type (dynamic symbols)
 	Symbol Type:	Тип символу:
 	Dynamic Symbol	Динамічний символ

@@ -6401,6 +6401,18 @@ command is off where there is no clock (the web). → `{path, format, bytes, war
 {"name":"run_command","arguments":{"command":"addon.document.saveTimestampedCopy","params":{"folder":"/Users/me/Versions","format":"pdf"}}}
 ```
 
+`addon.document.exportAllOpen {folder, format?}` writes a copy of every open document, in tab order, to `folder`,
+each named after its document (`<name>.<ext>`, with `-2`, `-3`… added when that name is taken there or by another
+copy, so no file is replaced). `format` is a save format (`pdf` by default; `svg`, `svgz`, `vectorcraft`, `ai`,
+`eps`). Each copy is written as `file.saveCopy` writes it, inside the automation roots in force: every document keeps
+its path, title and modified state, no undo step is made, and the active document stays active. A document that
+can't be written is listed in `failed` and the others are still written (#4920). The desktop app's Export All Open
+Documents as PDF and as SVG ask for the folder. → `{files: [{title, path, warnings}], failed: [{title, error}], format}`
+
+```json
+{"name":"run_command","arguments":{"command":"addon.document.exportAllOpen","params":{"folder":"/Users/me/Out","format":"svg"}}}
+```
+
 `addon.document.symbolsFromLayers {layers?, replace?}` makes one symbol of each top-level layer's art, as `symbol.new`
 makes one (registration in the centre), named after the layer with a number added when a symbol has that name, as
 one undo step. `layers` lists layer ids (top-level layers only; anything else is refused); by default it takes the

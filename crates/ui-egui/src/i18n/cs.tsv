@@ -6109,6 +6109,11 @@ breakText	Glyphs	Glyfy
 	Odia	Urijština
 	Urdu	Urdština
 	VectorCraft {release} and later (version {n})	VectorCraft {release} a novější (verze {n})
+# Document Tools add-on: Export All Open Documents (#4920).
+	Export All Open Documents as PDF	Exportovat všechny otevřené dokumenty jako PDF
+	Export All Open Documents as SVG	Exportovat všechny otevřené dokumenty jako SVG
+@msgplural	Exported {n} document|Exported {n} documents	Exportován {n} dokument|Exportovány {n} dokumenty|Exportováno {n} dokumentů
+@msgplural	Exported {n} document; {title} wasn't written: {error}|Exported {n} documents; {title} wasn't written: {error}	Exportován {n} dokument; {title} nebyl zapsán: {error}|Exportovány {n} dokumenty; {title} nebyl zapsán: {error}|Exportováno {n} dokumentů; {title} nebyl zapsán: {error}
 # Symbol Options › Symbol Type (dynamic symbols)
 	Symbol Type:	Typ symbolu:
 	Dynamic Symbol	Dynamický symbol
