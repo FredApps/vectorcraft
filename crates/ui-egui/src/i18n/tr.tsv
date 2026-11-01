@@ -2293,6 +2293,7 @@ digits	Tamil	Tamilce
 digits	Telugu	Telugu
 digits	Kannada	Kannada
 digits	Malayalam	Malayalam
+	Proportional Lining	Orantılı Astar
 	Proportional Oldstyle	Orantılı Eski Stil
 	Pucker & Bloat…	Büzüşme ve Şişkinlik…
 	Pucker Tool	Büzme Aracı
@@ -3099,6 +3100,7 @@ digits	Malayalam	Malayalam
 	Swap Fill and Stroke (Shift+X)	Dolgu ve Konturu Değiştir (Shift+X)
 	Swap start and end arrowheads	Başlangıç ve bitiş ok uçlarını değiştirin
 	Swap the selected object for the file, keeping its place and transform	Seçilen nesneyi, yerini koruyarak dosyayla değiştirin ve dönüştürün
+	Stylistic Alternates	Stilistik Alternatifler
 	Swash	çalkalama
 	Swatch Conflict	Renk Örneği Çatışması
 	Swatch Conflicts	Renk Örneği Çatışmaları
@@ -3168,6 +3170,7 @@ digits	Malayalam	Malayalam
 	Tabs	Sekmeler
 	Tabular Lining	Sekmeli Astar
 	Tabular Oldstyle	Tablolu Eski Stil
+	Titling Alternates	Başlık Alternatifleri
 	Target	Hedef
 	Target Contents	Hedef İçerikler
 	Target:	Hedef:

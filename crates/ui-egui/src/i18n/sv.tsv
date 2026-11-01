@@ -2416,6 +2416,7 @@ digits	Tamil	Tamil
 digits	Telugu	Telugu
 digits	Kannada	Kannada
 digits	Malayalam	Malayalam
+	Proportional Lining	Proportionella versalsiffror
 	Proportional Oldstyle	Proportionella medievalsiffror
 	Pucker & Bloat…	Dra ihop och svullna…
 	Pucker Tool	Verktyget Dra ihop
@@ -3203,6 +3204,7 @@ digits	Malayalam	Malayalam
 	Swap Fill and Stroke (Shift+X)	Byt plats på fyllning och kontur (Shift+X)
 	Swap start and end arrowheads	Byt plats på start- och slutpilspets
 	Swap the selected object for the file, keeping its place and transform	Ersätt det markerade objektet med filen och behåll dess placering och transformering
+	Stylistic Alternates	Stilistiska alternativ
 	Swash	Swash
 	Swatch Conflict	Färgrutekonflikt
 	Swatch Conflicts	Färgrutekonflikter
@@ -3272,6 +3274,7 @@ digits	Malayalam	Malayalam
 	Tabs	Tabbstopp
 	Tabular Lining	Tabellsiffror, versala
 	Tabular Oldstyle	Medievalsiffror i tabellbredd
+	Titling Alternates	Rubrikalternativ
 	Target	Mål
 	Target Contents	Målets innehåll
 	Target:	Mål:

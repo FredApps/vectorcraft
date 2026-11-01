@@ -3001,6 +3001,7 @@ mark-style	Japanese	Japán
 	Proof Setup	Színpróba beállítása
 	Properties	Tulajdonságok
 	Proportional Metrics	Arányos metrika
+	Proportional Lining	Arányos modern
 	Proportional Oldstyle	Arányos régies
 	Public Domain	Közkincs
 	Pucker	Összehúzás
@@ -3944,6 +3945,7 @@ mark-style	Japanese	Japán
 	Swap Fill and Stroke (Shift+X)	Kitöltés és körvonal cseréje (Shift+X)
 	Swap start and end arrowheads	Kezdő és záró nyílhegy cseréje
 	Swap the selected object for the file, keeping its place and transform	A kijelölt objektum cseréje a fájlra, a helye és az átalakítása megtartásával
+	Stylistic Alternates	Stilisztikai változatok
 	Swash	Cifra változatok
 	Swatch Conflict	Színminta-ütközés
 	Swatch Conflicts	Színminta-ütközések
@@ -3989,6 +3991,7 @@ mark-style	Japanese	Japán
 	Tabs	Tabulátorok
 	Tabular Lining	Táblázatos modern
 	Tabular Oldstyle	Táblázatos régies
+	Titling Alternates	Címváltozatok
 	Tag	Címke
 	Tag (open)	Címke (nyitott)
 	Target	Célzás

@@ -1767,13 +1767,16 @@ digits	Malayalam	Malajalam
 	Fractions	Murtoluvut
 	Ligatures are off while the text is tracked.	Ligatuurit eivät ole käytössä, kun tekstin merkkiväliä on muutettu.
 	Ordinals	Järjestysluvut
+	Proportional Lining	Suhteelliset numerot
 	Proportional Oldstyle	Suhteelliset vanhanaikaiset numerot
 	Reset OpenType Features	Palauta OpenType-ominaisuudet
 	Select text to set its OpenType features.	Valitse teksti, jonka OpenType-ominaisuudet haluat asettaa.
 	Standard Ligatures	Vakioligatuurit
+	Stylistic Alternates	Tyylivaihtoehdot
 	Swash	Koukerot
 	Tabular Lining	Taulukkonumerot
 	Tabular Oldstyle	Vanhanaikaiset taulukkonumerot
+	Titling Alternates	Otsikkovaihtoehdot
 	Every-line Composer	Kaikkien rivien asettelu
 	First-line Left Indent	Ensimmäisen rivin vasen sisennys
 	Hyphenation…	Tavutus…

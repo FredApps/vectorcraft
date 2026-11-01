@@ -2473,6 +2473,7 @@ digits	Tamil	Tamil
 digits	Telugu	Telugu
 digits	Kannada	Canarés
 digits	Malayalam	Malayálam
+	Proportional Lining	Proporcionales de caja alta
 	Proportional Oldstyle	Estilo antiguo proporcional
 	Pucker & Bloat…	Fruncir y engordar…
 	Pucker Tool	Herramienta Fruncir
@@ -3275,6 +3276,7 @@ digits	Malayalam	Malayálam
 	Swap Fill and Stroke (Shift+X)	Intercambiar relleno y trazo (Shift+X)
 	Swap start and end arrowheads	Intercambiar puntas de flecha inicial y final
 	Swap the selected object for the file, keeping its place and transform	Sustituir el objeto seleccionado por el archivo, conservando su posición y transformación
+	Stylistic Alternates	Alternativas estilísticas
 	Swash	Decorativa
 	Swatch Conflict	Conflicto de muestras
 	Swatch Conflicts	Conflictos de muestras
@@ -3344,6 +3346,7 @@ digits	Malayalam	Malayálam
 	Tabs	Tabulaciones
 	Tabular Lining	Tabulares de caja alta
 	Tabular Oldstyle	Tabulares de estilo antiguo
+	Titling Alternates	Alternativas de titulares
 	Target	Destino
 	Target Contents	Contenido de destino
 	Target:	Destino:

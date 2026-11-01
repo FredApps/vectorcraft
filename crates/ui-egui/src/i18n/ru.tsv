@@ -2500,6 +2500,7 @@ digits	Tamil	Тамильские
 digits	Telugu	Телугу
 digits	Kannada	Каннада
 digits	Malayalam	Малаялам
+	Proportional Lining	Пропорциональные цифры
 	Proportional Oldstyle	Пропорциональные старого стиля
 	Pucker & Bloat…	Сморщивание и раздувание…
 	Pucker Tool	Инструмент «Сморщивание»
@@ -3305,6 +3306,7 @@ digits	Malayalam	Малаялам
 	Swap Fill and Stroke (Shift+X)	Поменять заливку и обводку (Shift+X)
 	Swap start and end arrowheads	Поменять начальную и конечную стрелки
 	Swap the selected object for the file, keeping its place and transform	Заменить выделенный объект файлом, сохранив его положение и преобразование
+	Stylistic Alternates	Стилистические альтернативы
 	Swash	Росчерк
 	Swatch Conflict	Конфликт образцов
 	Swatch Conflicts	Конфликты образцов
@@ -3374,6 +3376,7 @@ digits	Malayalam	Малаялам
 	Tabs	Табуляции
 	Tabular Lining	Табличные цифры
 	Tabular Oldstyle	Табличные старого стиля
+	Titling Alternates	Альтернативы для заголовков
 	Target	Объект
 	Target Contents	Содержимое объекта
 	Target:	Объект:

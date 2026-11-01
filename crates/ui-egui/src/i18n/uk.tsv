@@ -2496,6 +2496,7 @@ digits	Tamil	Тамільські
 digits	Telugu	Телугу
 digits	Kannada	Каннада
 digits	Malayalam	Малаялам
+	Proportional Lining	Пропорційні цифри
 	Proportional Oldstyle	Пропорційні цифри старого стилю
 	Pucker & Bloat…	Зморщування та роздування …
 	Pucker Tool	Інструмент «Зморщування»
@@ -3302,6 +3303,7 @@ effect	Points	Точки
 	Swap Fill and Stroke (Shift+X)	Змінити заливку та обведення (Shift+X)
 	Swap start and end arrowheads	Поміняти початкову та кінцеву стрілки
 	Swap the selected object for the file, keeping its place and transform	Замінити виділений об’єкт файлом, зберігши його положення та перетворення
+	Stylistic Alternates	Стилістичні альтернативи
 	Swash	Розчерк
 	Swatch Conflict	Конфлікт зразків
 	Swatch Conflicts	Конфлікти зразків
@@ -3371,6 +3373,7 @@ effect	Points	Точки
 	Tabs	Табуляції
 	Tabular Lining	Табличні цифри
 	Tabular Oldstyle	Табличні цифри старого стилю
+	Titling Alternates	Альтернативи для заголовків
 	Target	Об’єкт
 	Target Contents	Вміст об’єкта
 	Target:	Об’єкт:
