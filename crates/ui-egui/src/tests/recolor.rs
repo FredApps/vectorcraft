@@ -492,6 +492,28 @@ fn reset_after_a_slider_edit_keeps_the_arts_model() {
     assert!(matches!(first_fill(h.state()).color(), Some(Color::Rgb { .. })), "the art stays RGB: {:?}", first_fill(h.state()));
 }
 
+/// A change of the color count rebuilds the rows and discards a slider edit: OK then gives RGB art
+/// a CMYK color group's color in RGB, as it does without the edit.
+#[test]
+fn a_new_color_count_after_a_slider_edit_keeps_the_arts_model() {
+    let mut app = app();
+    app.run("swatch.newGroup", json!({"name": "Mix", "colors": ["cmyk 0 100 0 0", "cmyk 100 0 0 0"], "keepModel": true})).unwrap();
+    art(&mut app, &["#ff00ff", "#00ffff"]);
+    let mut h = assign_harness(app, json!({"group": "Mix"}));
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    click_slider(&mut h, "C", 0.5);
+    assert_eq!(field(h.state(), "__slid"), json!(true), "the sliders edited the row");
+    set(h.state_mut(), "colors", json!(1));
+    h.run_steps(3);
+    assert_eq!(field(h.state(), "rows").as_array().map(Vec::len), Some(1), "the rows are rebuilt");
+    assert_eq!(field(h.state(), "__slid"), Value::Null, "the slider edit is discarded");
+    h.get_by_label("OK").click();
+    h.run_steps(2);
+    assert!(h.state().ui.dialog.is_none());
+    assert!(matches!(first_fill(h.state()).color(), Some(Color::Rgb { .. })), "the art stays RGB: {:?}", first_fill(h.state()));
+}
+
 /// The dialog keeps its height when the tab or the sliders' color mode changes.
 #[test]
 fn switching_tabs_or_slider_modes_keeps_the_dialog_height() {

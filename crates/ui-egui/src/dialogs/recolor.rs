@@ -179,6 +179,9 @@ fn sync(app: &mut VectorcraftApp, d: &mut Dialog) {
             snap(app, d, &mut rows);
             d.fields.insert("rows".into(), Value::Array(rows));
             d.fields.insert("__sel".into(), json!([]));
+            // The new rows hold no slider edit.
+            d.fields.remove(SLID);
+            d.fields.remove(COMPS);
         }
         Err(e) => app.status(e.to_string()),
     }
