@@ -5168,9 +5168,10 @@ offset of the character; a ligature (one glyph for several characters) changes a
 `end` give its bytes. `dx` (document points, in reading order) changes the kerning of the character before it on
 its line and its own kerning, so the character moves by `dx` and the characters after it stay where they are. The first
 character of a line and a right-to-left character take no `dx`, and `dx` is limited to what kerning from -1000 to 10000 (1/1000 em) on the two
-characters can give. `dy` raises it by baseline shift, which moves a rotated character along its own up axis. The tool
-splits a drag of a character rotated by up to about 84 degrees between kerning and baseline shift, so the character
-follows the pointer; nearer a quarter turn, a drag moves it only along its line. `hScale`, `vScale`
+characters can give. `dy` raises it by baseline shift, which moves the character up from its line at any rotation, a quarter
+turn included; a character rotated with a baseline shift turns about its shifted pen position. The tool splits a drag
+into its part along the line (kerning) and its part up from the line (baseline shift), so the character follows the
+pointer at any rotation; the first character of a line and a right-to-left character follow it only up and down. `hScale`, `vScale`
 and `rotation` set its scales and rotation as `text.setRangeStyle` does. Where the font kerned the character with its
 neighbors, the kerning of the two characters keeps it and the characters after it where they were along the line; a
 wider or narrower character moves the characters after it by the change in its width. Touch Type gives the character
