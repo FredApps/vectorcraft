@@ -48,7 +48,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Touch Type",
             [],
             None,
-            "{id, start: byte (a character of it), dx?: pt, dy?: pt, hScale?: %, vScale?: %, rotation?: deg} change one character (a ligature, one glyph for several characters, as a whole) as a Touch Type tool drag does, as one undo step: dx moves it along its line in reading order by changing the kerning of the character before it on the line and its own kerning, and the characters after it stay where they are (an error for the first character of a line and for a right-to-left character; limited to what kerning from -1000 to 10000 can give); dy raises it (baseline shift, along its own up axis when it is rotated); dx and dy are document points; hScale (including the object transform), vScale and rotation set its scales and rotation as text.setRangeStyle does. The kerning of the two characters also keeps the character and the ones after it where they were along the line when the font kerned them with their neighbors; a wider or narrower character moves the ones after it by the change in its width → {id, start, end} (the character's bytes)",
+            "{id, start: byte (a character of it), dx?: pt, dy?: pt, hScale?: %, vScale?: %, rotation?: deg} change one character (a ligature, one glyph for several characters, as a whole) as a Touch Type tool drag does, as one undo step: dx moves it along its line in reading order by changing the kerning of the character before it on the line and its own kerning, and the characters after it stay where they are (an error for the first character of a line and for a right-to-left character; limited to what kerning from -1000 to 10000 can give); dy raises it (baseline shift, up from its line whatever its rotation, also for the first character of a line and a right-to-left character); dx and dy are document points; hScale (including the object transform), vScale and rotation set its scales and rotation as text.setRangeStyle does. The kerning of the two characters also keeps the character and the ones after it where they were along the line when the font kerned them with their neighbors; a wider or narrower character moves the ones after it by the change in its width → {id, start, end} (the character's bytes)",
             has_doc,
             touch_type
         ),
@@ -916,9 +916,8 @@ fn touch_type(s: &mut Session, p: &Value) -> Result<Value> {
         });
     };
     // The baseline shift that raises the character `dy` document points. Baseline shift moves it
-    // along its own up axis, turned with its rotation (the new one, when the call sets it), by a
-    // length that the object transform, Shrink Text to Fit and a path effect such as Skew scale:
-    // two layouts with the call's other changes and shifts one step apart, both within the range,
+    // up from its line, whatever its rotation, by a length that the object transform, Shrink Text
+    // to Fit and a path effect such as Skew scale: two layouts with the call's other changes and shifts one step apart, both within the range,
     // measure that length. Neither shift is one that a run already has, so the character's run
     // splits off alike in both.
     let raise = if dy == 0.0 {
