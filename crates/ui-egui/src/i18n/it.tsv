@@ -1277,6 +1277,9 @@ file-filter	Templates	Modelli
 	Hide Live Paint Gaps	Nascondi spazi vuoti pittura dinamica
 	Select Fills	Seleziona riempimenti
 	Select Strokes	Seleziona tracce
+	Paint Fills	Colora riempimenti
+	Paint Strokes	Colora tracce
+	Highlight	Evidenziazione
 	Gaussian Blur…	Sfocatura gaussiana…
 	General	Generale
 	General › Placement › X	Generale › Posizionamento › X

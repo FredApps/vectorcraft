@@ -1267,6 +1267,9 @@ font-technology	Variable	Variables
 	Hide Live Paint Gaps	Ocultar huecos de pintura interactiva
 	Select Fills	Seleccionar rellenos
 	Select Strokes	Seleccionar trazos
+	Paint Fills	Pintar rellenos
+	Paint Strokes	Pintar trazos
+	Highlight	Resaltado
 	Gaussian Blur…	Desenfoque gaussiano…
 	General	General
 	General › Placement › X	General › Colocación › X

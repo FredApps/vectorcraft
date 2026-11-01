@@ -1275,6 +1275,9 @@ file-filter	Templates	Шаблоны
 	Hide Live Paint Gaps	Скрыть зазоры быстрой заливки
 	Select Fills	Выделять заливки
 	Select Strokes	Выделять обводки
+	Paint Fills	Рисовать заливки
+	Paint Strokes	Рисовать обводки
+	Highlight	Подсветка
 	Gaussian Blur…	Размытие по Гауссу…
 	General	Общие
 	General › Placement › X	Общие › Размещение › X

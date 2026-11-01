@@ -1215,6 +1215,9 @@ file-filter	Templates	模板
 	Hide Live Paint Gaps	隐藏实时上色间隙
 	Select Fills	选择填色
 	Select Strokes	选择描边
+	Paint Fills	为填色上色
+	Paint Strokes	为描边上色
+	Highlight	突出显示
 	Gaussian Blur…	高斯模糊…
 	General	常规
 	General › Placement › X	一般 › 位置 › X

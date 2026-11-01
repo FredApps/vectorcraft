@@ -1584,6 +1584,9 @@ file-filter	Templates	Sablonok
 	Hide Live Paint Gaps	Élő festés hézagainak elrejtése
 	Select Fills	Kitöltések kijelölése
 	Select Strokes	Körvonalak kijelölése
+	Paint Fills	Kitöltések festése
+	Paint Strokes	Körvonalak festése
+	Highlight	Kiemelés
 	Gaussian Blur	Gauss-elmosás
 	Gaussian Blur…	Gauss-elmosás…
 	General	Általános

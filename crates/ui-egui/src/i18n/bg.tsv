@@ -1230,6 +1230,9 @@ font-technology	Variable	Променливи
 	Hide Live Paint Gaps	Скриване на пролуките на динамичното оцветяване
 	Select Fills	Избиране на запълвания
 	Select Strokes	Избиране на щрихове
+	Paint Fills	Боядисване на запълвания
+	Paint Strokes	Боядисване на щрихове
+	Highlight	Маркиране
 	Gaussian Blur…	Гаусово размазване…
 	General	Общи
 	General › Placement › X	Общи › Разположение › X

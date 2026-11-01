@@ -1241,6 +1241,9 @@ file-filter	Templates	範本
 	Hide Live Paint Gaps	隱藏即時上色間隙
 	Select Fills	選取填色
 	Select Strokes	選取筆畫
+	Paint Fills	為填色上色
+	Paint Strokes	為筆畫上色
+	Highlight	強調顯示
 	Gaussian Blur…	高斯模糊…
 	General	一般
 	General › Placement › X	一般 › 位置 › X

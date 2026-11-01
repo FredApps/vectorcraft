@@ -1267,6 +1267,9 @@ font-technology	Variable	Variables
 	Hide Live Paint Gaps	Masquer les espaces de peinture dynamique
 	Select Fills	Sélectionner les fonds
 	Select Strokes	Sélectionner les contours
+	Paint Fills	Peindre les fonds
+	Paint Strokes	Peindre les contours
+	Highlight	Mise en évidence
 	Gaussian Blur…	Flou gaussien…
 	General	Général
 	General › Placement › X	Général › Placement › X

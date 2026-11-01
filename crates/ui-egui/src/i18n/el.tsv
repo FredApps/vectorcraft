@@ -1196,6 +1196,9 @@ font-technology	Variable	Μεταβλητές
 	Hide Live Paint Gaps	Απόκρυψη διακένων δυναμικής βαφής
 	Select Fills	Επιλογή γεμισμάτων
 	Select Strokes	Επιλογή περιγραμμάτων
+	Paint Fills	Βαφή γεμισμάτων
+	Paint Strokes	Βαφή περιγραμμάτων
+	Highlight	Επισήμανση
 	Gaussian Blur…	Θόλωση Γκάους…
 	General	Γενικά
 	General › Placement › X	Γενικά › Τοποθέτηση › X

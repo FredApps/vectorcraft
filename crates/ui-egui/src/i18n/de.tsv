@@ -1254,6 +1254,9 @@ file-filter	Templates	Vorlagen
 	Hide Live Paint Gaps	Lücken beim interaktiven Malen ausblenden
 	Select Fills	Flächen auswählen
 	Select Strokes	Konturen auswählen
+	Paint Fills	Flächen malen
+	Paint Strokes	Konturen malen
+	Highlight	Hervorheben
 	Gaussian Blur…	Gaußscher Weichzeichner…
 	General	Allgemein
 	General › Placement › X	Allgemein › Platzierung › X
