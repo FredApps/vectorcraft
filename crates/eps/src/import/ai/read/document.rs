@@ -1,8 +1,11 @@
 use super::art::{element_name, elements, join_and, sane};
 use super::containers::drop_commented_copies;
 use super::types::{FLIP, Kind, MAX_DEPTH};
-use super::{Affine, Artboard, ColorMode, Document, NodeKind, Obj, OpacityMask, Paint, Point, Reader, Rect, Structure, Swatch, Unit, V, obj};
-use vectorcraft_doc::{ImageBlob, PatternDef};
+use super::{
+    Affine, Arc, Artboard, CANVAS_CENTRE, ColorMode, Document, Node, NodeId, NodeKind, Obj, OpacityMask, Paint, Point, Reader, Rect, Structure,
+    Swatch, Unit, V, obj,
+};
+use vectorcraft_doc::{Guide, ImageBlob, PatternDef};
 
 /// `%AI5_RulerUnits` → [`Unit`] (Illustrator 7 spec table 3; centimeters is 4; pixels is 6 in later files).
 fn ruler_unit(v: u8) -> Option<Unit> {
@@ -395,6 +398,7 @@ impl<'a> Reader<'a> {
         } else {
             self.artboards.clone()
         };
+        let board_rects: Vec<Rect> = boards.iter().map(|(_, r)| *r).collect();
         doc.artboards = boards
             .into_iter()
             .enumerate()
@@ -423,6 +427,22 @@ impl<'a> Reader<'a> {
                 video_ruler_pixel_aspect_ratio: 1.0,
                 color: None,
             }];
+        }
+        if !self.ruler_guides.is_empty() {
+            let ids: Vec<u32> = doc.artboards.iter().map(|a| a.id).collect();
+            let (candidates, centre) = (std::mem::take(&mut self.ruler_guides), self.template_center);
+            let pick = |id: NodeId| -> Option<Guide> {
+                let (a, b) = candidates.get(&id)?;
+                let (vertical, board) = ruler_guide(*a, *b, centre, &board_rects)?;
+                let p = to_doc * *a;
+                let artboard = match board {
+                    Some(i) => Some(*ids.get(i)?),
+                    None => None,
+                };
+                let pos = if vertical { p.x } else { p.y };
+                pos.is_finite().then_some(Guide { vertical, pos, artboard, layer: None })
+            };
+            take_ruler_guides(&mut doc.layers, &pick, &mut doc.guides, 0);
         }
         if self.color_model.unwrap_or(self.cmyk_colors > self.rgb_colors) {
             doc.color_mode = ColorMode::Cmyk;
@@ -474,6 +494,61 @@ impl<'a> Reader<'a> {
 }
 
 /// The dictionary of entry `key` in `o` or the dictionaries it holds.
+/// How far (points) a ruler guide's ends may lie from the canvas's or an artboard's edges.
+const GUIDE_TOLERANCE: f64 = 0.01;
+
+/// Whether the straight guide path from `a` to `b` (art space) is a ruler guide → whether it is
+/// vertical, and the index in `boards` of the artboard it belongs to (`None`: a canvas guide). A
+/// canvas guide runs across the whole canvas, 16,383 points centred on the template box's
+/// centre `centre`; an artboard guide runs from edge to edge of one artboard of `boards`, inside it.
+fn ruler_guide(a: Point, b: Point, centre: Option<(f64, f64)>, boards: &[Rect]) -> Option<(bool, Option<usize>)> {
+    let near = |u: f64, v: f64| (u - v).abs() <= GUIDE_TOLERANCE;
+    let vertical = match (near(a.x, b.x), near(a.y, b.y)) {
+        (true, false) => true,
+        (false, true) => false,
+        _ => return None,
+    };
+    let (along, across) = if vertical { ((a.y.min(b.y), a.y.max(b.y)), a.x) } else { ((a.x.min(b.x), a.x.max(b.x)), a.y) };
+    if let Some((cx, cy)) = centre {
+        let c = if vertical { cy } else { cx };
+        if near(along.0, c - CANVAS_CENTRE) && near(along.1, c + CANVAS_CENTRE) {
+            return Some((vertical, None));
+        }
+    }
+    let mut on = boards.iter().enumerate().filter(|(_, r)| {
+        let (ends, sides) =
+            if vertical { ((r.min_y(), r.max_y()), (r.min_x(), r.max_x())) } else { ((r.min_x(), r.max_x()), (r.min_y(), r.max_y())) };
+        near(along.0, ends.0) && near(along.1, ends.1) && (sides.0..=sides.1).contains(&across)
+    });
+    match (on.next(), on.next()) {
+        (Some((i, _)), None) => Some((vertical, Some(i))),
+        _ => None,
+    }
+}
+
+/// Moves the children of the layers and sublayers of `nodes` that `pick` makes a guide of into
+/// `guides`, each on its layer.
+fn take_ruler_guides(nodes: &mut [Arc<Node>], pick: &dyn Fn(NodeId) -> Option<Guide>, guides: &mut Vec<Guide>, depth: usize) {
+    if depth > MAX_DEPTH {
+        return;
+    }
+    for n in nodes {
+        if !matches!(n.kind, NodeKind::Layer { .. }) {
+            continue;
+        }
+        let id = n.id;
+        let Some(kids) = Arc::make_mut(n).children_mut() else { continue };
+        kids.retain(|k| match pick(k.id) {
+            Some(g) => {
+                guides.push(Guide { layer: Some(id), ..g });
+                false
+            }
+            None => true,
+        });
+        take_ruler_guides(kids, pick, guides, depth + 1);
+    }
+}
+
 fn find_entry<'o>(o: &'o Obj, key: &str, depth: usize) -> Option<&'o Obj> {
     if depth > 8 {
         return None;

@@ -1,9 +1,12 @@
 //! The reader: runs the editing data's operators into a document.
 //!
 //! - Art space has y up; the first artboard's top left corner is the document's origin.
-//! - Layers: `%AI5_BeginLayer`, `visible preview unlocked printing dimmed … colorIndex r g b …
-//!   dimPercent … Lb` (ten operands in the legacy format, without the one before the colour
-//!   index), `(name) Ln`, its art, `LB`.
+//! - Layers: `%AI5_BeginLayer`, `visible preview unlocked printing dimmed … colorIndex r g b
+//!   template dimPercent … Lb` (ten operands in the legacy format, without the one before the
+//!   colour index; see `Reader::layer_attrs`), `(name) Ln`, its art, `LB`.
+//! - Ruler guides: a straight `(N) *` guide path, directly on a layer, that runs across the whole
+//!   canvas (16,383 points around the template box's centre) or from edge to edge of one artboard
+//!   is a ruler guide on that layer ([`Document::guides`]); other guide paths stay paths.
 //! - Groups `u` … `U`, compound paths `*u` … `*U`, clipping groups `q` … `Q` (the path painted
 //!   with `W` clips); a group's transparency and name follow its end.
 //! - Paths: `m`, `l`/`L`, `c`/`C`, `v`/`V`, `y`/`Y`, painted by `N n F f S s B b` (lower case
@@ -206,6 +209,9 @@ struct Reader<'a> {
     clip_fills: HashSet<NodeId>,
     /// Groups closed as an object's drawn look (`9 () XW`).
     looks: HashSet<NodeId>,
+    /// Straight `(N) *` guide paths painted directly on a layer, by id: their two points in art
+    /// space. [`Reader::finish`] makes the ruler guides among them guides of their layer.
+    ruler_guides: HashMap<NodeId, (Point, Point)>,
     /// Legacy compound member groups, even when followed by the generic `9 () XW` marker.
     compound_groups: HashSet<NodeId>,
     /// Groups of a text object and its look (see [`Self::style_marker`]), which aren't a look.
@@ -308,6 +314,7 @@ impl<'a> Reader<'a> {
             blend_budget: BLEND_BUDGET,
             clip_fills: HashSet::new(),
             looks: HashSet::new(),
+            ruler_guides: HashMap::new(),
             compound_groups: HashSet::new(),
             text_looks: HashSet::new(),
             group_ended: false,

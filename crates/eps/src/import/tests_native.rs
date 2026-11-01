@@ -1135,6 +1135,46 @@ fn editing_data_in_the_units_of_a_user_unit_page_comes_in_at_the_pages_size() {
     assert!(near(first(&d, 0), [100.0, 860.0, 140.0, 900.0]), "{:?}", first(&d, 0));
 }
 
+/// #779: a `.ai`'s ruler guides come in as guides of their layers, at the page's size when the
+/// editing data is in the units of a `UserUnit` page.
+#[test]
+fn an_ai_files_ruler_guides_come_in_on_their_layers() {
+    // Across the canvas (16,383 points around the template box's centre, 50 50) at y 40, and
+    // across the artboard at x 20.
+    let guides = "-8141.5 40 m\n8241.5 40 L\n(N) *\n20 0 m\n20 100 L\n(N) *\n";
+    let art = native(&layer("Jig", true, &format!("{}\n{guides}", square(10, 10))));
+    let art = art.replacen("%AI5_NumLayers", "%AI3_TemplateBox: 50 50 50 50\n%AI5_NumLayers", 1);
+    for k in [1.0, 10.0] {
+        let page = in_points(pdf_part(10.0, 86.0), k);
+        let (d, w, read) = crate::layered_ai(&private(&art), page, vec![], false, false, k);
+        assert!(read, "{w:?}");
+        let jig = d.layers[0].id;
+        let want = [
+            vectorcraft_doc::Guide { vertical: false, pos: 60.0 * k, artboard: None, layer: Some(jig) },
+            vectorcraft_doc::Guide { vertical: true, pos: 20.0 * k, artboard: Some(d.artboards[0].id), layer: Some(jig) },
+        ];
+        assert_eq!(d.guides, want);
+        assert_eq!(d.layers[0].children().map_or(0, |c| c.len()), 1, "the square alone");
+    }
+}
+
+/// An EPS whose page is its art's box keeps only its first artboard, and the guides of that one:
+/// the ruler guides of the artboards left out go with them.
+#[test]
+fn an_eps_of_its_art_box_keeps_the_guides_of_its_first_artboard() {
+    let point = |x: u32, y: u32, n: u8| format!("%_{x} {y} /RealPointRelToROrigin\n%_ (PositionPoint{n}) ,\n");
+    let board = |x0: u32, x1: u32| format!("%_/Dictionary :\n{}{}%_; ,\n", point(x0, 50, 1), point(x1, 0, 2));
+    let array = format!("%_/Array :\n{}{}%_; (ArtboardArray) ,\n", board(0, 50), board(50, 100));
+    let boards = format!("%_/Document :\n%_/Dictionary :\n{array}%_; /NotRecorded ,\n%_;\n");
+    let guides = "25 0 m\n25 50 L\n(N) *\n75 0 m\n75 50 L\n(N) *\n";
+    let art = native(&format!("{boards}{}", layer("Art", true, &format!("{}\n{guides}", square(10, 10)))));
+    let r = import(&eps(&page_square(10, 10), &art)).unwrap();
+    assert_eq!(names(&r.document), ["Art"], "{:?}", r.warnings);
+    assert_eq!(r.document.artboards.len(), 1);
+    let (board, layer) = (r.document.artboards[0].id, r.document.layers[0].id);
+    assert_eq!(r.document.guides, [vectorcraft_doc::Guide { vertical: true, pos: 25.0, artboard: Some(board), layer: Some(layer) }]);
+}
+
 /// A PDF part read from a `UserUnit` page cropped to the art: the art's box, not the artboard, is
 /// the page in the editing data's units, so the layers are read at the page's size, with their
 /// artboard.
