@@ -6196,3 +6196,15 @@ swatch	Yellow Green	Verde-amarelado
 	Maximum:	Máximo:
 	Seed:	Semente:
 @msg	`min` is greater than `max`	`min` é maior que `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Classificar objetos…
+	Sort Objects	Classificar objetos
+	Sort By:	Classificar por:
+	Apply To:	Aplicar a:
+	Area	Área
+	X Position	Posição X
+	Y Position	Posição Y
+	Stacking Order	Ordem de empilhamento
+	Small to Large	Do menor para o maior
+	Large to Small	Do maior para o menor
+	Distribute Evenly	Distribuir uniformemente

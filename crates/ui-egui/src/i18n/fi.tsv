@@ -6152,3 +6152,15 @@ breakText	Glyphs	Merkit
 	Maximum:	Suurin:
 	Seed:	Siemen:
 @msg	`min` is greater than `max`	`min` on suurempi kuin `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Lajittele objektit…
+	Sort Objects	Lajittele objektit
+	Sort By:	Lajitteluperuste:
+	Apply To:	Käytä kohteeseen:
+	Area	Pinta-ala
+	X Position	X-sijainti
+	Y Position	Y-sijainti
+	Stacking Order	Pinoamisjärjestys
+	Small to Large	Pienestä suureen
+	Large to Small	Suuresta pieneen
+	Distribute Evenly	Jaa tasaisesti

@@ -6174,3 +6174,15 @@ breakText	Glyphs	Glyfer
 	Maximum:	Maximum:
 	Seed:	Startvärde:
 @msg	`min` is greater than `max`	`min` är större än `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Sortera objekt…
+	Sort Objects	Sortera objekt
+	Sort By:	Sortera efter:
+	Apply To:	Tillämpa på:
+	Area	Area
+	X Position	X-position
+	Y Position	Y-position
+	Stacking Order	Staplingsordning
+	Small to Large	Från liten till stor
+	Large to Small	Från stor till liten
+	Distribute Evenly	Fördela jämnt

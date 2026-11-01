@@ -5964,3 +5964,15 @@ breakText	Glyphs	字形
 	Maximum:	最大值：
 	Seed:	种子：
 @msg	`min` is greater than `max`	`min` 大于 `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	排序对象…
+	Sort Objects	排序对象
+	Sort By:	排序依据：
+	Apply To:	应用于：
+	Area	面积
+	X Position	X 位置
+	Y Position	Y 位置
+	Stacking Order	堆叠顺序
+	Small to Large	从小到大
+	Large to Small	从大到小
+	Distribute Evenly	均匀分布

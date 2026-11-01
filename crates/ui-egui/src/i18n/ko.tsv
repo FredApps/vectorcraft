@@ -5704,3 +5704,15 @@ breakText	Glyphs	글리프
 	Maximum:	최대:
 	Seed:	시드:
 @msg	`min` is greater than `max`	`min`이(가) `max`보다 큽니다
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	개체 정렬…
+	Sort Objects	개체 정렬
+	Sort By:	정렬 기준:
+	Apply To:	적용 대상:
+	Area	면적
+	X Position	X 위치
+	Y Position	Y 위치
+	Stacking Order	쌓는 순서
+	Small to Large	작은 것부터
+	Large to Small	큰 것부터
+	Distribute Evenly	균등 분포

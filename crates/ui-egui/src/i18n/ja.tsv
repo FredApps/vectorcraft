@@ -5808,3 +5808,15 @@ breakText	Glyphs	字形
 	Maximum:	最大:
 	Seed:	シード:
 @msg	`min` is greater than `max`	`min` が `max` より大きくなっています
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	オブジェクトを並べ替え…
+	Sort Objects	オブジェクトを並べ替え
+	Sort By:	並べ替えの基準:
+	Apply To:	適用先:
+	Area	面積
+	X Position	X 位置
+	Y Position	Y 位置
+	Stacking Order	重ね順
+	Small to Large	小さい順
+	Large to Small	大きい順
+	Distribute Evenly	均等に分布

@@ -5721,3 +5721,15 @@ breakText	Glyphs	Гліфи
 	Maximum:	Максимум:
 	Seed:	Початкове число:
 @msg	`min` is greater than `max`	`min` більше за `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Сортувати об’єкти…
+	Sort Objects	Сортувати об’єкти
+	Sort By:	Сортувати за:
+	Apply To:	Застосувати до:
+	Area	Площа
+	X Position	Положення за X
+	Y Position	Положення за Y
+	Stacking Order	Порядок накладання
+	Small to Large	Від меншого до більшого
+	Large to Small	Від більшого до меншого
+	Distribute Evenly	Розподілити рівномірно

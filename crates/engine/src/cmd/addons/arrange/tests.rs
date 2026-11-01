@@ -263,6 +263,7 @@ fn off_without_a_selection() {
         "addon.arrange.size",
         "addon.arrange.groupOverlapping",
         "addon.arrange.randomizeOpacity",
+        "addon.arrange.sort",
     ] {
         assert!(!enabled(&s, c), "{c}");
     }
@@ -415,4 +416,149 @@ fn randomize_opacity_refuses_bad_params() {
     );
     let e = s.execute("addon.arrange.randomizeOpacity", &json!({"min": 80, "max": 20})).unwrap_err().to_string();
     assert!(e.contains("`min` is greater than `max`"), "{e}");
+}
+
+fn layer_order(s: &Session) -> Vec<NodeId> {
+    s.doc().unwrap().doc.layers[0].children().unwrap().iter().map(|n| n.id).collect()
+}
+
+/// Three squares: `a` 30 wide at x 0, `b` 10 wide at x 100, `c` 20 wide at x 200, all selected.
+fn squares(s: &mut Session) -> (NodeId, NodeId, NodeId) {
+    let a = rect(s, 0.0, 0.0, 30.0, 30.0);
+    let b = rect(s, 100.0, 0.0, 10.0, 10.0);
+    let c = rect(s, 200.0, 0.0, 20.0, 20.0);
+    select(s, &[a, b, c]);
+    (a, b, c)
+}
+
+#[test]
+fn sort_by_area_lines_objects_up_along_x() {
+    let mut s = session();
+    let (a, b, c) = squares(&mut s);
+    let n = steps(&s);
+    let r = s.execute("addon.arrange.sort", &json!({"by": "area", "apply": "x"})).unwrap();
+    assert_eq!(r["count"], json!(3));
+    assert_eq!(steps(&s), n + 1, "one undo step");
+    // Smallest first: b, c, a take the left edges 0, 100, 200; y stays.
+    assert!(near(bounds(&s, b), (0.0, 0.0, 10.0, 10.0)), "{:?}", bounds(&s, b));
+    assert!(near(bounds(&s, c), (100.0, 0.0, 20.0, 20.0)), "{:?}", bounds(&s, c));
+    assert!(near(bounds(&s, a), (200.0, 0.0, 30.0, 30.0)), "{:?}", bounds(&s, a));
+    // Large to small: a, c, b.
+    s.execute("edit.undo", &json!({})).unwrap();
+    s.execute("addon.arrange.sort", &json!({"by": "area", "apply": "x", "order": "descending"})).unwrap();
+    assert_eq!((bounds(&s, a).x0, bounds(&s, c).x0, bounds(&s, b).x0), (0.0, 100.0, 200.0));
+    // Already in order: no step.
+    let n = steps(&s);
+    s.execute("addon.arrange.sort", &json!({"by": "area", "apply": "x", "order": "descending"})).unwrap();
+    assert_eq!(steps(&s), n);
+}
+
+#[test]
+fn sort_distributes_values_evenly() {
+    let mut s = session();
+    let a = rect(&mut s, 0.0, 0.0, 10.0, 10.0);
+    let b = rect(&mut s, 10.0, 50.0, 10.0, 50.0);
+    let c = rect(&mut s, 200.0, 0.0, 10.0, 20.0);
+    select(&mut s, &[a, b, c]);
+    // Left edges 0, 10, 200 step evenly: 0, 100, 200.
+    s.execute("addon.arrange.sort", &json!({"by": "x", "apply": "x", "distribute": true})).unwrap();
+    assert_eq!((bounds(&s, a).x0, bounds(&s, b).x0, bounds(&s, c).x0), (0.0, 100.0, 200.0));
+    // Heights that step evenly with x (10 to 50), each about its centre.
+    s.execute("addon.arrange.sort", &json!({"by": "x", "apply": "height", "distribute": true})).unwrap();
+    assert!(near(bounds(&s, a), (0.0, 0.0, 10.0, 10.0)), "{:?}", bounds(&s, a));
+    assert!(near(bounds(&s, b), (100.0, 60.0, 10.0, 30.0)), "{:?}", bounds(&s, b));
+    assert!(near(bounds(&s, c), (200.0, -15.0, 10.0, 50.0)), "{:?}", bounds(&s, c));
+}
+
+#[test]
+fn sort_restacks_within_each_layer() {
+    let mut s = session();
+    let (a, b, c) = squares(&mut s);
+    // Largest at the back.
+    s.execute("addon.arrange.sort", &json!({"by": "area", "apply": "stacking", "order": "descending"})).unwrap();
+    assert_eq!(layer_order(&s), [a, c, b]);
+    s.execute("addon.arrange.sort", &json!({})).unwrap();
+    assert_eq!(layer_order(&s), [b, c, a], "by area, small to large, into the stacking order by default");
+    // An object in another layer keeps its layer; the others trade places among themselves.
+    s.execute("layer.new", &json!({})).unwrap();
+    let big = rect(&mut s, 0.0, 100.0, 50.0, 50.0);
+    select(&mut s, &[a, b, c, big]);
+    s.execute("addon.arrange.sort", &json!({"order": "descending"})).unwrap();
+    assert_eq!(layer_order(&s), [a, c, b]);
+    let doc = &s.doc().unwrap().doc;
+    assert_ne!(doc.layer_of(big), doc.layer_of(a), "left in its own layer");
+}
+
+#[test]
+fn sort_by_stacking_and_opacity() {
+    let mut s = session();
+    let (a, b, c) = squares(&mut s);
+    // Back to front a, b, c; reversed: c, b, a take the left edges 0, 100, 200.
+    s.execute("addon.arrange.sort", &json!({"by": "stacking", "apply": "x", "order": "descending"})).unwrap();
+    assert_eq!((bounds(&s, c).x0, bounds(&s, b).x0, bounds(&s, a).x0), (0.0, 100.0, 200.0));
+    for (id, o) in [(a, 20), (b, 80), (c, 50)] {
+        s.execute("object.setProps", &json!({"ids": [id.0], "opacity": o})).unwrap();
+    }
+    select(&mut s, &[a, b, c]);
+    let opacity = |s: &Session, id| s.doc().unwrap().doc.node(id).unwrap().opacity;
+    // By x, large to small: a (x 200) gets the least opacity, then b, then c.
+    s.execute("addon.arrange.sort", &json!({"by": "x", "apply": "opacity", "order": "descending"})).unwrap();
+    assert_eq!((opacity(&s, a), opacity(&s, b), opacity(&s, c)), (0.2, 0.5, 0.8));
+    // By opacity into the stacking order, large to small: the most opaque at the back.
+    s.execute("addon.arrange.sort", &json!({"by": "opacity", "order": "descending"})).unwrap();
+    assert_eq!(layer_order(&s), [c, b, a]);
+}
+
+#[test]
+fn sort_by_area_into_areas_scales_in_proportion() {
+    let mut s = session();
+    let (a, b, c) = squares(&mut s);
+    // Areas 900, 100, 400 by x: a (x 0) 100, b 500, c 900.
+    s.execute("addon.arrange.sort", &json!({"by": "x", "apply": "area", "distribute": true})).unwrap();
+    let side = |s: &Session, id| bounds(s, id).width();
+    assert!((side(&s, a) - 10.0).abs() < 1e-6 && (side(&s, b) - 500f64.sqrt()).abs() < 1e-6 && (side(&s, c) - 30.0).abs() < 1e-6);
+    assert!((bounds(&s, b).height() - 500f64.sqrt()).abs() < 1e-6, "in proportion");
+}
+
+#[test]
+fn sort_in_random_order_repeats_with_a_seed() {
+    let mut s = session();
+    let ids: Vec<NodeId> = (0..12).map(|i| rect(&mut s, i as f64 * 10.0, 0.0, 5.0, 5.0)).collect();
+    select(&mut s, &ids);
+    s.execute("addon.arrange.sort", &json!({"order": "random", "seed": 5})).unwrap();
+    let first = layer_order(&s);
+    assert_ne!(first, ids, "shuffled");
+    let mut sorted = first.clone();
+    sorted.sort_by_key(|i| i.0);
+    assert_eq!(sorted, ids, "the same objects");
+    s.execute("edit.undo", &json!({})).unwrap();
+    assert_eq!(layer_order(&s), ids);
+    s.execute("addon.arrange.sort", &json!({"order": "random", "seed": 5})).unwrap();
+    assert_eq!(layer_order(&s), first, "the same seed, the same order");
+}
+
+#[test]
+fn sort_takes_ids_and_refuses_bad_params() {
+    let mut s = session();
+    let (a, b, c) = squares(&mut s);
+    select(&mut s, &[a]);
+    assert!(!enabled(&s, "addon.arrange.sort"));
+    s.execute("addon.arrange.sort", &json!({"ids": [b.0, a.0], "apply": "x"})).unwrap();
+    assert_eq!((bounds(&s, b).x0, bounds(&s, a).x0, bounds(&s, c).x0), (0.0, 100.0, 200.0), "c is left alone");
+    select(&mut s, &[a, b, c]);
+    refuses(
+        &mut s,
+        "addon.arrange.sort",
+        &[
+            json!({"by": "color"}),
+            json!({"apply": 3}),
+            json!({"order": "up"}),
+            json!({"distribute": "yes"}),
+            json!({"seed": -1}),
+            json!({"seed": 0.5}),
+            json!({"scaleStrokes": 1}),
+            json!({"ids": "x"}),
+            json!({"ids": [999_999]}),
+        ],
+    );
 }

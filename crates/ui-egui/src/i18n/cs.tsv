@@ -6122,3 +6122,15 @@ breakText	Glyphs	Glyfy
 	Maximum:	Maximum:
 	Seed:	Počáteční hodnota:
 @msg	`min` is greater than `max`	`min` je větší než `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Seřadit objekty…
+	Sort Objects	Seřadit objekty
+	Sort By:	Seřadit podle:
+	Apply To:	Použít na:
+	Area	Plocha
+	X Position	Poloha X
+	Y Position	Poloha Y
+	Stacking Order	Pořadí vrstvení
+	Small to Large	Od nejmenšího po největší
+	Large to Small	Od největšího po nejmenší
+	Distribute Evenly	Rozmístit rovnoměrně

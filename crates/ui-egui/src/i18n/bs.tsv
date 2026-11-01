@@ -6039,3 +6039,15 @@ shape	Open	Otvoren
 	Maximum:	Maksimum:
 	Seed:	Početna vrijednost:
 @msg	`min` is greater than `max`	`min` je veće od `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Sortiraj objekte…
+	Sort Objects	Sortiraj objekte
+	Sort By:	Sortiraj po:
+	Apply To:	Primijeni na:
+	Area	Površina
+	X Position	Položaj X
+	Y Position	Položaj Y
+	Stacking Order	Redoslijed slaganja
+	Small to Large	Od manjeg prema većem
+	Large to Small	Od većeg prema manjem
+	Distribute Evenly	Rasporedi ravnomjerno
