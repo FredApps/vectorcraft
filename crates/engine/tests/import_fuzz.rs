@@ -2980,6 +2980,101 @@ proptest! {
         let private = [b"%AI24_ZStandard_Data".as_slice(), &zstd(&text)].concat();
         survive("mutated .ai variable library", || Some(vectorcraft_eps::layered_ai(&private, Document::new(100.0, 100.0), vec![], false, false, 1.0).0))?;
     }
+
+    /// A `.ai` whose Objects on Path record and group are damaged or hostile.
+    #[test]
+    fn ai_objects_on_path_never_panics(cut in 0usize..4_000, edits in prop::collection::vec((0usize..4_000, prop::sample::select(vec!['0', '1', '9', '-', '.', 'e', ' ', '\n', '(', ')', '/', ':', ';', ',', '%', '_', 'u', 'U'])), 0..12)) {
+        let text = mutate_text(&on_path_data(&ON_PATH_IDS, &ON_PATH_IDS, 4, "4", "0.5", "", ["0", "1", "2"], true, 0), cut, &edits);
+        let private = [b"%AI24_ZStandard_Data".as_slice(), &zstd(&text)].concat();
+        // Trusted, so that the layers read are built whatever the empty page shows.
+        survive("mutated .ai Objects on Path", || Some(vectorcraft_eps::layered_ai(&private, Document::new(200.0, 100.0), vec![], false, true, 1.0).0))?;
+    }
+
+    /// Objects on Path records of any shape: ids in any order, repeated or missing, any number of
+    /// objects, pivots and angles out of range or not finite, spacings, order tags that disagree,
+    /// groups nested or cut short, and versioned content left open.
+    #[test]
+    fn ai_objects_on_path_records_never_panic(
+        listed in prop::collection::vec(prop::sample::select(ON_PATH_IDS.to_vec()), 0..7),
+        drawn in prop::collection::vec(prop::sample::select(ON_PATH_IDS.to_vec()), 0..7),
+        members in 0usize..7,
+        pivot in prop::sample::select(vec!["0", "4", "8", "9", "-1", "2.5", "1e400"]),
+        rotation in prop::sample::select(vec!["0", "0.5235987755982988", "-3.2", "1e400", "-1e400", "1e300"]),
+        spacing in prop::sample::select(vec!["", "%_56.5 /Real (Spacing) ,\n", "%_0 /Bool (IsEquiSpaced) ,\n", "%_1 /Bool (Flip) ,\n"]),
+        tags in prop::array::uniform3(prop::sample::select(vec!["0", "1", "2", "-1", "7", "(x)", "1e400"])),
+        versioned in any::<bool>(),
+        nest in 0usize..3,
+        cut in 0usize..2_000,
+    ) {
+        let data = on_path_data(&listed, &drawn, members, pivot, rotation, spacing, tags, versioned, nest);
+        let cut_at = data.len().saturating_sub(cut);
+        let cut_at = (0..=cut_at).rev().find(|i| data.is_char_boundary(*i)).unwrap_or(0);
+        for data in [data.as_str(), &data[..cut_at]] {
+            let private = [b"%AI24_ZStandard_Data".as_slice(), &zstd(data)].concat();
+            survive("hostile Objects on Path", || Some(vectorcraft_eps::layered_ai(&private, Document::new(200.0, 100.0), vec![], false, true, 1.0).0))?;
+        }
+    }
+}
+
+/// The data [`ai_objects_on_path_never_panics`] damages, as it is, opens with its Objects on Path group.
+#[test]
+fn the_objects_on_path_fuzz_data_opens_live() {
+    let text = on_path_data(&ON_PATH_IDS, &ON_PATH_IDS, 4, "4", "0.5", "", ["0", "1", "2"], true, 0);
+    let private = [b"%AI24_ZStandard_Data".as_slice(), &zstd(&text)].concat();
+    // Trusted: the empty page it is read beside isn't compared with its art.
+    let (doc, warnings, _) = vectorcraft_eps::layered_ai(&private, Document::new(200.0, 100.0), vec![], false, true, 1.0);
+    let g = doc.layers.first().and_then(|l| l.children()).and_then(|c| c.first()).unwrap_or_else(|| panic!("{warnings:?}"));
+    assert!(g.extras().objects_on_path.is_some(), "{g:?}");
+}
+
+/// The ids of the objects of an Objects on Path group in the fuzz cases.
+const ON_PATH_IDS: [&str; 5] = ["f-0001", "f-0002", "f-0003", "f-0004", "f-0005"];
+
+/// Editing data with an Objects on Path record naming `listed` for `members` objects (Pivot
+/// `pivot`, Rotation `rotation`, then the entries `more`) and a group of a path and squares whose
+/// dictionaries give the ids `drawn` (the first the path's, the others with the order tags `tags`
+/// in turn), inside `nest` more groups, in versioned content with a copy after it when `versioned`
+/// is set.
+#[allow(clippy::too_many_arguments)]
+fn on_path_data(
+    listed: &[&str],
+    drawn: &[&str],
+    members: usize,
+    pivot: &str,
+    rotation: &str,
+    more: &str,
+    tags: [&str; 3],
+    versioned: bool,
+    nest: usize,
+) -> String {
+    use vectorcraft_testkit::ai;
+    let options = ai::on_path_options(members, 0, 0.0, more)
+        .replace("%_0 /Int (PivotPosition)", &format!("%_{pivot} /Int (PivotPosition)"))
+        .replace("%_0 /Real (Rotation)", &format!("%_{rotation} /Real (Rotation)"));
+    let record = ai::on_path_record("Adobe Align On Path", listed, &options); // brand-ok: the record's name in the files
+    let mut group = String::from("0 Ae\nu\n/ConstraintGroup :\n128 /GroupType ,\n;\n0 0 1 0 0 0 1 XA\n20 20 m\n100 80 L\n180 20 L\nS\n");
+    for (i, id) in drawn.iter().enumerate() {
+        if i == 0 {
+            group += &ai::on_path_member(id, None, 0.0);
+        } else {
+            let x = 10.0 + 30.0 * i as f64;
+            let tag = tags.get(i - 1).map_or_else(|| (i - 1).to_string(), |t| t.to_string());
+            group += &format!(
+                "0 1 1 0 1 0 0 Xa\n{}f\n%_/ArtDictionary :\n%_{tag} /Int (ConstraintArtOrderId) ,\n%_({id}) /String (Persistent ID) ,\n%_({rotation}) /String (BBAccumRotation) ,\n%_;\n%_\n",
+                ai::rect(x, 40.0, x + 10.0, 46.0)
+            );
+        }
+    }
+    group += "U\n";
+    for _ in 0..nest {
+        group = format!("0 Ae\nu\n{group}U\n");
+    }
+    let art = if versioned {
+        format!("%AI17_Begin_Content_if_version_gt:24 14\n{group}%AI17_Alternate_Content\n{group}%AI17_End_Versioned_Content\n")
+    } else {
+        group
+    };
+    ai::editing_data(200.0, 100.0, &format!("{record}{}", ai::layer("L", &art)))
 }
 
 /// A `.ai` in PostScript form as other apps write it: the procsets that define its operators named,

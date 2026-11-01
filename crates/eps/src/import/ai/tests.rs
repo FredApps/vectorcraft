@@ -2478,3 +2478,145 @@ fn crop_marks_after_the_layers_are_not_art() {
     assert_eq!(art(&r.doc).len(), 1);
     assert_eq!(r.doc.layers.len(), 1);
 }
+
+/// The name of an Objects on Path record.
+const ALIGN_ON_PATH: &str = "Adobe Align On Path"; // brand-ok: the record's name in the files
+/// The ids of an Objects on Path group's path and its four objects.
+const ON_PATH_IDS: [&str; 5] = [
+    "0a6d1e52-0000-4000-8000-000000000001",
+    "0a6d1e52-0000-4000-8000-000000000002",
+    "0a6d1e52-0000-4000-8000-000000000003",
+    "0a6d1e52-0000-4000-8000-000000000004",
+    "0a6d1e52-0000-4000-8000-000000000005",
+];
+const OPEN_PATH: &str = "20 20 m\n100 80 L\n180 20 L\nS\n";
+const CLOSED_PATH: &str =
+    "40 50 m\n40 66.57 66.86 80 100 80 c\n133.14 80 160 66.57 160 50 c\n160 33.43 133.14 20 100 20 c\n66.86 20 40 33.43 40 50 c\ns\n";
+
+/// An Objects on Path group: the stroked `path` with the id `ids[0]`, then a 10 × 6 red square for
+/// each other id, 50 pt apart from x 20, whose frame is turned `angle` radians.
+fn on_path_group(path: &str, ids: &[&str], angle: f64) -> String {
+    use vectorcraft_testkit::ai::on_path_member;
+    let (first, rest) = ids.split_first().unwrap();
+    let mut group = format!("0 Ae\nu\n/ConstraintGroup :\n128 /GroupType ,\n;\n0 0 1 0 0 0 1 XA\n2 w\n{path}{}", on_path_member(first, None, 0.0));
+    for (i, id) in rest.iter().enumerate() {
+        let x = 20.0 + 50.0 * i as f64;
+        group += &format!("{RED}{}f\n{}", rect_path(x, 40.0, x + 10.0, 46.0), on_path_member(id, Some(i), angle));
+    }
+    group + "U\n"
+}
+
+/// The group the layer of `body` holds first, and its Objects on Path record.
+fn on_path(body: &str) -> (Arc<Node>, Option<vectorcraft_doc::objects_on_path::ObjectsOnPath>) {
+    let doc = read_ok(body).doc;
+    let g = art(&doc).first().cloned().unwrap();
+    let rec = g.extras().objects_on_path.as_deref().cloned();
+    (g, rec)
+}
+
+/// An Objects on Path group opens as one, with its path, its objects in their order along the path,
+/// Pivot and Rotate, and its art where the file draws it; the same art without the record opens as a
+/// plain group.
+#[test]
+fn an_objects_on_path_group_opens_with_its_path_objects_and_options() {
+    use vectorcraft_testkit::ai::{on_path_options, on_path_record};
+    let group = on_path_group(OPEN_PATH, &ON_PATH_IDS, 0.5);
+    let record = on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &on_path_options(4, 0, std::f64::consts::FRAC_PI_6, ""));
+    let (g, rec) = on_path(&format!("{record}{}", layer(&group)));
+    let rec = rec.expect("an Objects on Path group");
+    let kids = g.children().unwrap();
+    assert_eq!(kids.len(), 5);
+    let NodeKind::Path { path, .. } = &kids.iter().find(|c| c.id == rec.path).unwrap().kind else { panic!("the path") };
+    assert!(path.subpaths.first().is_some_and(|s| !s.closed), "the open path");
+    let child = |id| kids.iter().find(|c| c.id == id).unwrap();
+    let xs: Vec<f64> = rec.members.iter().map(|m| child(m.id).geometric_bounds().unwrap().x0).collect();
+    assert_eq!(xs, [20.0, 70.0, 120.0, 170.0], "the objects in the file's order");
+    for m in &rec.members {
+        let center = child(m.id).geometric_bounds().unwrap().center();
+        assert_eq!((m.angle, m.frame), (-0.5, kurbo::Affine::rotate_about(-0.5, center)), "the frame turned counterclockwise");
+    }
+    assert!((rec.rotate - 30.0).abs() < 1e-9, "{}", rec.rotate);
+    assert_eq!(rec.pivot, 0);
+    let (plain, none) = on_path(&layer(&group));
+    assert!(none.is_none());
+    let kinds = |g: &Node| g.children().unwrap().iter().map(|c| c.kind.clone()).collect::<Vec<_>>();
+    assert_eq!(kinds(&g), kinds(&plain), "the art stays where it is drawn");
+}
+
+/// A group on a closed path opens as an Objects on Path group too.
+#[test]
+fn an_objects_on_path_group_on_a_closed_path_opens_live() {
+    use vectorcraft_testkit::ai::{on_path_options, on_path_record};
+    let record = on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &on_path_options(4, 4, 0.0, ""));
+    let (g, rec) = on_path(&format!("{record}{}", layer(&on_path_group(CLOSED_PATH, &ON_PATH_IDS, 0.0))));
+    let rec = rec.expect("an Objects on Path group");
+    let NodeKind::Path { path, .. } = &g.children().unwrap().iter().find(|c| c.id == rec.path).unwrap().kind else { panic!("the path") };
+    assert!(path.subpaths.first().is_some_and(|s| s.closed), "the closed path");
+    assert_eq!((rec.members.len(), rec.pivot, rec.rotate), (4, 4, 0.0));
+}
+
+/// A record the group can't be read from, or with options an Objects on Path group doesn't hold,
+/// leaves the group a plain group with its art.
+#[test]
+fn an_objects_on_path_record_that_doesnt_fit_leaves_a_plain_group() {
+    use vectorcraft_testkit::ai::{on_path_options, on_path_record};
+    let [p, a, b, c, d] = ON_PATH_IDS;
+    let options = |more: &str| on_path_options(4, 4, 0.0, more);
+    let good = options("");
+    let group = on_path_group(OPEN_PATH, &ON_PATH_IDS, 0.0);
+    assert!(on_path(&format!("{}{}", on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good), layer(&group))).1.is_some());
+    let cases: Vec<(&str, String, String)> = vec![
+        ("the path's id is missing", on_path_record(ALIGN_ON_PATH, &["0a6d1e52-ffff", a, b, c, d], &good), group.clone()),
+        ("an object's id is missing", on_path_record(ALIGN_ON_PATH, &[p, a, b, c], &good), group.clone()),
+        ("an id twice", on_path_record(ALIGN_ON_PATH, &[p, a, b, b, d], &good), group.clone()),
+        ("objects out of order", on_path_record(ALIGN_ON_PATH, &[p, b, a, c, d], &good), group.clone()),
+        ("a spacing", on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &options("%_56.5 /Real (Spacing) ,\n")), group.clone()),
+        ("an option this reader doesn't know", on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &options("%_1 /Bool (Flip) ,\n")), group.clone()),
+        (
+            "uneven spacing",
+            on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good.replace("1 /Bool (IsEquiSpaced)", "0 /Bool (IsEquiSpaced)")),
+            group.clone(),
+        ),
+        (
+            "a later start",
+            on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good.replace("0 /Real (StartRangeFraction)", "0.25 /Real (StartRangeFraction)")),
+            group.clone(),
+        ),
+        ("a pivot past 8", on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &on_path_options(4, 9, 0.0, "")), group.clone()),
+        ("another constraint", on_path_record("Some Other Constraint", &ON_PATH_IDS, &good), group.clone()),
+        (
+            "another version",
+            on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good).replace("%_1 /Int (Constraint Verison)", "%_2 /Int (Constraint Verison)"),
+            group.clone(),
+        ),
+        ("an object without its angle", on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good), group.replace("%_(0) /String (BBAccumRotation) ,\n", "")),
+        (
+            "another child in the group",
+            on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good),
+            group.replace("U\n", &format!("{}f\nU\n", rect_path(0.0, 0.0, 5.0, 5.0))),
+        ),
+        ("a path without its key", on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &good), group.replace("%_1 /Bool (KeyPath) ,\n", "")),
+    ];
+    for (why, record, group) in cases {
+        let (g, rec) = on_path(&format!("{record}{}", layer(&group)));
+        assert!(rec.is_none(), "{why}");
+        assert!(matches!(g.kind, NodeKind::Group { clip: false, .. }), "{why}");
+        assert!(g.children().unwrap().len() >= 5, "{why}: the art is kept");
+    }
+}
+
+/// The copy of the drawn group that follows it as versioned content is skipped: the group opens once,
+/// live.
+#[test]
+fn an_objects_on_path_group_in_versioned_content_opens_once() {
+    use vectorcraft_testkit::ai::{on_path_options, on_path_record};
+    let record = on_path_record(ALIGN_ON_PATH, &ON_PATH_IDS, &on_path_options(4, 4, 0.0, ""));
+    let group = on_path_group(OPEN_PATH, &ON_PATH_IDS, 0.0);
+    let copy = group.replace("/ConstraintGroup :\n128 /GroupType ,\n;\n", "");
+    let versioned = format!("%AI17_Begin_Content_if_version_gt:24 14\n{group}%AI17_Alternate_Content\n{copy}%AI17_End_Versioned_Content\n");
+    let doc = read_ok(&format!("{record}{}", layer(&versioned))).doc;
+    let kids = art(&doc);
+    assert_eq!(kids.len(), 1);
+    assert_eq!(kids[0].children().unwrap().len(), 5);
+    assert!(kids[0].extras().objects_on_path.is_some());
+}

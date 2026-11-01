@@ -18,6 +18,8 @@
 //!   app wrote) the bounding box.
 //! - Variables: the variable library, XML nodes of the `/Document` dictionary, isn't read; a note
 //!   gives how many variables and data sets it has ([`VariableLibrary`]).
+//! - Objects on Path: a group whose objects' dictionaries carry ids, and a record of the
+//!   `/Document` dictionary naming them, read by [`on_path`].
 //! - Images: `%AI5_BeginRaster`, the colour space `XN`, `[matrix] bounds w h bits type alpha …`
 //!   and the samples after `XI`. 8-bit CMYK samples keep their ink amounts in a CMYK TIFF, and
 //!   an alpha channel that hides part of such an image becomes its opacity mask; other samples
@@ -73,6 +75,7 @@ mod art;
 mod containers;
 mod directives;
 mod document;
+mod on_path;
 mod ops;
 mod types;
 
@@ -148,6 +151,8 @@ struct Reader<'a> {
     artboards: Vec<(String, Rect)>,
     /// The variables and data sets of the `/Document` dictionary's variable library.
     variables: VariableLibrary,
+    /// The Objects on Path records of the `/Document` dictionary and the ids of the objects.
+    on_path: on_path::OnPath,
     gradients: HashMap<String, Gradient>,
     gradient_def: Option<GradientDef>,
     instance: Option<Instance>,
@@ -280,6 +285,7 @@ impl<'a> Reader<'a> {
             cropmarks: None,
             artboards: Vec::new(),
             variables: VariableLibrary::default(),
+            on_path: on_path::OnPath::default(),
             gradients: HashMap::new(),
             gradient_def: None,
             instance: None,
