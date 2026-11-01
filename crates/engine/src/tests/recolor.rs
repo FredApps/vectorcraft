@@ -624,6 +624,40 @@ fn model_param_must_be_a_string_when_given() {
     assert_eq!(fill(&s, art).to_hex(), "#1a1a1a", "nothing changed");
 }
 
+/// A row's own `model` takes the place of the command's for that row's colors; a bad one fails
+/// before editing; `recolor.randomize` moves it with its new color.
+#[test]
+fn a_rows_model_applies_to_its_own_colors() {
+    let mut s = session();
+    let (a, b) = (rect(&mut s, json!("#ff00ff")), rect(&mut s, json!("#00ffff")));
+    select_all(&mut s);
+    let row = |from: &str, to: Value| json!({"from": [from], "to": to});
+    let mut first = row("#ff00ff", json!({"c": 0, "m": 1, "y": 0, "k": 0}));
+    first["model"] = json!("new");
+    let map = json!([first, row("#00ffff", json!({"c": 1, "m": 0, "y": 0, "k": 0}))]);
+    run(&mut s, "recolor.apply", json!({"map": map}));
+    assert_eq!(fill(&s, a), Color::cmyk(0.0, 1.0, 0.0, 0.0), "the row with `new` takes the CMYK color");
+    assert_eq!(fill(&s, b).model(), vectorcraft_color::cms::Model::Rgb, "the other row keeps RGB");
+    run(&mut s, "edit.undo", json!({}));
+    let mut keep = map.clone();
+    keep[0]["model"] = json!("keep");
+    run(&mut s, "recolor.apply", json!({"map": keep, "model": "new"}));
+    assert_eq!(fill(&s, a).model(), vectorcraft_color::cms::Model::Rgb, "the row's `keep` wins over the command's `new`");
+    assert_eq!(fill(&s, b), Color::cmyk(1.0, 0.0, 0.0, 0.0));
+    run(&mut s, "edit.undo", json!({}));
+    for bad in [json!("nope"), json!(42)] {
+        let mut m = map.clone();
+        m[0]["model"] = bad.clone();
+        assert!(s.execute("recolor.apply", &json!({"map": m})).is_err(), "{bad}");
+    }
+    assert_eq!(fill(&s, a).to_hex(), "#ff00ff", "nothing changed");
+    let r = run(&mut s, "recolor.randomize", json!({"map": map, "seed": 1}));
+    let out = r["map"].as_array().unwrap();
+    let moved = out.iter().find(|r| r.get("model").is_some()).expect("the model stays on a row");
+    assert_eq!((&moved["to"], &moved["model"]), (&json!("cmyk 0 100 0 0"), &json!("new")), "{r}");
+    assert_eq!(out.iter().filter(|r| r.get("model").is_some()).count(), 1, "{r}");
+}
+
 /// Recolor Artwork's commands refuse a parameter of the wrong form, such as `limitTo: 5` or
 /// `includeImages: "false"`, with an error that names it; the art keeps its color and no undo
 /// step is recorded. A null counts as a value left out.

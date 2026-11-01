@@ -73,8 +73,6 @@ const SLIDER_MODES: [Mode; 4] = [Mode::Hsb, Mode::Rgb, Mode::Cmyk, Mode::Lab];
 /// Widths of a color slider and of its number field.
 const SLIDER_W: f32 = 170.0;
 const SLIDER_FIELD_W: f32 = 48.0;
-/// Set once the sliders have edited a new color in a mode: OK then sends `model: "new"`.
-const SLID: &str = "__slid";
 /// The slider values last shown: `{row, key, mode, v}` (HSB keeps its hue at no saturation).
 const COMPS: &str = "__comps";
 
@@ -180,7 +178,6 @@ fn sync(app: &mut VectorcraftApp, d: &mut Dialog) {
             d.fields.insert("rows".into(), Value::Array(rows));
             d.fields.insert("__sel".into(), json!([]));
             // The new rows hold no slider edit.
-            d.fields.remove(SLID);
             d.fields.remove(COMPS);
         }
         Err(e) => app.status(e.to_string()),
@@ -210,11 +207,13 @@ fn to_color(row: &Value) -> Option<Color> {
     color_value(&row["to"])
 }
 
-/// Give `row` the new color `c`, without a tint of the spot color it had.
+/// Give `row` the new color `c`, without a tint of the spot color it had or the model a slider
+/// edit gave it.
 fn set_to(row: &mut Value, c: &Color) {
     row["to"] = key(c);
     if let Some(r) = row.as_object_mut() {
         r.remove("tint");
+        r.remove("model");
     }
 }
 
@@ -222,16 +221,19 @@ fn set_to(row: &mut Value, c: &Color) {
 const SHUFFLED: &str = "__shuffled";
 
 /// Give each row of `rows` whose current colors and new color are those of the same row of
-/// `before` that row's tint again, when it has none: a change that snaps back to the same new
-/// color keeps the tint of it.
+/// `before` that row's tint and model again, when it has none: a change that snaps back to the
+/// same new color keeps the tint of it and the model a slider edit gave it.
 fn keep_tints(before: &[Value], rows: &mut [Value]) {
     for (r, b) in rows.iter_mut().zip(before) {
-        if r["from"] == b["from"]
-            && r["to"] == b["to"]
-            && r.get("tint").is_none()
-            && let Some(t) = b.get("tint")
-        {
-            r["tint"] = t.clone();
+        if r["from"] != b["from"] || r["to"] != b["to"] {
+            continue;
+        }
+        for k in ["tint", "model"] {
+            if r.get(k).is_none()
+                && let Some(v) = b.get(k)
+            {
+                r[k] = v.clone();
+            }
         }
     }
 }
@@ -256,11 +258,8 @@ fn apply_params(d: &Dialog) -> Value {
         let rename = (!name.trim().is_empty() && name != g).then_some(name);
         json!({"group": g, "groupColors": colors, "rename": rename})
     });
+    // A row edited with the sliders carries `model: "new"`: its art takes the mode they showed.
     let mut p = json!({"map": rs, "method": d.str("method"), "limitTo": d.str("limitTo")});
-    // The art takes a color edited with the sliders in the mode they showed.
-    if d.bool(SLID) {
-        p["model"] = json!("new");
-    }
     if let (Some(Value::Object(g)), Some(p)) = (group, p.as_object_mut()) {
         p.extend(g.into_iter().filter(|(_, v)| !v.is_null()));
     }
@@ -522,8 +521,12 @@ fn assign_tab(app: &mut VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut 
         }
         if widgets::icon_button(ui, "rotate-ccw", tl!("Reset the rows to the artwork's colors"), false, 24.0).clicked() {
             d.fields.remove("__reduced");
-            d.fields.remove(SLID);
             d.fields.remove(COMPS);
+            // The rows keep no slider edit, also when they cannot be reduced again.
+            let saved = d.fields.get_mut("rows").and_then(Value::as_array_mut).into_iter().flatten();
+            for r in rows.iter_mut().chain(saved).filter_map(Value::as_object_mut) {
+                r.remove("model");
+            }
         }
         let target = SliderTarget::of(app, d, rows);
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| mode_menu(ui, d, &target));
@@ -780,7 +783,7 @@ fn sliders(app: &VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut [Value]
                 d.fields.insert("sliderMode".into(), json!(mode_id(mode)));
                 set_to(&mut rows[i], &from_components(mode, &c2));
                 d.fields.insert(COMPS.into(), json!({"row": i, "key": rows[i]["to"], "mode": mode_id(mode), "v": c2}));
-                d.fields.insert(SLID.into(), json!(true));
+                rows[i]["model"] = json!("new");
                 changed = true;
             }
         });

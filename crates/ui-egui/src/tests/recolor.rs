@@ -497,7 +497,7 @@ fn reset_after_a_slider_edit_keeps_the_arts_model() {
     set(h.state_mut(), "__sel", json!([0]));
     h.run_steps(2);
     click_slider(&mut h, "C", 0.5);
-    assert_eq!(field(h.state(), "__slid"), json!(true), "the sliders edited the row");
+    assert_eq!(field(h.state(), "rows")[0]["model"], json!("new"), "the sliders edited the row");
     h.get_by_role_and_label(egui::accesskit::Role::Button, "Reset the rows to the artwork's colors").click();
     h.run_steps(3);
     assert_eq!(field(h.state(), "rows")[0]["from"], json!(["rgb 255 0 255"]), "Reset reads the art's colors, not the preview's");
@@ -518,15 +518,45 @@ fn a_new_color_count_after_a_slider_edit_keeps_the_arts_model() {
     set(h.state_mut(), "__sel", json!([0]));
     h.run_steps(2);
     click_slider(&mut h, "C", 0.5);
-    assert_eq!(field(h.state(), "__slid"), json!(true), "the sliders edited the row");
+    assert_eq!(field(h.state(), "rows")[0]["model"], json!("new"), "the sliders edited the row");
     set(h.state_mut(), "colors", json!(1));
     h.run_steps(3);
     assert_eq!(field(h.state(), "rows").as_array().map(Vec::len), Some(1), "the rows are rebuilt");
-    assert_eq!(field(h.state(), "__slid"), Value::Null, "the slider edit is discarded");
+    assert_eq!(field(h.state(), "rows")[0].get("model"), None, "the slider edit is discarded");
     h.get_by_label("OK").click();
     h.run_steps(2);
     assert!(h.state().ui.dialog.is_none());
     assert!(matches!(first_fill(h.state()).color(), Some(Color::Rgb { .. })), "the art stays RGB: {:?}", first_fill(h.state()));
+}
+
+/// The fill of the `n`th object of the document.
+fn fill_of(app: &VectorcraftApp, n: usize) -> vectorcraft_color::Paint {
+    let d = &app.session.doc().unwrap().doc;
+    let id = d.layers[0].children().unwrap()[n].id;
+    d.node(id).unwrap().appearance.fill_paint()
+}
+
+/// A slider edit of one row gives only that row's art the slider's mode: with RGB art and a CMYK
+/// color group, OK makes the edited row's art CMYK and leaves the other row's art RGB.
+#[test]
+fn a_slider_edit_changes_the_model_of_its_own_row_only() {
+    let mut app = app();
+    app.run("swatch.newGroup", json!({"name": "Mix", "colors": ["cmyk 0 100 0 0", "cmyk 100 0 0 0"], "keepModel": true})).unwrap();
+    art(&mut app, &["#ff00ff", "#00ffff"]);
+    let mut h = assign_harness(app, json!({"group": "Mix"}));
+    let rows = field(h.state(), "rows");
+    let magenta = (0..2).find(|i| rows[*i]["from"] == json!(["rgb 255 0 255"])).expect("a row of the magenta art");
+    set(h.state_mut(), "__sel", json!([magenta]));
+    h.run_steps(2);
+    click_slider(&mut h, "C", 0.5);
+    let rows = field(h.state(), "rows");
+    assert_eq!(rows[magenta]["model"], json!("new"), "the edited row: {rows}");
+    assert_eq!(rows[1 - magenta].get("model"), None, "the other row: {rows}");
+    h.get_by_label("OK").click();
+    h.run_steps(2);
+    assert!(h.state().ui.dialog.is_none());
+    assert!(matches!(fill_of(h.state(), 0).color(), Some(Color::Cmyk { .. })), "the edited row's art is CMYK: {:?}", fill_of(h.state(), 0));
+    assert!(matches!(fill_of(h.state(), 1).color(), Some(Color::Rgb { .. })), "the other row's art stays RGB: {:?}", fill_of(h.state(), 1));
 }
 
 /// The dialog keeps its height when the tab or the sliders' color mode changes.

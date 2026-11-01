@@ -263,6 +263,41 @@ struct Row {
     /// The tint (0..1) of a global or spot swatch the new color is (with `limitTo`): art linked to
     /// the swatch takes this share of the tint the method gives it.
     tint: f32,
+    /// The row's own `model`, which takes the place of the command's for its colors.
+    model: Option<ModelRule>,
+}
+
+/// The color model a row's colors take (`model`): each color's own, the new color's, or the
+/// document's.
+#[derive(Clone, Copy, PartialEq)]
+enum ModelRule {
+    Keep,
+    New,
+    Document,
+}
+
+impl ModelRule {
+    /// The `model` of `v` (a row or the command's parameters); a given `model` must be a string.
+    fn param(v: &Value, cmd: &str) -> Result<Option<Self>> {
+        match v.get("model") {
+            None => Ok(None),
+            Some(Value::String(m)) => match m.as_str() {
+                "keep" => Ok(Some(Self::Keep)),
+                "new" => Ok(Some(Self::New)),
+                "document" => Ok(Some(Self::Document)),
+                other => Err(bad(cmd, format!("unknown model `{other}` (keep, new or document)"))),
+            },
+            Some(other) => Err(bad(cmd, format!("bad model {other} (keep, new or document)"))),
+        }
+    }
+
+    fn id(self) -> &'static str {
+        match self {
+            Self::Keep => "keep",
+            Self::New => "new",
+            Self::Document => "document",
+        }
+    }
 }
 
 impl Row {
@@ -284,7 +319,7 @@ fn parse_rows(p: &Value, cmd: &str) -> Result<Vec<Row>> {
     let cur = |v: &Value| Match::of(v).ok_or_else(|| bad(cmd, format!("bad current colour {v}")));
     match p.get("map") {
         Some(Value::Object(m)) => {
-            m.iter().map(|(k, v)| Ok(Row { from: vec![cur(&json!(k))?], to: new(Some(v))?, exclude: false, tint: 1.0 })).collect()
+            m.iter().map(|(k, v)| Ok(Row { from: vec![cur(&json!(k))?], to: new(Some(v))?, exclude: false, tint: 1.0, model: None })).collect()
         }
         Some(Value::Array(rows)) => rows
             .iter()
@@ -295,7 +330,8 @@ fn parse_rows(p: &Value, cmd: &str) -> Result<Vec<Row>> {
                     None => return Err(bad(cmd, "each row needs `from`")),
                 };
                 let tint = (super::number_or(r, "tint", 100.0, cmd)? / 100.0).clamp(0.0, 1.0) as f32;
-                Ok(Row { from, to: new(r.get("to"))?, exclude: switch_or(r, "exclude", false, cmd)?, tint })
+                let model = ModelRule::param(r, cmd)?;
+                Ok(Row { from, to: new(r.get("to"))?, exclude: switch_or(r, "exclude", false, cmd)?, tint, model })
             })
             .collect(),
         _ => Err(bad(cmd, "missing `map` (rows [{from, to}] or {current: new})")),
@@ -338,8 +374,9 @@ struct ColorMap {
 
 impl ColorMap {
     /// `links`: the swatch of each of `rows`' new colours (as many as `rows`, or none); `group`: the
-    /// global swatches of the color group being rewritten.
-    fn new(rows: &[Row], method: Method, own_model: bool, links: &[Option<Link>], group: Vec<GroupSwatch>) -> Self {
+    /// global swatches of the color group being rewritten; `model`: the model rule of a row without
+    /// its own.
+    fn new(rows: &[Row], method: Method, model: ModelRule, links: &[Option<Link>], group: Vec<GroupSwatch>) -> Self {
         let mut out =
             Self { rows: vec![], links: vec![], tos: vec![], group, keys: HashMap::new(), hexes: HashMap::new(), converted: Default::default() };
         for (n, r) in rows.iter().enumerate().filter(|(_, r)| !r.from.is_empty()) {
@@ -349,7 +386,7 @@ impl ColorMap {
             let link = links.get(n).cloned().flatten();
             // Colors that can't link to the swatch take the row's tint of it too.
             let mapped = link.as_ref().filter(|l| l.global && l.tint < 1.0).map_or(to, |l| to.tinted(l.tint));
-            out.rows.push(RowMap::new(method, &colors, mapped).with_own_model(own_model));
+            out.rows.push(RowMap::new(method, &colors, mapped).with_own_model(r.model.unwrap_or(model) != ModelRule::Keep));
             out.tos.push(to);
             out.links.push(link);
             for m in &r.from {
@@ -453,26 +490,14 @@ fn apply(s: &mut Session, p: &Value) -> Result<Value> {
     let scope = Scope { fill: true, stroke: true, ..Scope::of(p) };
     let label = if ids.is_empty() { "Edit Color Group" } else { "Recolor Artwork" };
     // `model`: keep each colour's model (default), take the new colour's own, or the document's.
-    // A given `model` must be a string; only a missing one means "keep".
-    let model = match p.get("model") {
-        None => "keep",
-        Some(Value::String(m)) => m.as_str(),
-        Some(other) => return Err(bad(C, format!("bad model {other} (keep, new or document)"))),
-    };
-    let mut doc_model = None;
-    let own_model = match model {
-        "keep" => false,
-        "new" => true,
-        "document" => {
-            let m = s.doc()?.doc.color_mode.model();
-            doc_model = Some(m);
-            for r in &mut rows {
-                r.to = r.to.map(|c| c.in_model(m));
-            }
-            true
-        }
-        other => return Err(bad(C, format!("unknown model `{other}` (keep, new or document)"))),
-    };
+    // A given `model` must be a string; only a missing one means "keep". A row's own `model`
+    // takes its place for that row.
+    let model = ModelRule::param(p, C)?.unwrap_or(ModelRule::Keep);
+    let mode_model = s.doc()?.doc.color_mode.model();
+    for r in rows.iter_mut().filter(|r| r.model.unwrap_or(model) == ModelRule::Document) {
+        r.to = r.to.map(|c| c.in_model(mode_model));
+    }
+    let doc_model = (model == ModelRule::Document).then_some(mode_model);
     // The colours a colour group takes follow the model too (`document` converts them).
     let in_doc_model = |c: Color| doc_model.map_or(c, |m| c.in_model(m));
     let group_colors = match p.get("groupColors") {
@@ -528,7 +553,7 @@ fn apply(s: &mut Session, p: &Value) -> Result<Value> {
                     .collect()
             })
             .unwrap_or_default();
-        let map = ColorMap::new(&rows, method, own_model, &links, kept);
+        let map = ColorMap::new(&rows, method, model, &links, kept);
         let f = |c: Color| map.map(c);
         let lf = |c: &mut Color, link: &mut Option<String>, tint: &mut f32| map.map_link(c, link, tint);
         let changed = Recolor::with_links(scope, &f, &lf).run(d, &ids);
@@ -555,17 +580,18 @@ fn randomize(_: &mut Session, p: &Value) -> Result<Value> {
     let rows = parse_rows(p, C)?;
     let mut rng = Rng::new(super::menucmds::whole_or(p, "seed", 0, C)?);
     let (order, saturation_brightness) = (switch_or(p, "order", true, C)?, switch_or(p, "saturationBrightness", false, C)?);
-    // Each new colour with its row's tint: a tint moves with its colour, and goes when the colour changes.
-    let mut news: Vec<(Color, f32)> = rows.iter().filter_map(|r| r.new_color().map(|c| (c, r.tint))).collect();
+    // Each new colour with its row's tint and model: a tint moves with its colour, and goes when
+    // the colour changes; a model moves with its colour.
+    let mut news: Vec<(Color, f32, Option<ModelRule>)> = rows.iter().filter_map(|r| r.new_color().map(|c| (c, r.tint, r.model))).collect();
     if order {
         rng.shuffle(&mut news);
     }
     if saturation_brightness {
         news = news
             .into_iter()
-            .map(|(c, tint)| {
+            .map(|(c, tint, model)| {
                 let n = rng.saturation_brightness(c);
-                (n, if ColorKey::of(&n) == ColorKey::of(&c) { tint } else { 1.0 })
+                (n, if ColorKey::of(&n) == ColorKey::of(&c) { tint } else { 1.0 }, model)
             })
             .collect();
     }
@@ -573,13 +599,17 @@ fn randomize(_: &mut Session, p: &Value) -> Result<Value> {
     let map: Vec<Value> = rows
         .iter()
         .map(|r| {
-            let (to, tint) = if r.new_color().is_some() { news.next().map_or((None, 1.0), |(c, t)| (Some(c), t)) } else { (r.to, r.tint) };
+            let (to, tint, model) =
+                if r.new_color().is_some() { news.next().map_or((None, 1.0, None), |(c, t, m)| (Some(c), t, m)) } else { (r.to, r.tint, r.model) };
             let mut row = json!({"from": r.from.iter().map(Match::to_json).collect::<Vec<_>>(), "to": to.as_ref().map(key_str)});
             if r.exclude {
                 row["exclude"] = json!(true);
             }
             if tint < 1.0 {
                 row["tint"] = json!(f64::from((tint * 10_000.0).round()) / 100.0);
+            }
+            if let Some(m) = model {
+                row["model"] = json!(m.id());
             }
             row
         })

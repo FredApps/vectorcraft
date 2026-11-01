@@ -1919,9 +1919,10 @@ tints of a global swatch share its row; White and Black are preserved by default
 `[{from: [keys], to: key}]` to edit and pass to `recolor.apply {map, method?, model?, limitTo?, group?, groupColors?, rename?}`.
 For scripts and MCP, `model` selects the replacement color model: `keep` (default) retains each
 original color's model, `new` takes the replacement's model, and `document` converts replacements
-and edited color groups to the document's model. Invalid values fail before editing. The Recolor
-Artwork dialog sends `new` once its color sliders have edited a row's new color in a color mode. A
-returned `note` reports a model conversion in `keep` mode.
+and edited color groups to the document's model. A row's own `model` (the same values) takes the
+place of the command's for that row's colors. Invalid values fail before editing. The Recolor
+Artwork dialog gives a row `model: "new"` when its color sliders edit the row's new color in a color
+mode. A returned `note` reports a model conversion in `keep` mode.
 
 `method` says how a row's colours take its new colour: `exact`, `preserveTints` (tints of the row's darkest colour
 stay tints), `scaleTints` (every colour becomes a tint as light, relative to the darkest), `tintsShades` (lighter and
@@ -1930,7 +1931,7 @@ the others turn by the same hue). `limitTo` snaps new colours to a swatch librar
 `recolor.randomize {map, order?, saturationBrightness?, seed?}` shuffles or varies new colours; a row with
 `exclude: true` keeps its colours. With `limitTo`, a row's `tint` (a percentage, default 100) gives the art
 linked to the global or spot swatch its new color is that share of its tint; `tint` must be a number. `recolor.randomize`
-moves a row's `tint` with its new color and removes it from a color it changes. `swatch.editGroup {group, colors, rename?}` rewrites a colour group in one undo
+moves a row's `tint` with its new color and removes it from a color it changes, and moves a row's `model` with its new color. `swatch.editGroup {group, colors, rename?}` rewrites a colour group in one undo
 step (art linked to its global swatches follows), and `recolor.apply` with `group` recolours the art and rewrites the
 group together. Art linked to one of the group's global swatches stays linked when the swatch is rewritten with its
 row's new color (the default without `groupColors` when the rows follow the group's order), so a later `swatch.edit` still
