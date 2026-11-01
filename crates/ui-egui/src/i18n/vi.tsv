@@ -1486,6 +1486,9 @@ file-filter	Templates	Mẫu
 	Hide Live Paint Gaps	Ẩn khoảng cách tô trực tiếp
 	Select Fills	Chọn vùng tô
 	Select Strokes	Chọn nét
+	Paint Fills	Tô vùng tô
+	Paint Strokes	Tô nét
+	Highlight	Làm nổi bật
 	Gaussian Blur	Mờ Gaussian
 	Gaussian Blur…	Làm mờ Gaussian…
 	General	Chung

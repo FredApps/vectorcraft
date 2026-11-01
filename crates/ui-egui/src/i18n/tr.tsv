@@ -5364,6 +5364,9 @@ theme	Appearance	Görünüm
 	Overlap	Örtüşme
 	Select Fills	Dolguları Seç
 	Select Strokes	Konturları Seç
+	Paint Fills	Dolguları Boya
+	Paint Strokes	Konturları Boya
+	Highlight	Vurgulama
 	Snap to Unit	Birim Değerine Yasla
 	The plug-in writes the whole document.	Eklenti tüm belgeyi yazar.
 	Attach	İliştir
