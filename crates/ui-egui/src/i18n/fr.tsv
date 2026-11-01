@@ -6048,6 +6048,9 @@ breakText	Glyphs	Glyphes
 	Gap 4	Écart 4
 	Dash 5	Tiret 5
 	Gap 5	Écart 5
+
+@msg	{_1}: they came in as the page's art	{_1} : ils ont été importés comme le dessin de la page
+
 @msg	You must choose a side pattern.	Vous devez choisir un motif latéral.
 @msg	invalid pattern tile choice	choix de tuile de motif non valide
 @msg	no pattern named `{choice}`	aucun motif nommé `{choice}`

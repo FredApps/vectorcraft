@@ -5906,6 +5906,9 @@ breakText	Glyphs	Glify
 	Gap 4	Odstęp 4
 	Dash 5	Kreska 5
 	Gap 5	Odstęp 5
+
+@msg	{_1}: they came in as the page's art	{_1}: zaimportowano je jako grafikę strony
+
 @msg	You must choose a side pattern.	Musisz wybrać wzór boczny.
 @msg	invalid pattern tile choice	nieprawidłowy wybór kafelka wzoru
 @msg	no pattern named `{choice}`	nie ma wzoru o nazwie `{choice}`

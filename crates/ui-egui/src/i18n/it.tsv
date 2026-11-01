@@ -5670,6 +5670,9 @@ breakText	Glyphs	Glifi
 	Gap 4	Spazio 4
 	Dash 5	Tratto 5
 	Gap 5	Spazio 5
+
+@msg	{_1}: they came in as the page's art	{_1}: sono stati importati come elementi grafici della pagina
+
 @msg	You must choose a side pattern.	Devi scegliere un motivo laterale.
 @msg	invalid pattern tile choice	scelta della tessera motivo non valida
 @msg	no pattern named `{choice}`	nessun motivo chiamato `{choice}`

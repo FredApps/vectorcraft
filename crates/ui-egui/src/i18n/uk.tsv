@@ -5650,6 +5650,9 @@ breakText	Glyphs	Гліфи
 	Gap 4	Проміжок 4
 	Dash 5	Штрих 5
 	Gap 5	Проміжок 5
+
+@msg	{_1}: they came in as the page's art	{_1}: їх імпортовано як графіку сторінки
+
 @msg	You must choose a side pattern.	Виберіть бічний візерунок.
 @msg	invalid pattern tile choice	недійсний вибір плитки візерунка
 @msg	no pattern named `{choice}`	візерунка з назвою `{choice}` немає

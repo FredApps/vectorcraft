@@ -5690,6 +5690,9 @@ breakText	Glyphs	字符
 	Gap 4	間隙 4
 	Dash 5	虛線 5
 	Gap 5	間隙 5
+
+@msg	{_1}: they came in as the page's art	{_1}：已作為頁面圖稿匯入
+
 @msg	You must choose a side pattern.	必須選擇側邊圖樣。
 @msg	invalid pattern tile choice	圖樣拼塊選項無效
 @msg	no pattern named `{choice}`	沒有名為 `{choice}` 的圖樣

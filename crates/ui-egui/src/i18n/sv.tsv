@@ -6103,6 +6103,9 @@ breakText	Glyphs	Glyfer
 	Gap 4	Mellanrum 4
 	Dash 5	Streck 5
 	Gap 5	Mellanrum 5
+
+@msg	{_1}: they came in as the page's art	{_1}: de importerades som sidans bild
+
 @msg	You must choose a side pattern.	Du måste välja ett sidomönster.
 @msg	invalid pattern tile choice	ogiltigt val av mönsterplatta
 @msg	no pattern named `{choice}`	inget mönster med namnet `{choice}`

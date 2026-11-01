@@ -6028,6 +6028,9 @@ breakText	Glyphs	Глифы
 	Gap 4	Зазор 4
 	Dash 5	Штрих 5
 	Gap 5	Зазор 5
+
+@msg	{_1}: they came in as the page's art	{_1}: импортированы как графика страницы
+
 @msg	You must choose a side pattern.	Выберите боковой узор.
 @msg	invalid pattern tile choice	недопустимый выбор плитки узора
 @msg	no pattern named `{choice}`	узор с именем `{choice}` не найден

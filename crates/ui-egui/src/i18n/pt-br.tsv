@@ -5970,6 +5970,9 @@ breakText	Glyphs	Glifos
 	Gap 4	Lacuna 4
 	Dash 5	Traço 5
 	Gap 5	Lacuna 5
+
+@msg	{_1}: they came in as the page's art	{_1}: foram importados como arte da página
+
 @msg	You must choose a side pattern.	Você deve escolher um padrão lateral.
 @msg	invalid pattern tile choice	escolha inválida de ladrilho de padrão
 @msg	no pattern named `{choice}`	não há padrão chamado `{choice}`

@@ -6037,6 +6037,9 @@ breakText	Glyphs	Glifák
 	Gap 4	Hézag 4
 	Dash 5	Vonal 5
 	Gap 5	Hézag 5
+
+@msg	{_1}: they came in as the page's art	{_1}: az oldal rajzaként lettek importálva
+
 @msg	You must choose a side pattern.	Válasszon oldalsó mintát.
 @msg	invalid pattern tile choice	érvénytelen mintacsempe-választás
 @msg	no pattern named `{choice}`	nincs `{choice}` nevű minta

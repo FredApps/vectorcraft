@@ -6040,6 +6040,9 @@ breakText	Glyphs	გლიფები
 	Gap 4	შუალედი 4
 	Dash 5	ტირე 5
 	Gap 5	შუალედი 5
+
+@msg	{_1}: they came in as the page's art	{_1}: იმპორტირებულია გვერდის გამოსახულების სახით
+
 @msg	You must choose a side pattern.	აირჩიეთ გვერდითი ნიმუში.
 @msg	invalid pattern tile choice	ნიმუშის ფილა არასწორად არის არჩეული
 @msg	no pattern named `{choice}`	ნიმუში სახელით `{choice}` არ არსებობს

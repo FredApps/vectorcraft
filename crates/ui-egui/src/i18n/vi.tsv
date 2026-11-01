@@ -5653,6 +5653,9 @@ breakText	Glyphs	Glyph
 	Gap 4	Khoảng hở 4
 	Dash 5	Nét 5
 	Gap 5	Khoảng hở 5
+
+@msg	{_1}: they came in as the page's art	{_1}: đã được nhập dưới dạng hình vẽ của trang
+
 @msg	You must choose a side pattern.	Bạn phải chọn mẫu bên.
 @msg	invalid pattern tile choice	lựa chọn ô mẫu không hợp lệ
 @msg	no pattern named `{choice}`	không có mẫu tên `{choice}`
