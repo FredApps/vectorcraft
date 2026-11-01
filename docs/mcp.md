@@ -6071,6 +6071,17 @@ Commands:
   last piece of each run is what is left. The pieces are selected; more than 100,000 is refused. → `{ids, dashes}`.
   Divide into Dashes… opens a dialog (`ui.menuDialog {command}`, kind `divideDashes`) whose fields are these
   parameters, with Preview.
+- `addon.pathtools.expandDashes {ids?}` turns the dashed stroke of each path and compound path under `ids` (default:
+  the selection) into separate open paths, one per dash, as one undo step (Object › Plug-ins › Path Precision Tools ›
+  Expand Dashes into Paths). The dashes are laid out exactly as the stroke draws them: its dash pattern (an odd one
+  repeats with dashes and gaps swapped), its dash offset and Align Dashes to Corners and Path Ends, restarting on each
+  subpath and running on through the start of a closed one; a dash running all the way round a closed path stays
+  closed. Each dash keeps the path's appearance with the top stroke's dashes off, so the gaps become real gaps; with a
+  round or projecting cap a dash of no length (a dot) becomes a path on its point, which draws the cap (under a butt
+  cap it paints nothing, so it makes nothing). The stroke's arrowheads go, the line is first trimmed under them as
+  drawn, and the path's fills stay on it, below its dashes (a path without fills goes). A compound path's dashes are
+  plain paths with its appearance. Paths without a dashed stroke stay as they are, and it is an error if none has one.
+  The dashes are selected; more than 100,000 (or a pattern too fine to draw) is refused. → `{ids, dashes}`.
 - `addon.pathtools.cornerSet {ids?, anchors?, items?, radius, kind?}` cuts live corners, the ones Direct Selection's
   corner widgets and the Corners dialog edit, as one undo step. `ids` (default: the selection) are the paths and
   `anchors` the anchor indices of each path's outline with no corners cut; without `anchors`, a path's direct-selected
