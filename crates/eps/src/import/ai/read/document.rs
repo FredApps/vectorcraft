@@ -224,6 +224,7 @@ impl<'a> Reader<'a> {
     /// An object's dictionary: its name (`AIArtName`, or the XML id `AI10_ArtUID`), and the
     /// opacity mask it may carry.
     pub(super) fn art_dictionary(&mut self, o: &Obj) {
+        self.constraint_art(o);
         // A blend's key object or spine.
         if let Some(kind) = o.text("ShapeBlendPathType")
             && let Some(id) = self.last_object().map(|n| n.id)
@@ -278,10 +279,11 @@ impl<'a> Reader<'a> {
         }
     }
 
-    /// The `/Document` dictionary: the artboards, and how many variables and data sets its variable
-    /// library has.
+    /// The `/Document` dictionary: the artboards, how many variables and data sets its variable
+    /// library has, and its Objects on Path records.
     pub(super) fn document(&mut self, o: &Obj) {
         variable_library(o, 0, &mut self.variables);
+        self.constraint_data(o);
         let Some(list) = find_entry(o, "ArtboardArray", 0) else { return };
         for (i, ab) in list.items().enumerate().take(1000) {
             let (p1, p2) = (ab.nums("PositionPoint1"), ab.nums("PositionPoint2"));
@@ -392,6 +394,7 @@ impl<'a> Reader<'a> {
         let to_doc = self.ensure_space();
         let artboard = self.first_board();
         drop_commented_copies(&mut self.doc.layers, &self.hidden_ids);
+        super::on_path::apply(&mut self.doc, &self.on_path);
         let mut doc = std::mem::replace(&mut self.doc, Document::new(1.0, 1.0));
         let boards: Vec<(String, Rect)> = if self.artboards.is_empty() {
             artboard.or_else(|| self.bbox_board()).map(|r| vec![("Artboard 1".to_string(), r)]).unwrap_or_default()
@@ -549,7 +552,7 @@ fn take_ruler_guides(nodes: &mut [Arc<Node>], pick: &dyn Fn(NodeId) -> Option<Gu
     }
 }
 
-fn find_entry<'o>(o: &'o Obj, key: &str, depth: usize) -> Option<&'o Obj> {
+pub(super) fn find_entry<'o>(o: &'o Obj, key: &str, depth: usize) -> Option<&'o Obj> {
     if depth > 8 {
         return None;
     }
