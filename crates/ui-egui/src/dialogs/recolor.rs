@@ -419,6 +419,7 @@ fn assign_tab(app: &mut VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut 
     let mut sel = selection(d);
     let mut clicked: Option<usize> = None;
     let mut pick: Option<usize> = None;
+    let shown: Vec<Color> = rows.iter().map(|r| new_shown(app, d, r)).collect();
     widgets::list_box(ui, |ui| {
         egui::ScrollArea::vertical().id_salt("recolor-rows").max_height(TABLE_H).show(ui, |ui| {
             ui.set_width(ui.available_width());
@@ -451,7 +452,7 @@ fn assign_tab(app: &mut VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut 
                     let (nr, _) = ui.allocate_exact_size(vec2(46.0, 20.0), Sense::hover());
                     let nresp = ui.interact(nr, egui::Id::unique((NEW_CHIP, i)), Sense::click());
                     let to = to_color(row).unwrap_or_default();
-                    chip(ui, nr, to.tinted(row_tint(row)), off);
+                    chip(ui, nr, shown.get(i).copied().unwrap_or_default(), off);
                     if nresp.clicked() {
                         clicked = Some(i);
                     }
@@ -602,6 +603,25 @@ fn row_tint(row: &Value) -> f32 {
     row["tint"].as_f64().map_or(1.0, |t| (t / 100.0).clamp(0.0, 1.0) as f32)
 }
 
+/// Tint `t` (0..1) of spot color `c` as art linked to it shows it: a Lab spot color is the active
+/// document's working-CMYK equivalent while the Spot Colors options use CMYK values
+/// ([`vectorcraft_doc::Document::linked_color`]), and its inks scale.
+fn spot_tinted(app: &VectorcraftApp, c: Color, t: f32) -> Color {
+    app.session.active().map_or(c, |st| st.doc.linked_color(c, true)).tinted(t)
+}
+
+/// The color row `row`'s new color chip shows: what the art takes, at the row's tint (a spot color
+/// of the library as [`spot_tinted`] shows it).
+fn new_shown(app: &VectorcraftApp, d: &Dialog, row: &Value) -> Color {
+    let to = to_color(row).unwrap_or_default();
+    // Only a Lab spot color can show another color; the library lookup is skipped for the rest.
+    if matches!(to, Color::Lab { .. }) && d.bool("__art") && spot_of(app, d, &to).is_some() {
+        spot_tinted(app, to, row_tint(row))
+    } else {
+        to.tinted(row_tint(row))
+    }
+}
+
 /// The `sliderMode` id of `m` (`hsb`, `rgb`, `cmyk`, `lab`).
 fn mode_id(m: Mode) -> String {
     serde_json::to_value(m).ok().and_then(|v| v.as_str().map(str::to_string)).unwrap_or_default()
@@ -652,7 +672,8 @@ impl SliderTarget {
     fn of(app: &VectorcraftApp, d: &Dialog, rows: &[Value]) -> Self {
         let row = selection(d).into_iter().filter(|i| *i < rows.len()).min();
         let color = row.and_then(|i| to_color(&rows[i]));
-        let spot = color.and_then(|c| spot_of(app, d, &c));
+        // A row tint acts only on art, so without art a spot color shows the process modes.
+        let spot = color.filter(|_| d.bool("__art")).and_then(|c| spot_of(app, d, &c));
         Self { row, color, spot }
     }
 
@@ -733,7 +754,7 @@ fn sliders(app: &VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut [Value]
                 // Tint of the spot color, and its name.
                 let tint = f64::from(row_tint(&rows[i])) * 100.0;
                 let shown = widgets::SliderValue::field(tint, 0.0..=100.0, "%", 0);
-                if let Some(v) = slider_cell(ui, usize::MAX, "T", shown, "%", &|x| c32(&c.tinted(x))) {
+                if let Some(v) = slider_cell(ui, usize::MAX, "T", shown, "%", &|x| c32(&spot_tinted(app, c, x))) {
                     rows[i]["tint"] = json!(v);
                     changed = true;
                 }
@@ -1003,6 +1024,34 @@ mod tests {
         assert_eq!(super::rows(&same)[0]["tint"], json!(40.0));
         let other = with_new_color(&app, d, 0, Color::rgb(0.0, 1.0, 0.0));
         assert!(super::rows(&other)[0].get("tint").is_none(), "{:?}", super::rows(&other));
+    }
+
+    /// With the Spot Colors options on CMYK values, a row whose new color is a Lab spot color of the
+    /// library shows the art's color at its tint: the working-CMYK equivalent with its inks scaled.
+    #[test]
+    fn a_tinted_lab_spot_row_shows_the_cmyk_color_the_art_takes() {
+        let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+        app.run("file.new", json!({"width": 100, "height": 100})).unwrap();
+        let lab = json!({"l": 50, "a": 60, "b": -20});
+        app.run("swatch.new", json!({"name": "Lab Ink", "color": lab, "spot": true})).unwrap();
+        let data = app.run("swatch.library.save", json!({"names": ["Lab Ink"], "name": "Inks"})).unwrap()["data"].as_str().unwrap().to_string();
+        let lib = app.run("swatch.library.load", json!({"data": data, "name": "inks.vcswatches"})).unwrap()["library"].as_str().unwrap().to_string();
+        app.run("swatch.delete", json!({"names": ["Lab Ink"]})).unwrap();
+        app.run("swatch.spotOptions", json!({"useLab": false})).unwrap();
+        let id = app.run("shape.rectangle", json!({"x": 10, "y": 10, "width": 20, "height": 20})).unwrap()["id"].clone();
+        app.run("paint.setFill", json!({"ids": [id], "color": lab})).unwrap();
+        app.run("paint.setStroke", json!({"ids": [id], "none": true})).unwrap();
+        app.run("select.all", json!({})).unwrap();
+        app.run("ui.recolorDialog", json!({"library": lib})).unwrap();
+        let mut d = app.ui.dialog.clone().unwrap();
+        sync(&mut app, &mut d);
+        let mut rs = super::rows(&d);
+        rs[0]["tint"] = json!(50.0);
+        let c = to_color(&rs[0]).unwrap();
+        assert!(matches!(c, Color::Lab { .. }), "{c:?}");
+        let cmyk = app.session.doc().unwrap().doc.linked_color(c, true);
+        assert!(matches!(cmyk, Color::Cmyk { .. }), "{cmyk:?}");
+        assert_eq!(new_shown(&app, &d, &rs[0]), cmyk.tinted(0.5));
     }
 
     /// Runs one frame of the open dialog at `time` and returns row `i`'s new color chip, when the

@@ -458,6 +458,21 @@ fn a_process_swatch_before_a_spot_one_of_its_color_shows_no_tint() {
     assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "C").is_some(), "the CMYK sliders");
 }
 
+/// Opened on a color group without art, a row whose new color is a spot color of the library shows
+/// the process modes and no Tint: OK saves only the group's colors, so a tint would be lost.
+#[test]
+fn a_spot_row_of_a_group_without_art_shows_no_tint() {
+    let mut app = app();
+    let lib = library_of(&mut app, &[json!({"name": "Mix Ink", "color": {"c": 0, "m": 1, "y": 0, "k": 0}, "spot": true})]);
+    app.run("swatch.newGroup", json!({"name": "Mix", "colors": ["cmyk 0 100 0 0"], "keepModel": true})).unwrap();
+    let mut h = assign_harness(app, json!({"group": "Mix", "library": lib}));
+    assert_ne!(field(h.state(), "__art"), json!(true), "no art");
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "T").is_none(), "no Tint without art");
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "C").is_some(), "the CMYK sliders");
+}
+
 /// A spot color whose components are finer than a row's color key still shows Tint: the row's
 /// rounded color snaps back to it, as `recolor.apply` snaps it.
 #[test]
