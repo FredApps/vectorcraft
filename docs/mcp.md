@@ -1945,7 +1945,7 @@ error for an unknown library or method. Other wrong-form parameters get an error
 `includeImages`, `includePatterns`, a row's `exclude`, `order`, `saturationBrightness` and the `white`, `black` and
 `grays` switches of `preserve` must be true or false; `colors` and `seed` must be whole numbers; `group` and `rename`
 must be strings, `groupColors` must be an array and `preserve` must be an object. Each refusal leaves the document unchanged and records no undo step. A `null`
-counts as a value left out except for `recolor.apply`'s `model`, which must be a string when given.
+counts as a value left out except for `recolor.apply`'s `model` and a `map` row's `model`, which must be strings when given.
 
 ```json
 {"name":"run_command","arguments":{"command":"recolor.reduce","params":{"colors":2,"preserve":{"grays":true}}}}
