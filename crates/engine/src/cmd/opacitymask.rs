@@ -194,11 +194,13 @@ fn make(s: &mut Session, p: &Value) -> Result<Value> {
         }
         None => super::appearance::subject_roots(s)?,
     };
-    // A layer among several targets stands for its visible, unlocked art. A hidden, locked or
-    // template layer gives none.
+    // A layer among several targets stands for its art that can be edited: visible and unlocked,
+    // with every layer it is in, and not on a locked artboard. A hidden, locked or template layer
+    // gives none.
+    let editable = d.editable();
     let art_of = |id: NodeId| match d.node(id) {
         Some(n) if n.is_layer() && (!n.visible || n.locked || n.is_template()) => vec![],
-        Some(n) if n.is_layer() => n.layer_art(true),
+        Some(n) if n.is_layer() => n.layer_art(true).into_iter().filter(|c| editable(*c)).collect(),
         _ => vec![id],
     };
     // A layer on top: the topmost object of its art is the mask, and the rest of it is masked.
@@ -236,6 +238,7 @@ fn make(s: &mut Session, p: &Value) -> Result<Value> {
     } else {
         art
     };
+    drop(editable);
     let (id, layer) = s.edit("Make Opacity Mask", |d, sel| {
         let mask_art = match mask_id {
             Some(m) => (*d.remove(m)?).clone(),
@@ -599,6 +602,36 @@ mod tests {
         let hidden = s.doc().unwrap().doc.layers.clone();
         assert!(s.execute("transparency.makeOpacityMask", &json!({ "ids": [a, l3] })).is_err());
         assert_eq!(s.doc().unwrap().doc.layers, hidden);
+    }
+
+    #[test]
+    fn make_leaves_out_layer_art_that_cannot_be_edited() {
+        let mut s = Session::new();
+        s.execute("file.new", &json!({"width": 200, "height": 200})).unwrap();
+        let rect = |s: &mut Session, x: u64, y: u64| {
+            s.execute("shape.rectangle", &json!({"x": x, "y": y, "width": 20, "height": 20})).unwrap()["id"].as_u64().unwrap()
+        };
+        let a = rect(&mut s, 300, 10);
+        // A visible sublayer of a hidden layer holds no art that can be edited.
+        let l2 = s.execute("layer.new", &json!({})).unwrap()["id"].as_u64().unwrap();
+        let sub = s.execute("layer.newSublayer", &json!({"parent": l2})).unwrap()["id"].as_u64().unwrap();
+        let inner = rect(&mut s, 300, 40);
+        assert_eq!(s.doc().unwrap().doc.parent_of(NodeId(inner)), Some(NodeId(sub)));
+        s.execute("layer.setProps", &json!({"id": l2, "visible": false})).unwrap();
+        let before = s.doc().unwrap().doc.layers.clone();
+        assert!(s.execute("transparency.makeOpacityMask", &json!({ "ids": [a, sub] })).is_err());
+        assert_eq!(s.doc().unwrap().doc.layers, before, "the hidden layer's art stays");
+        // Art on a locked artboard acts as locked: the topmost object off it is the mask.
+        let l3 = s.execute("layer.new", &json!({"top": true})).unwrap()["id"].as_u64().unwrap();
+        let off = rect(&mut s, 300, 70);
+        let on = rect(&mut s, 10, 10);
+        s.execute("artboard.setProps", &json!({"index": 0, "locked": true})).unwrap();
+        let r = s.execute("transparency.makeOpacityMask", &json!({ "ids": [a, l3] })).unwrap();
+        let d = &s.doc().unwrap().doc;
+        let n = d.node(NodeId(r["id"].as_u64().unwrap())).unwrap();
+        assert_eq!(n.id, NodeId(a));
+        assert_eq!(n.extras().mask.as_ref().unwrap().art.id, NodeId(off));
+        assert_eq!(d.parent_of(NodeId(on)), Some(NodeId(l3)), "the object on the locked artboard stays");
     }
 
     #[test]
