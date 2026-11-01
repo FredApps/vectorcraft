@@ -749,6 +749,9 @@ font-technology	Variable	Вариативные
 	Delete Swatch	Удалить образец
 	Delete Symbol	Удалить символ
 	Delete the selected symbol?	Удалить выбранный символ?
+	Delete the selected symbols?	Удалить выбранные символы?
+	No unused symbols	Нет неиспользуемых символов
+	Delete Symbols	Удалить символы
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Один или несколько символов используются, и их нельзя удалить, пока их экземпляры не будут разобраны или удалены.
 	Expand Instances	Разобрать экземпляры
 	Delete Instances	Удалить экземпляры

@@ -664,6 +664,9 @@
 	Delete Swatch	Excluir Amostra
 	Delete Symbol	Excluir Símbolo
 	Delete the selected symbol?	Excluir o símbolo selecionado?
+	Delete the selected symbols?	Excluir os símbolos selecionados?
+	No unused symbols	Nenhum símbolo não utilizado
+	Delete Symbols	Excluir símbolos
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Um ou mais símbolos estão em uso e não podem ser excluídos até que suas instâncias sejam expandidas ou excluídas.
 	Expand Instances	Expandir Instâncias
 	Delete Instances	Excluir Instâncias

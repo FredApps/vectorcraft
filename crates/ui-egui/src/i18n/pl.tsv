@@ -2978,6 +2978,9 @@ theme	Appearance	Wygląd
 	Delete Brush	Usuń pędzel
 	Delete Symbol	Usuń symbol
 	Delete the selected symbol?	Usunąć zaznaczony symbol?
+	Delete the selected symbols?	Usunąć zaznaczone symbole?
+	No unused symbols	Brak nieużywanych symboli
+	Delete Symbols	Usuń symbole
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Co najmniej jeden z symboli jest używany i nie można go usunąć, dopóki jego wystąpienia nie zostaną rozszerzone lub usunięte.
 	Expand Instances	Rozszerz wystąpienia
 	Delete Instances	Usuń wystąpienia

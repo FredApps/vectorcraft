@@ -2869,6 +2869,9 @@ theme	Appearance	Vormgeving
 	Delete Brush	Penseel verwijderen
 	Delete Symbol	Symbool verwijderen
 	Delete the selected symbol?	Het geselecteerde symbool verwijderen?
+	Delete the selected symbols?	De geselecteerde symbolen verwijderen?
+	No unused symbols	Geen ongebruikte symbolen
+	Delete Symbols	Symbolen verwijderen
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Een of meer van de symbolen zijn in gebruik en kunnen pas worden verwijderd als hun exemplaren zijn uitgebreid of verwijderd.
 	Expand Instances	Exemplaren uitbreiden
 	Delete Instances	Exemplaren verwijderen

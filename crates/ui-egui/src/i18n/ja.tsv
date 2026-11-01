@@ -1308,6 +1308,9 @@ digits	Malayalam	マラヤーラム数字
 	Delete Swatch	スウォッチを削除
 	Delete Symbol	シンボルを削除
 	Delete the selected symbol?	選択したシンボルを削除しますか？
+	Delete the selected symbols?	選択したシンボルを削除しますか？
+	No unused symbols	未使用のシンボルはありません
+	Delete Symbols	シンボルを削除
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	1 つ以上のシンボルが使用中のため、インスタンスを拡張または削除するまで削除できません。
 	Expand Instances	インスタンスを拡張
 	Delete Instances	インスタンスを削除

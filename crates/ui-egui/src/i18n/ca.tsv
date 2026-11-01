@@ -1053,6 +1053,9 @@
 	Delete Swatch	Suprimeix la mostra
 	Delete Symbol	Suprimeix el símbol
 	Delete the selected symbol?	Voleu suprimir el símbol seleccionat?
+	Delete the selected symbols?	Voleu suprimir els símbols seleccionats?
+	No unused symbols	No hi ha símbols sense utilitzar
+	Delete Symbols	Suprimeix els símbols
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Un o més dels símbols estan en ús i no es poden suprimir fins que se n’expandeixin o se’n suprimeixin les instàncies.
 	Expand Instances	Expandeix les instàncies
 	Delete Instances	Suprimeix les instàncies

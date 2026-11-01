@@ -975,6 +975,9 @@ font-technology	Variable	Változó
 	Delete Swatch	Színminta törlése
 	Delete Symbol	Szimbólum törlése
 	Delete the selected symbol?	Törli a kijelölt szimbólumot?
+	Delete the selected symbols?	Törli a kijelölt szimbólumokat?
+	No unused symbols	Nincsenek nem használt szimbólumok
+	Delete Symbols	Szimbólumok törlése
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Egy vagy több szimbólum használatban van, és nem törölhető, amíg a példányait ki nem bontja vagy nem törli.
 	Expand Instances	Példányok kibontása
 	Delete Instances	Példányok törlése

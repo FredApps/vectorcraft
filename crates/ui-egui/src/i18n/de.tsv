@@ -730,6 +730,9 @@ font-technology	Variable	Variabel
 	Delete Swatch	Farbfeld löschen
 	Delete Symbol	Symbol löschen
 	Delete the selected symbol?	Ausgewähltes Symbol löschen?
+	Delete the selected symbols?	Ausgewählte Symbole löschen?
+	No unused symbols	Keine nicht verwendeten Symbole
+	Delete Symbols	Symbole löschen
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Mindestens eines der Symbole wird verwendet und kann erst gelöscht werden, wenn seine Instanzen umgewandelt oder gelöscht wurden.
 	Expand Instances	Instanzen umwandeln
 	Delete Instances	Instanzen löschen
