@@ -454,6 +454,14 @@ fn locked_variables_refuse_new_deleted_and_renamed_variables() {
     s.execute("variable.define", &json!({"name": "Other", "kind": "text"})).unwrap();
 }
 
+/// `variable.lock`'s params text names the dataset command it refuses: an import whose header
+/// would define a variable.
+#[test]
+fn the_lock_params_text_names_the_refused_import() {
+    let params = cmd::find_command("variable.lock").unwrap().params;
+    assert!(params.contains("the dataset commands still run, except a dataset.import whose header would define a variable"), "{params}");
+}
+
 /// Locking is an undo step only when it changes the state, and the lock is saved with the
 /// document: a file saved locked opens locked, and a file without the key opens unlocked.
 #[test]
@@ -1323,14 +1331,6 @@ fn locked_variables_refuse_header_cells_that_define_variables() {
     s.execute("variable.lock", &json!({"locked": false})).unwrap();
     let imp = s.execute("dataset.import", &json!({"csv": "name,New\nB,n"})).unwrap();
     assert_eq!(imp["defined"], json!(["New"]));
-}
-
-/// `variable.lock`'s params text names the dataset command it refuses: an import whose header
-/// would define a variable.
-#[test]
-fn the_lock_params_text_names_the_refused_import() {
-    let params = cmd::find_command("variable.lock").unwrap().params;
-    assert!(params.contains("the dataset commands still run, except a dataset.import whose header would define a variable"), "{params}");
 }
 
 /// Import / export datasets as CSV: header `name` then variables; round-trip keeps values.
