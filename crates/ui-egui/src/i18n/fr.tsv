@@ -756,6 +756,9 @@ font-technology	Variable	Variables
 	Delete Swatch	Supprimer la nuance
 	Delete Symbol	Supprimer le symbole
 	Delete the selected symbol?	Supprimer le symbole sélectionné ?
+	Delete the selected symbols?	Supprimer les symboles sélectionnés ?
+	No unused symbols	Aucun symbole inutilisé
+	Delete Symbols	Supprimer les symboles
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Un ou plusieurs symboles sont utilisés et ne peuvent pas être supprimés tant que leurs instances ne sont pas décomposées ou supprimées.
 	Expand Instances	Décomposer les instances
 	Delete Instances	Supprimer les instances

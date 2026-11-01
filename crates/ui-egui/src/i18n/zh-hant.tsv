@@ -713,6 +713,9 @@ font-technology	Variable	可變
 	Delete Swatch	刪除色票
 	Delete Symbol	刪除符號
 	Delete the selected symbol?	要刪除選取的符號嗎？
+	Delete the selected symbols?	要刪除選取的多個符號嗎？
+	No unused symbols	沒有未使用的符號
+	Delete Symbols	刪除符號
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	一個或多個符號正在使用中，在展開或刪除其範例之前無法刪除。
 	Expand Instances	展開範例
 	Delete Instances	刪除範例

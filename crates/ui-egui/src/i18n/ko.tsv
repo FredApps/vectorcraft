@@ -1298,6 +1298,9 @@ digits	Malayalam	말라얄람어
 	Delete Swatch	견본 삭제
 	Delete Symbol	심볼 삭제
 	Delete the selected symbol?	선택한 심볼을 삭제하시겠습니까?
+	Delete the selected symbols?	선택한 심볼을 모두 삭제하시겠습니까?
+	No unused symbols	사용하지 않는 심볼이 없습니다
+	Delete Symbols	심볼 삭제
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	하나 이상의 심볼이 사용 중이므로 인스턴스를 확장하거나 삭제하기 전에는 삭제할 수 없습니다.
 	Expand Instances	인스턴스 확장
 	Delete Instances	인스턴스 삭제

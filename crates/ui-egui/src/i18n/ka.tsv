@@ -2668,6 +2668,9 @@ theme	Appearance	იერსახე
 	Delete Brush	ფუნჯის წაშლა
 	Delete Symbol	სიმბოლოს წაშლა
 	Delete the selected symbol?	წაიშალოს მონიშნული სიმბოლო?
+	Delete the selected symbols?	წაიშალოს მონიშნული სიმბოლოები?
+	No unused symbols	გამოუყენებელი სიმბოლოები არ არის
+	Delete Symbols	სიმბოლოების წაშლა
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	ერთი ან მეტი სიმბოლო გამოიყენება და მისი წაშლა შეუძლებელია, სანამ მისი ეგზემპლარები არ გაიშლება ან არ წაიშლება.
 	Expand Instances	ეგზემპლარების გაშლა
 	Delete Instances	ეგზემპლარების წაშლა

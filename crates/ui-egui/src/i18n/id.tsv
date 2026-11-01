@@ -2855,6 +2855,9 @@ theme	Appearance	Tampilan
 	Delete Brush	Hapus kuas
 	Delete Symbol	Hapus simbol
 	Delete the selected symbol?	Hapus simbol yang dipilih?
+	Delete the selected symbols?	Hapus simbol yang dipilih?
+	No unused symbols	Tidak ada simbol yang tidak digunakan
+	Delete Symbols	Hapus Simbol
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Satu atau beberapa simbol sedang digunakan dan tidak dapat dihapus sampai instansinya diperluas atau dihapus.
 	Expand Instances	Perluas instansi
 	Delete Instances	Hapus instansi

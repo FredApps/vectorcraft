@@ -710,6 +710,9 @@ font-technology	Variable	Μεταβλητές
 	Delete Swatch	Διαγραφή δείγματος χρώματος
 	Delete Symbol	Διαγραφή συμβόλου
 	Delete the selected symbol?	Να διαγραφεί το επιλεγμένο σύμβολο;
+	Delete the selected symbols?	Να διαγραφούν τα επιλεγμένα σύμβολα;
+	No unused symbols	Δεν υπάρχουν αχρησιμοποίητα σύμβολα
+	Delete Symbols	Διαγραφή συμβόλων
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Ένα ή περισσότερα από τα σύμβολα χρησιμοποιούνται και δεν μπορούν να διαγραφούν μέχρι να επεκταθούν ή να διαγραφούν τα στιγμιότυπά τους.
 	Expand Instances	Επέκταση στιγμιοτύπων
 	Delete Instances	Διαγραφή στιγμιοτύπων

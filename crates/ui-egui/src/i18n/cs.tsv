@@ -3099,6 +3099,9 @@ theme	Appearance	Motiv
 	Delete Brush	Odstranit štětec
 	Delete Symbol	Odstranit symbol
 	Delete the selected symbol?	Odstranit vybraný symbol?
+	Delete the selected symbols?	Odstranit vybrané symboly?
+	No unused symbols	Žádné nepoužité symboly
+	Delete Symbols	Odstranit symboly
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Jeden nebo více symbolů se používá a nelze je odstranit, dokud jejich instance nerozložíte nebo neodstraníte.
 	Expand Instances	Rozložit instance
 	Delete Instances	Odstranit instance

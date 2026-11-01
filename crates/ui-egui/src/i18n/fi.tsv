@@ -3038,6 +3038,9 @@ theme	Appearance	Ulkoasu
 	Delete Brush	Poista sivellin
 	Delete Symbol	Poista symboli
 	Delete the selected symbol?	Poistetaanko valittu symboli?
+	Delete the selected symbols?	Poistetaanko valitut symbolit?
+	No unused symbols	Ei käyttämättömiä symboleja
+	Delete Symbols	Poista symbolit
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Yksi tai useampi symboleista on käytössä, eikä niitä voi poistaa ennen kuin niiden ilmentymät on laajennettu tai poistettu.
 	Expand Instances	Laajenna ilmentymät
 	Delete Instances	Poista ilmentymät

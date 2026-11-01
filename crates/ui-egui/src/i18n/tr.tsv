@@ -730,6 +730,9 @@ font-technology	Variable	Değişken
 	Delete Swatch	Renk Örneğini Sil
 	Delete Symbol	Sembolü Sil
 	Delete the selected symbol?	Seçili sembol silinsin mi?
+	Delete the selected symbols?	Seçili semboller silinsin mi?
+	No unused symbols	Kullanılmayan sembol yok
+	Delete Symbols	Sembolleri Sil
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Sembollerden biri veya birkaçı kullanımda ve örnekleri genişletilene ya da silinene kadar silinemez.
 	Expand Instances	Örnekleri Genişlet
 	Delete Instances	Örnekleri Sil

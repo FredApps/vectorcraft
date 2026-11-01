@@ -738,6 +738,9 @@ font-technology	Variable	Variabla
 	Delete Swatch	Radera färgruta
 	Delete Symbol	Radera symbol
 	Delete the selected symbol?	Vill du radera den markerade symbolen?
+	Delete the selected symbols?	Vill du radera de markerade symbolerna?
+	No unused symbols	Inga oanvända symboler
+	Delete Symbols	Radera symboler
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	En eller flera av symbolerna används och kan inte raderas förrän deras instanser har expanderats eller raderats.
 	Expand Instances	Expandera instanser
 	Delete Instances	Radera instanser

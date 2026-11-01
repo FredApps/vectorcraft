@@ -3068,6 +3068,9 @@ theme	Appearance	Izgled
 	Delete Brush	Izbriši četkicu
 	Delete Symbol	Izbriši simbol
 	Delete the selected symbol?	Izbrisati odabrani simbol?
+	Delete the selected symbols?	Izbrisati odabrane simbole?
+	No unused symbols	Nema nekorištenih simbola
+	Delete Symbols	Brisanje simbola
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Jedan ili više simbola se koriste i ne mogu se izbrisati dok se njihove instance ne prošire ili izbrišu.
 	Expand Instances	Proširi instance
 	Delete Instances	Izbriši instance

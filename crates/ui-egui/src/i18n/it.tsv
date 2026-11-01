@@ -751,6 +751,9 @@ font-technology	Variable	Variabili
 	Delete Swatch	Elimina campione
 	Delete Symbol	Elimina simbolo
 	Delete the selected symbol?	Eliminare il simbolo selezionato?
+	Delete the selected symbols?	Eliminare i simboli selezionati?
+	No unused symbols	Nessun simbolo inutilizzato
+	Delete Symbols	Elimina simboli
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Uno o più simboli sono in uso e non possono essere eliminati finché le loro istanze non vengono espanse o eliminate.
 	Expand Instances	Espandi istanze
 	Delete Instances	Elimina istanze

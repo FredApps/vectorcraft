@@ -694,6 +694,9 @@
 	Delete Swatch	删除色板
 	Delete Symbol	删除符号
 	Delete the selected symbol?	要删除所选符号吗？
+	Delete the selected symbols?	要删除所选的多个符号吗？
+	No unused symbols	没有未使用的符号
+	Delete Symbols	删除符号
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	一个或多个符号正在使用中，在扩展或删除其实例之前无法删除。
 	Expand Instances	扩展实例
 	Delete Instances	删除实例

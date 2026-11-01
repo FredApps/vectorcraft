@@ -871,6 +871,9 @@ font-technology	Variable	Biến thiên
 	Delete Swatch	Xóa mẫu màu
 	Delete Symbol	Xóa ký hiệu
 	Delete the selected symbol?	Xóa ký hiệu đã chọn?
+	Delete the selected symbols?	Xóa các ký hiệu đã chọn?
+	No unused symbols	Không có ký hiệu nào chưa dùng
+	Delete Symbols	Xóa các ký hiệu
 	One or more of the symbols are in use and cannot be deleted until their instances are expanded or deleted.	Một hoặc nhiều ký hiệu đang được sử dụng và không thể xóa cho đến khi các thực thể của chúng được mở rộng hoặc xóa.
 	Expand Instances	Mở rộng thực thể
 	Delete Instances	Xóa thực thể
