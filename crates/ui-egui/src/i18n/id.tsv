@@ -5950,6 +5950,9 @@ breakText	Glyphs	Glif
 	Gap 4	Jarak 4
 	Dash 5	Garis 5
 	Gap 5	Jarak 5
+
+@msg	{_1}: they came in as the page's art	{_1}: diimpor sebagai gambar halaman
+
 @msg	You must choose a side pattern.	Anda harus memilih pola sisi.
 @msg	invalid pattern tile choice	pilihan ubin pola tidak valid
 @msg	no pattern named `{choice}`	tidak ada pola bernama `{choice}`

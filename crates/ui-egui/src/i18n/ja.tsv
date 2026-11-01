@@ -5737,6 +5737,9 @@ breakText	Glyphs	字形
 	Gap 4	間隔 4
 	Dash 5	線分 5
 	Gap 5	間隔 5
+
+@msg	{_1}: they came in as the page's art	{_1}: ページのアートとして読み込みました
+
 @msg	You must choose a side pattern.	側面パターンを選択してください。
 @msg	invalid pattern tile choice	パターンタイルの選択が無効です
 @msg	no pattern named `{choice}`	`{choice}` というパターンはありません

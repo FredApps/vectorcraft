@@ -5633,6 +5633,9 @@ breakText	Glyphs	글리프
 	Gap 4	간격 4
 	Dash 5	대시 5
 	Gap 5	간격 5
+
+@msg	{_1}: they came in as the page's art	{_1}: 페이지의 아트로 가져왔습니다
+
 @msg	You must choose a side pattern.	측면 패턴을 선택해야 합니다.
 @msg	invalid pattern tile choice	잘못된 패턴 타일 선택
 @msg	no pattern named `{choice}`	`{choice}` 이름의 패턴이 없습니다

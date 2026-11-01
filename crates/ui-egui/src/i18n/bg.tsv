@@ -5935,6 +5935,9 @@ breakText	Glyphs	Глифи
 	Gap 4	Разстояние 4
 	Dash 5	Тире 5
 	Gap 5	Разстояние 5
+
+@msg	{_1}: they came in as the page's art	{_1}: те са внесени като изображението от страницата
+
 @msg	You must choose a side pattern.	Трябва да изберете страничен шаблон.
 @msg	invalid pattern tile choice	невалиден избор на плочка за шаблон
 @msg	no pattern named `{choice}`	няма шаблон с име `{choice}`

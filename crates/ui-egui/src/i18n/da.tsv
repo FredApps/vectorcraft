@@ -5950,6 +5950,9 @@ breakText	Glyphs	Glyffer
 	Gap 4	Mellemrum 4
 	Dash 5	Streg 5
 	Gap 5	Mellemrum 5
+
+@msg	{_1}: they came in as the page's art	{_1}: de blev importeret som sidens grafik
+
 @msg	You must choose a side pattern.	Du skal vælge et sidemønster.
 @msg	invalid pattern tile choice	ugyldigt valg af mønsterflise
 @msg	no pattern named `{choice}`	intet mønster med navnet `{choice}`
