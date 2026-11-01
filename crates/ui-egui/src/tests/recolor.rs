@@ -346,6 +346,73 @@ fn the_tint_slider_sets_a_spot_rows_tint() {
     }
 }
 
+/// Makes the swatches of the `swatch.new` params `swatches`, saves them as a library and loads it,
+/// removes them from the document again, and returns the library's id.
+fn library_of(app: &mut VectorcraftApp, swatches: &[Value]) -> String {
+    let names: Vec<Value> = swatches.iter().map(|s| s["name"].clone()).collect();
+    for s in swatches {
+        app.run("swatch.new", s.clone()).unwrap();
+    }
+    let data = app.run("swatch.library.save", json!({"names": names, "name": "Lib"})).unwrap()["data"].as_str().unwrap().to_string();
+    let lib = app.run("swatch.library.load", json!({"data": data, "name": "lib.vcswatches"})).unwrap()["library"].as_str().unwrap().to_string();
+    app.run("swatch.delete", json!({"names": names})).unwrap();
+    lib
+}
+
+/// When the library's first swatch of a row's new color is a process color, the row shows no Tint,
+/// even with a spot color of that color after it: `recolor.apply` gives the art the first one.
+#[test]
+fn a_process_swatch_before_a_spot_one_of_its_color_shows_no_tint() {
+    let mut app = app();
+    let lib = library_of(
+        &mut app,
+        &[
+            json!({"name": "Mix Process", "color": {"c": 0, "m": 1, "y": 0, "k": 0}}),
+            json!({"name": "Mix Ink", "color": {"c": 0, "m": 1, "y": 0, "k": 0}, "spot": true}),
+        ],
+    );
+    art(&mut app, &["cmyk 0 100 0 0"]);
+    let mut h = assign_harness(app, json!({"library": lib}));
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "T").is_none(), "no Tint for a process swatch");
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "C").is_some(), "the CMYK sliders");
+}
+
+/// A spot color whose components are finer than a row's color key still shows Tint: the row's
+/// rounded color snaps back to it, as `recolor.apply` snaps it.
+#[test]
+fn a_spot_color_finer_than_the_rows_key_shows_tint() {
+    let mut app = app();
+    let lib = library_of(&mut app, &[json!({"name": "Mix Fine", "color": {"c": 0, "m": 0.12345, "y": 0, "k": 0}, "spot": true})]);
+    art(&mut app, &["cmyk 0 12 0 0"]);
+    let mut h = assign_harness(app, json!({"library": lib}));
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "T").is_some(), "the spot row shows Tint");
+}
+
+/// Reset with the preview on reads the art's own colors again and discards a slider edit: OK then
+/// gives RGB art a CMYK color group's color in RGB, as it does without the edit.
+#[test]
+fn reset_after_a_slider_edit_keeps_the_arts_model() {
+    let mut app = app();
+    app.run("swatch.newGroup", json!({"name": "Mix", "colors": ["cmyk 0 100 0 0"], "keepModel": true})).unwrap();
+    art(&mut app, &["#ff00ff"]);
+    let mut h = assign_harness(app, json!({"group": "Mix"}));
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    click_slider(&mut h, "C", 0.5);
+    assert_eq!(field(h.state(), "__slid"), json!(true), "the sliders edited the row");
+    h.get_by_role_and_label(egui::accesskit::Role::Button, "Reset the rows to the artwork's colors").click();
+    h.run_steps(3);
+    assert_eq!(field(h.state(), "rows")[0]["from"], json!(["rgb 255 0 255"]), "Reset reads the art's colors, not the preview's");
+    h.get_by_label("OK").click();
+    h.run_steps(2);
+    assert!(h.state().ui.dialog.is_none());
+    assert!(matches!(first_fill(h.state()).color(), Some(Color::Rgb { .. })), "the art stays RGB: {:?}", first_fill(h.state()));
+}
+
 /// The dialog keeps its height when the tab or the sliders' color mode changes.
 #[test]
 fn switching_tabs_or_slider_modes_keeps_the_dialog_height() {

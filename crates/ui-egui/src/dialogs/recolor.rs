@@ -163,6 +163,10 @@ fn sync(app: &mut VectorcraftApp, d: &mut Dialog) {
     if !d.bool("__art") || d.fields.get(DONE) == Some(&sig) {
         return;
     }
+    // The art's own colors are reduced, not those of the preview, which runs again afterwards.
+    if d.fields.remove(super::form::PREVIEWED).is_some() {
+        let _ = app.session.cancel_interaction();
+    }
     let mut p = sig.clone();
     p["method"] = json!(d.str("method"));
     match app.session.execute("recolor.reduce", &p) {
@@ -488,6 +492,8 @@ fn assign_tab(app: &mut VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut 
         }
         if widgets::icon_button(ui, "rotate-ccw", tl!("Reset the rows to the artwork's colors"), false, 24.0).clicked() {
             d.fields.remove("__reduced");
+            d.fields.remove(SLID);
+            d.fields.remove(COMPS);
         }
         let target = SliderTarget::of(app, d, rows);
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| mode_menu(ui, d, &target));
@@ -572,17 +578,15 @@ fn mode_id(m: Mode) -> String {
     serde_json::to_value(m).ok().and_then(|v| v.as_str().map(str::to_string)).unwrap_or_default()
 }
 
-/// The name of the spot color of the library (Limit to Library) that new color `c` is.
+/// The name of the library swatch (Limit to Library) that `recolor.apply` gives new color `c`, when
+/// it is a spot color: the first swatch of the library color nearest `c`.
 fn spot_of(app: &VectorcraftApp, d: &Dialog, c: &Color) -> Option<String> {
     let lib = d.str("limitTo");
     if lib.is_empty() {
         return None;
     }
-    let k = ColorKey::of(c);
-    swatchlib::library_swatches(&app.session, &lib)?
-        .into_iter()
-        .find(|w| w.spot && w.paint.color().is_some_and(|x| ColorKey::of(&x) == k))
-        .map(|w| w.name)
+    let near = swatchlib::limit_palette(&app.session, &lib)?.nearest(*c);
+    swatchlib::library_swatches(&app.session, &lib)?.into_iter().find(|w| w.paint.color() == Some(near)).filter(|w| w.spot).map(|w| w.name)
 }
 
 /// The mode the sliders show new color `c` in, `None` for Tint: the mode picked in the menu, else
