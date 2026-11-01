@@ -555,24 +555,31 @@ fn randomize(_: &mut Session, p: &Value) -> Result<Value> {
     let rows = parse_rows(p, C)?;
     let mut rng = Rng::new(super::menucmds::whole_or(p, "seed", 0, C)?);
     let (order, saturation_brightness) = (switch_or(p, "order", true, C)?, switch_or(p, "saturationBrightness", false, C)?);
-    let mut news: Vec<Color> = rows.iter().filter_map(Row::new_color).collect();
+    // Each new colour with its row's tint: a tint moves with its colour, and goes when the colour changes.
+    let mut news: Vec<(Color, f32)> = rows.iter().filter_map(|r| r.new_color().map(|c| (c, r.tint))).collect();
     if order {
         rng.shuffle(&mut news);
     }
     if saturation_brightness {
-        news = news.into_iter().map(|c| rng.saturation_brightness(c)).collect();
+        news = news
+            .into_iter()
+            .map(|(c, tint)| {
+                let n = rng.saturation_brightness(c);
+                (n, if ColorKey::of(&n) == ColorKey::of(&c) { tint } else { 1.0 })
+            })
+            .collect();
     }
     let mut news = news.into_iter();
     let map: Vec<Value> = rows
         .iter()
         .map(|r| {
-            let to = if r.new_color().is_some() { news.next() } else { r.to };
+            let (to, tint) = if r.new_color().is_some() { news.next().map_or((None, 1.0), |(c, t)| (Some(c), t)) } else { (r.to, r.tint) };
             let mut row = json!({"from": r.from.iter().map(Match::to_json).collect::<Vec<_>>(), "to": to.as_ref().map(key_str)});
             if r.exclude {
                 row["exclude"] = json!(true);
             }
-            if r.tint < 1.0 {
-                row["tint"] = json!(f64::from((r.tint * 10_000.0).round()) / 100.0);
+            if tint < 1.0 {
+                row["tint"] = json!(f64::from((tint * 10_000.0).round()) / 100.0);
             }
             row
         })

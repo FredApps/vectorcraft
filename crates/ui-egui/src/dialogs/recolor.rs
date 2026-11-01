@@ -215,6 +215,24 @@ fn set_to(row: &mut Value, c: &Color) {
     }
 }
 
+/// Set for the frame in which Randomly change color order shuffled the rows' new colors.
+const SHUFFLED: &str = "__shuffled";
+
+/// Give each row of `rows` whose current colors and new color are those of the same row of
+/// `before` that row's tint again, when it has none: a change that snaps back to the same new
+/// color keeps the tint of it.
+fn keep_tints(before: &[Value], rows: &mut [Value]) {
+    for (r, b) in rows.iter_mut().zip(before) {
+        if r["from"] == b["from"]
+            && r["to"] == b["to"]
+            && r.get("tint").is_none()
+            && let Some(t) = b.get("tint")
+        {
+            r["tint"] = t.clone();
+        }
+    }
+}
+
 fn excluded(row: &Value) -> bool {
     row["exclude"].as_bool().unwrap_or(false)
 }
@@ -274,6 +292,10 @@ fn body(app: &mut VectorcraftApp, ui: &mut Ui, d: &mut Dialog) -> bool {
     }
     if changed {
         snap(app, d, &mut rs);
+        // A shuffle by `recolor.randomize` has already moved each tint with its color.
+        if d.fields.remove(SHUFFLED).is_none() {
+            keep_tints(&rows(d), &mut rs);
+        }
         d.fields.insert("rows".into(), Value::Array(rs));
     }
     if d.fields.get("group").is_some_and(Value::is_string) || d.bool("__newGroup") {
@@ -299,6 +321,7 @@ pub(super) fn with_new_color(app: &VectorcraftApp, mut d: Dialog, i: usize, c: C
     if let Some(r) = rs.get_mut(i) {
         set_to(r, &c);
         snap(app, &d, &mut rs);
+        keep_tints(&rows(&d), &mut rs);
         d.fields.insert("rows".into(), Value::Array(rs));
     }
     d
@@ -484,6 +507,9 @@ fn assign_tab(app: &mut VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut 
                 match app.session.execute("recolor.randomize", &p) {
                     Ok(r) => {
                         *rows = r["map"].as_array().cloned().unwrap_or_default();
+                        if !sb {
+                            d.fields.insert(SHUFFLED.into(), json!(true));
+                        }
                         changed = true;
                     }
                     Err(e) => app.status(e.to_string()),
@@ -782,8 +808,8 @@ fn move_color(rows: &mut [Value], i: usize, hsb: [f32; 3], linked: bool) {
     let mut colors = before.clone();
     move_on_wheel(&mut colors, k, hsb, linked);
     for ((&j, c), old) in active.iter().zip(&colors).zip(&before) {
-        if c != old {
-            rows[j]["to"] = key(c);
+        if key(c) != key(old) {
+            set_to(&mut rows[j], c);
         }
     }
 }
@@ -868,13 +894,17 @@ fn edit_tab(ui: &mut Ui, d: &mut Dialog, rows: &mut [Value]) -> bool {
 }
 
 /// Give the rows `active` the colours of `rule` from the base colour `b` of row `base` (the base row
-/// first, then the others in order, the rule's colours repeating), each in its row's model.
+/// first, then the others in order, the rule's colours repeating), each in its row's model. A row
+/// whose new colour changes loses its tint.
 fn apply_rule(rows: &mut [Value], rule: Harmony, base: usize, b: Color, active: &[usize]) {
     let colors = rule.apply(b);
     let order = std::iter::once(base).chain(active.iter().copied().filter(|i| *i != base));
     for (n, i) in order.enumerate() {
         let old = to_color(&rows[i]).unwrap_or(b);
-        rows[i]["to"] = key(&keep_model(old, colors[n % colors.len()]));
+        let c = keep_model(old, colors[n % colors.len()]);
+        if key(&c) != rows[i]["to"] {
+            set_to(&mut rows[i], &c);
+        }
     }
 }
 
@@ -935,6 +965,41 @@ mod tests {
         let mut r = rows();
         apply_rule(&mut r, Harmony::Triad, 0, Color::rgb(1.0, 0.0, 0.0), &[0, 1, 2]);
         assert_eq!([&r[0]["to"], &r[1]["to"], &r[2]["to"]], ["rgb 255 0 0", "rgb 0 255 0", "rgb 0 0 255"]);
+    }
+
+    /// A rule or a wheel move that gives a row a new colour drops the row's tint; a row whose
+    /// colour stays keeps it.
+    #[test]
+    fn a_new_colour_from_the_edit_tab_drops_the_rows_tint() {
+        let tinted = || {
+            let mut r = rows();
+            for row in &mut r {
+                row["tint"] = json!(40.0);
+            }
+            r
+        };
+        let mut r = tinted();
+        apply_rule(&mut r, Harmony::Triad, 0, Color::rgb(1.0, 0.0, 0.0), &[0, 1, 2]);
+        assert_eq!(r[0]["tint"], json!(40.0), "the base row's colour stays");
+        assert!(r[1].get("tint").is_none() && r[2].get("tint").is_none(), "{r:?}");
+        let mut r = tinted();
+        move_color(&mut r, 0, [120.0, 1.0, 1.0], false);
+        assert!(r[0].get("tint").is_none(), "the moved row: {:?}", r[0]);
+        assert_eq!(r[1]["tint"], json!(40.0), "unlinked: the other rows keep theirs");
+    }
+
+    /// The Color Picker's OK keeps a row's tint when the row's new color stays, and drops it otherwise.
+    #[test]
+    fn a_picked_color_keeps_the_tint_only_of_the_same_color() {
+        let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+        app.run("file.new", json!({"width": 100, "height": 100})).unwrap();
+        app.run("ui.recolorDialog", json!({"colors": ["#ff0000"]})).unwrap();
+        let mut d = app.ui.dialog.clone().unwrap();
+        d.fields.insert("rows".into(), json!([{"from": ["rgb 255 0 0"], "to": "rgb 255 0 0", "tint": 40.0}]));
+        let same = with_new_color(&app, d.clone(), 0, Color::rgb(1.0, 0.0, 0.0));
+        assert_eq!(super::rows(&same)[0]["tint"], json!(40.0));
+        let other = with_new_color(&app, d, 0, Color::rgb(0.0, 1.0, 0.0));
+        assert!(super::rows(&other)[0].get("tint").is_none(), "{:?}", super::rows(&other));
     }
 
     /// Runs one frame of the open dialog at `time` and returns row `i`'s new color chip, when the

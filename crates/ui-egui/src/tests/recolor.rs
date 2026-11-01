@@ -346,6 +346,85 @@ fn the_tint_slider_sets_a_spot_rows_tint() {
     }
 }
 
+/// A spot row's tint goes when the Edit tab gives the row another new color: after a click on the
+/// Brightness slider snaps the row to a second spot color, OK links the art to that one at full
+/// strength. A click that snaps back to the same spot color keeps the tint.
+#[test]
+fn a_new_color_from_the_edit_tab_drops_a_spot_rows_tint() {
+    let mut app = app();
+    let lib = library_of(
+        &mut app,
+        &[json!({"name": "Mix Ink", "color": "#ff00ff", "spot": true}), json!({"name": "Mix Dark", "color": "#800080", "spot": true})],
+    );
+    art(&mut app, &["#ff00ff"]);
+    let mut h = assign_harness(app, json!({"library": lib}));
+    let mut rows = field(h.state(), "rows");
+    rows[0]["tint"] = json!(40.0);
+    set(h.state_mut(), "rows", rows);
+    set(h.state_mut(), "tab", json!("edit"));
+    h.run_steps(4);
+    click_slider(&mut h, "Brightness", 0.9);
+    let row = field(h.state(), "rows")[0].clone();
+    assert_eq!((&row["to"], &row["tint"]), (&json!("rgb 255 0 255"), &json!(40.0)), "snapped back to the same spot color");
+    click_slider(&mut h, "Brightness", 0.4);
+    let row = field(h.state(), "rows")[0].clone();
+    assert_eq!(row["to"], json!("rgb 128 0 128"), "snapped to the darker spot color");
+    assert!(row.get("tint").is_none(), "the row's tint went with its old color: {row}");
+    h.get_by_label("OK").click();
+    h.run_steps(2);
+    match first_fill(h.state()) {
+        vectorcraft_color::Paint::Solid { swatch, tint, .. } => {
+            assert_eq!(swatch.as_deref(), Some("Mix Dark"), "linked to the new spot color");
+            assert!((tint - 1.0).abs() < 1e-4, "at full strength: {tint}");
+        }
+        p => panic!("{p:?}"),
+    }
+}
+
+/// Randomize order moves a tint with its color, also between rows of the same new color: after
+/// each click exactly one row is tinted, and some click moves the tint to the other row.
+#[test]
+fn randomize_order_moves_a_tint_between_rows_of_the_same_color() {
+    let mut app = app();
+    art(&mut app, &["#ff0000", "#0000ff"]);
+    let mut h = assign_harness(app, json!({}));
+    let mut rows = field(h.state(), "rows");
+    for r in rows.as_array_mut().unwrap() {
+        r["to"] = json!("rgb 0 255 0");
+    }
+    rows[0]["tint"] = json!(40.0);
+    set(h.state_mut(), "rows", rows);
+    h.run_steps(2);
+    let mut moved = false;
+    for _ in 0..8 {
+        h.get_by_label("Randomly change color order").click();
+        h.run_steps(2);
+        let rows = field(h.state(), "rows");
+        let tinted: Vec<usize> = (0..2).filter(|i| rows[*i].get("tint").is_some()).collect();
+        assert_eq!(tinted.len(), 1, "one tinted row: {rows}");
+        moved |= tinted == [1];
+    }
+    assert!(moved, "some click moves the tint to the other row");
+}
+
+/// With a one-color library, Randomly change saturation and brightness snaps a spot row back to
+/// its spot color, which keeps its tint.
+#[test]
+fn a_saturation_change_that_snaps_back_keeps_the_tint() {
+    let mut app = app();
+    let lib = library_of(&mut app, &[json!({"name": "Mix Ink", "color": "#ff00ff", "spot": true})]);
+    art(&mut app, &["#ff00ff"]);
+    let mut h = assign_harness(app, json!({"library": lib}));
+    let mut rows = field(h.state(), "rows");
+    rows[0]["tint"] = json!(40.0);
+    set(h.state_mut(), "rows", rows);
+    h.run_steps(2);
+    h.get_by_label("Randomly change saturation and brightness").click();
+    h.run_steps(2);
+    let row = field(h.state(), "rows")[0].clone();
+    assert_eq!((&row["to"], &row["tint"]), (&json!("rgb 255 0 255"), &json!(40.0)), "{row}");
+}
+
 /// Makes the swatches of the `swatch.new` params `swatches`, saves them as a library and loads it,
 /// removes them from the document again, and returns the library's id.
 fn library_of(app: &mut VectorcraftApp, swatches: &[Value]) -> String {

@@ -538,7 +538,7 @@ fn recolor_to_a_library_spot_colour_links_it_and_adds_the_swatch() {
 }
 
 /// A row's `tint` gives the art linked to the row's spot color that share of its tint;
-/// randomize keeps it on the row, and a tint that is not a number is refused.
+/// randomize without a change keeps it on the row, and a tint that is not a number is refused.
 #[test]
 fn a_rows_tint_tints_the_spot_color_the_art_links_to() {
     let mut s = session();
@@ -562,6 +562,31 @@ fn a_rows_tint_tints_the_spot_color_the_art_links_to() {
     assert_eq!(r["map"][0]["tint"], json!(40.0), "{r}");
     let e = s.execute("recolor.apply", &json!({"map": [{"from": ["rgb 224 32 16"], "to": "#ff0000", "tint": "40"}]})).unwrap_err();
     assert!(e.to_string().contains("`tint` must be a number"), "{e}");
+}
+
+/// Randomize order moves a row's tint with its new color; changing saturation and brightness
+/// drops the tint of every color it changes.
+#[test]
+fn randomize_moves_a_tint_with_its_color_and_drops_it_when_the_color_changes() {
+    let mut s = session();
+    let map = json!([
+        {"from": ["rgb 255 0 0"], "to": "cmyk 0 100 0 0", "tint": 40},
+        {"from": ["rgb 0 255 0"], "to": "rgb 0 255 0"},
+        {"from": ["rgb 0 0 255"], "to": "rgb 0 0 255"},
+    ]);
+    let mut moved = false;
+    for seed in 0..20 {
+        let r = run(&mut s, "recolor.randomize", json!({"map": map, "seed": seed}));
+        for row in r["map"].as_array().unwrap() {
+            let spot = row["to"] == json!("cmyk 0 100 0 0");
+            assert_eq!(row.get("tint").cloned(), spot.then(|| json!(40.0)), "seed {seed}: the tint goes with its color: {r}");
+        }
+        moved |= r["map"][0]["to"] != map[0]["to"];
+    }
+    assert!(moved, "some seed moves the tinted color to another row");
+    let sb = run(&mut s, "recolor.randomize", json!({"map": map, "order": false, "saturationBrightness": true}));
+    assert_ne!(sb["map"][0]["to"], map[0]["to"], "{sb}");
+    assert!(sb["map"][0].get("tint").is_none(), "a changed color has no tint: {sb}");
 }
 
 #[test]
