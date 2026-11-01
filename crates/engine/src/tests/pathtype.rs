@@ -301,10 +301,15 @@ fn sliding_and_flipping_type_round_a_circle_leaves_the_circle_alone() {
     assert_ne!(ink(&s, id), bounds, "the type moved round it");
     s.execute("type.pathOptions", &json!({"ids": [id.0], "start": 0.6, "flip": true})).unwrap();
     let flipped = circle(&s);
-    let r = |p: &vectorcraft_geom::PathData| Shape::bounding_box(&p.to_bezpath());
-    let (a, b) = (r(&before), r(&flipped));
-    assert!(
-        (a.x0 - b.x0).abs() < 1e-6 && (a.y0 - b.y0).abs() < 1e-6 && (a.x1 - b.x1).abs() < 1e-6 && (a.y1 - b.y1).abs() < 1e-6,
-        "the flip runs the same circle the other way: {a:?} {b:?}"
-    );
+    // The same circle run the other way: every point of the flipped path lies on the original, and
+    // there the two run in opposite directions.
+    let (orig, flip) = (vectorcraft_geom::ArcPath::new(&before), vectorcraft_geom::ArcPath::new(&flipped));
+    assert!((orig.len() - flip.len()).abs() < 1e-6);
+    for i in 0..48 {
+        let (p, dir) = flip.at(flip.len() * f64::from(i) / 48.0);
+        let f = orig.fraction_at(p).unwrap();
+        let (q, odir) = orig.at(f * orig.len());
+        assert!(p.distance(q) < 1e-3, "off the circle at {p:?}");
+        assert!(dir.dot(odir) < -0.999, "not reversed at {p:?}: {dir:?} vs {odir:?}");
+    }
 }

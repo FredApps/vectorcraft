@@ -155,10 +155,16 @@ pub(crate) fn port_near(cx: &ToolContext, p: Point) -> Option<(NodeId, Port, f64
     }
     let h = cx.tol(PORT_HALF_PX + 1.0);
     let near = |c: Point| (c.x - p.x).abs() <= h && (c.y - p.y).abs() <= h;
-    cx.selection.objects.iter().find_map(|id| {
-        let t = ported(cx.doc, *id)?;
-        [Port::Out, Port::In].into_iter().find_map(|port| port_centre(t, port, cx.tol(1.0)).filter(|c| near(*c)).map(|c| (*id, port, c.distance(p))))
-    })
+    // The nearest port within reach, of every selected frame: ports of overlapping frames can both
+    // be in reach.
+    cx.selection
+        .objects
+        .iter()
+        .filter_map(|id| ported(cx.doc, *id).map(|t| (*id, t)))
+        .flat_map(|(id, t)| [Port::Out, Port::In].into_iter().filter_map(move |port| port_centre(t, port, cx.tol(1.0)).map(|c| (id, port, c))))
+        .filter(|(_, _, c)| near(*c))
+        .map(|(id, port, c)| (id, port, c.distance(p)))
+        .min_by(|a, b| a.2.total_cmp(&b.2))
 }
 
 /// Which selected text overflows, for [`thread_ports`]: each text object's layout verdict kept

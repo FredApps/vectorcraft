@@ -650,6 +650,7 @@ impl Tool for SelectionTool {
         self.hover = None;
         self.distance = None;
         self.alt_hover = false;
+        self.bracket_hover = None;
     }
 
     fn wants_rehover(&self) -> bool {
@@ -857,7 +858,8 @@ impl Tool for SelectionTool {
 
     fn overlays(&self, cx: &ToolContext) -> Vec<Overlay> {
         let drag = if let State::Bracket(b) = &self.state { Some(b) } else { None };
-        let mut o = pathtype::overlays(cx, self.bracket_hover, drag);
+        // Highlighted only where a press would take the bracket, not a nearer port.
+        let mut o = pathtype::overlays(cx, self.bracket_hover.filter(|p| over_bracket(cx, *p)), drag);
         if let Some(source) = cx.isolation.and_then(|id| cx.doc.node(id)).filter(|n| n.name.as_deref() == Some(vectorcraft_doc::shaper::SOURCES)) {
             for n in source.children().into_iter().flatten() {
                 if let Some(path) = n.path_data() {
