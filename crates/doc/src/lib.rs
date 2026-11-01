@@ -142,7 +142,7 @@ pub use guides::{GridPrefs, Guide, RulerMode};
 #[cfg(test)]
 use limits::MAX_NEXT_ID;
 pub use limits::{DocError, FORMAT_VERSION, MAX_COORD};
-pub use records::{ImageBlob, MaskEdit, NewArtIds, SavedSelection, SavedView, Symbol};
+pub use records::{ImageBlob, MaskEdit, NewArtIds, SavedSelection, SavedView, Symbol, SymbolEdit};
 pub use units::{ColorMode, Unit, parse_number};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -222,6 +222,10 @@ pub struct Document {
     /// still read so files saved mid-edit by older versions load without the editing layer.
     #[serde(default, skip_serializing)]
     pub mask_edit: Option<MaskEdit>,
+    /// Symbol editing mode, while active. Never saved (see [`Document::without_edit_modes`]): the
+    /// symbol already holds the art of its editing layer.
+    #[serde(default, skip_serializing)]
+    pub symbol_edit: Option<SymbolEdit>,
     next_id: u64,
     /// Foreign data preserved on round-trip.
     #[serde(default, skip_serializing_if = "skip::is_empty_map")]

@@ -910,6 +910,7 @@ font-technology	Variable	Променливи
 	Edit Selection	Редактиране на селекцията
 	Edit Selection…	Редактиране на селекцията…
 	Edit Symbol	Редактиране на символ
+	Exit Symbol Editing Mode	Изход от режим на редактиране на символ
 	Edit Text	Редактиране на текст
 	Edit the applied effect, or add another one?	Да се редактира ли приведеният ефект или да се добави друг?
 	Edit the point	Редактиране на точката
@@ -4221,6 +4222,8 @@ axis	Both	И двете
 @msg	select an Intertwine group	изберете група за преплитане (Intertwine)
 @msg	select a stroke with a variable width	изберете щрих с променлива дебелина
 @msg	select a symbol instance	изберете екземпляр на символ
+@msg	select instances of one symbol	изберете екземпляри на един символ
+@msg	a symbol can't hold an instance of itself	символ не може да съдържа свой собствен екземпляр
 @msg	select an Image Trace object	изберете обект за трасиране на изображение (Image Trace)
 @msg	could not decode image: {0}	изображението не може да бъде декодирано: {0}
 @msg	image is empty	изображението е празно

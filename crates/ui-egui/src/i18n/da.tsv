@@ -2872,6 +2872,7 @@ theme	Appearance	Udseende
 	Duplicate Brush	Duplikér pensel
 	Duplicate Symbol	Duplikér symbol
 	Edit Symbol	Redigér symbol
+	Exit Symbol Editing Mode	Afslut symbolredigeringstilstand
 	Expand Brush Strokes	Udvid penselstrøg
 	New Brush…	Ny pensel…
 	New Brush	Ny pensel
@@ -4323,6 +4324,8 @@ imageTrace	Outline	Kontur
 @msg	select a repeat	markér en gentagelse
 @msg	select a stroke with a variable width	markér en streg med variabel bredde
 @msg	select a symbol instance	markér en symbolforekomst
+@msg	select instances of one symbol	markér forekomster af ét symbol
+@msg	a symbol can't hold an instance of itself	et symbol kan ikke indeholde en forekomst af sig selv
 @msg	select an Image Trace object	markér et Image Trace-objekt
 @msg	could not decode image: {0}	kunne ikke afkode billedet: {0}
 @msg	image is empty	billedet er tomt

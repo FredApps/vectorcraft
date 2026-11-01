@@ -2685,6 +2685,7 @@ theme	Appearance	იერსახე
 	Duplicate Brush	ფუნჯის დუბლირება
 	Duplicate Symbol	სიმბოლოს დუბლირება
 	Edit Symbol	სიმბოლოს რედაქტირება
+	Exit Symbol Editing Mode	სიმბოლოს რედაქტირების რეჟიმიდან გამოსვლა
 	Expand Brush Strokes	ფუნჯის შტრიხების გაშლა
 	New Brush…	ახალი ფუნჯი…
 	New Brush	ახალი ფუნჯი
@@ -4108,6 +4109,8 @@ font-technology	Variable	ცვლადი
 @msg	select a repeat	მონიშნეთ გამეორება
 @msg	select a stroke with a variable width	მონიშნეთ ცვლადი სიგანის კონტური
 @msg	select a symbol instance	მონიშნეთ სიმბოლოს ეგზემპლარი
+@msg	select instances of one symbol	მონიშნეთ ერთი სიმბოლოს ეგზემპლარები
+@msg	a symbol can't hold an instance of itself	სიმბოლო ვერ შეიცავს საკუთარ ეგზემპლარს
 @msg	select an Image Trace object	მონიშნეთ გამოსახულების ვექტორიზაციის ობიექტი
 @msg	could not decode image: {0}	გამოსახულების დეკოდირება ვერ მოხერხდა: {0}
 @msg	image is empty	გამოსახულება ცარიელია

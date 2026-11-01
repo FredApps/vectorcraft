@@ -815,6 +815,7 @@
 	Edit selected paths within:	Editar caminhos selecionados a menos de:
 	Edit Selection…	Editar Seleção…
 	Edit Symbol	Editar Símbolo
+	Exit Symbol Editing Mode	Sair do Modo de Edição de Símbolo
 	Edit Text	Editar Texto
 	Edit Theme	Editar Tema
 	Edit Views…	Editar Visualizações…
@@ -3925,6 +3926,8 @@ axis	Both	Ambos
 @msg	a clipping path can't be attached to a path	um caminho de recorte não pode ser anexado a um caminho
 @msg	select a stroke with a variable width	selecione um traço com largura variável
 @msg	select a symbol instance	selecione uma instância de símbolo
+@msg	select instances of one symbol	selecione instâncias de um único símbolo
+@msg	a symbol can't hold an instance of itself	um símbolo não pode conter uma instância de si mesmo
 @msg	select an Image Trace object	selecione um objeto de Vetorização de imagem
 @msg	could not decode image: {0}	não foi possível decodificar a imagem: {0}
 @msg	image is empty	a imagem está vazia

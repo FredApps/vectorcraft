@@ -904,6 +904,7 @@ font-technology	Variable	Variabel
 	Edit Selection	Auswahl bearbeiten
 	Edit Selection…	Auswahl bearbeiten…
 	Edit Symbol	Symbol bearbeiten
+	Exit Symbol Editing Mode	Symbolbearbeitungsmodus beenden
 	Edit Text	Text bearbeiten
 	Edit the applied effect, or add another one?	Den angewendeten Effekt bearbeiten oder einen weiteren hinzufügen?
 	Edit the point	Punkt bearbeiten
@@ -4268,6 +4269,8 @@ theme	Appearance	Erscheinungsbild
 @msg	a clipping path can't be attached to a path	ein Schnittpfad kann nicht an einen Pfad angehängt werden
 @msg	select a stroke with a variable width	wählen Sie eine Kontur mit variabler Breite aus
 @msg	select a symbol instance	wählen Sie eine Symbolinstanz aus
+@msg	select instances of one symbol	wählen Sie Instanzen eines einzigen Symbols aus
+@msg	a symbol can't hold an instance of itself	ein Symbol kann keine Instanz von sich selbst enthalten
 @msg	select an Image Trace object	wählen Sie ein Bildnachzeichner-Objekt aus
 @msg	could not decode image: {0}	das Bild konnte nicht dekodiert werden: {0}
 @msg	image is empty	das Bild ist leer
