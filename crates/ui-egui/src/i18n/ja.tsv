@@ -5801,3 +5801,10 @@ breakText	Glyphs	字形
 	Text Flow	テキストの流れ
 	By Rows	行方向
 	By Columns	列方向
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	不透明度をランダム化…
+	Randomize Opacity	不透明度をランダム化
+	Minimum:	最小:
+	Maximum:	最大:
+	Seed:	シード:
+@msg	`min` is greater than `max`	`min` が `max` より大きくなっています

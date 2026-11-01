@@ -5734,3 +5734,10 @@ breakText	Glyphs	Glifi
 	Text Flow	Flusso del testo
 	By Rows	Per righe
 	By Columns	Per colonne
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Opacità casuale…
+	Randomize Opacity	Opacità casuale
+	Minimum:	Minimo:
+	Maximum:	Massimo:
+	Seed:	Seme:
+@msg	`min` is greater than `max`	`min` è maggiore di `max`

@@ -6167,3 +6167,10 @@ breakText	Glyphs	Glyfer
 	Text Flow	Textflöde
 	By Rows	Radvis
 	By Columns	Kolumnvis
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Slumpmässig opacitet…
+	Randomize Opacity	Slumpmässig opacitet
+	Minimum:	Minimum:
+	Maximum:	Maximum:
+	Seed:	Startvärde:
+@msg	`min` is greater than `max`	`min` är större än `max`

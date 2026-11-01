@@ -6058,3 +6058,10 @@ breakText	Glyphs	Glyphs
 	Text Flow	Tekstdoorloop
 	By Rows	Per rij
 	By Columns	Per kolom
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Willekeurige dekking…
+	Randomize Opacity	Willekeurige dekking
+	Minimum:	Minimum:
+	Maximum:	Maximum:
+	Seed:	Startwaarde:
+@msg	`min` is greater than `max`	`min` is groter dan `max`

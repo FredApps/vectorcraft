@@ -5697,3 +5697,10 @@ breakText	Glyphs	글리프
 	Text Flow	텍스트 흐름
 	By Rows	행 방향
 	By Columns	열 방향
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	불투명도 무작위화…
+	Randomize Opacity	불투명도 무작위화
+	Minimum:	최소:
+	Maximum:	최대:
+	Seed:	시드:
+@msg	`min` is greater than `max`	`min`이(가) `max`보다 큽니다

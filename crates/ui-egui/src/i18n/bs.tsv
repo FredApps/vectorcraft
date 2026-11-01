@@ -6032,3 +6032,10 @@ shape	Open	Otvoren
 	Text Flow	Tok teksta
 	By Rows	Po redovima
 	By Columns	Po kolonama
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Nasumična neprozirnost…
+	Randomize Opacity	Nasumična neprozirnost
+	Minimum:	Minimum:
+	Maximum:	Maksimum:
+	Seed:	Početna vrijednost:
+@msg	`min` is greater than `max`	`min` je veće od `max`

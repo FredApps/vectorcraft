@@ -6101,3 +6101,10 @@ breakText	Glyphs	Glifák
 	Text Flow	Szövegfolyás
 	By Rows	Soronként
 	By Columns	Oszloponként
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Véletlenszerű átlátszatlanság…
+	Randomize Opacity	Véletlenszerű átlátszatlanság
+	Minimum:	Minimum:
+	Maximum:	Maximum:
+	Seed:	Kezdőérték:
+@msg	`min` is greater than `max`	`min` nagyobb, mint `max`

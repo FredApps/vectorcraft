@@ -6072,3 +6072,10 @@ breakText	Glyphs	Glifler
 	Text Flow	Metin Akışı
 	By Rows	Satırlara Göre
 	By Columns	Sütunlara Göre
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Rastgele Opaklık…
+	Randomize Opacity	Rastgele Opaklık
+	Minimum:	En Az:
+	Maximum:	En Çok:
+	Seed:	Başlangıç Değeri:
+@msg	`min` is greater than `max`	`min`, `max` değerinden büyük

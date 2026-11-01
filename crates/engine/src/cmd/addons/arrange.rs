@@ -3,8 +3,9 @@
 //! Replace with Top Object puts a copy of the topmost selected object in place of each of the
 //! others; and Set Size of Each gives every selected object an exact width and height. Places and
 //! sizes are measured and set as `object.setBounds` does. Group Overlapping Objects groups the
-//! objects whose visual bounds overlap. Its submenu (Object › Plug-ins › Arrange
-//! Tools), its dialogs and Zoom to Selection (a view command) are the UI's.
+//! objects whose visual bounds overlap, and Randomize Opacity gives each selected object a random
+//! opacity. Its submenu (Object › Plug-ins › Arrange Tools), its dialogs and Zoom to Selection (a
+//! view command) are the UI's.
 
 #[cfg(test)]
 mod tests;
@@ -12,14 +13,16 @@ mod tests;
 use std::sync::Arc;
 
 use serde_json::{Value, json};
+use vectorcraft_color::recolor::Rng;
 use vectorcraft_doc::{Node, NodeId, OrientedBox};
 use vectorcraft_geom::{Affine, Point, Rect};
 use vectorcraft_render::effects;
 
 use super::super::edit::selected_roots;
+use super::super::menucmds::whole_or;
 use super::super::object::{choice, object_bounds_transform, scaling, transform_node, transform_patterns};
 use super::super::typecmd::refresh_bounds_of;
-use super::super::{CommandSpec, bad, cmd, has_doc, has_multi, has_selection, number_or, switch_or};
+use super::super::{CommandSpec, bad, checked_ids_or_selection, cmd, has_doc, has_multi, has_selection, number_or, switch_or};
 use crate::{EngineError, Result, Session};
 
 /// The largest gap, width or height (pt) the commands take.
@@ -77,6 +80,15 @@ pub fn specs() -> Vec<CommandSpec> {
             "{} group the selected objects (the top-level ones, at most 20000) wherever their visual bounds overlap or touch, chains included (when A overlaps B and B overlaps C, all three go in one group), as one undo step. Only objects in the same layer or group are grouped together, objects that overlap nothing stay as they are, and each new group goes where its frontmost member was in the stacking order; the new groups and the objects left alone stay selected → {groups: [id…], grouped (how many objects went into groups)}",
             has_multi,
             group_overlapping
+        ),
+        cmd!(
+            "addon.arrange.randomizeOpacity",
+            "Randomize Opacity",
+            ["Object", "Plug-ins", "Arrange Tools"],
+            None,
+            "{min?: % 0..100 (30), max?: % 0..100 (100; not less than min), seed?: whole number (0; the same seed, objects and range give the same opacities), ids?: [id…] (default: the selection)} give each selected object (the top-level ones) its own opacity, picked at random and evenly from min to max, as one undo step; it is the object's opacity, as the Transparency panel sets it → {count}",
+            has_selection,
+            randomize_opacity
         ),
     ]
 }
@@ -355,4 +367,29 @@ fn group_overlapping(s: &mut Session, _: &Value) -> Result<Value> {
         Ok(groups)
     })?;
     Ok(json!({ "groups": groups.iter().map(|i| i.0).collect::<Vec<_>>(), "grouped": grouped.len() }))
+}
+
+fn randomize_opacity(s: &mut Session, p: &Value) -> Result<Value> {
+    const C: &str = "addon.arrange.randomizeOpacity";
+    let min = number_in(p, "min", 30.0, (0.0, 100.0), C)?;
+    let max = number_in(p, "max", 100.0, (0.0, 100.0), C)?;
+    if min > max {
+        return Err(bad(C, "`min` is greater than `max`"));
+    }
+    let mut rng = Rng::new(whole_or(p, "seed", 0, C)?);
+    let ids = checked_ids_or_selection(s, p, C)?;
+    if ids.is_empty() {
+        return Ok(json!({ "count": 0 }));
+    }
+    let (lo, hi) = ((min / 100.0) as f32, (max / 100.0) as f32);
+    s.edit("Randomize Opacity", |d, _| {
+        for id in &ids {
+            let o = rng.range(lo, hi);
+            if let Some(n) = d.node_mut(*id) {
+                n.opacity = o;
+            }
+        }
+        Ok(())
+    })?;
+    Ok(json!({ "count": ids.len() }))
 }

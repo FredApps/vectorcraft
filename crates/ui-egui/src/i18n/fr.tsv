@@ -6112,3 +6112,10 @@ breakText	Glyphs	Glyphes
 	Text Flow	Flux du texte
 	By Rows	Par lignes
 	By Columns	Par colonnes
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Opacité aléatoire…
+	Randomize Opacity	Opacité aléatoire
+	Minimum:	Minimum :
+	Maximum:	Maximum :
+	Seed:	Graine :
+@msg	`min` is greater than `max`	`min` est supérieur à `max`

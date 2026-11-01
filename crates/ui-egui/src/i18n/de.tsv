@@ -5700,3 +5700,10 @@ breakText	Glyphs	Glyphen
 	Text Flow	Textfluss
 	By Rows	Nach Zeilen
 	By Columns	Nach Spalten
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Zufällige Deckkraft…
+	Randomize Opacity	Zufällige Deckkraft
+	Minimum:	Minimum:
+	Maximum:	Maximum:
+	Seed:	Startwert:
+@msg	`min` is greater than `max`	`min` ist größer als `max`

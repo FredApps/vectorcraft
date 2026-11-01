@@ -6014,3 +6014,10 @@ breakText	Glyphs	Glif
 	Text Flow	Alur teks
 	By Rows	Per baris
 	By Columns	Per kolom
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Opasitas acak…
+	Randomize Opacity	Opasitas acak
+	Minimum:	Minimum:
+	Maximum:	Maksimum:
+	Seed:	Benih:
+@msg	`min` is greater than `max`	`min` lebih besar dari `max`

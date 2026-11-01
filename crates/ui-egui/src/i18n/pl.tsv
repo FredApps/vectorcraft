@@ -5970,3 +5970,10 @@ breakText	Glyphs	Glify
 	Text Flow	Przepływ tekstu
 	By Rows	Wierszami
 	By Columns	Kolumnami
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Losowe krycie…
+	Randomize Opacity	Losowe krycie
+	Minimum:	Minimum:
+	Maximum:	Maksimum:
+	Seed:	Ziarno:
+@msg	`min` is greater than `max`	`min` jest większe niż `max`
