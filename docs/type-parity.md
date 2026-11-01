@@ -1,6 +1,6 @@
 # Type parity
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Serbian in Cyrillic and Latin and Croatian among the languages, with their quote marks; previously minor: Digits: the native digits of the Indic scripts, #4942; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Serbian in Cyrillic and Latin and Croatian among the languages, with their quote marks; previously minor: Area Type Options › Text Flow by rows or by columns, #4978; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x)
 
 Type is Illustrator's largest single area by use (weight 13 of 105 across "Type core" and "Type advanced" in
 [target-app-parity.md](target-app-parity.md)). This checklist lists the features one by one. Status is from the
@@ -73,8 +73,6 @@ Character Styles menu New/Redefine and footer New capture the first selected cha
 | Date | Change | Summary |
 |---|---|---|
 | 2026-11-01 | minor | Serbian: Cyrillic (`sr-Cyrl`), Serbian: Latin (`sr-Latn`) and Croatian (`hr`) in the language list, with their quote marks (Serbian „…” and ’…’ per the Pravopis srpskoga jezika, Matica srpska 2010, ISBN 978-86-7946-079-0, т. 168, and [CLDR `sr`](https://github.com/unicode-org/cldr/blob/main/common/main/sr.xml); Croatian „…“ and ‚…‘ per [CLDR `hr`](https://github.com/unicode-org/cldr/blob/main/common/main/hr.xml)); Serbian text gets the fonts' Serbian forms (italic б, г, д, п, т); scores unchanged |
-| 2026-11-01 | minor | Serbian: Cyrillic (`sr-Cyrl`), Serbian: Latin (`sr-Latn`) and Croatian (`hr`) in the language list, with their quote marks (Serbian „…” and ’…’ per the Pravopis srpskoga jezika, Matica srpska 2010, ISBN 978-86-7946-079-0, т. 168, and [CLDR `sr`](https://github.com/unicode-org/cldr/blob/main/common/main/sr.xml); Croatian „…“ and ‚…‘ per [CLDR `hr`](https://github.com/unicode-org/cldr/blob/main/common/main/hr.xml)); Serbian text gets the fonts' Serbian forms (italic б, г, д, п, т). Illustrator lists Croatian but not Serbian; scores unchanged |
-| 2026-11-01 | minor | Serbian: Cyrillic (`sr-Cyrl`), Serbian: Latin (`sr-Latn`) and Croatian (`hr`) in the language list, with their quote marks (Serbian „…” and ’…’ per the Pravopis and CLDR, Croatian „…“ and ‚…‘ per CLDR); Serbian text gets the fonts' Serbian forms (italic б, г, д, п, т). the reference app lists Croatian but not Serbian; scores unchanged |
 | 2026-11-01 | minor | Area Type Options › Text Flow (#4978): By Rows / By Columns radio buttons and `text.areaOptions {flow}`; area type with several rows and columns fills them across each row first or down each column first (the default, so existing documents are unchanged; saved only when by rows); scores unchanged |
 | 2026-11-01 | minor | Digits (#4942): the native digits of Devanagari, Bengali, Gurmukhi, Gujarati, Odia, Tamil, Telugu, Kannada and Malayalam in the Character panel menu › Digits and `{digits}`; scores unchanged |
 | 2026-11-01 | minor | Language per character (#4946): Character panel › Language, `text.setFormat` / `text.setRangeStyle {language}`, character styles; text is shaped in its language (`locl`, #4940); new type takes the document's; Indian languages in the list (#4943); scores unchanged |
