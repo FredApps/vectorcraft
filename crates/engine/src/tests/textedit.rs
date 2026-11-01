@@ -325,6 +325,16 @@ fn type_commands_refuse_a_number_or_boolean_given_as_text() {
             ("text.setRangeStyle", json!({"id": id.0, "allCaps": 1}), "allCaps"),
             ("text.setRangeStyle", json!({"id": id.0, "noBreak": "true"}), "noBreak"),
             ("text.setRangeStyle", json!({"id": id.0, "size": 30, "tateChuYoko": 1}), "tateChuYoko"),
+            ("text.setFormat", json!({"ids": [id.0], "underline": "true"}), "underline"),
+            ("text.setFormat", json!({"ids": [id.0], "strikethrough": 1}), "strikethrough"),
+            ("text.setFormat", json!({"ids": [id.0], "allCaps": "false"}), "allCaps"),
+            ("text.setFormat", json!({"ids": [id.0], "proportionalMetrics": 1}), "proportionalMetrics"),
+            ("text.setFormat", json!({"ids": [id.0], "tateChuYoko": "true"}), "tateChuYoko"),
+            ("text.setFormat", json!({"ids": [id.0], "standardVerticalRoman": "true"}), "standardVerticalRoman"),
+            ("text.setFormat", json!({"ids": [id.0], "rotation": 10, "noBreak": 1}), "noBreak"),
+            ("text.setFormat", json!({"ids": [id.0], "hyphenate": "false"}), "hyphenate"),
+            ("text.setFormat", json!({"ids": [id.0], "hyphenateCapitalized": 0}), "hyphenateCapitalized"),
+            ("text.setFormat", json!({"ids": [id.0], "romanHangingPunctuation": "true"}), "romanHangingPunctuation"),
             ("text.getRange", json!({"id": id.0, "effective": "true"}), "effective"),
             ("type.opticalMarginAlignment", json!({"on": "true"}), "on"),
             ("type.systemLayout", json!({"on": "true"}), "on"),
@@ -338,12 +348,13 @@ fn type_commands_refuse_a_number_or_boolean_given_as_text() {
     assert!(wrong.is_empty(), "not refused: {wrong:#?}");
     let style = json!({"id": id.0, "size": 30, "underline": true, "tracking": null, "start": null, "noBreak": true});
     s.execute("text.setRangeStyle", &style).unwrap();
+    s.execute("text.setFormat", &json!({"ids": [id.0], "strikethrough": true, "hyphenate": null})).unwrap();
     s.execute("type.size.increase", &json!({"by": null})).unwrap();
     s.execute("type.opticalMarginAlignment", &json!({"on": true})).unwrap();
     s.execute("type.ruby", &json!({"text": "a", "size": null, "overhang": false})).unwrap();
     let t = obj(&s, id);
     let st = &t.runs[0].style;
-    assert!(st.underline && st.no_break && t.optical_margin && st.size > 30.0, "{st:?}");
+    assert!(st.underline && st.strikethrough && st.no_break && t.optical_margin && st.size > 30.0, "{st:?}");
     assert!(!t.ruby.is_empty() && t.ruby.iter().all(|r| !r.overhang && r.size_percent == 50.0), "{:?}", t.ruby);
 }
 

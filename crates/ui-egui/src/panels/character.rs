@@ -419,11 +419,12 @@ pub(crate) fn highlight(app: &mut VectorcraftApp, field: Field) -> Result<Value,
 }
 
 /// `type.underline` (Cmd+Shift+U): what the Underline button does, on the text the panels act on.
-/// Returns whether the text is now underlined.
+/// Returns whether the text is now underlined: off only when every character was underlined.
 pub(crate) fn toggle_underline(app: &mut VectorcraftApp) -> Result<Value, String> {
-    let (s, _) = text_style(app).ok_or("select some type first")?;
-    format(app, json!({"underline": !s.underline}));
-    Ok(json!(!s.underline))
+    text_style(app).ok_or("select some type first")?;
+    let on = shared(app, |s| s.underline) != Some(true);
+    format(app, json!({"underline": on}));
+    Ok(json!(on))
 }
 
 /// `text.setRangeStyle` with `p` on the range the Type tool has selected (the whole text when
@@ -946,15 +947,19 @@ fn attributes(app: &mut VectorcraftApp, ui: &mut Ui) {
     }
     ui.add_space(4.0);
     ui.horizontal(|ui| {
+        // On only when every character the panel acts on has it; a mixed selection turns it on.
+        let all_caps = shared(app, |s| s.all_caps) == Some(true);
         let small = shared(app, |s| s.small_caps.is_some()) == Some(true);
         let position = shared(app, |s| s.position).map(|p| p.id()).unwrap_or("");
+        let underline = shared(app, |s| s.underline) == Some(true);
+        let strike = shared(app, |s| s.strikethrough) == Some(true);
         for (kind, tip, on, change) in [
-            (Glyph::AllCaps, tl!("All Caps"), s.all_caps, json!({"allCaps": !s.all_caps})),
+            (Glyph::AllCaps, tl!("All Caps"), all_caps, json!({"allCaps": !all_caps})),
             (Glyph::SmallCaps, tl!("Small Caps"), small, json!({"smallCaps": !small})),
             (Glyph::Super, tl!("Superscript"), position == "superscript", position_toggle(position, "superscript")),
             (Glyph::Sub, tl!("Subscript"), position == "subscript", position_toggle(position, "subscript")),
-            (Glyph::Underline, tl!("Underline"), s.underline, json!({"underline": !s.underline})),
-            (Glyph::Strike, tl!("Strikethrough"), s.strikethrough, json!({"strikethrough": !s.strikethrough})),
+            (Glyph::Underline, tl!("Underline"), underline, json!({"underline": !underline})),
+            (Glyph::Strike, tl!("Strikethrough"), strike, json!({"strikethrough": !strike})),
         ] {
             if style_toggle(ui, kind, tip, on) {
                 format(app, change);
@@ -1093,8 +1098,7 @@ fn digits_items(app: &mut VectorcraftApp, ui: &mut Ui, digits: Option<vectorcraf
 }
 
 pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
-    let st = text_style(app);
-    let has = st.is_some();
+    let has = text_style(app).is_some();
     let hidden: bool = pstate(ui.ctx(), "ch-hide-options");
     if menu_item(ui, if hidden { tl!("Show Options") } else { tl!("Hide Options") }, true, false) {
         set_pstate(ui.ctx(), "ch-hide-options", !hidden);
@@ -1109,11 +1113,12 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
         set_pstate(ui.ctx(), FONT_HEIGHT_OPTIONS, !heights);
     }
     ui.separator();
-    let s = st.map(|x| x.0);
+    // A check item is checked when every character the panel acts on has it; choosing it with a
+    // mixed selection turns it on.
     for (label, key, on) in [
-        (tl!("All Caps"), "allCaps", s.as_ref().is_some_and(|s| s.all_caps)),
-        (tl!("Underline"), "underline", s.as_ref().is_some_and(|s| s.underline)),
-        (tl!("Strikethrough"), "strikethrough", s.as_ref().is_some_and(|s| s.strikethrough)),
+        (tl!("All Caps"), "allCaps", shared(app, |s| s.all_caps) == Some(true)),
+        (tl!("Underline"), "underline", shared(app, |s| s.underline) == Some(true)),
+        (tl!("Strikethrough"), "strikethrough", shared(app, |s| s.strikethrough) == Some(true)),
     ] {
         if menu_item(ui, label, has, on) {
             format(app, json!({key: !on}));
@@ -1134,7 +1139,7 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
     // Character Alignment: where characters smaller than the largest on their line line up, with
     // the East Asian options.
     if app.session.prefs.show_east_asian_options {
-        let align = s.as_ref().map(|s| s.char_align);
+        let align = shared(app, |s| s.char_align);
         ui.add_enabled_ui(has, |ui| {
             // Indented like the items beside it (their check column).
             ui.menu_button(format!("   {}", tl!("Character Alignment")), |ui| {
@@ -1154,12 +1159,12 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
             });
         });
         // Proportional Metrics: full-width glyphs on the font's proportional widths (`palt`, `vpal`).
-        let proportional = s.as_ref().is_some_and(|s| s.proportional_metrics);
+        let proportional = shared(app, |s| s.proportional_metrics) == Some(true);
         if menu_item(ui, tl!("Proportional Metrics"), has, proportional) {
             format(app, json!({"proportionalMetrics": !proportional}));
         }
         // Tate-chu-yoko: the selected characters stand side by side across one em of a vertical column.
-        let tcy = s.as_ref().is_some_and(|s| s.tate_chu_yoko);
+        let tcy = shared(app, |s| s.tate_chu_yoko) == Some(true);
         if menu_item(ui, tl!("Tate-chu-yoko"), has, tcy) {
             format(app, json!({"tateChuYoko": !tcy}));
         }
@@ -1175,7 +1180,7 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
     // Digits: the numeral system the selected characters' digits are drawn in, with the Middle
     // Eastern (Indic) options, as Paragraph Direction is in the Paragraph panel.
     if app.session.prefs.show_indic_options {
-        let digits = s.as_ref().map(|s| s.digits);
+        let digits = shared(app, |s| s.digits);
         ui.add_enabled_ui(has, |ui| {
             ui.menu_button(format!("   {}", tl!("Digits")), |ui| digits_items(app, ui, digits));
         });
@@ -1185,7 +1190,7 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
         ui.separator();
     }
     // No Break: the selected characters stay on one line.
-    let no_break = s.as_ref().is_some_and(|s| s.no_break);
+    let no_break = shared(app, |s| s.no_break) == Some(true);
     if menu_item(ui, tl!("No Break"), has, no_break) {
         format(app, json!({"noBreak": !no_break}));
     }

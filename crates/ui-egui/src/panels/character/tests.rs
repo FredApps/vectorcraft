@@ -415,9 +415,17 @@ fn bold_and_italic_pick_the_familys_own_faces() {
 }
 
 /// From one frame of the panel: a point inside each of the Small Caps, Superscript and
-/// Subscript buttons, and which of them are drawn on. The two buttons with a "1" are
-/// Superscript (the "1" up) and Subscript; Small Caps is the button before them.
+/// Subscript buttons, and which of them are drawn on.
 fn script_buttons(ctx: &egui::Context, app: &mut VectorcraftApp) -> ([egui::Pos2; 3], [bool; 3]) {
+    let (points, on) = style_buttons(ctx, app);
+    ([points[1], points[2], points[3]], [on[1], on[2], on[3]])
+}
+
+/// From one frame of the panel: a point inside each of the All Caps, Small Caps, Superscript,
+/// Subscript, Underline and Strikethrough buttons, and which of them are drawn on. The two buttons
+/// with a "1" are Superscript (the "1" up) and Subscript; the others sit one button apart from them
+/// in that order.
+fn style_buttons(ctx: &egui::Context, app: &mut VectorcraftApp) -> ([egui::Pos2; 6], [bool; 6]) {
     let mut out = ctx.run_ui(egui::RawInput::default(), |ui| show(app, ui));
     out.textures_delta.clear();
     fn walk(s: &egui::Shape, on: egui::Color32, ones: &mut Vec<egui::Pos2>, lit: &mut Vec<egui::Rect>) {
@@ -437,7 +445,8 @@ fn script_buttons(ctx: &egui::Context, app: &mut VectorcraftApp) -> ([egui::Pos2
     // Each "1" is drawn 6 points right of its button's center and 5 points above or below it.
     let y = (sup.y + sub.y) / 2.0;
     let (sup, sub) = (egui::pos2(sup.x - 6.0, y), egui::pos2(sub.x - 6.0, y));
-    let points = [sup - vec2(sub.x - sup.x, 0.0), sup, sub];
+    let step = vec2(sub.x - sup.x, 0.0);
+    let points = [sup - step * 2.0, sup - step, sup, sub, sub + step, sub + step * 2.0];
     (points, points.map(|p| lit.iter().any(|r| r.contains(p))))
 }
 
@@ -800,6 +809,131 @@ fn character_mixed_small_caps_and_position_show_off() {
         ["Small Caps", "Superscript", "Subscript"].map(|l| texts.iter().any(|(t, _)| *t == format!("✓ {l}")))
     };
     assert_eq!(checked(&mut app), [false, false, false]);
+}
+
+/// The All Caps, Underline and Strikethrough buttons are drawn off when only some of the selected
+/// characters have them, and a click turns them on for every character.
+#[test]
+fn mixed_all_caps_underline_and_strikethrough_buttons_show_off_and_turn_on() {
+    let mut app = VectorcraftApp::new(Session::new(), Default::default());
+    app.run("file.new", json!({"width": 300, "height": 200})).unwrap();
+    let id = app.run("text.create", json!({"x": 20, "y": 50, "text": "AB", "size": 12})).unwrap()["id"].as_u64().unwrap();
+    app.run("text.setRangeStyle", json!({"id": id, "start": 0, "end": 1, "allCaps": true, "underline": true, "strikethrough": true})).unwrap();
+    app.run("select.set", json!({"ids": [id]})).unwrap();
+    let flags = |app: &VectorcraftApp| match &app.session.active().unwrap().doc.node(NodeId(id)).unwrap().kind {
+        NodeKind::Text(t) => t.runs.iter().map(|r| [r.style.all_caps, r.style.underline, r.style.strikethrough]).collect::<Vec<_>>(),
+        _ => panic!("text"),
+    };
+    let ctx = egui::Context::default();
+    let (at, lit) = style_buttons(&ctx, &mut app);
+    assert_eq!([lit[0], lit[4], lit[5]], [false; 3]);
+    for (i, button) in [0, 4, 5].into_iter().enumerate() {
+        super::super::tests_appearance::click(&ctx, &mut app, at[button], show);
+        assert!(flags(&app).iter().all(|f| f[i]), "button {button}: {:?}", flags(&app));
+        assert!(style_buttons(&ctx, &mut app).1[button], "button {button}");
+    }
+}
+
+/// `type.underline` does what the Underline button does: with only some of the selected characters
+/// underlined it underlines all of them, and with all of them underlined it turns underlining off.
+#[test]
+fn underline_command_underlines_a_mixed_selection() {
+    let mut app = VectorcraftApp::new(Session::new(), Default::default());
+    app.run("file.new", json!({"width": 300, "height": 200})).unwrap();
+    let id = app.run("text.create", json!({"x": 20, "y": 50, "text": "AB", "size": 12})).unwrap()["id"].as_u64().unwrap();
+    app.run("text.setRangeStyle", json!({"id": id, "start": 0, "end": 1, "underline": true})).unwrap();
+    app.run("select.set", json!({"ids": [id]})).unwrap();
+    let underlined = |app: &VectorcraftApp| match &app.session.active().unwrap().doc.node(NodeId(id)).unwrap().kind {
+        NodeKind::Text(t) => t.runs.iter().map(|r| r.style.underline).collect::<Vec<_>>(),
+        _ => panic!("text"),
+    };
+    assert_eq!(super::toggle_underline(&mut app), Ok(json!(true)));
+    assert!(underlined(&app).iter().all(|u| *u), "{:?}", underlined(&app));
+    assert_eq!(super::toggle_underline(&mut app), Ok(json!(false)));
+    assert!(underlined(&app).iter().all(|u| !*u), "{:?}", underlined(&app));
+}
+
+/// The panel menu's All Caps, Underline, Strikethrough, Proportional Metrics, Tate-chu-yoko and
+/// No Break are unchecked when only some of the selected characters have them, and choosing one
+/// turns it on for every character.
+#[test]
+fn mixed_check_items_show_unchecked_and_turn_on() {
+    type Attribute = fn(&CharStyle) -> bool;
+    let items: [(&str, &str, Attribute); 6] = [
+        ("All Caps", "allCaps", |s| s.all_caps),
+        ("Underline", "underline", |s| s.underline),
+        ("Strikethrough", "strikethrough", |s| s.strikethrough),
+        ("Proportional Metrics", "proportionalMetrics", |s| s.proportional_metrics),
+        ("Tate-chu-yoko", "tateChuYoko", |s| s.tate_chu_yoko),
+        ("No Break", "noBreak", |s| s.no_break),
+    ];
+    let mut wrong = vec![];
+    for (label, key, has) in items {
+        let mut app = VectorcraftApp::new(Session::new(), Default::default());
+        app.session.prefs.show_east_asian_options = true;
+        app.run("file.new", json!({"width": 300, "height": 200})).unwrap();
+        let id = app.run("text.create", json!({"x": 20, "y": 50, "text": "AB"})).unwrap()["id"].as_u64().unwrap();
+        app.run("text.setRangeStyle", json!({"id": id, "start": 0, "end": 1, key: true})).unwrap();
+        app.run("select.set", json!({"ids": [id]})).unwrap();
+        let on = |app: &VectorcraftApp| match &app.session.active().unwrap().doc.node(NodeId(id)).unwrap().kind {
+            NodeKind::Text(t) => t.runs.iter().map(|r| has(&r.style)).collect::<Vec<_>>(),
+            _ => panic!("text"),
+        };
+        assert_eq!(on(&app), [true, false], "{label}");
+        let ctx = egui::Context::default();
+        let row = |app: &mut VectorcraftApp| {
+            let texts = super::super::tests_appearance::frame_events(&ctx, app, vec![], menu);
+            texts.into_iter().find(|(t, _)| t.trim_start_matches(['✓', ' ']) == label).unwrap_or_else(|| panic!("{label} missing"))
+        };
+        let (text, at) = row(&mut app);
+        super::super::tests_appearance::click(&ctx, &mut app, at.center(), menu);
+        let shown = row(&mut app).0;
+        if text.starts_with('✓') || !on(&app).iter().all(|o| *o) || !shown.starts_with('✓') {
+            wrong.push(format!("{label}: shown as {text:?}, then {:?} and {shown:?}", on(&app)));
+        }
+    }
+    assert!(wrong.is_empty(), "{wrong:#?}");
+}
+
+/// The panel menu's Character Alignment and Digits submenus check no item when the selected
+/// characters differ, and check the value they share.
+#[test]
+fn character_alignment_and_digits_check_nothing_for_a_mixed_selection() {
+    let mut app = VectorcraftApp::new(Session::new(), Default::default());
+    app.session.prefs.show_east_asian_options = true;
+    app.session.prefs.show_indic_options = true;
+    app.run("file.new", json!({"width": 300, "height": 200})).unwrap();
+    let id = app.run("text.create", json!({"x": 20, "y": 50, "text": "A1"})).unwrap()["id"].as_u64().unwrap();
+    app.run("text.setRangeStyle", json!({"id": id, "start": 0, "end": 1, "charAlign": "emBoxTop", "digits": "hindi"})).unwrap();
+    app.run("select.set", json!({"ids": [id]})).unwrap();
+    let press = |pos: egui::Pos2, pressed: bool| egui::Event::PointerButton {
+        pos,
+        button: egui::PointerButton::Primary,
+        pressed,
+        modifiers: Default::default(),
+    };
+    let ticked = |texts: &[(String, egui::Rect)]| texts.iter().filter_map(|(t, _)| t.strip_prefix("✓ ")).map(str::to_string).collect::<Vec<_>>();
+    // The items checked in the submenu `name` opens (not in the panel menu itself), in a fresh
+    // context, so that no other submenu is open.
+    let checked = |app: &mut VectorcraftApp, name: &str| {
+        let ctx = egui::Context::default();
+        crate::theme::install_fonts(&ctx);
+        let mut frame = |events: Vec<egui::Event>| super::super::tests_appearance::frame_events(&ctx, app, events, menu);
+        let texts = frame(vec![]);
+        let before = ticked(&texts);
+        let sub = texts.iter().find(|(t, _)| t.trim() == name).unwrap_or_else(|| panic!("{name} missing from {texts:?}")).1.center();
+        for e in [egui::Event::PointerMoved(sub), press(sub, true), press(sub, false)] {
+            frame(vec![e]);
+        }
+        let texts = frame(vec![]);
+        assert!(texts.iter().any(|(t, _)| t.contains("Roman Baseline") || t.contains("Hindi")), "{name} did not open: {texts:?}");
+        ticked(&texts).into_iter().filter(|t| !before.contains(t)).collect::<Vec<_>>()
+    };
+    let mixed = (checked(&mut app, "Character Alignment"), checked(&mut app, "Digits"));
+    assert_eq!(mixed, (vec![], vec![]));
+    app.run("text.setRangeStyle", json!({"id": id, "charAlign": "emBoxTop", "digits": "hindi"})).unwrap();
+    let same = (checked(&mut app, "Character Alignment"), checked(&mut app, "Digits"));
+    assert_eq!(same, (vec!["Em Box Top/Right".to_string()], vec!["Hindi".to_string()]));
 }
 
 /// At a caret in text the Type tool edits, with no characters selected, the Character
