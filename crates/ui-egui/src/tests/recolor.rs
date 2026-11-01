@@ -226,6 +226,144 @@ fn edit_harness(colors: &[&str]) -> egui_kittest::Harness<'static, VectorcraftAp
     h
 }
 
+/// Recolor Artwork open on the Assign tab of `app` (its art selected), drawn by a kittest harness.
+fn assign_harness(mut app: VectorcraftApp, open: Value) -> egui_kittest::Harness<'static, VectorcraftApp> {
+    app.run("ui.recolorDialog", open).unwrap();
+    set(&mut app, "method", json!("exact"));
+    let mut fonts = false;
+    let mut h = egui_kittest::Harness::builder().with_size(vec2(900.0, 800.0)).build_ui_state(
+        move |ui, app: &mut VectorcraftApp| {
+            if !std::mem::replace(&mut fonts, true) {
+                crate::theme::install_fonts(ui.ctx());
+                return;
+            }
+            dialogs::show(app, ui.ctx());
+        },
+        app,
+    );
+    h.run_steps(4);
+    h
+}
+
+/// Clicks the color slider named `name` at `at` (0 to 1) along its rail.
+fn click_slider(h: &mut egui_kittest::Harness<'_, VectorcraftApp>, name: &str, at: f32) {
+    let r = h.get_by_role_and_label(egui::accesskit::Role::Slider, name).rect();
+    let pos = egui::pos2(r.left() + 4.0 + at * (r.width() - 8.0), r.center().y);
+    h.input_mut().events.extend(press(pos, 1));
+    h.run_steps(3);
+}
+
+/// The fill of the first object of the document.
+fn first_fill(app: &VectorcraftApp) -> vectorcraft_color::Paint {
+    let d = &app.session.doc().unwrap().doc;
+    let id = d.layers[0].children().unwrap()[0].id;
+    d.node(id).unwrap().appearance.fill_paint()
+}
+
+/// The color mode menu's sliders edit the first selected row's new color in the mode picked (the
+/// other row keeps its color), the art previews it, and OK gives the art the color in that mode:
+/// a CMYK color on RGB art makes it CMYK. Cancel leaves the art as it was, with no undo step.
+#[test]
+fn the_color_sliders_edit_the_selected_rows_new_color_in_their_mode() {
+    for confirm in [true, false] {
+        let mut app = app();
+        art(&mut app, &["#0000ff", "#ff0000"]);
+        let before = first_fill(&app);
+        let undo = app.session.doc().unwrap().history.undo.len();
+        let mut h = assign_harness(app, json!({}));
+        let rows = field(h.state(), "rows");
+        let blue = 0;
+        assert_eq!(rows[blue]["from"], json!(["rgb 0 0 255"]), "the first object's blue is the first row");
+        // Both rows selected, the second one first: the sliders edit the first row.
+        set(h.state_mut(), "__sel", json!([1, blue]));
+        h.run_steps(2);
+        assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "R").is_some(), "RGB art shows the RGB sliders");
+        set(h.state_mut(), "sliderMode", json!("cmyk"));
+        h.run_steps(2);
+        click_slider(&mut h, "C", 0.5);
+        let edited = field(h.state(), "rows");
+        let to = edited[blue]["to"].as_str().unwrap().to_string();
+        assert!(to.starts_with("cmyk 50 "), "the first selected row takes C 50%: {to}");
+        assert_eq!(edited[1], rows[1], "the other selected row keeps its new color");
+        let Some(Color::Cmyk { c, .. }) = first_fill(h.state()).color() else {
+            panic!("the art previews the CMYK color: {:?}", first_fill(h.state()))
+        };
+        assert!((c - 0.5).abs() < 1e-3, "{c}");
+        h.get_by_label(if confirm { "OK" } else { "Cancel" }).click();
+        h.run_steps(2);
+        assert!(h.state().ui.dialog.is_none());
+        let app = h.state();
+        if confirm {
+            assert_eq!(first_fill(app).color(), vectorcraft_engine::cmd::color_value(&json!(to)), "OK keeps the color, in CMYK");
+            assert_eq!(app.session.doc().unwrap().history.undo.len(), undo + 1, "one undo step");
+        } else {
+            assert_eq!(first_fill(app), before, "Cancel leaves the art unchanged");
+            assert_eq!(app.session.doc().unwrap().history.undo.len(), undo, "and records no undo step");
+        }
+    }
+}
+
+/// A gray row shows HSB, and the sliders stay in HSB once an edit makes the color RGB.
+#[test]
+fn a_gray_row_keeps_the_hsb_sliders_while_it_is_edited() {
+    let mut app = app();
+    art(&mut app, &["gray 40"]);
+    let mut h = assign_harness(app, json!({}));
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "H").is_some(), "a gray row shows HSB");
+    click_slider(&mut h, "S", 0.5);
+    let to = field(h.state(), "rows")[0]["to"].clone();
+    assert!(to.as_str().is_some_and(|k| k.starts_with("rgb ")), "{to}");
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "H").is_some(), "still HSB after the edit");
+    assert_eq!(field(h.state(), "sliderMode"), json!("hsb"));
+}
+
+/// With Limit to Library, a row whose new color is a spot color of the library shows Tint, whose T
+/// slider sets the row's tint of it; OK links the art to the spot color at that tint.
+#[test]
+fn the_tint_slider_sets_a_spot_rows_tint() {
+    let mut app = app();
+    app.run("swatch.new", json!({"name": "Ink", "color": {"c": 0, "m": 1, "y": 0, "k": 0}, "spot": true})).unwrap();
+    let data = app.run("swatch.library.save", json!({"names": ["Ink"], "name": "Inks"})).unwrap()["data"].as_str().unwrap().to_string();
+    let lib = app.run("swatch.library.load", json!({"data": data, "name": "inks.vcswatches"})).unwrap()["library"].as_str().unwrap().to_string();
+    app.run("swatch.delete", json!({"names": ["Ink"]})).unwrap();
+    art(&mut app, &["cmyk 0 100 0 0"]);
+    let mut h = assign_harness(app, json!({"library": lib}));
+    set(h.state_mut(), "__sel", json!([0]));
+    h.run_steps(2);
+    assert!(h.query_by_role_and_label(egui::accesskit::Role::Slider, "T").is_some(), "a spot row shows Tint");
+    click_slider(&mut h, "T", 0.4);
+    assert_eq!(field(h.state(), "rows")[0]["tint"], json!(40.0));
+    h.get_by_label("OK").click();
+    h.run_steps(2);
+    match first_fill(h.state()) {
+        vectorcraft_color::Paint::Solid { swatch, tint, .. } => {
+            assert_eq!(swatch.as_deref(), Some("Ink"), "linked to the spot color");
+            assert!((tint - 0.4).abs() < 1e-4, "at the row's tint: {tint}");
+        }
+        p => panic!("{p:?}"),
+    }
+}
+
+/// The dialog keeps its height when the tab or the sliders' color mode changes.
+#[test]
+fn switching_tabs_or_slider_modes_keeps_the_dialog_height() {
+    let mut app = app();
+    art(&mut app, &["#ff0000", "#0000ff"]);
+    let mut h = assign_harness(app, json!({}));
+    set(h.state_mut(), "__sel", json!([0]));
+    let height = |h: &mut egui_kittest::Harness<'_, VectorcraftApp>, k: &str, v: Value| {
+        set(h.state_mut(), k, v);
+        h.run_steps(6);
+        h.ctx.memory(|m| m.area_rect(egui::Id::unique(("dialog", "recolor")))).unwrap().height()
+    };
+    let assign = height(&mut h, "sliderMode", json!("cmyk"));
+    for (k, v) in [("sliderMode", json!("hsb")), ("sliderMode", json!("lab")), ("tab", json!("edit")), ("tab", json!("assign"))] {
+        assert_eq!(height(&mut h, k, v.clone()), assign, "{k} {v}");
+    }
+}
+
 /// The Assign tab's per-row hex fields are named by their row, not all "Color": a screen reader can
 /// tell the second from the first.
 #[test]

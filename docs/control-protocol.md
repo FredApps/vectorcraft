@@ -253,9 +253,12 @@ and spot colours exist; the dialog then stays open.
 
 Recolor Artwork: `ui.recolorDialog {colors?, library?, group?}` opens the `recolor` dialog on the selected art
 (`colors`: a count for an n-colour job, or colours to assign as the new colours; `library`: Limit to Library, a library
-or `"document"`, `""` for the first library; `group`: a colour group, Edit or Apply Color Group). Fields: `rows` (`[{from: [keys], to: key, exclude?}]`
+or `"document"`, `""` for the first library; `group`: a colour group, Edit or Apply Color Group). Fields: `rows` (`[{from: [keys], to: key, exclude?, tint?}]`
 as `recolor.reduce` returns them), `colors` (null for Auto), `method`, `preserveWhite`, `preserveBlack`,
-`preserveGrays`, `limitTo`, `groupName`, `tab` (`assign` or `edit`), `rule` (harmony id), `linked`, `preview`. Setting
+`preserveGrays`, `limitTo`, `groupName`, `tab` (`assign` or `edit`), `rule` (harmony id), `linked`, `preview`,
+`sliderMode` (the mode of the color sliders under the rows: `hsb`, `rgb`, `cmyk`, `lab`, or `tint` for a row whose new
+color is a spot color of the library; unset, they show the new color's own model). The sliders edit the first selected
+row's new color; once they have, the preview and confirm send `recolor.apply` with `model: "new"`. Setting
 `colors`, a preserve flag or `limitTo` reduces the rows again (also on `ui.dialog.confirm`). The dialog previews
 `recolor.apply` on the canvas; confirm keeps it as one undo step (with a group, the group is rewritten in the same
 step; with no art selected only the group changes). In the Swatches panel, double-clicking a colour group's folder,

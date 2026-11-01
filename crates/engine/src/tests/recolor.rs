@@ -537,6 +537,33 @@ fn recolor_to_a_library_spot_colour_links_it_and_adds_the_swatch() {
     assert_eq!(r["swatches"], json!(["Leaf"]));
 }
 
+/// A row's `tint` gives the art linked to the row's spot color that share of its tint;
+/// randomize keeps it on the row, and a tint that is not a number is refused.
+#[test]
+fn a_rows_tint_tints_the_spot_color_the_art_links_to() {
+    let mut s = session();
+    run(&mut s, "swatch.new", json!({"name": "Ink 101", "color": {"c": 0.0, "m": 1.0, "y": 0.0, "k": 0.0}, "spot": true}));
+    let data = run(&mut s, "swatch.library.save", json!({"names": ["Ink 101"], "name": "Inks"}))["data"].as_str().unwrap().to_string();
+    let lib = run(&mut s, "swatch.library.load", json!({"data": data, "name": "inks.vcswatches"}))["library"].as_str().unwrap().to_string();
+    run(&mut s, "swatch.delete", json!({"names": ["Ink 101"]}));
+    let red = rect(&mut s, json!("#e02010"));
+    select_all(&mut s);
+    let map = json!([{"from": ["rgb 224 32 16"], "to": "cmyk 0 100 0 0", "tint": 40}]);
+    run(&mut s, "recolor.apply", json!({"map": map, "limitTo": lib}));
+    match s.doc().unwrap().doc.node(red).unwrap().appearance.fill_paint() {
+        vectorcraft_color::Paint::Solid { color, swatch, tint } => {
+            assert_eq!(swatch.as_deref(), Some("Ink 101"), "linked to the spot color");
+            assert!((tint - 0.4).abs() < 1e-4, "at the row's tint: {tint}");
+            assert!(close(color, Color::cmyk(0.0, 1.0, 0.0, 0.0).tinted(0.4)), "{color:?}");
+        }
+        p => panic!("{p:?}"),
+    }
+    let r = run(&mut s, "recolor.randomize", json!({"map": map, "order": false, "saturationBrightness": false}));
+    assert_eq!(r["map"][0]["tint"], json!(40.0), "{r}");
+    let e = s.execute("recolor.apply", &json!({"map": [{"from": ["rgb 224 32 16"], "to": "#ff0000", "tint": "40"}]})).unwrap_err();
+    assert!(e.to_string().contains("`tint` must be a number"), "{e}");
+}
+
 #[test]
 fn model_param_chooses_the_model_of_the_new_colour() {
     // RGB art in a CMYK document: by default a CMYK replacement comes out RGB (#2170).
