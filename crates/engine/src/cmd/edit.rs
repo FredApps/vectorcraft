@@ -862,17 +862,20 @@ fn paste_clip(s: &mut Session, p: &Value, mode: PasteMode, clip: &Clipboard, cho
                     Some(Some(name)) if remember => Some(*layers.entry(name).or_insert_with(|| layer_named(d, name))),
                     _ => None,
                 };
+                // In a clip group or a clipping layer the bottom child is the clipping path: art pasted
+                // in back goes above it, not below it.
+                let floor = |d: &Document, par: Option<NodeId>| usize::from(par.and_then(|p| d.node(p)).is_some_and(Node::clips));
                 let (par, idx) = match (into, anchor, layer) {
                     // Inside the object Draw Inside draws into, on top of what is in it already.
                     (Some(group), ..) => (Some(group), usize::MAX),
                     // Next to the anchor, unless the object goes back to another layer.
                     (None, Some((par, i, _)), l) if l.is_none() || l == par => {
                         let k = placed.get(&par).copied().unwrap_or(0);
-                        (par, if front { i + 1 + k } else { i + k })
+                        (par, if front { i + 1 + k } else { i.max(floor(d, par)) + k })
                     }
                     (None, _, l) => {
                         let par = l.or(parent);
-                        (par, if back { placed.get(&par).copied().unwrap_or(0) } else { usize::MAX })
+                        (par, if back { floor(d, par) + placed.get(&par).copied().unwrap_or(0) } else { usize::MAX })
                     }
                 };
                 *placed.entry(par).or_default() += 1;
