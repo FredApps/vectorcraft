@@ -448,6 +448,9 @@ pub(super) fn symbol_update(s: &mut Session, p: &Value) -> Result<Value> {
     Ok(json!({ "name": name, "id": id.0 }))
 }
 
+/// How many levels of nested instances Delete Symbol expands before it gives up.
+const MAX_DELETE_ROUNDS: usize = 256;
+
 pub(super) fn symbol_delete(s: &mut Session, p: &Value) -> Result<Value> {
     const C: &str = "symbol.delete";
     // `names` deletes several symbols in one undo step (the Symbols panel's Select All Unused, #4918).
@@ -475,13 +478,36 @@ pub(super) fn symbol_delete(s: &mut Session, p: &Value) -> Result<Value> {
     let expand = switch_or(p, "expandInstances", true, C)?;
     let label = if names.len() == 1 { "Delete Symbol" } else { "Delete Symbols" };
     s.edit(label, |d, _| {
-        for name in &names {
-            let inst = instances_of(d, Some(name));
+        // Every instance goes before any definition, whatever the order of `names`: expanding an
+        // instance of one symbol can bring out instances of another being deleted (nested in its
+        // art), which expand in turn while their definitions are still there. Each round expands
+        // one level of nesting, so the rounds are capped.
+        let of_names = |d: &Document| {
+            let mut v = vec![];
+            d.walk(|n| {
+                if let NodeKind::SymbolInstance { symbol, .. } = &n.kind
+                    && names.contains(symbol)
+                {
+                    v.push(n.id);
+                }
+            });
+            v
+        };
+        for _ in 0..=MAX_DELETE_ROUNDS {
+            let inst = of_names(d);
+            if inst.is_empty() {
+                break;
+            }
             if expand {
                 break_links(d, &inst, true)?;
             } else {
                 remove_each(d, &inst)?;
             }
+        }
+        if !of_names(d).is_empty() {
+            return Err(EngineError::Other("the symbols are nested too deeply to expand their instances".into()));
+        }
+        for name in &names {
             d.symbols.retain(|x| &x.name != name);
             set_natural_size(d, name, None);
             d.set_symbol_registration(name, SymbolRegistration::CENTER);

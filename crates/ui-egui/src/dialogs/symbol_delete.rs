@@ -20,7 +20,14 @@ pub const KIND: &str = "deleteSymbol";
 pub const USED: &str = "deleteUsedSymbol";
 
 pub(super) const SPEC: DialogSpec = DialogSpec {
-    heading: |d| if d.fields.get("names").is_some() { tl!("Delete the selected symbols?") } else { tl!("Delete the selected symbol?") }.into(),
+    heading: |d| {
+        if d.fields.get("names").and_then(Value::as_array).is_some_and(|n| n.len() > 1) {
+            tl!("Delete the selected symbols?")
+        } else {
+            tl!("Delete the selected symbol?")
+        }
+        .into()
+    },
     body: |_, _, _| false,
     confirm: confirm_unused,
     ok: Some("Yes"),
@@ -56,7 +63,8 @@ pub(crate) fn ask(app: &mut VectorcraftApp, name: &str, now: bool) {
 }
 
 /// Delete Symbol for the unused symbols `names` that Select All Unused picked (#4918): asked once
-/// ("Delete the selected symbols?"), or at once with `now`. They go in one undo step.
+/// ("Delete the selected symbols?", or the singular for one), or at once with `now`. Only those still
+/// unused then (`symbol.unused`: brush art, patterns and nested instances count) go, in one undo step.
 pub(crate) fn ask_many(app: &mut VectorcraftApp, names: &[String], now: bool) {
     let Some(uid) = app.session.active().map(|st| st.uid) else { return };
     if now {
@@ -143,5 +151,7 @@ mod tests {
         let many = Dialog::new(KIND, json!({"names": ["A", "B"], "doc": 1}));
         assert_eq!((SPEC.heading)(&one), "Delete the selected symbol?");
         assert_eq!((SPEC.heading)(&many), "Delete the selected symbols?");
+        let picked_one = Dialog::new(KIND, json!({"names": ["A"], "doc": 1}));
+        assert_eq!((SPEC.heading)(&picked_one), "Delete the selected symbol?");
     }
 }

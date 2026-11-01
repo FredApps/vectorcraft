@@ -1483,6 +1483,18 @@ fn symbol_unused_lists_the_symbols_nothing_places_and_delete_takes_several() {
     assert!(unused(&mut s).is_empty());
     s.execute("edit.undo", &json!({})).unwrap();
     assert_eq!(names(&s), ["Placed", "Inner", "Outer", "Nested", "Lonely", "Brushed"]);
+    // Deleting a symbol and the one placed inside it, in either order, expands every instance
+    // while both definitions are still there: no instance is left without its symbol.
+    for order in [["Inner", "Outer"], ["Outer", "Inner"]] {
+        s.execute("symbol.delete", &json!({"names": order})).unwrap();
+        let mut dangling = 0;
+        s.doc()
+            .unwrap()
+            .doc
+            .walk(|n| dangling += usize::from(matches!(&n.kind, NodeKind::SymbolInstance { symbol, .. } if symbol == "Inner" || symbol == "Outer")));
+        assert_eq!(dangling, 0, "{order:?}");
+        s.execute("edit.undo", &json!({})).unwrap();
+    }
     // Bad `names` are refused and change nothing.
     for bad in [json!({"names": []}), json!({"names": "Placed"}), json!({"names": [1]}), json!({"names": ["Placed", "Nope"]})] {
         assert!(s.execute("symbol.delete", &bad).is_err(), "{bad}");

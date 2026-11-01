@@ -201,7 +201,8 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
     let names: Vec<String> = doc.symbols.iter().map(|s| s.name.clone()).collect();
     let list: bool = pstate(ui.ctx(), "sym-list");
     let sel = current(app);
-    let marked = marked(ui.ctx(), &names);
+    let uid = app.session.active().map(|d| d.uid);
+    let marked = marked(ui.ctx(), uid, &names);
     // The symbols drawn selected: the ones Select All Unused picked, else the current one.
     let on = |n: &str| if marked.is_empty() { sel.as_deref() == Some(n) } else { marked.iter().any(|m| m == n) };
     let mut clicked: Option<(String, bool)> = None;
@@ -262,7 +263,7 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
     }
     if let Some((n, place)) = clicked {
         // A click picks one symbol again.
-        set_pstate(ui.ctx(), MARKED, Vec::<String>::new());
+        set_pstate(ui.ctx(), MARKED, (uid, Vec::<String>::new()));
         app.run("symbol.setCurrent", json!({"name": n})).ok();
         if place {
             app.run("symbol.place", json!({"name": n})).ok();
@@ -300,7 +301,8 @@ pub fn show(app: &mut VectorcraftApp, ui: &mut Ui) {
 pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
     let sel = current(app);
     let names: Vec<String> = app.session.active().map(|d| d.doc.symbols.iter().map(|s| s.name.clone()).collect()).unwrap_or_default();
-    let marked = marked(ui.ctx(), &names);
+    let uid = app.session.active().map(|d| d.uid);
+    let marked = marked(ui.ctx(), uid, &names);
     let has_sel = app.session.active().is_some_and(|d| !d.selection.is_empty());
     let inst = has_instances_selected(app);
     let name = json!({"name": sel});
@@ -342,7 +344,7 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
         if unused.is_empty() {
             app.status(tl!("No unused symbols"));
         }
-        set_pstate(ui.ctx(), MARKED, unused);
+        set_pstate(ui.ctx(), MARKED, (uid, unused));
     }
     ui.separator();
     let list: bool = pstate(ui.ctx(), "sym-list");
@@ -363,9 +365,13 @@ pub fn menu(app: &mut VectorcraftApp, ui: &mut Ui) {
 /// The panel state key of the symbols Select All Unused picked.
 const MARKED: &str = "sym-unused";
 
-/// The symbols Select All Unused picked that the document still has (`names`).
-fn marked(ctx: &egui::Context, names: &[String]) -> Vec<String> {
-    let mut marked: Vec<String> = pstate(ctx, MARKED);
+/// The symbols Select All Unused picked in the active document (`uid`) that it still has (`names`);
+/// none once another document is active.
+fn marked(ctx: &egui::Context, uid: Option<u64>, names: &[String]) -> Vec<String> {
+    let (of, mut marked): (Option<u64>, Vec<String>) = pstate(ctx, MARKED);
+    if of != uid {
+        return vec![];
+    }
     marked.retain(|m| names.contains(m));
     marked
 }
@@ -376,7 +382,7 @@ fn delete(app: &mut VectorcraftApp, marked: &[String], sel: Option<&str>, now: b
     match (marked, sel) {
         ([], Some(n)) => crate::dialogs::symbol_delete::ask(app, n, now),
         ([], None) => {}
-        ([n], _) => crate::dialogs::symbol_delete::ask(app, n, now),
+        // Picked by Select All Unused, even one: deleted only while still unused.
         (names, _) => crate::dialogs::symbol_delete::ask_many(app, names, now),
     }
 }
@@ -660,7 +666,7 @@ mod tests {
         crate::theme::install_fonts(&ctx);
         click_menu(&ctx, &mut app, "Select All Unused");
         let names = symbols(&mut app);
-        assert_eq!(marked(&ctx, &names), ["A", "C"]);
+        assert_eq!(marked(&ctx, uid(&app), &names), ["A", "C"]);
         let undo = app.session.active().unwrap().history.undo.len();
         click_menu(&ctx, &mut app, "Delete Symbol");
         assert_eq!(app.ui.dialog.as_ref().map(|d| d.kind.as_str()), Some(crate::dialogs::symbol_delete::KIND));
@@ -668,20 +674,54 @@ mod tests {
         crate::dialogs::confirm(&mut app).unwrap();
         assert_eq!(symbols(&mut app), ["B"]);
         assert_eq!(app.session.active().unwrap().history.undo.len(), undo + 1, "one undo step");
-        assert!(marked(&ctx, &symbols(&mut app)).is_empty(), "the deleted ones are no longer picked");
+        assert!(marked(&ctx, uid(&app), &symbols(&mut app)).is_empty(), "the deleted ones are no longer picked");
         // Undone, they are back; Select All Unused again, then a click on a symbol picks just it.
         app.run("edit.undo", json!({})).unwrap();
         click_menu(&ctx, &mut app, "Select All Unused");
-        assert_eq!(marked(&ctx, &symbols(&mut app)).len(), 2);
+        assert_eq!(marked(&ctx, uid(&app), &symbols(&mut app)).len(), 2);
         frame(&ctx, &mut app, vec![]);
         let tile = pos2(26.0, 26.0);
         frame(&ctx, &mut app, vec![egui::Event::PointerMoved(tile), button(tile, true)]);
         frame(&ctx, &mut app, vec![button(tile, false)]);
-        assert!(marked(&ctx, &symbols(&mut app)).is_empty());
+        assert!(marked(&ctx, uid(&app), &symbols(&mut app)).is_empty());
         // With nothing unused, the item reports it and picks nothing.
         app.run("symbol.delete", json!({"names": ["A", "C"]})).unwrap();
         click_menu(&ctx, &mut app, "Select All Unused");
-        assert!(marked(&ctx, &symbols(&mut app)).is_empty());
+        assert!(marked(&ctx, uid(&app), &symbols(&mut app)).is_empty());
+    }
+
+    fn uid(app: &VectorcraftApp) -> Option<u64> {
+        app.session.active().map(|d| d.uid)
+    }
+
+    /// Picks made in one document don't carry to another with symbols of the same names, and a
+    /// picked symbol that gained a use since (here in a brush's art) isn't deleted (#4918 review).
+    #[test]
+    fn picked_symbols_stay_with_their_document_and_are_rechecked_before_deleting() {
+        let mut app = VectorcraftApp::new(Session::new(), Default::default());
+        let make = |app: &mut VectorcraftApp| {
+            app.run("file.new", json!({"width": 200, "height": 100})).unwrap();
+            app.run("shape.rectangle", json!({"x": 10, "y": 10, "width": 30, "height": 20})).unwrap();
+            let id = app.run("symbol.new", json!({"name": "A"})).unwrap()["id"].as_u64().unwrap();
+            app.run("edit.clear", json!({"ids": [id]})).unwrap();
+        };
+        make(&mut app);
+        let ctx = egui::Context::default();
+        crate::theme::install_fonts(&ctx);
+        click_menu(&ctx, &mut app, "Select All Unused");
+        assert_eq!(marked(&ctx, uid(&app), &symbols(&mut app)), ["A"]);
+        make(&mut app);
+        assert!(marked(&ctx, uid(&app), &symbols(&mut app)).is_empty(), "not in the other document");
+        // Back in the first one: A gains a use in a brush's art, then Delete (Alt: no question).
+        click_menu(&ctx, &mut app, "Select All Unused");
+        let id = app.run("symbol.place", json!({"name": "A"})).unwrap()["id"].as_u64().unwrap();
+        app.run("brush.new", json!({"type": "art", "name": "B", "ids": [id]})).unwrap();
+        app.run("edit.clear", json!({"ids": [id]})).unwrap();
+        let names = symbols(&mut app);
+        let picked = marked(&ctx, uid(&app), &names);
+        assert_eq!(picked, ["A"]);
+        delete(&mut app, &picked, None, true);
+        assert_eq!(symbols(&mut app), ["A"], "still used by the brush, so kept");
     }
 
     #[test]
