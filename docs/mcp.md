@@ -1747,6 +1747,13 @@ layer is shown again, its type holds the data set's text. They apply the values 
 defined. Of two variables of the same kind on one object, the one defined last wins. `dataset.list`,
 `dataset.capture` and `dataset.update` read hidden objects and objects inside a hidden layer or group as well.
 
+A text value bound to any frame of threaded text replaces the whole story, and the text flows through the frames
+again; `overflow` names the story's last frame when the text does not fit. `dataset.capture`, `dataset.update` and
+`dataset.list` read such a frame as the whole story, every frame's text joined in thread order. When any frame of
+the story is locked or inside a locked layer or group, the text value is skipped and counted in `skipped`, and the
+story is not read. Two text variables
+bound in one story apply in the order they are defined, and the one defined last wins.
+
 ```json
 {"name":"run_command","arguments":{"command":"symbol.list","params":{}}}
 {"name":"run_command","arguments":{"command":"brush.list","params":{}}}
