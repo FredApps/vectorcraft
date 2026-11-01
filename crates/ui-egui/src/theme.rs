@@ -86,9 +86,9 @@ impl Accent {
     }
 }
 
-/// User Interface › Color Scheme: Quiet (the default: Flat without the full-height lines, the
+/// User Interface › Color Scheme: Modern (the default: slate greys, cards and the chosen accent), Quiet (Flat without the full-height lines, the
 /// chrome one surface with short inset lines between its columns and raised controls on inset
-/// fields), Modern (slate greys, cards and the chosen accent), Classic (the neutral greys and blue
+/// fields), Classic (the neutral greys and blue
 /// accent of earlier versions, on cards) or Flat (neutral greys, a blue accent, and the toolbar,
 /// rail and dock flush with the window's edges instead of cards). The layout is the same in all
 /// four; Flat's and Quiet's looks come from their tokens ([`Tokens::cards`], [`Tokens::tab_style`],
@@ -96,10 +96,10 @@ impl Accent {
 /// [`Tokens::field_shade`]).
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Scheme {
+    #[default]
     Modern,
     Classic,
     Flat,
-    #[default]
     Quiet,
 }
 
@@ -1252,10 +1252,11 @@ mod tests {
         }
     }
 
-    /// Quiet is the default, in the engine's preferences as in the UI's fallback.
+    /// Modern stays the default, in the engine's preferences as in the UI's fallback: Quiet and
+    /// Flat are choices, not what an update changes under a user.
     #[test]
-    fn quiet_is_the_default_scheme() {
-        assert_eq!(Scheme::default(), Scheme::Quiet);
+    fn modern_is_the_default_scheme() {
+        assert_eq!(Scheme::default(), Scheme::Modern);
         assert_eq!(Scheme::parse(&vectorcraft_engine::Prefs::default().ui_color_scheme), Some(Scheme::default()));
     }
 }

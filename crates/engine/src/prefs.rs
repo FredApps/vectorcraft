@@ -408,7 +408,7 @@ impl Default for Prefs {
             scratch_secondary: s("None"),
             ui_brightness: s("mediumDark"),
             ui_accent: s("coral"),
-            ui_color_scheme: s("quiet"),
+            ui_color_scheme: s("modern"),
             canvas_color: s("matchUi"),
             auto_collapse_icon_panels: false,
             tool_group_labels: false,
