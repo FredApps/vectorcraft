@@ -1632,6 +1632,34 @@ fn locked_variables_refuse_a_library_that_deletes_or_defines_variables() {
     assert_eq!(vars.datasets.iter().map(|d| d.name.as_str()).collect::<Vec<_>>(), ["B"]);
 }
 
+/// A graph variable's data set applies its CSV as `graph.setData` does: a right-axis series the row's data no longer
+/// has is dropped, and a row with neither a label nor a value is not drawn as an empty slot.
+#[test]
+fn graph_variable_applies_csv_as_set_data() {
+    let mut s = session();
+    let create = json!({"type": "column", "x": 10, "y": 10, "width": 120, "height": 80, "csv": ",a,b\nQ1,10,1000\nQ2,5,500"});
+    let id = s.execute("graph.create", &create).unwrap()["id"].as_u64().unwrap();
+    let other = s.execute("graph.create", &create).unwrap()["id"].as_u64().unwrap();
+    for g in [id, other] {
+        s.execute("graph.setType", &json!({"id": g, "seriesIndexes": [1], "valueAxis": "right"})).unwrap();
+    }
+    s.execute("select.set", &json!({"ids": [id]})).unwrap();
+    s.execute("variable.makeGraphDynamic", &json!({})).unwrap();
+    let name = s.execute("variable.list", &json!({})).unwrap()["variables"][0]["name"].as_str().unwrap().to_string();
+    let spec = |s: &Session, g: u64| s.doc().unwrap().doc.node(NodeId(g)).unwrap().extras().graph.as_deref().unwrap().clone();
+    for (row, csv) in [("One", ",a\nQ1,10\nQ2,5"), ("Blank", ",a\nQ1,10\n,\nQ2,5")] {
+        s.execute("dataset.new", &json!({"name": row, "values": {name.clone(): csv}})).unwrap();
+        s.execute("dataset.select", &json!({"name": row})).unwrap();
+        s.execute("graph.setData", &json!({"id": other, "csv": csv})).unwrap();
+        let (merged, set) = (spec(&s, id), spec(&s, other));
+        assert_eq!(merged.right_series, set.right_series, "{row}");
+        assert_eq!(merged.categories, set.categories, "{row}");
+        assert_eq!(merged.cells(), set.cells(), "{row}");
+    }
+    assert!(spec(&s, id).right_series.is_empty());
+    assert_eq!(spec(&s, id).categories, ["Q1", "Q2"]);
+}
+
 #[test]
 fn graph_variable_applies_csv_and_captures() {
     let mut s = session();
