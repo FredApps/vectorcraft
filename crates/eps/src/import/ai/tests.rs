@@ -1997,6 +1997,488 @@ fn an_envelope_s_contents_being_edited_are_not_read_as_art() {
     assert_eq!(fill(&a[0]).color(), Some(Color::rgb(1.0, 0.0, 0.0)));
 }
 
+/// `art` on `%_` lines.
+fn commented(art: &str) -> String {
+    art.lines().map(|l| format!("%_{l}\n")).collect()
+}
+
+/// Envelope Options as new envelopes have them (Distort Appearance, Anti-Alias, Clipping Mask),
+/// Fidelity 50, the contents not being edited.
+const ENVELOPE_KEYS: &str = "131073 /Int (AIDeformOptionsKey) ,\n50 /Int (AIDeformFidelityKey) ,\n0 /Bool (AIDeformEditModeKey) ,\n";
+
+/// An envelope as the editing data writes it: on `%_` lines a group holding `before`, then the
+/// dictionary with `keys`, the art `block` in its `AIDeformArtKey` block and the kind `kind`; then
+/// `drawn` in a group on plain lines, and the plugin's `XP`.
+fn envelope_parts(before: &str, keys: &str, block: &str, kind: u32, drawn: &str) -> String {
+    format!(
+        "{}%_/ArtDictionary :\n{}%_X=\n{}%_X+\n%_ (AIDeformArtKey) ,\n%_{kind} /Int (AIDeformStyle) ,\n%_;\n%_\n%_9 () XW\nu\n{drawn}U\n9 () XW\n(Adobe Deform Plugin) 1 0 0 XP\n",
+        commented(&format!("u\n{before}U\n")),
+        commented(keys),
+        commented(block),
+    )
+}
+
+/// An envelope of `content` (in the plain group the editing data puts round it) shaped by the mesh
+/// `shape`.
+fn envelope_of(shape: &str, keys: &str, content: &str, kind: u32, drawn: &str) -> String {
+    envelope_parts(shape, keys, &format!("u\n{content}U\n9 () XW\n"), kind, drawn)
+}
+
+/// A grid point's place in art space and its handle towards a neighbour.
+type MeshAt<'a> = &'a dyn Fn((usize, usize)) -> (f64, f64);
+type MeshHandle<'a> = &'a dyn Fn((usize, usize), (usize, usize)) -> (f64, f64);
+
+/// A grey `/Mesh` of `cols`×`rows` patches (`/P [i j]`, `i` along x, column by column), each
+/// corner of patch `(i, j)` at `at`, from the one nearest the origin up, across and down, with its
+/// handles towards the next corner and the previous one at `handle`; `anchor`, written after the
+/// second corner of the first patch, puts an anchor on its second edge.
+fn mesh_text(cols: usize, rows: usize, at: MeshAt<'_>, handle: MeshHandle<'_>, anchor: Option<[f64; 6]>) -> String {
+    let mut s = format!("/Mesh X!\n2 /Version X#\n/Cartesian /Type X#\n[{cols} {rows}] /Size X#\n/Data X#\n/DeviceGray /CS X#\n");
+    for i in 0..cols {
+        for j in 0..rows {
+            s += &format!("[{i} {j}] /P X#\n");
+            let (a, b, c, d) = ((i, j), (i, j + 1), (i + 1, j + 1), (i + 1, j));
+            for (k, (p, next, prev)) in [(a, b, d), (b, c, a), (c, d, b), (d, a, c)].into_iter().enumerate() {
+                let ((x, y), (nx, ny), (px, py)) = (at(p), handle(p, next), handle(p, prev));
+                s += &format!("[0.8 1 {x} {y} {nx} {ny} 1 {px} {py} 1] /N X#\n");
+                if let (1, Some([x, y, ax, ay, bx, by])) = (k, anchor.filter(|_| (i, j) == (0, 0))) {
+                    s += &format!("[{x} {y} {ax} {ay} {bx} {by} 1] /A X#\n");
+                }
+            }
+            s += "/E X#\n";
+        }
+    }
+    s + "/End X!\n"
+}
+
+/// A grid in art space, its points `step` apart from (40, 20), handles a third of the way.
+fn straight_mesh(cols: usize, rows: usize, step: (f64, f64)) -> String {
+    let at = move |(i, j): (usize, usize)| (40.0 + i as f64 * step.0, 20.0 + j as f64 * step.1);
+    let third = move |p: (usize, usize), q: (usize, usize)| {
+        let ((x, y), (u, v)) = (at(p), at(q));
+        (x + (u - x) / 3.0, y + (v - y) / 3.0)
+    };
+    mesh_text(cols, rows, &at, &third, None)
+}
+
+/// The red rectangle 40 20 160 80 in art space, which is the same box in the document's.
+fn envelope_content() -> String {
+    format!("{RED}{}f\n", rect_path(40.0, 20.0, 160.0, 80.0))
+}
+
+/// What envelope `kind` draws of [`envelope_content`]: the rectangle's edges, many points to a
+/// side, mapped as VectorCraft maps them, as a red path in art space.
+fn drawn_content(kind: &vectorcraft_doc::live::EnvelopeKind) -> String {
+    let rect = Rect::new(40.0, 20.0, 160.0, 80.0);
+    let map = vectorcraft_doc::live::envelope_mapper(kind, rect);
+    let corners = [Point::new(40.0, 20.0), Point::new(160.0, 20.0), Point::new(160.0, 80.0), Point::new(40.0, 80.0)];
+    let mut s = RED.to_string();
+    for (k, a) in corners.iter().enumerate() {
+        let b = corners[(k + 1) % 4];
+        for t in 0..64 {
+            let q = map(a.lerp(b, f64::from(t) / 64.0));
+            s += &format!("{} {} {}\n", q.x, 100.0 - q.y, if k == 0 && t == 0 { "m" } else { "L" });
+        }
+    }
+    s + "f\n"
+}
+
+/// The live envelope `n` is: its content, kind, fidelity, editing and options.
+fn live_envelope(n: &Node) -> (&[Arc<Node>], &vectorcraft_doc::live::EnvelopeKind, f64, bool, vectorcraft_doc::live::EnvelopeOptions) {
+    match &n.kind {
+        NodeKind::Envelope { content, kind, fidelity, editing, options, frame } => {
+            assert_eq!(**frame, kurbo::Affine::IDENTITY);
+            (content, kind, *fidelity, *editing, *options)
+        }
+        other => panic!("not a live envelope: {other:#?}"),
+    }
+}
+
+/// A warp's dictionary keys: style number `style`, bend, horizontal and vertical distortion as
+/// fractions, and the orientation (vertical with `rotate` 1).
+fn warp_keys(style: u32, bend: f64, h: f64, v: f64, rotate: u32) -> String {
+    format!(
+        "{ENVELOPE_KEYS}{style} /Int (DeformStyle) ,\n{h} /Real (DeformHoriz) ,\n{bend} /Real (DeformValue) ,\n{v} /Real (DeformVert) ,\n{rotate} /Bool (Rotate) ,\n(Warp) /UnicodeString (DisplayString) ,\n"
+    )
+}
+
+/// An envelope made with a warp opens as that live envelope of its contents, its style, bend,
+/// distortions (fractions in the file) and orientation read; the warp's drawn art goes.
+#[test]
+fn a_warp_envelope_opens_live() {
+    use vectorcraft_doc::live::EnvelopeKind;
+    for (style, bend, h, v, rotate, id) in
+        [(1, 0.5, 0.0, 0.0, 0, "arc"), (1, 0.5, -0.2, 0.3, 1, "arc"), (8, 0.5, 0.0, 0.0, 0, "flag"), (15, 0.5, 0.0, 0.0, 0, "twist")]
+    {
+        let want = EnvelopeKind::Warp { style: id.into(), bend: bend * 100.0, h: h * 100.0, v: v * 100.0, horizontal: rotate == 0 };
+        let body =
+            envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), &warp_keys(style, bend, h, v, rotate), &envelope_content(), 1, &drawn_content(&want));
+        let r = read_ok(&layer(&body));
+        let a = art(&r.doc);
+        assert_eq!(a.len(), 1, "{a:#?}");
+        let (content, kind, fidelity, editing, options) = live_envelope(&a[0]);
+        let EnvelopeKind::Warp { style: s, bend: b, h: dh, v: dv, horizontal } = kind else { panic!("{kind:?}") };
+        assert_eq!((s.as_str(), *horizontal), (id, rotate == 0));
+        assert!([(*b, bend), (*dh, h), (*dv, v)].iter().all(|(got, f)| (got - f * 100.0).abs() < 1e-9), "{kind:?}");
+        assert_eq!((fidelity, editing, options), (50.0, false, vectorcraft_doc::live::EnvelopeOptions::NEW));
+        assert_eq!(content.len(), 1, "{content:#?}");
+        assert!(matches!(content[0].kind, NodeKind::Path { .. }), "{content:#?}");
+        assert_eq!(fill(&content[0]).color(), Some(Color::rgb(1.0, 0.0, 0.0)));
+        assert!(r.warnings.is_empty(), "{:?}", r.warnings);
+    }
+}
+
+/// Every warp style number reads as its style, in Effect › Warp's order.
+#[test]
+fn warp_envelopes_read_every_style() {
+    use vectorcraft_doc::live::EnvelopeKind;
+    let ids = [
+        "arc",
+        "arcLower",
+        "arcUpper",
+        "arch",
+        "bulge",
+        "shellLower",
+        "shellUpper",
+        "flag",
+        "wave",
+        "fish",
+        "rise",
+        "fisheye",
+        "inflate",
+        "squeeze",
+        "twist",
+    ];
+    for (n, id) in ids.iter().enumerate() {
+        let want = EnvelopeKind::Warp { style: (*id).into(), bend: 30.0, h: 0.0, v: 0.0, horizontal: true };
+        let keys = warp_keys(n as u32 + 1, 0.3, 0.0, 0.0, 0);
+        let r = read_ok(&layer(&envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), &keys, &envelope_content(), 1, &drawn_content(&want))));
+        let a = art(&r.doc);
+        assert_eq!(a.len(), 1, "{id}: {a:#?}");
+        assert_eq!(live_envelope(&a[0]).1, &want, "{id}");
+    }
+}
+
+/// An envelope made with a mesh opens as a live mesh envelope: its rows and columns, its points
+/// row by row from the top left, and each point's four handles, a moved point and an uneven handle
+/// included.
+#[test]
+fn a_mesh_envelope_opens_live_with_its_points_and_handles() {
+    use vectorcraft_doc::live::{EnvelopeKind, H_DOWN, H_LEFT, H_RIGHT, H_UP};
+    // 3 columns 40 apart and 2 rows 30 apart from (40, 20); the inner point (1, 1) moved, and its
+    // handle towards (2, 1) longer and off the line.
+    let at = |(i, j): (usize, usize)| if (i, j) == (1, 1) { (90.0, 55.0) } else { (40.0 + i as f64 * 40.0, 20.0 + j as f64 * 30.0) };
+    let handle = |p: (usize, usize), q: (usize, usize)| {
+        if (p, q) == ((1, 1), (2, 1)) {
+            return (108.0, 62.0);
+        }
+        let ((x, y), (u, v)) = (at(p), at(q));
+        (x + (u - x) / 3.0, y + (v - y) / 3.0)
+    };
+    let shape = mesh_text(3, 2, &at, &handle, None);
+    // Row r of the envelope is row 2 - r of the file (art space has y up).
+    let doc_pt = |(x, y): (f64, f64)| Point::new(x, 100.0 - y);
+    let mut points = vec![];
+    let mut handles = vec![];
+    for r in 0..=2usize {
+        for c in 0..=3usize {
+            let g = (c, 2 - r);
+            let p = doc_pt(at(g));
+            points.push(p);
+            let mut h = [kurbo::Vec2::ZERO; 4];
+            let towards = |q: Option<(usize, usize)>| q.filter(|q| q.0 <= 3 && q.1 <= 2).map_or(kurbo::Vec2::ZERO, |q| doc_pt(handle(g, q)) - p);
+            h[H_RIGHT] = towards(Some((g.0 + 1, g.1)));
+            h[H_LEFT] = towards(g.0.checked_sub(1).map(|i| (i, g.1)));
+            h[H_UP] = towards(Some((g.0, g.1 + 1)));
+            h[H_DOWN] = towards(g.1.checked_sub(1).map(|j| (g.0, j)));
+            handles.push(h);
+        }
+    }
+    let want = EnvelopeKind::Mesh { rows: 2, cols: 3, points: points.clone(), handles: handles.clone() };
+    let r = read_ok(&layer(&envelope_of(&shape, ENVELOPE_KEYS, &envelope_content(), 2, &drawn_content(&want))));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    let EnvelopeKind::Mesh { rows, cols, points: got, handles: got_h } = live_envelope(&a[0]).1 else { panic!("{a:#?}") };
+    assert_eq!((*rows, *cols, got.len(), got_h.len()), (2, 3, 12, 12));
+    for (k, (p, q)) in got.iter().zip(&points).enumerate() {
+        assert!((*p - *q).hypot() < 1e-6, "point {k}: {p:?}, not {q:?}");
+    }
+    // The moved inner point (row 1, column 1): each of its handles, the uneven one towards the right.
+    let inner = 4 + 1;
+    assert!((got[inner] - Point::new(90.0, 45.0)).hypot() < 1e-6, "{:?}", got[inner]);
+    for slot in [H_RIGHT, H_LEFT, H_DOWN, H_UP] {
+        assert!((got_h[inner][slot] - handles[inner][slot]).hypot() < 1e-6, "slot {slot}: {:?} vs {:?}", got_h[inner], handles[inner]);
+    }
+    assert!((got_h[inner][H_RIGHT] - kurbo::Vec2::new(18.0, -7.0)).hypot() < 1e-6, "{:?}", got_h[inner]);
+    assert!(r.warnings.is_empty(), "{:?}", r.warnings);
+}
+
+/// An envelope made with a top object opens as a live envelope whose top path is the edge of its
+/// one-patch mesh, an anchor on the edge included; its contents stay the rectangle.
+#[test]
+fn a_top_object_envelope_opens_live_with_its_outline() {
+    use vectorcraft_doc::live::EnvelopeKind;
+    // Corners (40, 20) (40, 80) (160, 80) (160, 20); the top edge bows up through an anchor at (100, 95).
+    let at = |(i, j): (usize, usize)| (40.0 + i as f64 * 120.0, 20.0 + j as f64 * 60.0);
+    let handle = |p: (usize, usize), q: (usize, usize)| match (p, q) {
+        ((0, 1), (1, 1)) => (60.0, 88.0),
+        ((1, 1), (0, 1)) => (140.0, 88.0),
+        _ => {
+            let ((x, y), (u, v)) = (at(p), at(q));
+            (x + (u - x) / 3.0, y + (v - y) / 3.0)
+        }
+    };
+    let shape = mesh_text(1, 1, &at, &handle, Some([100.0, 95.0, 70.0, 95.0, 130.0, 95.0]));
+    let mut bp = kurbo::BezPath::new();
+    bp.move_to((40.0, 20.0));
+    bp.curve_to((60.0, 12.0), (70.0, 5.0), (100.0, 5.0));
+    bp.curve_to((130.0, 5.0), (140.0, 12.0), (160.0, 20.0));
+    bp.curve_to((160.0, 40.0), (160.0, 60.0), (160.0, 80.0));
+    bp.curve_to((120.0, 80.0), (80.0, 80.0), (40.0, 80.0));
+    bp.curve_to((40.0, 60.0), (40.0, 40.0), (40.0, 20.0));
+    bp.close_path();
+    let want = EnvelopeKind::TopObject { path: vectorcraft_geom::PathData::from_bezpath(&bp) };
+    let r = read_ok(&layer(&envelope_of(&shape, ENVELOPE_KEYS, &envelope_content(), 3, &drawn_content(&want))));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    let (content, kind, ..) = live_envelope(&a[0]);
+    let EnvelopeKind::TopObject { path } = kind else { panic!("{kind:?}") };
+    let anchors: Vec<Point> = path.subpaths.iter().flat_map(|s| s.anchors.iter().map(|a| a.p)).collect();
+    for p in [(40.0, 20.0), (100.0, 5.0), (160.0, 20.0), (160.0, 80.0), (40.0, 80.0)] {
+        assert!(anchors.iter().any(|q| (*q - Point::from(p)).hypot() < 1e-6), "{p:?} not in {anchors:?}");
+    }
+    // The curve through the anchor: its handles there run level.
+    let mid = path.subpaths.iter().flat_map(|s| s.anchors.iter()).find(|a| (a.p - Point::new(100.0, 5.0)).hypot() < 1e-6).unwrap();
+    assert!((mid.h_in.y - 5.0).abs() < 1e-6 && (mid.h_out.y - 5.0).abs() < 1e-6, "{mid:?}");
+    assert_eq!(content.len(), 1, "{content:#?}");
+    assert_eq!(fill(&content[0]).color(), Some(Color::rgb(1.0, 0.0, 0.0)));
+    assert!(r.warnings.is_empty(), "{:?}", r.warnings);
+}
+
+/// Envelope Options come from the options word, Fidelity from its own key.
+#[test]
+fn an_envelope_reads_its_options_and_fidelity() {
+    use vectorcraft_doc::live::{EnvelopeKind, EnvelopeOptions, PreserveShape};
+    let shape = straight_mesh(1, 1, (120.0, 60.0));
+    // A flat 1 × 1 mesh over the box draws the box as it is.
+    let drawn = drawn_content(&EnvelopeKind::Mesh {
+        rows: 1,
+        cols: 1,
+        points: vec![Point::new(40.0, 20.0), Point::new(160.0, 20.0), Point::new(40.0, 80.0), Point::new(160.0, 80.0)],
+        handles: vec![],
+    });
+    for (word, fidelity, options) in [
+        (
+            65536,
+            80,
+            EnvelopeOptions {
+                anti_alias: false,
+                preserve_shape: PreserveShape::Transparency,
+                distort_appearance: false,
+                distort_linear_gradients: false,
+                distort_pattern_fills: false,
+            },
+        ),
+        (
+            0x20007,
+            100,
+            EnvelopeOptions {
+                anti_alias: true,
+                preserve_shape: PreserveShape::ClippingMask,
+                distort_appearance: true,
+                distort_linear_gradients: true,
+                distort_pattern_fills: true,
+            },
+        ),
+        (
+            0x20002,
+            0,
+            EnvelopeOptions {
+                anti_alias: true,
+                preserve_shape: PreserveShape::ClippingMask,
+                distort_appearance: false,
+                distort_linear_gradients: false,
+                distort_pattern_fills: true,
+            },
+        ),
+    ] {
+        let keys = format!("{word} /Int (AIDeformOptionsKey) ,\n{fidelity} /Int (AIDeformFidelityKey) ,\n0 /Bool (AIDeformEditModeKey) ,\n");
+        let r = read_ok(&layer(&envelope_of(&shape, &keys, &envelope_content(), 2, &drawn)));
+        let a = art(&r.doc);
+        assert_eq!(a.len(), 1, "{word}: {a:#?}");
+        let (_, _, got_fidelity, _, got) = live_envelope(&a[0]);
+        assert_eq!((got_fidelity, got), (f64::from(fidelity), options), "{word}");
+    }
+}
+
+/// An envelope's contents keep their groups: a group of two rectangles stays that group.
+#[test]
+fn an_envelope_s_contents_keep_their_groups() {
+    use vectorcraft_doc::live::EnvelopeKind;
+    let group = format!(
+        "u\n{RED}{}f\n{}f\nU\n/ArtDictionary :\n(Pair) /String (AIArtName) ,\n;\n",
+        rect_path(40.0, 20.0, 90.0, 80.0),
+        rect_path(110.0, 20.0, 160.0, 80.0)
+    );
+    let mut drawn = RED.to_string();
+    drawn += &format!("{}f\n{}f\n", rect_path(40.0, 20.0, 90.0, 80.0), rect_path(110.0, 20.0, 160.0, 80.0));
+    let r = read_ok(&layer(&envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), ENVELOPE_KEYS, &group, 2, &drawn)));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    let (content, kind, ..) = live_envelope(&a[0]);
+    assert!(matches!(kind, EnvelopeKind::Mesh { rows: 1, cols: 1, .. }), "{kind:?}");
+    assert_eq!(content.len(), 1, "{content:#?}");
+    assert_eq!(content[0].name.as_deref(), Some("Pair"));
+    let kids = content[0].children().unwrap();
+    assert_eq!(kids.len(), 2, "{kids:#?}");
+    assert!(kids.iter().all(|k| matches!(k.kind, NodeKind::Path { .. })), "{kids:#?}");
+}
+
+/// While an envelope's contents are edited, the contents come first and the mesh is in the
+/// dictionary: the envelope opens live all the same, in Edit Contents.
+#[test]
+fn an_envelope_whose_contents_are_edited_opens_live_in_edit_contents() {
+    use vectorcraft_doc::live::EnvelopeKind;
+    let at = |(i, j): (usize, usize)| (40.0 + i as f64 * 120.0, 20.0 + j as f64 * 60.0);
+    let handle = |p: (usize, usize), q: (usize, usize)| match (p, q) {
+        ((0, 1), (1, 1)) => (70.0, 95.0),
+        ((1, 1), (0, 1)) => (130.0, 95.0),
+        _ => {
+            let ((x, y), (u, v)) = (at(p), at(q));
+            (x + (u - x) / 3.0, y + (v - y) / 3.0)
+        }
+    };
+    let mesh = mesh_text(1, 1, &at, &handle, None);
+    let mut bp = kurbo::BezPath::new();
+    bp.move_to((40.0, 20.0));
+    bp.curve_to((70.0, 5.0), (130.0, 5.0), (160.0, 20.0));
+    bp.curve_to((160.0, 40.0), (160.0, 60.0), (160.0, 80.0));
+    bp.curve_to((120.0, 80.0), (80.0, 80.0), (40.0, 80.0));
+    bp.curve_to((40.0, 60.0), (40.0, 40.0), (40.0, 20.0));
+    bp.close_path();
+    let want = EnvelopeKind::TopObject { path: vectorcraft_geom::PathData::from_bezpath(&bp) };
+    let keys = ENVELOPE_KEYS.replace("0 /Bool (AIDeformEditModeKey)", "1 /Bool (AIDeformEditModeKey)");
+    let body = envelope_parts(&envelope_content(), &keys, &format!("0 g\n{mesh}"), 3, &drawn_content(&want));
+    let r = read_ok(&layer(&body));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    let (content, kind, _, editing, _) = live_envelope(&a[0]);
+    assert!(editing);
+    assert!(matches!(kind, EnvelopeKind::TopObject { .. }), "{kind:?}");
+    assert_eq!(content.len(), 1, "{content:#?}");
+    assert!(matches!(content[0].kind, NodeKind::Path { .. }), "{content:#?}");
+    assert_eq!(fill(&content[0]).color(), Some(Color::rgb(1.0, 0.0, 0.0)));
+}
+
+/// An envelope that doesn't read (a warp style number past the list, a mesh envelope whose shape
+/// isn't a mesh, one whose plugin never closes it) keeps its drawn art, with one note; the art
+/// round it is read as ever.
+#[test]
+fn an_envelope_that_doesnt_read_keeps_its_drawn_art() {
+    let blue = "0 0 1 1 0 0 1 Xa\n";
+    let drawn = format!("{blue}{}f\n", rect_path(40.0, 20.0, 160.0, 80.0));
+    let mesh = straight_mesh(1, 1, (120.0, 60.0));
+    let cases = [
+        envelope_of(&mesh, &warp_keys(99, 0.5, 0.0, 0.0, 0), &envelope_content(), 1, &drawn),
+        envelope_of(&format!("{}f\n", rect_path(40.0, 20.0, 160.0, 80.0)), ENVELOPE_KEYS, &envelope_content(), 2, &drawn),
+        envelope_of(&mesh, ENVELOPE_KEYS, &envelope_content(), 7, &drawn),
+        envelope_of(&mesh, &ENVELOPE_KEYS.replace("131073", "131081"), &envelope_content(), 2, &drawn),
+        envelope_of(&mesh, ENVELOPE_KEYS, &envelope_content(), 2, &drawn).replace("(Adobe Deform Plugin) 1 0 0 XP\n", ""),
+    ];
+    for case in cases {
+        let body = format!("{RED}{}f\n{case}{RED}{}f\n", rect_path(0.0, 0.0, 10.0, 10.0), rect_path(190.0, 0.0, 200.0, 10.0));
+        let r = read_ok(&layer(&body));
+        let a = art(&r.doc);
+        assert_eq!(a.len(), 3, "{case}\n{a:#?}");
+        assert!(matches!(a[0].kind, NodeKind::Path { .. }) && matches!(a[2].kind, NodeKind::Path { .. }), "{a:#?}");
+        let NodeKind::Group { children, .. } = &a[1].kind else { panic!("{a:#?}") };
+        assert_eq!(fill(&children[0]).color(), Some(Color::rgb(0.0, 0.0, 1.0)), "{case}");
+        assert_eq!(r.warnings, [super::envelope::DRAWN], "{case}");
+    }
+}
+
+/// An envelope whose contents don't come out as its drawn art (its warp bends them another way)
+/// keeps the drawn art.
+#[test]
+fn an_envelope_that_doesnt_come_out_as_drawn_keeps_its_drawn_art() {
+    use vectorcraft_doc::live::EnvelopeKind;
+    let other = EnvelopeKind::Warp { style: "arc".into(), bend: -50.0, h: 0.0, v: 0.0, horizontal: true };
+    let body = envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), &warp_keys(1, 0.5, 0.0, 0.0, 0), &envelope_content(), 1, &drawn_content(&other));
+    let r = read_ok(&layer(&body));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    assert!(matches!(a[0].kind, NodeKind::Group { .. }), "{a:#?}");
+    assert_eq!(r.warnings, [super::envelope::DRAWN]);
+}
+
+/// An envelope that comes out close to its drawn art, but with more of the page differing than the
+/// page check can take from the live envelopes (its drawn art 2 pt to the side on a 200 × 100
+/// page), keeps the drawn art, so the file still opens from its layers.
+#[test]
+fn an_envelope_that_differs_from_its_drawn_art_over_the_page_keeps_it() {
+    let shifted = format!("{RED}{}f\n", rect_path(42.0, 20.0, 162.0, 80.0));
+    let body = envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), ENVELOPE_KEYS, &envelope_content(), 2, &shifted);
+    let r = read_ok(&layer(&body));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    assert!(matches!(a[0].kind, NodeKind::Group { .. }), "{a:#?}");
+    assert_eq!(r.warnings, [super::envelope::DRAWN]);
+}
+
+/// An envelope whose drawn art holds an object the reader can't read keeps that drawn art, which
+/// the page's art replaces.
+#[test]
+fn an_envelope_whose_drawn_art_holds_an_unread_object_keeps_it() {
+    let flat = vectorcraft_doc::live::EnvelopeKind::Mesh {
+        rows: 1,
+        cols: 1,
+        points: vec![Point::new(40.0, 20.0), Point::new(160.0, 20.0), Point::new(40.0, 80.0), Point::new(160.0, 80.0)],
+        handles: vec![],
+    };
+    let drawn = format!("{}frobnicate\n", drawn_content(&flat));
+    let r = read_ok(&layer(&envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), ENVELOPE_KEYS, &envelope_content(), 2, &drawn)));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    assert!(matches!(a[0].kind, NodeKind::Group { .. }), "{a:#?}");
+    assert_eq!(r.unread.iter().map(|(id, _)| *id).collect::<Vec<_>>(), [a[0].id]);
+    assert_eq!(r.warnings, [super::envelope::DRAWN]);
+}
+
+/// A live envelope takes its drawn art's own properties: its name here.
+#[test]
+fn a_live_envelope_keeps_its_drawn_art_s_name() {
+    let flat = vectorcraft_doc::live::EnvelopeKind::Mesh {
+        rows: 1,
+        cols: 1,
+        points: vec![Point::new(40.0, 20.0), Point::new(160.0, 20.0), Point::new(40.0, 80.0), Point::new(160.0, 80.0)],
+        handles: vec![],
+    };
+    let body = envelope_of(&straight_mesh(1, 1, (120.0, 60.0)), ENVELOPE_KEYS, &envelope_content(), 2, &drawn_content(&flat))
+        .replace("U\n9 () XW\n(Adobe Deform Plugin)", "U\n/ArtDictionary :\n(Bent) /String (AIArtName) ,\n;\n9 () XW\n(Adobe Deform Plugin)");
+    let r = read_ok(&layer(&body));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    live_envelope(&a[0]);
+    assert_eq!(a[0].name.as_deref(), Some("Bent"));
+}
+
+/// The same envelope beside the page opens live: what differs off the page isn't counted.
+#[test]
+fn an_envelope_off_the_page_opens_live_when_it_draws_close_to_its_drawn_art() {
+    let at = |(i, j): (usize, usize)| (300.0 + i as f64 * 120.0, 20.0 + j as f64 * 60.0);
+    let third = |p: (usize, usize), q: (usize, usize)| {
+        let ((x, y), (u, v)) = (at(p), at(q));
+        (x + (u - x) / 3.0, y + (v - y) / 3.0)
+    };
+    let content = format!("{RED}{}f\n", rect_path(300.0, 20.0, 420.0, 80.0));
+    let shifted = format!("{RED}{}f\n", rect_path(302.0, 20.0, 422.0, 80.0));
+    let r = read_ok(&layer(&envelope_of(&mesh_text(1, 1, &at, &third, None), ENVELOPE_KEYS, &content, 2, &shifted)));
+    let a = art(&r.doc);
+    assert_eq!(a.len(), 1, "{a:#?}");
+    live_envelope(&a[0]);
+    assert!(r.warnings.is_empty(), "{:?}", r.warnings);
+}
+
 #[test]
 fn a_gradient_mesh_reads_as_a_patch() {
     let corner = |rgb: &str, x: i32, y: i32, next: (i32, i32), prev: (i32, i32)| {

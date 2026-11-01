@@ -84,7 +84,7 @@ use art::preview_png;
 pub use document::{PaletteSwatches, VariableLibrary, artboards, palette, variables};
 pub(crate) use document::{slot_frame, slot_of};
 pub use types::IMAGE_TOO_LARGE;
-use types::{BLEND_BUDGET, FLIP, Frame, GState, Kind, PatternHead, Place, Raster};
+use types::{BLEND_BUDGET, FLIP, Frame, GState, Kind, PatternHead, PendingEnvelope, Place, Raster};
 #[cfg(test)]
 pub use types::{NON_NATIVE_ART, NON_NATIVE_ART_UNREAD, VERSIONED_UNENDED};
 pub(super) use types::{blend_mode, blend_name};
@@ -121,6 +121,9 @@ pub struct Structure {
     /// move, in its pixels, that places them there (the corner of the box they are written with,
     /// in place of the canvas point of art space's origin).
     pub placed_elsewhere: Vec<(NodeId, Affine)>,
+    /// The live envelopes read from the editing data, by id, with the drawn art each took the place
+    /// of: the importer puts that art back when the layers with the envelopes don't draw as the page.
+    pub envelopes_drawn: Vec<(NodeId, Node)>,
     pub warnings: Vec<String>,
 }
 
@@ -200,6 +203,17 @@ struct Reader<'a> {
     blend_record: Option<(usize, Vec<u8>)>,
     /// How many more objects blends may lay out in this import ([`super::blend::live_blend`]).
     blend_budget: usize,
+    /// The group on `%_` lines an envelope's dictionary just took (see [`Reader::drop_envelope_art`]).
+    envelope_art: Option<Node>,
+    /// Envelopes waiting for their drawn art, innermost last.
+    envelopes: Vec<PendingEnvelope>,
+    /// How many more envelopes this import may draw to check ([`super::envelope::drawn_alike`]).
+    envelope_checks: usize,
+    /// How far the live envelopes read so far draw from their drawn art ([`super::envelope::Spent`]).
+    envelope_spent: super::envelope::Spent,
+    /// The live envelopes made so far and the drawn art each took the place of
+    /// ([`Structure::envelopes_drawn`]).
+    envelopes_drawn: Vec<(NodeId, Node)>,
     /// A group just ended, its state (`Xy`, `Xd`, `XW`) not yet read.
     group_ended: bool,
     /// A gradient mesh just ended (`/End X!`), its own state (`Xy`) not yet read: also after its
@@ -318,6 +332,11 @@ impl<'a> Reader<'a> {
             blend_roles: HashMap::new(),
             blend_record: None,
             blend_budget: BLEND_BUDGET,
+            envelope_art: None,
+            envelopes: Vec::new(),
+            envelope_checks: super::envelope::MAX_CHECKED,
+            envelope_spent: super::envelope::Spent::default(),
+            envelopes_drawn: Vec::new(),
             clip_fills: HashSet::new(),
             looks: HashSet::new(),
             ruler_guides: HashMap::new(),
