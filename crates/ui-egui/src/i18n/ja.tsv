@@ -5795,6 +5795,11 @@ breakText	Glyphs	字形
 	Odia	オディア語
 	Urdu	ウルドゥー語
 	VectorCraft {release} and later (version {n})	VectorCraft {release} 以降 (バージョン {n})
+# Document Tools add-on: Export All Open Documents (#4920).
+	Export All Open Documents as PDF	開いているすべてのドキュメントを PDF として書き出し
+	Export All Open Documents as SVG	開いているすべてのドキュメントを SVG として書き出し
+@msgplural	Exported {n} document|Exported {n} documents	{n} 個のドキュメントを書き出しました
+@msgplural	Exported {n} document; {title} wasn't written: {error}|Exported {n} documents; {title} wasn't written: {error}	{n} 個のドキュメントを書き出しました; {title} は書き出されませんでした: {error}
 # Symbol Options › Symbol Type (dynamic symbols)
 	Symbol Type:	シンボルの種類:
 	Dynamic Symbol	ダイナミックシンボル

@@ -50,11 +50,14 @@ pub(crate) fn export_all(app: &mut VectorcraftApp, p: &Value) -> Result<Value, S
     let r = app.session.execute(EXPORT_ALL, &p).map_err(|e| e.to_string())?;
     let written = r["files"].as_array().map_or(0, Vec::len);
     let failed = r["failed"].as_array().cloned().unwrap_or_default();
-    let mut status = crate::i18n::msg_n(written as u64, "Exported {n} document", "Exported {n} documents", &[]);
-    if let Some(f) = failed.first() {
-        let (title, error) = (f["title"].as_str().unwrap_or_default(), f["error"].as_str().unwrap_or_default());
-        status = format!("{status}; {title} wasn't written: {error}");
-    }
+    let status = match failed.first() {
+        Some(f) => {
+            let args = [("title", f["title"].as_str().unwrap_or_default()), ("error", f["error"].as_str().unwrap_or_default())];
+            let (one, other) = ("Exported {n} document; {title} wasn't written: {error}", "Exported {n} documents; {title} wasn't written: {error}");
+            crate::i18n::msg_n(written as u64, one, other, &args)
+        }
+        None => crate::i18n::msg_n(written as u64, "Exported {n} document", "Exported {n} documents", &[]),
+    };
     app.status(status);
     Ok(r)
 }
