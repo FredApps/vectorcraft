@@ -36,7 +36,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Export All Open Documents",
             ["Object", "Plug-ins", "Document Tools"],
             None,
-            "{folder, format?: vectorcraft|pdf|svg|svgz|ai|eps (default: pdf)} write a copy of every open document, in tab order, to `folder` as File › Save a Copy writes it, each named after its document (<name>.<ext>; -2, -3… added when that name is taken, so no file is replaced): every document keeps its path, title and modified state, and no undo step is made. A document that can't be written is listed in `failed` and the others are still written; the active document stays active → {files: [{title, path, warnings}], failed: [{title, error}], format}",
+            "{folder, format?: vectorcraft|pdf|svg|svgz|ai|eps (default: pdf)} write a copy of every open document, in tab order, to `folder` as File › Save a Copy writes it, each named after its document (<name>.<ext>; -2, -3… added when that name is taken, so no file is replaced), one file each (images embedded, artboards together): every document keeps its path, title and modified state, and no undo step is made. A document that can't be written is listed in `failed` and the others are still written; the active document stays active → {files: [{title, path, warnings}], failed: [{title, error}], format}",
             has_doc,
             export_all_open
         ),
@@ -117,9 +117,21 @@ fn export_all_open(s: &mut Session, p: &Value) -> Result<Value> {
             failed.push(json!({ "title": title, "error": "every numbered name for the copy is taken" }));
             continue;
         };
-        match fileio::save_document(s, SaveMode::Copy, &json!({ "path": path, "format": format.id })) {
+        // One file per document: the remembered options of a document saved before in this format
+        // (linked SVG images, separate artboard files) would write others beside it. Each format
+        // reads only the options it has.
+        let options = json!({ "images": "embed", "separateArtboards": false });
+        match fileio::save_document(s, SaveMode::Copy, &json!({ "path": path, "format": format.id, "options": options })) {
             Ok(r) => {
                 written.push(path.clone());
+                // Any other file the save wrote is taken for the copies still to come.
+                for key in ["files", "linked"] {
+                    for f in r.get(key).and_then(Value::as_array).into_iter().flatten() {
+                        if let Some(f) = f.as_str().or_else(|| f.get("path").and_then(Value::as_str)) {
+                            written.push(f.to_string());
+                        }
+                    }
+                }
                 files.push(json!({ "title": title, "path": r.get("path").cloned().unwrap_or(json!(path)), "warnings": r.get("warnings").cloned().unwrap_or(json!([])) }));
             }
             Err(e) => failed.push(json!({ "title": title, "error": e.to_string() })),

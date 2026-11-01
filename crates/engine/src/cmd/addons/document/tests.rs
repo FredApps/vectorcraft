@@ -217,3 +217,26 @@ fn export_all_open_documents_writes_each_and_reports_failures() {
     assert_eq!(s.active_index(), Some(0));
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+/// An SVG document last saved with linked images exports as one SVG with its images embedded: no
+/// image file is written beside the copies (#4920 review).
+#[test]
+fn export_all_open_documents_writes_one_file_each() {
+    let dir = std::env::temp_dir().join(format!("vc-export-all-one-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(dir.join("out")).unwrap();
+    let mut s = Session::new();
+    s.execute("file.new", &json!({"width": 100, "height": 100, "name": "pic"})).unwrap();
+    let mut png = vec![];
+    image::RgbaImage::from_pixel(4, 4, image::Rgba([1, 2, 3, 255])).write_to(&mut std::io::Cursor::new(&mut png), image::ImageFormat::Png).unwrap();
+    s.execute("file.place", &json!({"name": "a.png", "dataBase64": vectorcraft_format::base64_encode(&png)})).unwrap();
+    s.execute("document.save", &json!({"path": dir.join("pic.svg"), "format": "svg", "options": {"images": "link"}})).unwrap();
+    let saved: Vec<_> = std::fs::read_dir(&dir).unwrap().filter_map(|e| e.ok()).filter(|e| e.path().is_file()).collect();
+    assert!(saved.len() > 1, "the linked save wrote its image beside it: {saved:?}");
+    let out = dir.join("out");
+    let r = s.execute("addon.document.exportAllOpen", &json!({"folder": out, "format": "svg"})).unwrap();
+    let names: Vec<String> = std::fs::read_dir(&out).unwrap().map(|e| e.unwrap().file_name().to_string_lossy().into_owned()).collect();
+    assert_eq!(names, ["pic.svg"], "{r}");
+    assert!(std::fs::read_to_string(out.join("pic.svg")).unwrap().contains("data:image/png;base64,"), "the image is embedded");
+    let _ = std::fs::remove_dir_all(&dir);
+}
