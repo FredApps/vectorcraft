@@ -6119,3 +6119,15 @@ breakText	Glyphs	Glyphes
 	Maximum:	Maximum :
 	Seed:	Graine :
 @msg	`min` is greater than `max`	`min` est supérieur à `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Trier les objets…
+	Sort Objects	Trier les objets
+	Sort By:	Trier par :
+	Apply To:	Appliquer à :
+	Area	Surface
+	X Position	Position X
+	Y Position	Position Y
+	Stacking Order	Ordre d’empilement
+	Small to Large	Du plus petit au plus grand
+	Large to Small	Du plus grand au plus petit
+	Distribute Evenly	Répartir uniformément

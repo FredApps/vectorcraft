@@ -6079,3 +6079,15 @@ breakText	Glyphs	Glifler
 	Maximum:	En Çok:
 	Seed:	Başlangıç Değeri:
 @msg	`min` is greater than `max`	`min`, `max` değerinden büyük
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Nesneleri Sırala…
+	Sort Objects	Nesneleri Sırala
+	Sort By:	Sıralama Ölçütü:
+	Apply To:	Uygulanacak Değer:
+	Area	Alan
+	X Position	X Konumu
+	Y Position	Y Konumu
+	Stacking Order	İstifleme Sırası
+	Small to Large	Küçükten Büyüğe
+	Large to Small	Büyükten Küçüğe
+	Distribute Evenly	Eşit Dağıt

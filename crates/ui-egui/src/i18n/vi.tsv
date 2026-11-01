@@ -5724,3 +5724,15 @@ breakText	Glyphs	Glyph
 	Maximum:	Tối đa:
 	Seed:	Giá trị khởi đầu:
 @msg	`min` is greater than `max`	`min` lớn hơn `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Sắp xếp đối tượng…
+	Sort Objects	Sắp xếp đối tượng
+	Sort By:	Sắp xếp theo:
+	Apply To:	Áp dụng cho:
+	Area	Diện tích
+	X Position	Vị trí X
+	Y Position	Vị trí Y
+	Stacking Order	Thứ tự xếp chồng
+	Small to Large	Từ nhỏ đến lớn
+	Large to Small	Từ lớn đến nhỏ
+	Distribute Evenly	Phân bố đều

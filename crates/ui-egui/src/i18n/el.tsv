@@ -6074,3 +6074,15 @@ breakText	Glyphs	Γλύφοι
 	Maximum:	Μέγιστο:
 	Seed:	Αρχική τιμή:
 @msg	`min` is greater than `max`	Το `min` είναι μεγαλύτερο από το `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Ταξινόμηση αντικειμένων…
+	Sort Objects	Ταξινόμηση αντικειμένων
+	Sort By:	Ταξινόμηση κατά:
+	Apply To:	Εφαρμογή σε:
+	Area	Εμβαδόν
+	X Position	Θέση X
+	Y Position	Θέση Y
+	Stacking Order	Σειρά στοίβαξης
+	Small to Large	Από μικρό σε μεγάλο
+	Large to Small	Από μεγάλο σε μικρό
+	Distribute Evenly	Ομοιόμορφη κατανομή

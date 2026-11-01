@@ -6108,3 +6108,15 @@ breakText	Glyphs	Glifák
 	Maximum:	Maximum:
 	Seed:	Kezdőérték:
 @msg	`min` is greater than `max`	`min` nagyobb, mint `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Objektumok rendezése…
+	Sort Objects	Objektumok rendezése
+	Sort By:	Rendezés alapja:
+	Apply To:	Alkalmazás erre:
+	Area	Terület
+	X Position	X pozíció
+	Y Position	Y pozíció
+	Stacking Order	Halmozási sorrend
+	Small to Large	Kicsitől a nagyig
+	Large to Small	Nagytól a kicsiig
+	Distribute Evenly	Egyenletes elosztás

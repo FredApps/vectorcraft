@@ -6111,3 +6111,15 @@ breakText	Glyphs	გლიფები
 	Maximum:	მაქსიმუმი:
 	Seed:	საწყისი რიცხვი:
 @msg	`min` is greater than `max`	`min` მეტია, ვიდრე `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	ობიექტების დალაგება…
+	Sort Objects	ობიექტების დალაგება
+	Sort By:	დალაგება:
+	Apply To:	გამოყენება:
+	Area	ფართობი
+	X Position	X პოზიცია
+	Y Position	Y პოზიცია
+	Stacking Order	დაწყობის რიგი
+	Small to Large	პატარიდან დიდისკენ
+	Large to Small	დიდიდან პატარისკენ
+	Distribute Evenly	თანაბრად განაწილება

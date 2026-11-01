@@ -6006,3 +6006,15 @@ breakText	Glyphs	Глифи
 	Maximum:	Максимум:
 	Seed:	Начално число:
 @msg	`min` is greater than `max`	`min` е по-голямо от `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Сортиране на обекти…
+	Sort Objects	Сортиране на обекти
+	Sort By:	Сортиране по:
+	Apply To:	Прилагане към:
+	Area	Площ
+	X Position	Позиция по X
+	Y Position	Позиция по Y
+	Stacking Order	Ред на подреждане
+	Small to Large	От малко към голямо
+	Large to Small	От голямо към малко
+	Distribute Evenly	Равномерно разпределение

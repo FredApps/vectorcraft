@@ -6065,3 +6065,15 @@ breakText	Glyphs	Glyphs
 	Maximum:	Maximum:
 	Seed:	Startwaarde:
 @msg	`min` is greater than `max`	`min` is groter dan `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Objecten sorteren…
+	Sort Objects	Objecten sorteren
+	Sort By:	Sorteren op:
+	Apply To:	Toepassen op:
+	Area	Oppervlakte
+	X Position	X-positie
+	Y Position	Y-positie
+	Stacking Order	Stapelvolgorde
+	Small to Large	Van klein naar groot
+	Large to Small	Van groot naar klein
+	Distribute Evenly	Gelijkmatig verdelen

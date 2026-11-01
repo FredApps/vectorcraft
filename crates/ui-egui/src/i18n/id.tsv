@@ -6021,3 +6021,15 @@ breakText	Glyphs	Glif
 	Maximum:	Maksimum:
 	Seed:	Benih:
 @msg	`min` is greater than `max`	`min` lebih besar dari `max`
+# Arrange Tools add-on: Sort Objects.
+	Sort Objects…	Urutkan objek…
+	Sort Objects	Urutkan objek
+	Sort By:	Urutkan menurut:
+	Apply To:	Terapkan ke:
+	Area	Luas
+	X Position	Posisi X
+	Y Position	Posisi Y
+	Stacking Order	Urutan tumpukan
+	Small to Large	Kecil ke besar
+	Large to Small	Besar ke kecil
+	Distribute Evenly	Distribusikan merata
