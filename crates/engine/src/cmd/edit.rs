@@ -813,11 +813,13 @@ fn paste_clip(s: &mut Session, p: &Value, mode: PasteMode, clip: &Clipboard, cho
         && (st.doc.paste_remembers_layers || boards.is_some())
         && parent.is_some_and(|p| st.doc.node(p).is_some_and(Node::is_layer));
     // Front/back: relative to the selection (top-most / bottom-most selected object); with
-    // nothing selected, the top / bottom of the current layer.
+    // nothing selected, the top / bottom of the current layer. Art other than paths goes beside
+    // the compound path that holds the selected object, not into it.
     let anchor = if front || back {
         let order = st.selection.in_paint_order(&st.doc);
         let a = if front { order.last() } else { order.first() };
-        a.and_then(|id| st.doc.position(*id))
+        let paths_only = clip.nodes.iter().all(|n| matches!(n.kind, vectorcraft_doc::NodeKind::Path { .. }));
+        a.map(|id| paste_anchor(&st.doc, *id, paths_only)).and_then(|id| st.doc.position(id))
     } else {
         None
     };
@@ -898,6 +900,15 @@ fn paste_clip(s: &mut Session, p: &Value, mode: PasteMode, clip: &Clipboard, cho
         "merged": imported.merged,
         "renamed": imported.renamed,
     }))
+}
+
+/// What pasted art goes beside: `id`, or the compound path holding it when the art isn't only
+/// paths (a compound path holds paths only).
+fn paste_anchor(doc: &Document, id: NodeId, paths_only: bool) -> NodeId {
+    match doc.parent_of(id) {
+        Some(p) if !paths_only && doc.node(p).is_some_and(|n| matches!(n.kind, vectorcraft_doc::NodeKind::Compound { .. })) => p,
+        _ => id,
+    }
 }
 
 /// The first unlocked layer or sublayer called `name` (topmost first), or a new top layer.

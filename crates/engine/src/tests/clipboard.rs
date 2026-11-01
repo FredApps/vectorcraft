@@ -564,6 +564,42 @@ fn front_and_back_without_a_selection_use_the_current_layers_ends() {
 }
 
 #[test]
+fn front_and_back_beside_a_compound_paths_member_go_beside_the_compound_path() {
+    let mut s = session();
+    let a = rect(&mut s, 0.0, 0.0, 10.0, 10.0);
+    let b = rect(&mut s, 20.0, 0.0, 10.0, 10.0);
+    sel(&mut s, &[a, b]);
+    let c = NodeId(s.execute("object.compoundPath.make", &json!({})).unwrap()["id"].as_u64().unwrap());
+    let members = |s: &Session| doc(s).node(c).unwrap().children().unwrap().iter().map(|n| n.id).collect::<Vec<_>>();
+    let before = members(&s);
+    let layer = |s: &Session| doc(s).layers[0].children().unwrap().iter().map(|n| n.id).collect::<Vec<_>>();
+    // A compound path and a group, each pasted with one of the compound path's members selected.
+    let other = rect(&mut s, 40.0, 0.0, 10.0, 10.0);
+    sel(&mut s, &[other]);
+    let group = NodeId(s.execute("object.group", &json!({})).unwrap()["id"].as_u64().unwrap());
+    for copied in [c, group] {
+        copy(&mut s, &[copied]);
+        sel(&mut s, &[before[0]]);
+        let above = ids_of(&s.execute("edit.pasteInFront", &json!({})).unwrap());
+        let l = layer(&s);
+        let i = l.iter().position(|id| *id == c).unwrap();
+        assert_eq!(&l[i + 1..i + 2], &above[..], "right above the compound path");
+        sel(&mut s, &[before[1]]);
+        let below = ids_of(&s.execute("edit.pasteInBack", &json!({})).unwrap());
+        let l = layer(&s);
+        let i = l.iter().position(|id| *id == c).unwrap();
+        assert_eq!(&l[i - 1..i], &below[..], "right below the compound path");
+        assert_eq!(members(&s), before, "the compound path keeps its own members");
+    }
+    // A path still goes in front of the member, inside the compound path.
+    let loose = rect(&mut s, 60.0, 0.0, 10.0, 10.0);
+    copy(&mut s, &[loose]);
+    sel(&mut s, &[before[0]]);
+    let path = ids_of(&s.execute("edit.pasteInFront", &json!({})).unwrap());
+    assert_eq!(members(&s), [before[0], path[0], before[1]]);
+}
+
+#[test]
 fn paste_on_all_artboards_keeps_the_offset_to_the_source_artboard() {
     let mut s = Session::new();
     s.execute("file.new", &json!({"width": 200, "height": 100, "artboards": 3})).unwrap();
