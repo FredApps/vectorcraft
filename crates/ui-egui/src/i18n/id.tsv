@@ -2872,6 +2872,7 @@ theme	Appearance	Tampilan
 	Duplicate Brush	Duplikatkan kuas
 	Duplicate Symbol	Duplikatkan simbol
 	Edit Symbol	Edit simbol
+	Exit Symbol Editing Mode	Keluar dari mode edit simbol
 	Expand Brush Strokes	Perluas guratan kuas
 	New Brush…	Kuas baru…
 	New Brush	Kuas baru
@@ -4323,6 +4324,8 @@ imageTrace	Outline	Kontur
 @msg	select a repeat	pilih pengulangan
 @msg	select a stroke with a variable width	pilih goresan dengan lebar variabel
 @msg	select a symbol instance	pilih instans simbol
+@msg	select instances of one symbol	pilih instans dari satu simbol saja
+@msg	a symbol can't hold an instance of itself	simbol tidak dapat memuat instans dirinya sendiri
 @msg	select an Image Trace object	pilih objek Image Trace
 @msg	could not decode image: {0}	tidak dapat mendekode gambar: {0}
 @msg	image is empty	gambar kosong

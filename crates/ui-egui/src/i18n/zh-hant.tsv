@@ -887,6 +887,7 @@ font-technology	Variable	可變
 	Edit Selection	編輯選取範圍
 	Edit Selection…	編輯選取範圍…
 	Edit Symbol	編輯符號
+	Exit Symbol Editing Mode	結束符號編輯模式
 	Edit Text	編輯文字
 	Edit the applied effect, or add another one?	要編輯已套用的效果，還是新增另一個？
 	Edit the point	編輯點
@@ -1696,6 +1697,8 @@ file-filter	Templates	範本
 @msg	brushes move only within their type	筆刷只能在同一類型內移動
 @msg	no symbol instances selected	未選取符號實體
 @msg	select a symbol instance	請選取符號實體
+@msg	select instances of one symbol	請選取同一符號的實體
+@msg	a symbol can't hold an instance of itself	符號不能包含自身的實體
 @msg	the art has no bounds	圖稿沒有邊界
 @msg	Image Trace: the traced image is missing	影像描圖：找不到描圖的影像
 @msg	Live Paint Merge: select a Live Paint group and the paths to add	即時上色合併：請選取即時上色群組和要加入的路徑

@@ -1568,7 +1568,12 @@ already walks Image Trace. Short agent entry points:
   9-slice guides on or off; `nineSliceGuides` is `[left, top, right, bottom]`, fractions 0..1 of the symbol size; rows
   of `symbol.list` carry `nineSlice`: the guides or `null`; `type` is Symbol Type, `static` by default for the command
   and `dynamic` by default in the Symbol Options dialog),
-  `symbol.place {name?, x?, y?}`, `symbol.breakLink {ids?}`, `symbol.replace`, `symbol.edit`, `symbol.duplicate`,
+  `symbol.place {name?, x?, y?}`, `symbol.breakLink {ids?}`, `symbol.replace`,
+  `symbol.edit {id?, name?, x?, y?, artboard?, viewCenter?}` (symbol editing mode: the symbol's art on a temporary
+  isolated layer, where the instance `id` shows it or centered on (x, y), by default on the center of artboard
+  `artboard`, the active one the app passes, or in a document without artboards on `viewCenter`, the view's center the
+  app passes; every instance follows each edit and stays linked), `symbol.exitEditing`
+  (leaves the mode; without an edit it adds no undo step), `symbol.duplicate`,
   `symbol.selectInstances {name}`, `symbol.delete {name | names, expandInstances?}` (`names` deletes several in one
   undo step). `symbol.new` and `symbol.duplicate {name, newName?}` trim the white space around the
   name they are given, as `symbol.options` trims `newName`; a blank one gives "New Symbol" or "<name> copy".
@@ -1580,8 +1585,8 @@ already walks Image Trace. Short agent entry points:
   0..100 and `blend` a blend mode name; `null` gives one back to the symbol. It is refused for a static symbol and for
   a path that names no object. `symbol.instance.reset {ids?}` drops the selected instances' changes (the Properties
   panel's Reset). Redefining the symbol (`symbol.update`) reshapes every instance and keeps each change whose path the
-  new art still has; `symbol.breakLink` bakes the changes into the expanded art; `symbol.edit` expands the symbol's own
-  art; making the symbol static drops them.
+  new art still has; `symbol.breakLink` bakes the changes into the expanded art; `symbol.edit` edits the symbol's own
+  art, and each edit there keeps the changes whose path the art still has; making the symbol static drops them.
 
 ```json
 {"name":"run_command","arguments":{"command":"symbol.instance.setAppearance","params":{"id":42,"path":[1],"fill":"#d0021b","opacity":80}}}

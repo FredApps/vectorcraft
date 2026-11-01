@@ -3119,6 +3119,7 @@ theme	Appearance	Motiv
 	Duplicate Brush	Duplikovat štětec
 	Duplicate Symbol	Duplikovat symbol
 	Edit Symbol	Upravit symbol
+	Exit Symbol Editing Mode	Ukončit režim úprav symbolu
 	Expand Brush Strokes	Rozložit tahy štětcem
 	New Brush…	Nový štětec…
 	New Brush	Nový štětec
@@ -4659,6 +4660,8 @@ imageTrace	Outline	Obrys
 @msg	a clipping path can't be attached to a path	ořezovou cestu nelze připojit na cestu
 @msg	select a stroke with a variable width	vyberte tah s proměnnou šířkou
 @msg	select a symbol instance	vyberte instanci symbolu
+@msg	select instances of one symbol	vyberte instance jediného symbolu
+@msg	a symbol can't hold an instance of itself	symbol nemůže obsahovat instanci sebe sama
 @msg	select an Image Trace object	vyberte objekt vektorizace obrazu
 @msg	could not decode image: {0}	obraz nelze dekódovat: {0}
 @msg	image is empty	obraz je prázdný

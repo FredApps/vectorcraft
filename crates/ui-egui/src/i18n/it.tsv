@@ -925,6 +925,7 @@ font-technology	Variable	Variabili
 	Edit Selection	Modifica selezione
 	Edit Selection…	Modifica selezione…
 	Edit Symbol	Modifica simbolo
+	Exit Symbol Editing Mode	Esci dalla modalità modifica simbolo
 	Edit Text	Modifica testo
 	Edit the applied effect, or add another one?	Modificare l'effetto applicato o aggiungerne un altro?
 	Edit the point	Modifica il punto
@@ -4394,6 +4395,8 @@ axis	Both	Entrambi
 @msg	a clipping path can't be attached to a path	un tracciato di ritaglio non può essere agganciato a un tracciato
 @msg	select a stroke with a variable width	seleziona una traccia con larghezza variabile
 @msg	select a symbol instance	seleziona un'istanza di simbolo
+@msg	select instances of one symbol	seleziona istanze di un solo simbolo
+@msg	a symbol can't hold an instance of itself	un simbolo non può contenere un'istanza di sé stesso
 @msg	select an Image Trace object	seleziona un oggetto di ricalco immagine
 @msg	could not decode image: {0}	impossibile decodificare l'immagine: {0}
 @msg	image is empty	l'immagine è vuota

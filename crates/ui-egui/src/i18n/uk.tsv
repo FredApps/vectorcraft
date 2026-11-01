@@ -919,6 +919,7 @@ font-technology	Variable	Варіативні
 	Edit Selection	Редагувати виділення
 	Edit Selection…	Редагувати виділення…
 	Edit Symbol	Редагувати символ
+	Exit Symbol Editing Mode	Вийти з режиму редагування символу
 	Edit Text	Редагувати текст
 	Edit the applied effect, or add another one?	Редагувати застосований ефект або додати інший?
 	Edit the point	Редагувати точку
@@ -4378,6 +4379,8 @@ axis	Both	Обидві
 @msg	a clipping path can't be attached to a path	відсічний контур не можна прикріпити до контуру
 @msg	select a stroke with a variable width	виділіть обведення зі змінною шириною
 @msg	select a symbol instance	виділіть екземпляр символу
+@msg	select instances of one symbol	виділіть екземпляри одного символу
+@msg	a symbol can't hold an instance of itself	символ не може містити власний екземпляр
 @msg	select an Image Trace object	виділіть об’єкт трасування зображення
 @msg	could not decode image: {0}	не вдалося декодувати зображення: {0}
 @msg	image is empty	зображення порожнє

@@ -1430,6 +1430,7 @@ digits	Malayalam	말라얄람어
 	Edit PDF Preset	PDF 프리셋 편집
 	Edit Print Preset	인쇄 프리셋 편집
 	Edit Symbol	심볼 편집
+	Exit Symbol Editing Mode	심볼 편집 모드 종료
 	Edit Theme	테마 편집
 	Edit selected paths within:	다음 범위 안의 선택한 패스 편집:
 	Edit or Apply Color Group	색상 그룹 편집 또는 적용
@@ -3961,6 +3962,8 @@ theme	Appearance	외관
 @msg	brushes move only within their type	브러시는 같은 유형 안에서만 이동할 수 있습니다
 @msg	no symbol instances selected	선택한 심볼 인스턴스가 없습니다
 @msg	select a symbol instance	심볼 인스턴스를 선택하세요
+@msg	select instances of one symbol	한 심볼의 인스턴스를 선택하세요
+@msg	a symbol can't hold an instance of itself	심볼에는 자기 자신의 인스턴스를 넣을 수 없습니다
 @msg	the art has no bounds	아트웍에 경계가 없습니다
 @msg	Image Trace: the traced image is missing	이미지 추적: 추적한 이미지가 없습니다
 @msg	Live Paint Merge: select a Live Paint group and the paths to add	라이브 페인트 병합: 라이브 페인트 그룹과 추가할 패스를 선택하세요

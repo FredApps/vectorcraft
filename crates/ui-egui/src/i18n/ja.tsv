@@ -1440,6 +1440,7 @@ digits	Malayalam	マラヤーラム数字
 	Edit PDF Preset	PDF プリセットを編集
 	Edit Print Preset	プリントプリセットを編集
 	Edit Symbol	シンボルを編集
+	Exit Symbol Editing Mode	シンボル編集モードを終了
 	Edit Theme	テーマを編集
 	Edit selected paths within:	選択したパスを次の距離以内で編集：
 	Edit or Apply Color Group	カラーグループを編集または適用
@@ -4034,6 +4035,8 @@ swatch	Bright Violet	ビビッドバイオレット
 @msg	brushes move only within their type	ブラシは同じ種類の中でのみ移動できます
 @msg	no symbol instances selected	シンボルインスタンスが選択されていません
 @msg	select a symbol instance	シンボルインスタンスを選択してください
+@msg	select instances of one symbol	1 つのシンボルのインスタンスを選択してください
+@msg	a symbol can't hold an instance of itself	シンボルにそれ自体のインスタンスを含めることはできません
 @msg	the art has no bounds	アートに境界がありません
 @msg	Image Trace: the traced image is missing	画像トレース: トレース元の画像が見つかりません
 @msg	Live Paint Merge: select a Live Paint group and the paths to add	ライブペイントの結合: ライブペイントグループと、追加するパスを選択してください

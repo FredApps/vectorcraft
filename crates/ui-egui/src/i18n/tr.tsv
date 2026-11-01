@@ -904,6 +904,7 @@ font-technology	Variable	Değişken
 	Edit Selection	Seçimi Düzenle
 	Edit Selection…	Seçimi Düzenle…
 	Edit Symbol	Sembolü Düzenle
+	Exit Symbol Editing Mode	Sembol Düzenleme Modundan Çık
 	Edit Text	Metni Düzenle
 	Edit the applied effect, or add another one?	Uygulanan efekti düzenlemek veya başka bir efekt eklemek mi istiyorsunuz?
 	Edit the point	Noktayı düzenle
@@ -4105,6 +4106,8 @@ axis	Both	Her İkisi
 @msg	select an Intertwine group	bir Intertwine grubu seçin
 @msg	select a stroke with a variable width	değişken genişliğe sahip bir kontur seçin
 @msg	select a symbol instance	bir sembol örneği seçin
+@msg	select instances of one symbol	tek bir sembolün örneklerini seçin
+@msg	a symbol can't hold an instance of itself	bir sembol kendi örneğini içeremez
 @msg	select an Image Trace object	bir Görüntü İzleme nesnesi seçin
 @msg	could not decode image: {0}	görüntünün kodu çözülemedi: {0}
 @msg	image is empty	resim boş
