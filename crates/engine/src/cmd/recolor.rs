@@ -580,8 +580,8 @@ fn randomize(_: &mut Session, p: &Value) -> Result<Value> {
     let rows = parse_rows(p, C)?;
     let mut rng = Rng::new(super::menucmds::whole_or(p, "seed", 0, C)?);
     let (order, saturation_brightness) = (switch_or(p, "order", true, C)?, switch_or(p, "saturationBrightness", false, C)?);
-    // Each new colour with its row's tint and model: a tint moves with its colour, and goes when
-    // the colour changes; a model moves with its colour.
+    // Each new color with its row's tint and model: a tint moves with its color, and goes when
+    // the color changes; a model moves with its color.
     let mut news: Vec<(Color, f32, Option<ModelRule>)> = rows.iter().filter_map(|r| r.new_color().map(|c| (c, r.tint, r.model))).collect();
     if order {
         rng.shuffle(&mut news);

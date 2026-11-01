@@ -743,10 +743,10 @@ fn sliders(app: &VectorcraftApp, ui: &mut Ui, d: &mut Dialog, rows: &mut [Value]
                 // Nothing to edit: the mode's sliders, disabled.
                 let mode = mode.unwrap_or(Mode::Hsb);
                 let input = Tokens::get(ui.ctx()).input;
-                let grey = move |_: f32| input;
+                let gray = move |_: f32| input;
                 for (n, lbl) in mode.labels().iter().enumerate() {
                     let shown = widgets::SliderValue::field(0.0, f64::from(mode.min(n))..=f64::from(mode.max(n)), mode.suffix(n), 0);
-                    slider_cell(ui, n, lbl, shown, mode.suffix(n), &grey);
+                    slider_cell(ui, n, lbl, shown, mode.suffix(n), &gray);
                     if n % 2 == 1 {
                         ui.end_row();
                     }
@@ -922,7 +922,7 @@ fn edit_tab(ui: &mut Ui, d: &mut Dialog, rows: &mut [Value]) -> bool {
 
 /// Give the rows `active` the colours of `rule` from the base colour `b` of row `base` (the base row
 /// first, then the others in order, the rule's colours repeating), each in its row's model. A row
-/// whose new colour changes loses its tint.
+/// whose new color changes loses its tint.
 fn apply_rule(rows: &mut [Value], rule: Harmony, base: usize, b: Color, active: &[usize]) {
     let colors = rule.apply(b);
     let order = std::iter::once(base).chain(active.iter().copied().filter(|i| *i != base));
@@ -994,10 +994,10 @@ mod tests {
         assert_eq!([&r[0]["to"], &r[1]["to"], &r[2]["to"]], ["rgb 255 0 0", "rgb 0 255 0", "rgb 0 0 255"]);
     }
 
-    /// A rule or a wheel move that gives a row a new colour drops the row's tint; a row whose
-    /// colour stays keeps it.
+    /// A rule or a wheel move that gives a row a new color drops the row's tint; a row whose
+    /// color stays keeps it.
     #[test]
-    fn a_new_colour_from_the_edit_tab_drops_the_rows_tint() {
+    fn a_new_color_from_the_edit_tab_drops_the_rows_tint() {
         let tinted = || {
             let mut r = rows();
             for row in &mut r {
@@ -1007,7 +1007,7 @@ mod tests {
         };
         let mut r = tinted();
         apply_rule(&mut r, Harmony::Triad, 0, Color::rgb(1.0, 0.0, 0.0), &[0, 1, 2]);
-        assert_eq!(r[0]["tint"], json!(40.0), "the base row's colour stays");
+        assert_eq!(r[0]["tint"], json!(40.0), "the base row's color stays");
         assert!(r[1].get("tint").is_none() && r[2].get("tint").is_none(), "{r:?}");
         let mut r = tinted();
         move_color(&mut r, 0, [120.0, 1.0, 1.0], false);
