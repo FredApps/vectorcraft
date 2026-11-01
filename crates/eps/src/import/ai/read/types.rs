@@ -166,6 +166,21 @@ pub(super) struct Frame {
     pub(super) state: Option<(f32, BlendMode, bool, Knockout, bool)>,
 }
 
+/// An envelope whose dictionary was read, waiting for its drawn art and its plugin's `XP` (see
+/// [`super::super::envelope`]).
+#[derive(Debug)]
+pub(super) struct PendingEnvelope {
+    pub(super) obj: Obj,
+    /// The group on `%_` lines before the dictionary.
+    pub(super) before: Option<Node>,
+    /// The art in the dictionary's `AIDeformArtKey` block.
+    pub(super) inner: Vec<Node>,
+    /// How many frames were open when the dictionary closed, and how many children the innermost
+    /// had: its drawn art is the one child after them.
+    pub(super) depth: usize,
+    pub(super) siblings: usize,
+}
+
 /// What a reader of a pattern's definition has of its head, `(name) llx lly urx ury`: the operands
 /// before its first operator.
 #[derive(Debug, Default)]

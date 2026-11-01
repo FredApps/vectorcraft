@@ -2861,6 +2861,40 @@ fn envelope_options_keep_the_source_text_hidden_under_its_outlined_appearance() 
     assert!(r.warnings.is_empty(), "{:?}", r.warnings);
 }
 
+/// A live envelope that draws a little apart from its drawn art, in layers that already differ
+/// from the page almost as much as the page check takes, would make them differ too much: its
+/// drawn art is put back, so the file still opens from its layers.
+#[test]
+fn a_live_envelope_that_would_tip_the_page_check_keeps_its_drawn_art() {
+    let rect = |x0: f64, y0: f64, x1: f64, y1: f64| format!("{x0} {y0} m\n{x0} {y1} L\n{x1} {y1} L\n{x1} {y0} L\n{x0} {y0} L\n");
+    let hidden = |s: &str| -> String { s.lines().map(|l| format!("%_{l}\n")).collect() };
+    let corner = |x: f64, y: f64, nx: f64, ny: f64, px: f64, py: f64| format!("[0.8 1 {x} {y} {nx} {ny} 1 {px} {py} 1] /N X#\n");
+    let mesh = format!(
+        "/Mesh X!\n2 /Version X#\n/Cartesian /Type X#\n[1 1] /Size X#\n/Data X#\n/DeviceGray /CS X#\n[0 0] /P X#\n{}{}{}{}/E X#\n/End X!\n",
+        corner(20.0, 5.0, 20.0, 35.0, 40.0, 5.0),
+        corner(20.0, 95.0, 40.0, 95.0, 20.0, 65.0),
+        corner(80.0, 95.0, 80.0, 65.0, 60.0, 95.0),
+        corner(80.0, 5.0, 60.0, 5.0, 80.0, 35.0),
+    );
+    let red = "0 1 1 0 1 0 0 Xa\n";
+    let envelope = format!(
+        "{}%_/ArtDictionary :\n%_131073 /Int (AIDeformOptionsKey) ,\n%_50 /Int (AIDeformFidelityKey) ,\n%_0 /Bool (AIDeformEditModeKey) ,\n%_X=\n{}%_X+\n%_ (AIDeformArtKey) ,\n%_2 /Int (AIDeformStyle) ,\n%_;\n%_\nu\n{red}{}f\nU\n(Adobe Deform Plugin) 1 0 0 XP\n",
+        hidden(&format!("u\n{mesh}U\n")),
+        hidden(&format!("u\n{red}{}f\nU\n", rect(20.0, 5.0, 80.0, 95.0))),
+        rect(20.5, 5.0, 80.5, 95.0),
+    );
+    // Hairlines the page doesn't draw: about 4.5% of it differs before the envelope.
+    let lines: String = [3, 6, 9, 12, 15, 85, 88, 91, 94].iter().map(|x| format!("0 0 0 1 K\n0.5 w\n{x} 0 m\n{x} 100 L\nS\n")).collect();
+    let art = native(&layer("Art", true, &format!("{lines}{envelope}")));
+    let page = "1 0 0 setrgbcolor 20.5 5 moveto 80.5 5 lineto 80.5 95 lineto 20.5 95 lineto closepath fill";
+    let r = import(&eps(page, &art)).unwrap();
+    assert_eq!(names(&r.document), ["Art"], "{:?}", r.warnings);
+    let mut envelopes = 0;
+    r.document.walk(|n| envelopes += usize::from(matches!(n.kind, NodeKind::Envelope { .. })));
+    assert_eq!(envelopes, 0, "{:?}", r.warnings);
+    assert!(r.warnings.iter().any(|w| w == crate::import::ai::ENVELOPE_DRAWN), "{:?}", r.warnings);
+}
+
 /// An art style section with style `Comic`: a white fill offset and repeated by Transform under a
 /// red fill with its own blend mode, the characters at the bottom.
 fn comic_style() -> String {

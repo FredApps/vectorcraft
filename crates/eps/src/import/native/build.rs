@@ -71,6 +71,7 @@ pub(super) fn build_from(
         slot_names,
         restyled,
         placed_elsewhere,
+        envelopes_drawn,
         warnings,
     } = structure;
     // Editing data in the units of the page's user space ([`in_units`]) is compared with the page
@@ -311,10 +312,10 @@ pub(super) fn build_from(
                         doc = other;
                         notes.extend(unseen_note(unseen).into_iter().chain(note));
                     }
-                    _ if trust => {
-                        notes.extend(unseen_note(unseen).into_iter().chain([format!("{why}: they come from its editing data all the same")]))
+                    _ => {
+                        let more = drawn_or_trusted(&frame, &mut view, &mut doc, &envelopes_drawn, &notes, unseen, trust, why, reflow)?;
+                        notes.extend(more);
                     }
-                    _ => return Err(why),
                 },
             }
         }
@@ -753,6 +754,46 @@ fn slot_content(
         return Err("it has too many text objects".into());
     }
     Ok((plan(infos, stories, made, template, to_doc, pages, notes), false))
+}
+
+/// The layers `doc` don't draw as the page (`why`), `unseen` text objects of them taken out: the
+/// notes to add when `doc` with each live envelope `drawn` lists replaced by the drawn art it took
+/// the place of (see [`ai::Structure::envelopes_drawn`]) draws as the page, `doc` then being that;
+/// else, with `trust`, the notes for `doc` as it is. An error, `why`, otherwise. The envelope note
+/// is added unless `notes` has it.
+#[allow(clippy::too_many_arguments)]
+fn drawn_or_trusted(
+    frame: &Frame<'_>,
+    view: &mut PageView,
+    doc: &mut Document,
+    drawn: &[(NodeId, Node)],
+    notes: &[String],
+    unseen: usize,
+    trust: bool,
+    why: String,
+    reflow: bool,
+) -> Result<Vec<String>, String> {
+    let unseen_note = |n: usize| (n > 0).then(|| format!("{n} {UNSEEN_TEXT}"));
+    let mut put_back = doc.clone();
+    let mut any = false;
+    for (id, art) in drawn {
+        if let Some(n) = put_back.node_mut(*id) {
+            *n = art.clone();
+            any = true;
+        }
+    }
+    if any {
+        let more = prune_unseen(frame, view, &mut put_back, reflow);
+        if let Ok(note) = compare(frame, view, &put_back, reflow) {
+            *doc = put_back;
+            let envelope = (!notes.iter().any(|n| n == ai::ENVELOPE_DRAWN)).then(|| ai::ENVELOPE_DRAWN.to_string());
+            return Ok(envelope.into_iter().chain(unseen_note(unseen + more)).chain(note).collect());
+        }
+    }
+    if trust {
+        return Ok(unseen_note(unseen).into_iter().chain([format!("{why}: they come from its editing data all the same")]).collect());
+    }
+    Err(why)
 }
 
 /// `doc` with the placed files `placed` lists at their other placement (see

@@ -2954,6 +2954,40 @@ proptest! {
         survive("mutated EPS editing data", || vectorcraft_eps::import(&bytes).ok().map(|r| r.document))?;
     }
 
+    /// A `.ai` whose envelopes are damaged or hostile: any kind, warp style, options word,
+    /// Fidelity and grid size, corners out of range or repeated, the contents block cut short.
+    #[test]
+    fn ai_envelope_never_panics(
+        kind in prop::sample::select(vec![0i64, 1, 2, 3, 4, -1, 1 << 40]),
+        style in prop::sample::select(vec![0i64, 1, 8, 15, 16, -3, i64::MAX]),
+        word in prop::sample::select(vec![0i64, 1, 131073, 65536, 0x2_0007, 1 << 18, -1, i64::MAX]),
+        fidelity in prop::sample::select(vec!["50", "0", "100", "101", "-1", "1e308", "nan"]),
+        size in prop::sample::select(vec!["[1 1]", "[3 2]", "[0 0]", "[51 1]", "[100000 100000]", "[-1 2]", "[1e308 1]"]),
+        corner in prop::sample::select(vec!["10 10", "1e308 -1e308", "nan 0", "10 10 10 10", "0"]),
+        edit in 0i64..2,
+        cut in 0usize..2_000,
+        edits in prop::collection::vec((0usize..2_000, prop::sample::select(vec!['0', '9', '-', ' ', '\n', '(', ')', '/', ':', ';', ',', '[', ']', '%', '_', 'X', 'u', 'U'])), 0..8),
+    ) {
+        use vectorcraft_testkit::ai;
+        let n = |x: &str, y: &str| format!("%_[0.5 1 {x} {y} {x} {y} 1 {x} {y} 1] /N X#\n");
+        let mesh = format!(
+            "%_/Mesh X!\n%_2 /Version X#\n%_/Cartesian /Type X#\n%_{size} /Size X#\n%_/Data X#\n%_[0 0] /P X#\n{}{}{}%_[{corner}] /N X#\n%_/E X#\n%_[0 0] /P X#\n%_/E X#\n%_/End X!\n",
+            n("10", "10"),
+            n("10", "90"),
+            n("90", "90")
+        );
+        let content = "%_u\n%_1 0 0 1 0 0 Xa\n%_10 10 m\n%_10 90 L\n%_90 90 L\n%_90 10 L\n%_f\n%_U\n";
+        let keys = format!(
+            "%_{word} /Int (AIDeformOptionsKey) ,\n%_{fidelity} /Int (AIDeformFidelityKey) ,\n%_{edit} /Bool (AIDeformEditModeKey) ,\n%_{style} /Int (DeformStyle) ,\n%_0.5 /Real (DeformValue) ,\n%_1 /Bool (Rotate) ,\n"
+        );
+        let art = format!(
+            "%_u\n{mesh}%_U\n%_/ArtDictionary :\n{keys}%_X=\n{content}%_X+\n%_ (AIDeformArtKey) ,\n%_{kind} /Int (AIDeformStyle) ,\n%_;\n%_\nu\n1 0 0 1 0 0 Xa\n12 12 m\n12 88 L\n88 88 L\nf\nU\n(Adobe Deform Plugin) 1 0 0 XP\n0 0 1 1 0 0 Xa\n0 0 m\n5 5 L\nf\n"
+        );
+        let data = mutate_text(&ai::editing_data(100.0, 100.0, &ai::layer("L", &art)), cut, &edits);
+        let private = [b"%AI24_ZStandard_Data".as_slice(), &zstd(&data)].concat();
+        survive("hostile .ai envelope", || Some(vectorcraft_eps::layered_ai(&private, Document::new(100.0, 100.0), vec![], false, false, 1.0).0))?;
+    }
+
     /// A `.ai` whose editing data is damaged or hostile.
     #[test]
     fn ai_editing_data_never_panics(cut in 0usize..3_000, edits in prop::collection::vec((0usize..3_000, prop::sample::select(vec!['0', '9', '-', '.', ' ', '\n', '(', ')', '/', ':', ';', '[', ']', '%', 'q', 'Q', 'W', 'u', 'U', 'L', 'k', 'x'])), 0..12), damage in prop::collection::vec((0usize..4_000, any::<u8>()), 0..4)) {
@@ -3328,6 +3362,12 @@ fn arb_ai_token() -> impl Strategy<Value = String> {
             "[1 1] /P X#",
             "(Adobe Path Blends) 1 0 92 XP",
             "(Adobe Path Blends) 1 0 999999 XP",
+            "(Adobe Deform Plugin) 1 0 0 XP",
+            "%_/ArtDictionary :\n%_131073 /Int (AIDeformOptionsKey) ,\n%_X=\n",
+            "%_X+\n%_ (AIDeformArtKey) ,\n%_2 /Int (AIDeformStyle) ,\n%_;\n",
+            "%_1 /Int (AIDeformStyle) ,\n%_9 /Int (DeformStyle) ,\n%_1e308 /Real (DeformValue) ,\n%_;\n",
+            "%_1 /Bool (AIDeformEditModeKey) ,",
+            "[1e308 1e308] /Size X#",
             "\n%44434241010000000000000000000000\n",
             "\n%0200000041000000000000000000000000000000\n",
             "\n%4G\n",

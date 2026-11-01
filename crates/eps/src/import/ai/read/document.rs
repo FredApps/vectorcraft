@@ -235,7 +235,7 @@ impl<'a> Reader<'a> {
         // An envelope (a distortion, `AIDeformStyle` / `DeformValue`) is written on `%_` lines as
         // a group holding the mesh that shapes it (or its contents, while they are being edited);
         // the distorted art the file's PDF part draws follows on plain lines. That group isn't
-        // art, so it goes (#2405).
+        // art, so it goes (#2405), kept aside for the live envelope ([`Reader::end_envelope`]).
         if (o.get("AIDeformStyle").is_some() || o.get("DeformValue").is_some()) && self.drop_envelope_art() {
             return;
         }
@@ -317,6 +317,12 @@ impl<'a> Reader<'a> {
         self.artboards.first().map(|(_, r)| *r).or(self.cropmarks).or_else(|| self.sized_board())
     }
 
+    /// The page the art is compared with in the document's space, once the art has started.
+    pub(super) fn page_in_doc(&self) -> Option<Rect> {
+        let board = self.first_board().or_else(|| self.bbox_board())?;
+        Some(self.to_doc?.transform_rect_bbox(board))
+    }
+
     /// The page of a file that says nothing of its artboard (the legacy format as other apps write
     /// it): its art's bounding box.
     fn bbox_board(&self) -> Option<Rect> {
@@ -380,6 +386,11 @@ impl<'a> Reader<'a> {
     }
 
     pub(super) fn finish(mut self) -> Result<Structure, String> {
+        // Envelopes whose plugin never closed them keep their drawn art.
+        if !self.envelopes.is_empty() {
+            self.envelopes.clear();
+            self.warn(crate::import::ai::envelope::DRAWN);
+        }
         if !self.unknown.is_empty() {
             let ops: Vec<String> = self.unknown.iter().map(|o| format!("`{o}`")).collect();
             self.unsupported.insert(format!("operators VectorCraft doesn't know ({})", ops.join(", ")));
@@ -491,6 +502,7 @@ impl<'a> Reader<'a> {
             slot_names: self.slot_names,
             restyled: self.restyled,
             placed_elsewhere: self.placed_elsewhere,
+            envelopes_drawn: self.envelopes_drawn,
             warnings,
         })
     }

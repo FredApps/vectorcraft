@@ -298,6 +298,8 @@ impl<'a> Reader<'a> {
                 let len = Self::nums(&vals).last().copied().unwrap_or(0.0);
                 if name == crate::import::ai::blend::PLUGIN && len.is_finite() && len > 0.0 && len <= crate::import::ai::blend::MAX_RECORD as f64 {
                     self.blend_record = Some((len as usize, vec![]));
+                } else if name == crate::import::ai::envelope::PLUGIN {
+                    self.end_envelope();
                 }
             }
             _ if IGNORED.contains(&w) => {}
