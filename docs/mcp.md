@@ -6385,6 +6385,30 @@ one, out of range values and a request with no fix on.
 {"name":"run_command","arguments":{"command":"addon.color.printFixes","params":{"scope":"document","inkLimit":300,"removeWhiteOverprint":true,"overprintBlack":100}}}
 ```
 
+### Find Nearest Swatch
+
+`addon.color.nearestSwatch {library?, color?, fill?, stroke?, count?, ids?}` (a query: no undo step) lists, for each
+colour of the selected objects, the colour swatches of a library closest to it, closest first, by CIEDE2000 difference
+(`deltaE`: under 1 hardly tells apart, about 2 to 3 close) (#4923). `library` is a swatch library's id or name, as
+`swatch.library.list` lists them: the built-in ones, and the libraries and colour books (`.acb`, `.ase`, `.gpl`) the
+user saved or loaded with `swatch.library.load`; `"document"` (the default) is the document's own swatches. The colours
+are the solid colours and gradient stops of the selection's fills (`fill`, true) and strokes (`stroke`, true), of the
+objects inside it and of its type, once each, the first 100; `color` looks one colour up instead. `count` is 1…50 (5).
+Tint swatches, None and Registration aren't matched. → `{library, colors: [{values, hex, matches: [{name, values, hex,
+spot, deltaE}]}]}` (`values` as a default swatch name reads them: `C=10 M=20 Y=30 K=0`, `R=255 G=128 B=0`…)
+
+`addon.color.applyNearestSwatch {library?, fill?, stroke?, ids?}` (Object › Plug-ins › Color Effects › Find Nearest
+Swatch…, whose dialog lists each colour's three closest swatches with their difference; Apply runs it) gives each solid
+colour and gradient stop of the selected objects' fills and strokes (and gradient meshes) the colour of its nearest
+swatch, as one undo step. A global or spot swatch's colour links to it. The library's swatches the colours take are
+added to the document's first, as `swatch.library.add` adds them, so a spot colour from a colour book stays spot;
+images and patterns keep their colours. → `{changed, swatches: [the document swatches the colours took], added}`
+
+```json
+{"name":"run_command","arguments":{"command":"addon.color.nearestSwatch","params":{"library":"web-safe-216","color":{"c":10,"m":80,"y":90,"k":0},"count":3}}}
+{"name":"run_command","arguments":{"command":"addon.color.applyNearestSwatch","params":{"library":"document","stroke":false}}}
+```
+
 ## Arrange Tools add-on
 
 Arrange Tools is a built-in add-on that lays out, swaps, replaces and sizes selected objects: its commands are
