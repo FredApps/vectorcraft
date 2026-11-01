@@ -136,9 +136,17 @@ pub(super) fn apply_data(g: &mut GraphSpec, p: &Value) -> bool {
     changed
 }
 
-/// Drop rows with neither a value nor a label; a label-only row stays, its values blank.
+/// Drop rows with neither a value nor a label; a label-only row stays, its values blank. Each kept row keeps its own
+/// width, so a dropped row wider than the rest adds no blank series.
 fn drop_empty_rows(g: &mut GraphSpec) {
-    let mut cells = g.cells();
+    let blank: std::collections::HashSet<[usize; 2]> = g.blanks.iter().copied().collect();
+    let mut cells: Vec<Vec<Option<f64>>> = g
+        .rows
+        .iter()
+        .take(vectorcraft_doc::MAX_GRAPH_CATEGORIES)
+        .enumerate()
+        .map(|(c, r)| r.iter().take(vectorcraft_doc::MAX_GRAPH_SERIES).enumerate().map(|(s, v)| (!blank.contains(&[c, s])).then_some(*v)).collect())
+        .collect();
     let keep: Vec<bool> = (0..cells.len())
         .map(|c| cells.get(c).is_some_and(|r| r.iter().any(Option::is_some)) || g.categories.get(c).is_some_and(|l| !l.is_empty()))
         .collect();

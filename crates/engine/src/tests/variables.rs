@@ -1647,7 +1647,8 @@ fn graph_variable_applies_csv_as_set_data() {
     s.execute("variable.makeGraphDynamic", &json!({})).unwrap();
     let name = s.execute("variable.list", &json!({})).unwrap()["variables"][0]["name"].as_str().unwrap().to_string();
     let spec = |s: &Session, g: u64| s.doc().unwrap().doc.node(NodeId(g)).unwrap().extras().graph.as_deref().unwrap().clone();
-    for (row, csv) in [("One", ",a\nQ1,10\nQ2,5"), ("Blank", ",a\nQ1,10\n,\nQ2,5")] {
+    // A dropped empty row wider than the others (`,,`) adds no blank series, so the right axis keeps nothing.
+    for (row, csv) in [("Wide", ",a\nQ1,10\n,,\nQ2,5"), ("One", ",a\nQ1,10\nQ2,5"), ("Blank", ",a\nQ1,10\n,\nQ2,5")] {
         s.execute("dataset.new", &json!({"name": row, "values": {name.clone(): csv}})).unwrap();
         s.execute("dataset.select", &json!({"name": row})).unwrap();
         s.execute("graph.setData", &json!({"id": other, "csv": csv})).unwrap();
@@ -1655,6 +1656,8 @@ fn graph_variable_applies_csv_as_set_data() {
         assert_eq!(merged.right_series, set.right_series, "{row}");
         assert_eq!(merged.categories, set.categories, "{row}");
         assert_eq!(merged.cells(), set.cells(), "{row}");
+        assert!(merged.right_series.is_empty(), "{row}");
+        assert_eq!(merged.cells(), [[Some(10.0)], [Some(5.0)]], "{row}");
     }
     assert!(spec(&s, id).right_series.is_empty());
     assert_eq!(spec(&s, id).categories, ["Q1", "Q2"]);
