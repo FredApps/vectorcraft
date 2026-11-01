@@ -348,7 +348,7 @@ fn grouped_fields_have_square_joints_matching_heights_and_shared_borders() {
         CornerRadius { nw: start, sw: start, ne: end, se: end }
     };
     let visible = |r: &egui::epaint::RectShape| r.fill != Color32::TRANSPARENT || !r.stroke.is_empty();
-    for scheme in [Scheme::Modern, Scheme::Classic] {
+    for scheme in Scheme::ALL {
         let ctx = themed(Default::default());
         theme::apply_with(&ctx, theme::Brightness::default(), theme::Accent::default(), scheme);
         let t = Tokens::get(&ctx);
@@ -416,7 +416,7 @@ fn grouped_fields_have_square_joints_matching_heights_and_shared_borders() {
 fn a_spinner_field_has_square_joints_and_the_schemes_outer_corners() {
     use theme::Scheme;
     let square = |r: CornerRadius| r == CornerRadius::ZERO;
-    for scheme in [Scheme::Modern, Scheme::Classic] {
+    for scheme in Scheme::ALL {
         for presets in [&[1.0, 2.0][..], &[]] {
             let ctx = themed(Default::default());
             theme::apply_with(&ctx, theme::Brightness::default(), theme::Accent::default(), scheme);
@@ -497,4 +497,52 @@ fn a_held_spinner_arrow_repeats() {
     frame(&ctx, 1.75, vec![button(false)], &mut add);
     frame(&ctx, 1.8, vec![], &mut add);
     assert_eq!(value.get(), 9.0, "letting go doesn't step once more");
+}
+
+// Regression test for #4567: numbers and text in input fields (numeric fields, dash/gap fields,
+// etc.) are vertically centered in their boxes, not shoved against the top edge.
+#[test]
+fn input_elements_are_vertically_centered_in_their_boxes() {
+    let ctx = themed(Default::default());
+    let mut add = |ui: &mut Ui| {
+        ui.horizontal(|ui| {
+            num_field(ui, "plain_num", Some(12.0), Unit::Points, 70.0);
+            opt_field(ui, "dash_cell", Some(12.0), Unit::Points, 40.0);
+        });
+    };
+    frame(&ctx, 0.0, vec![], &mut add);
+    let shapes = frame(&ctx, 0.1, vec![], &mut add);
+    let mut boxes: Vec<Rect> = vec![];
+    for s in &shapes {
+        if let egui::Shape::Rect(r) = s
+            && r.rect.height() > 20.0
+            && r.fill != Color32::TRANSPARENT
+            && !boxes.contains(&r.rect)
+        {
+            boxes.push(r.rect);
+        }
+    }
+    boxes.sort_by(|a, b| a.min.x.total_cmp(&b.min.x));
+    assert_eq!(boxes.len(), 2, "found both field boxes: {boxes:?}");
+
+    let mut text_shapes: Vec<&egui::epaint::TextShape> = vec![];
+    for s in &shapes {
+        if let egui::Shape::Text(t) = s
+            && (t.galley.text() == "12 pt" || t.galley.text() == "12")
+        {
+            text_shapes.push(t);
+        }
+    }
+    text_shapes.sort_by(|a, b| a.pos.x.total_cmp(&b.pos.x));
+    assert_eq!(text_shapes.len(), 2, "found both text shapes: {text_shapes:?}");
+
+    for (b, t) in boxes.iter().zip(text_shapes.iter()) {
+        let text_top = t.pos.y - b.min.y;
+        let text_bottom = b.max.y - (t.pos.y + t.galley.rect.height());
+        assert!(
+            (text_top - text_bottom).abs() <= 1.5,
+            "text '{}' is vertically centered: top gap {text_top}, bottom gap {text_bottom} in box {b:?}",
+            t.galley.text()
+        );
+    }
 }

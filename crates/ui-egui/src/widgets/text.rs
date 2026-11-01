@@ -298,16 +298,7 @@ pub(super) fn recessed_text(
     (buf, commit, resp, rect)
 }
 
-/// A recessed text field showing `value` (blank when `None`: the selection's values differ),
-/// `rows` lines tall (1: single line, which Enter and Shift+Enter commit). Returns the new text,
-/// trimmed, when a change is committed (Enter, Shift+Enter or focus loss).
-/// [`text_field`] with explicit `corners`.
-#[allow(dead_code)]
-pub fn text_field_with(ui: &mut Ui, id: impl std::hash::Hash, value: Option<&str>, width: f32, rows: usize, corners: CornerRadius) -> Option<String> {
-    text_field_with_named(ui, id, None, value, width, rows, corners)
-}
-
-/// [`text_field_with`] with explicit `name`.
+/// [`text_field`] with explicit `corners` and `name`.
 #[allow(clippy::too_many_arguments)]
 pub fn text_field_with_named(
     ui: &mut Ui,
@@ -325,6 +316,9 @@ pub fn text_field_with_named(
     (commit && buf.trim() != shown).then(|| buf.trim().to_string())
 }
 
+/// A recessed text field showing `value` (blank when `None`: the selection's values differ),
+/// `rows` lines tall (1: single line, which Enter and Shift+Enter commit). Returns the new text,
+/// trimmed, when a change is committed (Enter, Shift+Enter or focus loss).
 pub fn text_field(ui: &mut Ui, id: impl std::hash::Hash, value: Option<&str>, width: f32, rows: usize) -> Option<String> {
     text_field_named(ui, id, None, value, width, rows)
 }
