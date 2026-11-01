@@ -652,6 +652,20 @@ fn renaming_carries_the_bindings_and_values_with_it() {
     assert!(s.execute("dataset.rename", &json!({"name": "Title", "newName": "Taken"})).is_err());
 }
 
+/// Renaming a name that does not exist onto one that does reports the missing name, the same
+/// error a rename to a free name gives.
+#[test]
+fn renaming_a_missing_name_onto_a_taken_one_reports_the_missing_name() {
+    let mut s = session();
+    s.execute("variable.define", &json!({"name": "A", "kind": "text"})).unwrap();
+    s.execute("dataset.new", &json!({"name": "A"})).unwrap();
+
+    let e = s.execute("variable.rename", &json!({"name": "Nope", "newName": "A"})).unwrap_err().to_string();
+    assert!(e.contains("no variable named `Nope`"), "{e}");
+    let e = s.execute("dataset.rename", &json!({"name": "Nope", "newName": "A"})).unwrap_err().to_string();
+    assert!(e.contains("no dataset named `Nope`"), "{e}");
+}
+
 /// `dataset.set` is how a value changes after the row exists: replacing it must not need the
 /// dataset to be deleted and rebuilt (which loses its place in the list and the active one).
 #[test]
