@@ -256,7 +256,14 @@ fn off_without_a_selection() {
     let mut s = session();
     rect(&mut s, 0.0, 0.0, 20.0, 10.0);
     s.execute("select.none", &json!({})).unwrap();
-    for c in ["addon.arrange.grid", "addon.arrange.swap", "addon.arrange.replace", "addon.arrange.size", "addon.arrange.groupOverlapping"] {
+    for c in [
+        "addon.arrange.grid",
+        "addon.arrange.swap",
+        "addon.arrange.replace",
+        "addon.arrange.size",
+        "addon.arrange.groupOverlapping",
+        "addon.arrange.randomizeOpacity",
+    ] {
         assert!(!enabled(&s, c), "{c}");
     }
     assert!(!enabled(&Session::new(), "addon.arrange.swap"));
@@ -335,4 +342,77 @@ fn group_overlapping_is_off_with_one_object_and_scales_to_many() {
     let sets = super::overlapping(&rects);
     assert_eq!(sets.len(), 2000);
     assert!(sets.iter().all(|s| s.len() == 2 && s[1] == s[0] + 1));
+}
+
+fn opacity(s: &Session, id: NodeId) -> f32 {
+    s.doc().unwrap().doc.node(id).unwrap().opacity
+}
+
+#[test]
+fn randomize_opacity_gives_each_object_its_own_opacity_within_the_range() {
+    let mut s = session();
+    let ids: Vec<NodeId> = (0..20).map(|i| rect(&mut s, i as f64 * 10.0, 0.0, 5.0, 5.0)).collect();
+    select(&mut s, &ids);
+    let n = steps(&s);
+    let r = s.execute("addon.arrange.randomizeOpacity", &json!({"min": 30, "max": 60, "seed": 7})).unwrap();
+    assert_eq!(r["count"], json!(20));
+    assert_eq!(steps(&s), n + 1, "one undo step");
+    let first: Vec<f32> = ids.iter().map(|id| opacity(&s, *id)).collect();
+    assert!(first.iter().all(|o| (0.3..=0.6).contains(o)), "{first:?}");
+    assert!(first.windows(2).any(|w| w[0] != w[1]), "each its own: {first:?}");
+    s.execute("edit.undo", &json!({})).unwrap();
+    assert!(ids.iter().all(|id| opacity(&s, *id) == 1.0), "undone");
+    // The same seed repeats them; another seed doesn't.
+    s.execute("addon.arrange.randomizeOpacity", &json!({"min": 30, "max": 60, "seed": 7})).unwrap();
+    assert_eq!(ids.iter().map(|id| opacity(&s, *id)).collect::<Vec<_>>(), first);
+    s.execute("addon.arrange.randomizeOpacity", &json!({"min": 30, "max": 60, "seed": 8})).unwrap();
+    assert_ne!(ids.iter().map(|id| opacity(&s, *id)).collect::<Vec<_>>(), first);
+    // Defaults 30 to 100; min = max gives every object that opacity.
+    s.execute("addon.arrange.randomizeOpacity", &json!({})).unwrap();
+    assert!(ids.iter().all(|id| (0.3..=1.0).contains(&opacity(&s, *id))));
+    s.execute("addon.arrange.randomizeOpacity", &json!({"min": 45, "max": 45})).unwrap();
+    assert!(ids.iter().all(|id| opacity(&s, *id) == 0.45));
+}
+
+#[test]
+fn randomize_opacity_takes_ids_and_leaves_the_rest() {
+    let mut s = session();
+    let a = rect(&mut s, 0.0, 0.0, 5.0, 5.0);
+    let b = rect(&mut s, 10.0, 0.0, 5.0, 5.0);
+    select(&mut s, &[a, b]);
+    let g = NodeId(s.execute("object.group", &json!({})).unwrap()["id"].as_u64().unwrap());
+    let c = rect(&mut s, 20.0, 0.0, 5.0, 5.0);
+    s.execute("select.none", &json!({})).unwrap();
+    assert!(!enabled(&s, "addon.arrange.randomizeOpacity"));
+    s.execute("addon.arrange.randomizeOpacity", &json!({"ids": [c.0], "min": 10, "max": 10})).unwrap();
+    assert_eq!((opacity(&s, a), opacity(&s, b), opacity(&s, c)), (1.0, 1.0, 0.1));
+    // A group takes one opacity of its own; the objects inside keep theirs.
+    select(&mut s, &[g]);
+    s.execute("addon.arrange.randomizeOpacity", &json!({"min": 20, "max": 20})).unwrap();
+    assert_eq!((opacity(&s, g), opacity(&s, a), opacity(&s, b)), (0.2, 1.0, 1.0));
+}
+
+#[test]
+fn randomize_opacity_refuses_bad_params() {
+    let mut s = session();
+    let a = rect(&mut s, 0.0, 0.0, 20.0, 10.0);
+    select(&mut s, &[a]);
+    refuses(
+        &mut s,
+        "addon.arrange.randomizeOpacity",
+        &[
+            json!({"min": -1}),
+            json!({"max": 101}),
+            json!({"min": 80, "max": 20}),
+            json!({"min": 1e308}),
+            json!({"max": "50"}),
+            json!({"seed": -1}),
+            json!({"seed": 1.5}),
+            json!({"seed": "x"}),
+            json!({"ids": [999_999]}),
+            json!({"ids": "x"}),
+        ],
+    );
+    let e = s.execute("addon.arrange.randomizeOpacity", &json!({"min": 80, "max": 20})).unwrap_err().to_string();
+    assert!(e.contains("`min` is greater than `max`"), "{e}");
 }

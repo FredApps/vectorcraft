@@ -5714,3 +5714,10 @@ breakText	Glyphs	Гліфи
 	Text Flow	Потік тексту
 	By Rows	За рядками
 	By Columns	За стовпцями
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Випадкова непрозорість…
+	Randomize Opacity	Випадкова непрозорість
+	Minimum:	Мінімум:
+	Maximum:	Максимум:
+	Seed:	Початкове число:
+@msg	`min` is greater than `max`	`min` більше за `max`

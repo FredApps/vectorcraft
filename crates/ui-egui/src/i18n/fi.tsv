@@ -6145,3 +6145,10 @@ breakText	Glyphs	Merkit
 	Text Flow	Tekstin kulku
 	By Rows	Riveittäin
 	By Columns	Sarakkeittain
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Satunnainen peittävyys…
+	Randomize Opacity	Satunnainen peittävyys
+	Minimum:	Pienin:
+	Maximum:	Suurin:
+	Seed:	Siemen:
+@msg	`min` is greater than `max`	`min` on suurempi kuin `max`

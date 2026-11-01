@@ -6092,3 +6092,10 @@ breakText	Glyphs	Глифы
 	Text Flow	Поток текста
 	By Rows	По строкам
 	By Columns	По столбцам
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Случайная непрозрачность…
+	Randomize Opacity	Случайная непрозрачность
+	Minimum:	Минимум:
+	Maximum:	Максимум:
+	Seed:	Начальное число:
+@msg	`min` is greater than `max`	`min` больше, чем `max`

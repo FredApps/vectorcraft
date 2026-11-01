@@ -6014,3 +6014,10 @@ breakText	Glyphs	Glyffer
 	Text Flow	Tekstflow
 	By Rows	Efter rækker
 	By Columns	Efter kolonner
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Tilfældig opacitet…
+	Randomize Opacity	Tilfældig opacitet
+	Minimum:	Minimum:
+	Maximum:	Maksimum:
+	Seed:	Startværdi:
+@msg	`min` is greater than `max`	`min` er større end `max`

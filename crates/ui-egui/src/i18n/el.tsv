@@ -6067,3 +6067,10 @@ breakText	Glyphs	Γλύφοι
 	Text Flow	Ροή κειμένου
 	By Rows	Κατά γραμμές
 	By Columns	Κατά στήλες
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Τυχαία αδιαφάνεια…
+	Randomize Opacity	Τυχαία αδιαφάνεια
+	Minimum:	Ελάχιστο:
+	Maximum:	Μέγιστο:
+	Seed:	Αρχική τιμή:
+@msg	`min` is greater than `max`	Το `min` είναι μεγαλύτερο από το `max`

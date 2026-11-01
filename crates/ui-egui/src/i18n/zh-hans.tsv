@@ -5957,3 +5957,10 @@ breakText	Glyphs	字形
 	Text Flow	文本流向
 	By Rows	按行
 	By Columns	按列
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	随机不透明度…
+	Randomize Opacity	随机不透明度
+	Minimum:	最小值：
+	Maximum:	最大值：
+	Seed:	种子：
+@msg	`min` is greater than `max`	`min` 大于 `max`

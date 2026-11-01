@@ -6189,3 +6189,10 @@ swatch	Yellow Green	Verde-amarelado
 	Text Flow	Fluxo do texto
 	By Rows	Por linhas
 	By Columns	Por colunas
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Opacidade aleatória…
+	Randomize Opacity	Opacidade aleatória
+	Minimum:	Mínimo:
+	Maximum:	Máximo:
+	Seed:	Semente:
+@msg	`min` is greater than `max`	`min` é maior que `max`

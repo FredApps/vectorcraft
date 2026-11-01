@@ -5717,3 +5717,10 @@ breakText	Glyphs	Glyph
 	Text Flow	Luồng văn bản
 	By Rows	Theo hàng
 	By Columns	Theo cột
+# Arrange Tools add-on: Randomize Opacity.
+	Randomize Opacity…	Độ mờ ngẫu nhiên…
+	Randomize Opacity	Độ mờ ngẫu nhiên
+	Minimum:	Tối thiểu:
+	Maximum:	Tối đa:
+	Seed:	Giá trị khởi đầu:
+@msg	`min` is greater than `max`	`min` lớn hơn `max`
