@@ -546,3 +546,29 @@ fn input_elements_are_vertically_centered_in_their_boxes() {
         );
     }
 }
+
+/// The 24 pt field height is in points, so Preferences > User Interface > Scaling (egui's zoom
+/// factor) scales it with everything else: at any scale the field is 24 points tall, which is
+/// 24 times the scale in device pixels.
+#[test]
+fn field_height_follows_the_interface_scaling() {
+    for zoom in [0.75_f32, 1.0, 1.5, 2.0] {
+        let ctx = themed(Default::default());
+        ctx.set_zoom_factor(zoom);
+        let mut add = |ui: &mut Ui| {
+            num_field(ui, "scaled", Some(12.0), Unit::Points, 70.0);
+        };
+        frame(&ctx, 0.0, vec![], &mut add);
+        let shapes = frame(&ctx, 0.1, vec![], &mut add);
+        let heights: Vec<f32> = shapes
+            .iter()
+            .filter_map(|s| match s {
+                egui::Shape::Rect(r) if r.rect.height() > 20.0 && r.fill != Color32::TRANSPARENT => Some(r.rect.height()),
+                _ => None,
+            })
+            .collect();
+        assert!(!heights.is_empty(), "the field's box at {zoom}");
+        assert!(heights.iter().all(|h| (h - 24.0).abs() < 0.01), "24 points at {zoom}: {heights:?}");
+        assert!((ctx.pixels_per_point() - zoom).abs() < 1e-6, "{zoom} points to the pixel: {}", ctx.pixels_per_point());
+    }
+}
