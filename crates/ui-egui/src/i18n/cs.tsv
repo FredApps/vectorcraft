@@ -6081,6 +6081,9 @@ breakText	Glyphs	Glyfy
 	Remove Gaps	Odstranit mezery
 @msg	that makes too many pieces (at most 100000): make the dashes longer	tím vznikne příliš mnoho dílů (nejvýše 100000): prodlužte čárky
 @msg	select paths, or segments, to divide	vyberte cesty nebo segmenty k rozdělení
+# Path Precision Tools add-on: Expand Dashes into Paths.
+	Expand Dashes into Paths	Rozložit čárky na cesty
+@msg	select paths with dashed strokes to expand	vyberte cesty s čárkovaným tahem k rozložení
 # Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
 	Document Tools	Nástroje dokumentu
 	Save a Timestamped Copy	Uložit kopii s datem a časem

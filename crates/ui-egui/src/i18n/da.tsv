@@ -5980,6 +5980,9 @@ breakText	Glyphs	Glyffer
 	Remove Gaps	Fjern mellemrum
 @msg	that makes too many pieces (at most 100000): make the dashes longer	det giver for mange stykker (højst 100000): gør stregerne længere
 @msg	select paths, or segments, to divide	vælg stier eller segmenter, der skal opdeles
+# Path Precision Tools add-on: Expand Dashes into Paths.
+	Expand Dashes into Paths	Udvid streger til stier
+@msg	select paths with dashed strokes to expand	vælg stier med stiplet streg, der skal udvides
 # Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
 	Document Tools	Dokumentværktøjer
 	Save a Timestamped Copy	Gem en kopi med dato og klokkeslæt

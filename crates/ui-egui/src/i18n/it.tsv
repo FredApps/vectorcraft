@@ -5700,6 +5700,9 @@ breakText	Glyphs	Glifi
 	Remove Gaps	Rimuovi le distanze
 @msg	that makes too many pieces (at most 100000): make the dashes longer	così si ottengono troppi pezzi (al massimo 100000): allunga i trattini
 @msg	select paths, or segments, to divide	seleziona tracciati o segmenti da dividere
+# Path Precision Tools add-on: Expand Dashes into Paths.
+	Expand Dashes into Paths	Espandi trattini in tracciati
+@msg	select paths with dashed strokes to expand	seleziona tracciati con traccia tratteggiata da espandere
 # Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
 	Document Tools	Strumenti documento
 	Save a Timestamped Copy	Salva una copia con data e ora

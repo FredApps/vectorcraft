@@ -6038,6 +6038,9 @@ breakText	Glyphs	Glifler
 	Remove Gaps	Boşlukları Kaldır
 @msg	that makes too many pieces (at most 100000): make the dashes longer	bu çok fazla parça oluşturur (en fazla 100000): tireleri uzatın
 @msg	select paths, or segments, to divide	bölünecek yolları veya bölümleri seçin
+# Path Precision Tools add-on: Expand Dashes into Paths.
+	Expand Dashes into Paths	Tireleri Yollara Genişlet
+@msg	select paths with dashed strokes to expand	genişletilecek kesikli konturlu yolları seçin
 # Document Tools add-on (Object › Plug-ins › Document Tools): Save a Timestamped Copy.
 	Document Tools	Belge Araçları
 	Save a Timestamped Copy	Zaman Damgalı Bir Kopya Kaydet
