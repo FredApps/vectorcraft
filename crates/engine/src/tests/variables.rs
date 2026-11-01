@@ -114,6 +114,113 @@ fn applying_a_dataset_reports_the_area_type_it_overflows() {
     assert_eq!((&v["name"], &v["overflow"]), (&json!("Long"), &json!([a.0])), "{v}");
 }
 
+/// Area type threaded into a rectangle → (session, first frame, second frame, the story).
+fn threaded(second_height: u32) -> (Session, NodeId, NodeId, String) {
+    let mut s = session();
+    let story = "The quick brown fox jumps over the lazy dog and keeps running. ".repeat(3) + "\nSecond paragraph.\nThird.";
+    let r = s.execute("text.create", &json!({"x": 10, "y": 10, "text": story, "area": {"width": 150, "height": 60}})).unwrap();
+    let a = NodeId(r["id"].as_u64().unwrap());
+    let r = s.execute("shape.rectangle", &json!({"x": 200, "y": 10, "width": 150, "height": second_height})).unwrap();
+    let b = NodeId(r["id"].as_u64().unwrap());
+    s.execute("select.set", &json!({"ids": [a.0, b.0]})).unwrap();
+    s.execute("text.thread.create", &json!({})).unwrap();
+    (s, a, b, story)
+}
+
+/// Whether `dataset.list` says the data set `name` matches the art.
+fn matches(s: &mut Session, name: &str) -> bool {
+    let sets = s.execute("dataset.list", &json!({})).unwrap();
+    let set = sets["datasets"].as_array().unwrap().iter().find(|d| d["name"] == name).unwrap().clone();
+    set["matches"].as_bool().unwrap()
+}
+
+#[test]
+fn a_text_value_on_a_frame_of_threaded_type_replaces_the_whole_story() {
+    let (mut s, a, b, story) = threaded(200);
+    assert!(!plain(&s, a).is_empty() && !plain(&s, b).is_empty());
+    s.execute("variable.define", &json!({"name": "Name", "kind": "text"})).unwrap();
+    s.execute("variable.bind", &json!({"variable": "Name", "ids": [a.0]})).unwrap();
+    // A capture reads the whole story, every frame's text in thread order.
+    s.execute("dataset.capture", &json!({"name": "Orig"})).unwrap();
+    let orig = s.doc().unwrap().doc.variables.dataset("Orig").unwrap().values.get("Name").cloned();
+    assert_eq!(orig, Some(vectorcraft_doc::DataValue::Text(story.clone())));
+    s.execute("dataset.new", &json!({"name": "B", "values": {"Name": "Bob"}})).unwrap();
+
+    let v = s.execute("dataset.select", &json!({"name": "B"})).unwrap();
+    assert_eq!((v["applied"].as_u64(), v["skipped"].as_u64()), (Some(1), Some(0)));
+    assert_eq!((plain(&s, a), plain(&s, b)), ("Bob".to_string(), String::new()));
+    assert!(matches(&mut s, "B"));
+    // The captured row applied back gives the story back, every time.
+    for _ in 0..2 {
+        s.execute("dataset.select", &json!({"name": "Orig"})).unwrap();
+        assert_eq!(format!("{}{}", plain(&s, a), plain(&s, b)), story);
+        assert!(!plain(&s, b).is_empty());
+        assert!(matches(&mut s, "Orig"));
+        s.execute("dataset.select", &json!({"name": "B"})).unwrap();
+        assert_eq!(format!("{}{}", plain(&s, a), plain(&s, b)), "Bob");
+    }
+}
+
+#[test]
+fn a_text_value_on_a_later_frame_of_threaded_type_replaces_the_whole_story() {
+    let (mut s, a, b, story) = threaded(200);
+    s.execute("variable.define", &json!({"name": "Tail", "kind": "text"})).unwrap();
+    s.execute("variable.bind", &json!({"variable": "Tail", "ids": [b.0]})).unwrap();
+    s.execute("dataset.capture", &json!({"name": "Orig"})).unwrap();
+    s.execute("dataset.new", &json!({"name": "T", "values": {"Tail": "END"}})).unwrap();
+
+    let v = s.execute("dataset.select", &json!({"name": "T"})).unwrap();
+    assert_eq!(v["applied"].as_u64(), Some(1));
+    assert_eq!((plain(&s, a), plain(&s, b)), ("END".to_string(), String::new()));
+    assert!(matches(&mut s, "T"));
+    s.execute("dataset.select", &json!({"name": "Orig"})).unwrap();
+    assert_eq!(format!("{}{}", plain(&s, a), plain(&s, b)), story);
+    assert!(matches(&mut s, "Orig"));
+}
+
+#[test]
+fn a_story_with_a_locked_frame_is_neither_read_nor_rewritten() {
+    let (mut s, a, b, story) = threaded(200);
+    s.execute("variable.define", &json!({"name": "Name", "kind": "text"})).unwrap();
+    s.execute("variable.bind", &json!({"variable": "Name", "ids": [a.0]})).unwrap();
+    s.execute("dataset.new", &json!({"name": "B", "values": {"Name": "Bob"}})).unwrap();
+    s.execute("select.set", &json!({"ids": [b.0]})).unwrap();
+    s.execute("object.lock", &json!({})).unwrap();
+
+    let v = s.execute("dataset.select", &json!({"name": "B"})).unwrap();
+    assert_eq!((v["applied"].as_u64(), v["skipped"].as_u64()), (Some(0), Some(1)));
+    assert_eq!(format!("{}{}", plain(&s, a), plain(&s, b)), story);
+    assert!(s.doc().unwrap().doc.captured_values().is_empty());
+}
+
+#[test]
+fn two_text_variables_in_one_story_apply_in_definition_order() {
+    let (mut s, a, b, _) = threaded(200);
+    s.execute("variable.define", &json!({"name": "Head", "kind": "text"})).unwrap();
+    s.execute("variable.define", &json!({"name": "Tail", "kind": "text"})).unwrap();
+    s.execute("variable.bind", &json!({"variable": "Tail", "ids": [a.0]})).unwrap();
+    s.execute("variable.bind", &json!({"variable": "Head", "ids": [b.0]})).unwrap();
+    s.execute("dataset.new", &json!({"name": "R", "values": {"Head": "one", "Tail": "two"}})).unwrap();
+
+    let v = s.execute("dataset.select", &json!({"name": "R"})).unwrap();
+    assert_eq!(v["applied"].as_u64(), Some(2));
+    assert_eq!(format!("{}{}", plain(&s, a), plain(&s, b)), "two");
+}
+
+#[test]
+fn applying_a_dataset_to_threaded_type_reports_overflow_on_the_last_frame() {
+    let (mut s, a, b, _) = threaded(40);
+    s.execute("variable.define", &json!({"name": "Name", "kind": "text"})).unwrap();
+    s.execute("variable.bind", &json!({"variable": "Name", "ids": [a.0]})).unwrap();
+    s.execute("dataset.new", &json!({"name": "Long", "values": {"Name": "word ".repeat(120)}})).unwrap();
+    s.execute("dataset.new", &json!({"name": "Short", "values": {"Name": "Ann"}})).unwrap();
+
+    let v = s.execute("dataset.select", &json!({"name": "Long"})).unwrap();
+    assert_eq!(&v["overflow"], &json!([b.0]), "{v}");
+    let v = s.execute("dataset.select", &json!({"name": "Short"})).unwrap();
+    assert!(v.get("overflow").is_none(), "{v}");
+}
+
 #[test]
 fn mismatched_and_missing_bindings_are_skipped_and_counted() {
     let mut s = session();
