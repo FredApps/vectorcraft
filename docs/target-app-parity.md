@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Path Precision Tools add-on: Expand Dashes into Paths, #4922; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-11-01 · **Change:** minor (Color Effects add-on: Find Nearest Swatch, #4923; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -1460,10 +1460,15 @@ Symbols area (#4938), from the public symbol documentation ([create and place sy
 
 A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Document Tools › Export All Open Documents as PDF (or as SVG) asks for a folder and writes a copy of every open document there, each named after its document with `-2`, `-3`… added when a name is taken, so no file is replaced (`addon.document.exportAllOpen {folder, format?}`, #4920). Each copy is written as Save a Copy writes it: the documents keep their paths, titles and modified state, and the active one stays active. A document that can't be written is named in the status bar and the others are still written. Tests: `addons::document::tests::export_all_open_documents_writes_each_to_the_folder_picked` (ui-egui), `cmd::addons::document::tests::export_all_open_documents_writes_each_and_reports_failures` (engine).
 
+## Color Effects add-on: Find Nearest Swatch (2026-11-01)
+
+A VectorCraft addition, not a feature of the reference app, so no area score moves. Object › Plug-ins › Color Effects › Find Nearest Swatch… lists each colour of the selection (fills and strokes, as ticked; solid colours and gradient stops, inside groups and type) with the three swatches of the chosen library closest to it by CIEDE2000 difference, with that difference (`addon.color.nearestSwatch`, #4923). The library is the document's swatches, a built-in library, or a library or colour book the user saved or loaded (no colour book data ships with VectorCraft). Apply gives each colour its nearest swatch as one undo step (`addon.color.applyNearestSwatch`): global and spot swatches link, and a library's swatches the colours take are added to the document first, so a spot colour stays spot. Remaining: typing a colour to look up in the dialog (the command takes `color`), and applying a match other than the nearest. Tests: `cmd::addons::color::nearest::tests` (engine), `addons::color::nearest::tests::find_nearest_swatch_lists_the_matches_and_applies_the_nearest` (ui-egui).
+
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-11-01 | minor | Color Effects add-on (a VectorCraft addition): Find Nearest Swatch (#4923); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Document Tools add-on (a VectorCraft addition): Export All Open Documents as PDF or SVG (#4920); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Path Precision Tools add-on (a VectorCraft addition): Expand Dashes into Paths (#4922); evidence added; scores unchanged. |
 | 2026-11-01 | minor | Type core: the Glyphs panel highlights the character selected with the Type tool and scrolls it into view (#4908); evidence added; scores unchanged. |
