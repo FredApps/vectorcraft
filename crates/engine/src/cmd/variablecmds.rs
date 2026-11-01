@@ -160,6 +160,9 @@ fn rename(s: &mut Session, p: &Value) -> Result<Value> {
     let from = var_name(p, C)?;
     let to = named(p.get("newName").and_then(Value::as_str), "newName", C)?;
     let st = s.doc()?;
+    if st.doc.variables.variable(&from).is_none() {
+        return Err(bad(C, format!("no variable named `{from}`")));
+    }
     if st.doc.variables.variable(&to).is_some() {
         return Err(bad(C, format!("variable `{to}` already exists")));
     }
@@ -357,6 +360,9 @@ fn dataset_rename(s: &mut Session, p: &Value) -> Result<Value> {
     let from = var_name(p, C)?;
     let to = named(p.get("newName").and_then(Value::as_str), "newName", C)?;
     let st = s.doc()?;
+    if st.doc.variables.dataset(&from).is_none() {
+        return Err(bad(C, format!("no dataset named `{from}`")));
+    }
     if st.doc.variables.dataset(&to).is_some() {
         return Err(bad(C, format!("dataset `{to}` already exists")));
     }
