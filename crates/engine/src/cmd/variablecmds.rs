@@ -647,7 +647,7 @@ pub fn specs() -> Vec<CommandSpec> {
             "Lock Variables",
             ["Window", "Variables"],
             None,
-            "{locked?: bool} lock or unlock the variables (default: toggle); saved with the document; a change is one undo step. While locked, variable.define, variable.delete, variable.rename, variable.make…Dynamic and a variable.loadLibrary that would delete or define a variable are refused; binding, unbinding and the dataset commands still run → {locked}",
+            "{locked?: bool} lock or unlock the variables (default: toggle); saved with the document; a change is one undo step. While locked, variable.define, variable.delete, variable.rename, variable.make…Dynamic and a variable.loadLibrary that would delete or define a variable are refused; binding, unbinding and the dataset commands still run, except a dataset.import whose header would define a variable → {locked}",
             has_doc,
             lock
         ),

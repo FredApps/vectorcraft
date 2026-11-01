@@ -409,7 +409,8 @@ fn make_dynamic_errors_name_the_command() {
 }
 
 /// Lock Variables refuses defining, deleting and renaming variables, Make … Dynamic included,
-/// while binding, unbinding and the dataset commands still run.
+/// while binding, unbinding and the dataset commands still run (an import that would define a
+/// variable is refused; see `locked_variables_refuse_header_cells_that_define_variables`).
 #[test]
 fn locked_variables_refuse_new_deleted_and_renamed_variables() {
     let mut s = session();
@@ -451,6 +452,14 @@ fn locked_variables_refuse_new_deleted_and_renamed_variables() {
     assert_eq!(s.execute("variable.lock", &json!({"locked": false})).unwrap()["locked"], false);
     assert_eq!(s.execute("variable.lock", &json!({"locked": false})).unwrap()["locked"], false);
     s.execute("variable.define", &json!({"name": "Other", "kind": "text"})).unwrap();
+}
+
+/// `variable.lock`'s params text names the dataset command it refuses: an import whose header
+/// would define a variable.
+#[test]
+fn the_lock_params_text_names_the_refused_import() {
+    let params = cmd::find_command("variable.lock").unwrap().params;
+    assert!(params.contains("the dataset commands still run, except a dataset.import whose header would define a variable"), "{params}");
 }
 
 /// Locking is an undo step only when it changes the state, and the lock is saved with the

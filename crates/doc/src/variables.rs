@@ -117,7 +117,8 @@ pub struct Variables {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active_dataset: Option<String>,
     /// Lock Variables: while set, variables can't be defined, deleted or renamed. Objects can
-    /// still be bound to them and unbound, and datasets still change and apply.
+    /// still be bound to them and unbound, and datasets still change and apply, except that an
+    /// import whose header would define a variable is refused.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub locked: bool,
 }
