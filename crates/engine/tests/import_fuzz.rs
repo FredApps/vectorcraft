@@ -3011,6 +3011,22 @@ proptest! {
     }
 }
 
+/// An operand of a layer's options (`Lb`): a flag, a colour index or component, a percentage, or
+/// anything else.
+fn arb_layer_operand() -> impl Strategy<Value = String> {
+    prop_oneof![Just("0".to_string()), Just("1".to_string()), (-2i32..300).prop_map(|v| v.to_string()), arb_num()]
+}
+
+/// A coordinate of a guide path: the ends of the canvas around the template box's centre (100 50),
+/// the edges of the artboards, near them, or anything else.
+fn arb_guide_coord() -> impl Strategy<Value = String> {
+    prop_oneof![
+        prop::sample::select(vec!["-8091.5", "8291.5", "-8141.5", "8241.5", "0", "50", "100", "200", "-8091.505", "8291.5001", "1e308"])
+            .prop_map(str::to_string),
+        arb_num(),
+    ]
+}
+
 /// The operators, operands and section comments of hostile editing data.
 fn arb_ai_token() -> impl Strategy<Value = String> {
     prop_oneof![
@@ -3037,6 +3053,9 @@ fn arb_ai_token() -> impl Strategy<Value = String> {
             "b",
             "W",
             "(b) *",
+            "(N) *",
+            "(S) *",
+            "-8091.5 50 m 8291.5 50 L (N) *",
             "u",
             "U",
             "*u",
@@ -3295,6 +3314,42 @@ proptest! {
         // An EPS whose page is its art's box, not its artboard: what prints outside it is compared too.
         let boxed = ai::eps(data.replace("%AI3_Cropmarks: 0 0 200 100", "%AI3_Cropmarks: -50 -50 300 200").as_bytes(), ai::page_ps());
         survive("hostile editing data in an EPS of its art's box", || vectorcraft_engine::cmd::fileio::load("x.eps", &boxed).ok().map(|l| l.doc))?;
+    }
+
+    /// Layer options (`Lb`) of any number of operands with any values, and guide paths (`(N) *`,
+    /// `(S) *`) of any points, among them ones across the whole canvas or from edge to edge of
+    /// artboards that overlap or are the same, on layers and sublayers.
+    #[test]
+    fn ai_layer_options_and_ruler_guides_never_panic(
+        options in prop::collection::vec(arb_layer_operand(), 0..17),
+        guides in prop::collection::vec((prop::collection::vec((arb_guide_coord(), arb_guide_coord()), 0..5), any::<bool>(), any::<bool>()), 0..12),
+        boards in prop::collection::vec(prop::sample::select(vec![[0.0, 100.0, 200.0, 0.0], [0.0, 100.0, 100.0, 0.0], [50.0, 100.0, 200.0, 0.0]]), 0..4),
+    ) {
+        use vectorcraft_testkit::ai;
+        let board = |b: &[f64; 4]| {
+            format!(
+                "%_/Dictionary :\n%_{} {} /RealPointRelToROrigin\n%_ (PositionPoint1) ,\n%_{} {} /RealPointRelToROrigin\n%_ (PositionPoint2) ,\n%_; ,\n",
+                b[0], b[1], b[2], b[3]
+            )
+        };
+        let array: String = boards.iter().map(board).collect();
+        let document = format!("%_/Document :\n%_/Dictionary :\n%_/Array :\n{array}%_; (ArtboardArray) ,\n%_; /NotRecorded ,\n%_;\n");
+        let paths: Vec<String> = guides
+            .iter()
+            .map(|(points, ruler, sub)| {
+                let ops: String = points.iter().enumerate().map(|(i, (x, y))| format!("{x} {y} {}\n", if i == 0 { "m" } else { "L" })).collect();
+                let path = format!("{ops}({}) *\n", if *ruler { "N" } else { "S" });
+                if *sub { format!("%AI5_BeginLayer\n{} Lb\n(Sub) Ln\n{path}LB\n%AI5_EndLayer--\n", options.join(" ")) } else { path }
+            })
+            .collect();
+        let body = format!("{document}%AI5_BeginLayer\n{} Lb\n(L) Ln\n{}\nLB\n%AI5_EndLayer--\n", options.join(" "), paths.concat());
+        let data = ai::editing_data(200.0, 100.0, &body).replacen("%%EndComments", "%AI3_TemplateBox: 100 50 100 50\n%%EndComments", 1);
+        survive("layer options and ruler guides", || Some(vectorcraft_eps::layered_ai(data.as_bytes(), Document::new(200.0, 100.0), vec![], false, false, 1.0).0))?;
+        survive("layer options and ruler guides in units of 10 points", || {
+            Some(vectorcraft_eps::layered_ai(data.as_bytes(), Document::new(2000.0, 1000.0), vec![], false, false, 10.0).0)
+        })?;
+        let eps = ai::eps(data.as_bytes(), ai::page_ps());
+        survive("layer options and ruler guides in an EPS", || vectorcraft_engine::cmd::fileio::load("x.eps", &eps).ok().map(|l| l.doc))?;
     }
 
     /// The testkit's sample damaged, as it is and compressed, in EPS, `.ai` and PDF files.

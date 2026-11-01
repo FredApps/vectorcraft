@@ -123,6 +123,7 @@ pub(super) struct LayerAttrs {
     pub(super) preview: bool,
     pub(super) locked: bool,
     pub(super) printable: bool,
+    pub(super) template: bool,
     pub(super) dim: Option<u8>,
     pub(super) color: Option<LayerColor>,
 }

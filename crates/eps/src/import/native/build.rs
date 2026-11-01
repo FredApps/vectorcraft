@@ -190,6 +190,7 @@ pub(super) fn build_from(
             if let Some(a) = doc.artboards.first_mut() {
                 a.rect = rect;
             }
+            drop_guides_off_boards(&mut doc);
         }
         frame = Some(Frame { page: visible, page_rect, rect, whole, pages: page_moves });
     }
@@ -933,8 +934,14 @@ fn page_boards<'a>(boards: &'a [vectorcraft_doc::Artboard], first: usize, pages:
     ((first > 0 || pages.len() == boards.len()) && shown.iter().zip(pages).all(same)).then_some(shown)
 }
 
-/// Draw `doc`'s layers and artboards `k` times as large, from the origin, with their strokes,
-/// effects and pattern tiles.
+/// Drops the guides of artboards `doc` no longer has: an artboard guide goes with its artboard.
+fn drop_guides_off_boards(doc: &mut Document) {
+    let kept: Vec<u32> = doc.artboards.iter().map(|a| a.id).collect();
+    doc.guides.retain(|g| g.artboard.is_none_or(|id| kept.contains(&id)));
+}
+
+/// Draw `doc`'s layers, artboards and guides `k` times as large, from the origin, with their
+/// strokes, effects and pattern tiles.
 fn scale_document(doc: &mut Document, k: f64) {
     let a = Affine::scale(k);
     let scaling = Scaling { strokes: true, effects: Some(vectorcraft_effects::scale_effect), patterns: true, ..Default::default() };
@@ -943,6 +950,9 @@ fn scale_document(doc: &mut Document, k: f64) {
     }
     for board in &mut doc.artboards {
         board.rect = a.transform_rect_bbox(board.rect);
+    }
+    for guide in &mut doc.guides {
+        guide.pos *= k;
     }
 }
 

@@ -5,7 +5,7 @@ use std::sync::Arc;
 use kurbo::{Point, Rect};
 use vectorcraft_color::gradient::GradientKind;
 use vectorcraft_color::{BlendMode, Color, Paint};
-use vectorcraft_doc::{AppearanceItem, ColorMode, Document, Knockout, LayerColor, LineCap, LineJoin, Node, NodeKind, Unit};
+use vectorcraft_doc::{AppearanceItem, ColorMode, Document, Guide, Knockout, LayerColor, LineCap, LineJoin, Node, NodeKind, Unit};
 
 use super::*;
 
@@ -2131,6 +2131,122 @@ fn stroked_path_guides_from_the_star_operator() {
     assert!(matches!(n.kind, NodeKind::Path { guide: true, .. }));
     assert_eq!(n.appearance.items.len(), 1);
     assert!(matches!(n.appearance.items[0], AppearanceItem::Stroke(_)));
+}
+
+/// [`stream`] with a template box centred on (306.5, 395.5): the canvas runs 8,191.5 points each
+/// way from there.
+fn canvas_stream(body: &str) -> String {
+    stream(body).replacen("%%EndComments", "%AI3_TemplateBox: 306.5 395.5 306.5 395.5\n%%EndComments", 1)
+}
+
+/// The straight guide path from (`x0`, `y0`) to (`x1`, `y1`), `(op) *`.
+fn guide_line(x0: f64, y0: f64, x1: f64, y1: f64, op: &str) -> String {
+    format!("{x0} {y0} m\n{x1} {y1} L\n({op}) *\n")
+}
+
+/// #779: a straight `(N) *` guide path across the whole canvas, directly on a layer or sublayer, is
+/// a ruler guide on that layer, at its place in the document; it leaves no path behind.
+#[test]
+fn canvas_wide_guide_paths_are_ruler_guides_of_their_layer() {
+    let body = format!(
+        "{}{}{RED}{}f\n%AI5_BeginLayer\n1 1 1 1 0 0 1 0 79 128 255 0 50 0 Lb\n(Sub) Ln\n{}LB\n%AI5_EndLayer--\n",
+        guide_line(-7885.0, 40.0, 8498.0, 40.0, "N"),
+        guide_line(25.0, 8587.0, 25.0, -7796.0, "N"),
+        rect_path(0.0, 0.0, 10.0, 10.0),
+        guide_line(-7885.0, 90.0, 8498.0, 90.0, "N"),
+    );
+    let doc = read(canvas_stream(&layer(&body)).as_bytes()).unwrap().doc;
+    let top = &doc.layers[0];
+    let kids = top.children().unwrap();
+    assert_eq!(kids.len(), 2, "the square and the sublayer");
+    assert!(matches!(kids[0].kind, NodeKind::Path { guide: false, .. }));
+    let sub = &kids[1];
+    assert!(sub.children().unwrap().is_empty());
+    let want = [
+        Guide { vertical: false, pos: 60.0, artboard: None, layer: Some(top.id) },
+        Guide { vertical: true, pos: 25.0, artboard: None, layer: Some(top.id) },
+        Guide { vertical: false, pos: 10.0, artboard: None, layer: Some(sub.id) },
+    ];
+    assert_eq!(doc.guides, want);
+}
+
+/// #779: a straight `(N) *` guide path from edge to edge of one artboard is a ruler guide of that
+/// artboard.
+#[test]
+fn artboard_wide_guide_paths_are_ruler_guides_of_their_artboard() {
+    // The crop marks' artboard, 0 0 200 100.
+    let doc = read(canvas_stream(&layer(&guide_line(0.0, 30.0, 200.0, 30.0, "N"))).as_bytes()).unwrap().doc;
+    assert_eq!(doc.guides, [Guide { vertical: false, pos: 70.0, artboard: Some(1), layer: Some(doc.layers[0].id) }]);
+    assert!(art(&doc).is_empty());
+    // The second of two artboards: art space x 400 to 600, y -150 to 0.
+    let boards = "%_/Document :\n%_/Dictionary :\n%_/Array :\n\
+                  %_/Dictionary :\n%_0 200 /RealPointRelToROrigin\n%_ (PositionPoint1) ,\n%_300 0 /RealPointRelToROrigin\n%_ (PositionPoint2) ,\n%_; ,\n\
+                  %_/Dictionary :\n%_400 0 /RealPointRelToROrigin\n%_ (PositionPoint1) ,\n%_600 -150 /RealPointRelToROrigin\n%_ (PositionPoint2) ,\n%_; ,\n\
+                  %_; (ArtboardArray) ,\n%_; /NotRecorded ,\n%_;\n";
+    let doc = read_ok(&format!("{boards}{}", layer(&guide_line(500.0, 0.0, 500.0, -150.0, "N")))).doc;
+    assert_eq!(doc.artboards[1].id, 2);
+    assert_eq!(doc.guides, [Guide { vertical: true, pos: 500.0, artboard: Some(2), layer: Some(doc.layers[0].id) }]);
+}
+
+/// Guide paths that aren't ruler guides stay guide paths: `(S) *` ones (guides made from objects),
+/// even across the whole canvas or an artboard, short ones, slanted ones, and ones in a group.
+#[test]
+fn other_guide_paths_stay_guide_paths() {
+    let cases = [
+        guide_line(-7885.0, 40.0, 8498.0, 40.0, "S"),
+        guide_line(20.0, 40.0, 80.0, 40.0, "S"),
+        guide_line(20.0, 40.0, 80.0, 40.0, "N"),
+        guide_line(0.0, 30.0, 200.0, 30.0, "S"),
+        guide_line(-7885.0, -7796.0, 8498.0, 8587.0, "N"),
+        format!("u\n{}U\n", guide_line(-7885.0, 40.0, 8498.0, 40.0, "N")),
+        format!("1 Xw\n{}0 Xw\n", guide_line(-7885.0, 40.0, 8498.0, 40.0, "N")),
+        "-7885 40 m\n306 40 L\n8498 40 L\n(N) *\n".to_string(),
+    ];
+    for body in cases {
+        let doc = read(canvas_stream(&layer(&body)).as_bytes()).unwrap().doc;
+        assert!(doc.guides.is_empty(), "{body}");
+        assert_eq!(art(&doc).len(), 1, "{body}");
+    }
+}
+
+/// The layer whose `Lb` has `ops` as its options (the first one in the file).
+fn layer_with(ops: &str) -> Node {
+    let doc = read_ok(&format!("%AI5_BeginLayer\n{ops} Lb\n(L) Ln\nLB\n%AI5_EndLayer--\n")).doc;
+    Node::clone(&doc.layers[0])
+}
+
+/// #779: the template flag four places after the colour index makes a template layer; locking,
+/// printing and dimming keep their own flags. In thirteen and fourteen operands the flag before
+/// the colour index and the last one change nothing.
+#[test]
+fn the_template_flag_of_a_layer() {
+    let l = layer_with("1 1 0 0 1 0 0 4 255 79 255 1 50 0");
+    let NodeKind::Layer { template, printable, dim_images, color, .. } = l.kind else { panic!() };
+    assert!(template && !printable && l.locked);
+    assert_eq!((dim_images, color), (Some(50), LayerColor::Preset(4)));
+    for ops in ["1 1 1 1 1 0 1 5 1 2 3 1 30 0", "1 1 1 1 1 0 0 5 1 2 3 1 30 1", "1 1 1 1 1 0 1 5 1 2 3 1 30"] {
+        let l = layer_with(ops);
+        let NodeKind::Layer { template, printable, dim_images, color, .. } = l.kind else { panic!() };
+        assert!(template && printable && !l.locked, "{ops}");
+        assert_eq!((dim_images, color), (Some(30), LayerColor::Preset(5)), "{ops}");
+    }
+    let l = layer_with("1 1 1 1 0 0 1 0 79 128 255 0 50 0");
+    assert!(matches!(l.kind, NodeKind::Layer { template: false, .. }));
+}
+
+/// The colour index is one place earlier in eleven and twelve operands, as in ten, and the twelfth
+/// is the dimming percentage; with nine it is one place earlier still.
+#[test]
+fn layer_options_of_nine_to_twelve_operands() {
+    let options = |l: Node| match l.kind {
+        NodeKind::Layer { template, dim_images, color, .. } => (template, dim_images, color),
+        _ => panic!(),
+    };
+    assert_eq!(options(layer_with("1 1 1 1 1 0 3 1 2 3 1")), (true, Some(50), LayerColor::Preset(3)));
+    assert_eq!(options(layer_with("1 1 1 1 1 0 3 1 2 3 0 25")), (false, Some(25), LayerColor::Preset(3)));
+    assert_eq!(options(layer_with("1 1 1 1 1 0 -1 10 20 30 1 25")), (true, Some(25), LayerColor::Custom([10, 20, 30])));
+    assert_eq!(options(layer_with("1 1 1 1 0 0 3 1 2 3")), (false, None, LayerColor::Preset(3)));
+    assert_eq!(options(layer_with("1 1 1 1 0 2 1 2 3")), (false, None, LayerColor::Preset(2)));
 }
 
 /// A blend's record as the editing data writes it after `(Adobe Path Blends) 1 0 n XP`: `DCBA`,
