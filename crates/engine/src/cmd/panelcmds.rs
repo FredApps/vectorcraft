@@ -318,6 +318,22 @@ fn spacing_param(p: &Value, key: &str, c: &str) -> Result<Option<[Option<f64>; 3
 fn set_format(s: &mut Session, p: &Value) -> Result<Value> {
     const C: &str = "text.setFormat";
     let ids = super::typecmd::text_targets(s, p, C)?;
+    check_switches(
+        p,
+        &[
+            "underline",
+            "strikethrough",
+            "allCaps",
+            "proportionalMetrics",
+            "tateChuYoko",
+            "standardVerticalRoman",
+            "noBreak",
+            "hyphenate",
+            "hyphenateCapitalized",
+            "romanHangingPunctuation",
+        ],
+        C,
+    )?;
     let num = |k: &str| p.get(k).and_then(Value::as_f64);
     let flag = |k: &str| p.get(k).and_then(Value::as_bool);
     let kerning = match p.get("kerning") {

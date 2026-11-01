@@ -1155,7 +1155,8 @@ These commands refuse a string, a number or another value that is not true or fa
 `` `closed` must be true or false ``, naming the key, and leave the document and its undo history as they were:
 `clockwise` in `shape.spiral`; `closed` in `shape.arc` and `path.create`; `vertical` and `placeholder` in `text.create`
 and `text.createInPath`; `underline`, `strikethrough`, `allCaps`, `proportionalMetrics`, `tateChuYoko`, `standardVerticalRoman` and `noBreak`
-in `text.setRangeStyle`; `effective` in `text.getRange`; `on` in `type.opticalMarginAlignment`, `type.systemLayout`
+in `text.setRangeStyle` and `text.setFormat`, which also checks `hyphenate`, `hyphenateCapitalized` and
+`romanHangingPunctuation`; `effective` in `text.getRange`; `on` in `type.opticalMarginAlignment`, `type.systemLayout`
 and `type.fractionalWidths`; `remove` and `overhang` in `type.ruby`; `expandInstances` in `symbol.delete`; `alt` in
 `symbol.spray` and `symbol.adjust`; `spot` and `global` in `swatch.new` and `swatch.edit`; `unlink` in
 `swatch.delete`; `fromArtwork`, `toGlobal` and `includeTints` in `swatch.newGroup`; `global` and `selection` in
