@@ -1,6 +1,6 @@
 # Parity with Adobe Illustrator
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-31 · **Change:** minor (Color Effects add-on: Find Nearest Swatch, #4923; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Units › East Asian Type acts, with Q and Ha units; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-30 · **Change:** minor (Color Effects add-on: Find Nearest Swatch, #4923; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Units › East Asian Type acts, with Q and Ha units; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Color Effects add-on: Find Nearest Swatch, #4923; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Path Precision Tools add-on: Shared Edge Merge Tool; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Smart Pen, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Path Precision Tools, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; Color Effects, a built-in add-on beyond Illustrator; scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026; shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); previously: Hardware: a second finger cancels the tool press the first finger began, so a pinch only navigates (#4198); scores unchanged) · **Target:** Adobe Illustrator 2026 (30.x; public release notes through 30.7, August 2026)
 
 ## Feature submission evidence
 
@@ -19,6 +19,7 @@ Artboard Options forwards the active Artboard tool's Scale Artwork with Artboard
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-24 | minor | shared fields and spinner/preset groups at standard 24 pt control height, square inner joints, token-driven corners (#3915); scores unchanged. |
 | 2026-11-02 | minor | Legacy `.ai` saves (version 7) write type with rotated characters as outlines that keep each character's rotation, with a warning unless `outlineText` is on (#5186); scores unchanged. |
 | 2026-10-31 | minor | Object › Path › Smooth smooths a path along its length before refitting it, so Auto-Smooth takes a shaky line to one smooth curve instead of leaving its jags, and with anchor points direct-selected it smooths only that section; scores unchanged. |
 | 2026-10-31 | minor | New Document: More Settings has the Save Preset button beside the name too, saving its settings (artboard layout included) as a preset (#4893); scores unchanged. |
