@@ -1,0 +1,18 @@
+{
+  "base": "ce9761d08f98fd9a7ccc54a125b041b9b18fd7f4",
+  "head": "7a9d687a05330cb716a59a7bf41cf22eb0d5e8b0",
+  "platforms": [],
+  "policy": "review-ci-v2.2-no-sonar",
+  "pr": 3848,
+  "repository": "storytold/vectorcraft",
+  "source_tree": "53a34dca382f4d5875af302e050262cb6915bb78",
+  "workflows": {
+    ".github/workflows/affinity-corpus.yml": "290f09079f4af5f779a4c33404de0564884af237088d1da3911e08615cd8e629",
+    ".github/workflows/ci.yml": "5888208f2103c7a31cc5ad85ea83fc4cc39e74ac814331da9297f9cd69a180bf",
+    ".github/workflows/freebsd.yml": "f84b716b5382f74e44a313be5841089dc9f546a16c44fdf3ec7ab5798f22f4f5",
+    ".github/workflows/nix.yml": "a6a88713058d7606408305b590c175e3d3ec64ce70961917a15a16d1a59475bd",
+    ".github/workflows/packaging-lint.yml": "c213da735d4c4ff8cd1b3b1a31d18173b30a558400c3fb16f07293d2623054ce",
+    ".github/workflows/print.yml": "0bfbed960c47aa47dd7129b28687ac9dc2addbdb6b297d646b9a249654b53938",
+    ".github/workflows/windows-arm64.yml": "3672c055cc9ea69fe9efef9c66329a139af7da05751c0fb419b4397cef070507"
+  }
+}
