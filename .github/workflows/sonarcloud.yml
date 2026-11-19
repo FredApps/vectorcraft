@@ -1,21 +1,52 @@
-name: SonarCloud
-
+name: Vector palette adapter Windows validation
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize, reopened]
-
+  workflow_dispatch:
 permissions:
   contents: read
-
 concurrency:
-  group: sonarcloud-${{ github.ref }}
-  # A push to main is the run that publishes coverage; superseded runs there would never finish.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
+  group: vector-palette-85b272e1
+  cancel-in-progress: false
 jobs:
-  sonarcloud:
-    # Tracked at @main so org-wide CI improvements propagate without PR churn.
-    uses: storytold/craft-common-actions/.github/workflows/sonarcloud.yml@main
-    secrets: inherit
+  color:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      CARGO_BUILD_JOBS: '2'
+      RUST_TEST_THREADS: '2'
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+    steps:
+      - name: Preserve committed line endings
+        shell: bash
+        run: git config --global core.autocrlf false
+      - name: Checkout exact reviewed palette adapter
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: storytold/vectorcraft
+          ref: 85b272e19cd5267bdadc2f916074d889cf5a122a
+          persist-credentials: false
+      - name: Verify source and toolchain
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 85b272e19cd5267bdadc2f916074d889cf5a122a
+          echo '2d33d0fc7159896520efcfa299a579435fcac71808f078eb47bba5ff6e8c9b24  Cargo.lock' | sha256sum -c -
+          test -z "$(git status --porcelain)"
+          rustup toolchain install 1.95.0 --profile minimal --component rustfmt --component clippy
+          echo 'Scoped default-feature color package tests, doctests and strict all-target lint only. Small Rust-only dependency closure; Linux tests/lint passed in 40s. Windows under 20 minutes plausible but unmeasured. Not whole-app/workspace/feature-unification certification.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Color formatting
+        run: cargo +1.95.0 fmt -p vectorcraft-color -- --check
+      - name: Unfiltered color tests and doctests
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
+        run: cargo +1.95.0 test --locked -p vectorcraft-color --no-fail-fast
+      - name: Color all-target lint
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
+        run: cargo +1.95.0 clippy --locked -p vectorcraft-color --all-targets -- -D warnings
+      - name: Verify unchanged source and lock
+        if: ${{ !cancelled() && steps.source.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '2d33d0fc7159896520efcfa299a579435fcac71808f078eb47bba5ff6e8c9b24  Cargo.lock' | sha256sum -c -
+          test -z "$(git status --porcelain)"
