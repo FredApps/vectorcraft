@@ -4802,6 +4802,30 @@ fn unreadable(e: impl std::fmt::Display) -> String {
     assert!(message_literals_in(&["engine"]).contains("Data Recovery can't keep copies in {path}: {e}"));
 }
 
+/// Shared palette failures are worded in the app's named error mapper, so the
+/// real source scan must retain the existing catalog templates after delegation.
+#[test]
+fn message_scan_reads_typed_palette_error_mapper() {
+    let scanned = message_literals_in(&["color"]);
+    for message in [
+        "not a swatch library (.vcswatches or .gpl)",
+        "the swatch exchange file is cut short",
+        "the color book is cut short",
+        "VectorCraft reads at most {ASE_MAX_ENTRIES} colors and groups from a swatch exchange file, and this library has {entries}",
+        "the swatch exchange file holds more than {ASE_MAX_ENTRIES} colors and groups",
+        "too many swatch exchange blocks",
+        "a swatch exchange block is too long",
+        "a swatch exchange name is too long",
+        "swatch exchange version {major}.{minor} isn't supported (only 1.x)",
+        "color book version {version} isn't supported (only 1)",
+        "the color book holds more than {ASE_MAX_ENTRIES} colors",
+        "color books in color space {other} aren't supported (only RGB, CMYK and Lab)",
+        "the color book's names take more than {} MB",
+    ] {
+        assert!(scanned.contains(&as_template(message)), "palette catalog template missing: {message}");
+    }
+}
+
 /// The scan stops at a test module whose `cfg` is `test` or `all(test, …)`, and reads on past a
 /// declaration of a test file and a module that is not only for tests.
 #[test]
