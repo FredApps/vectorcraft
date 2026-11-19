@@ -1,21 +1,27 @@
-name: SonarCloud
-
+name: HPGL consumer lock preparation
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize, reopened]
-
+  workflow_dispatch:
 permissions:
   contents: read
-
 concurrency:
-  group: sonarcloud-${{ github.ref }}
-  # A push to main is the run that publishes coverage; superseded runs there would never finish.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-
+  group: hpgl-consumer-lock-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  sonarcloud:
-    # Tracked at @main so org-wide CI improvements propagate without PR churn.
-    uses: storytold/craft-common-actions/.github/workflows/sonarcloud.yml@main
-    secrets: inherit
+  lock:
+    if: github.repository == 'FredApps/vectorcraft' && github.ref == 'refs/heads/diagnostic/hpgl2-consumer'
+    uses: storytold/craft-common-actions/.github/workflows/gate.yml@2c06746765d368723dc28ac3a44b04f841bec4da
+    with:
+      os: '["ubuntu-24.04"]'
+      select-os: '[]'
+      timeout-minutes: 10
+      gate-timeout-minutes: 8
+      toolchain: '1.95'
+      targets: ''
+      tools: ''
+      craft-fonts-ref: ''
+      require-craft-fonts: false
+      free-disk-space: false
+      cache-name: hpgl-consumer-lock
+      artifact-name: hpgl-consumer-lock
+      artifact-path: .diagnostic-output/Cargo.lock
+      command: bash scripts/hpgl-consumer-lock.sh
