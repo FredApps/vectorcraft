@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Scoped CAD lint only. Full locked CAD tests for the identical source+lock passed
-# in run44518432412. Dependency lints remain failed and are not suppressed in source.
-cargo fmt --all -- --check
-cargo clippy -p vectorcraft-cad --all-targets --no-deps --locked -- -D warnings
+# Actual locked CAD tests and selected-package lint; unrelated dependency lint debt
+# remains reported by run44518432412, not suppressed or claimed passed here.
+status=0
+cargo fmt --all -- --check || status=1
+cargo clippy -p vectorcraft-cad --all-targets --no-deps --locked -- -D warnings || status=1
+cargo test -p vectorcraft-cad --locked || status=1
+exit "$status"
